@@ -1,0 +1,279 @@
+<?php
+add_shortcode('package_list', 'list_packages_callback');
+
+function list_packages_callback($atts) {
+    $atts = shortcode_atts(
+            array(
+        'title' => 'All Packages'
+            ), $atts, 'package_list');
+
+    $args = array(
+        'post_type' => 'package',
+        'post_status' => 'publish',
+        'meta_key' => 'wpcf-status',
+        'meta_value' => '1',
+        'posts_per_page' => '-1',
+        'orderby' => 'ID',
+        'order' => 'ASC'
+    );
+    global $wpdb;
+    $user_id = get_current_user_id();
+    $total_package = $wpdb->get_results("SELECT id FROM `" . $wpdb->base_prefix . "orders` WHERE user_id = '" . $user_id . "' AND status='1'");
+
+    $total_sites = "";
+    $total_consumed = "";
+    if (!empty($total_package)) {
+        foreach ($total_package as $pck) {
+            $sites_stats = $wpdb->get_results("SELECT site_allowed,site_consumed FROM `" . $wpdb->base_prefix . "package_counter` WHERE order_id = '" . $pck->id . "'");
+            $total_sites = $total_sites + $sites_stats[0]->site_allowed;
+            $total_consumed = $total_consumed + $sites_stats[0]->site_consumed;
+        }
+    }
+   
+    if ($total_consumed == $total_sites || empty($total_package)) {
+        $packages = get_posts($args);
+
+        if (count($packages) > 0) {
+            ?>
+            <?php
+            $mism_package_settings = get_option('mism_package_settings');
+
+            # Paypal URL (LIVE/Sandbox)
+            $paypal_url = '';
+            if ($mism_package_settings['environment'] == "1") {
+                $paypal_url = 'https://www.sandbox.paypal.com/webscr?';
+            } elseif ($mism_package_settings['environment'] == "2") {
+                $paypal_url = 'https://www.paypal.com/webscr?';
+            }
+
+            # Currency Code implementation with Paypal
+            $currency_code = '';
+            if ($mism_package_settings['default_currency'] == "1") {
+                $currency_code = 'USD';
+            } elseif ($mism_package_settings['default_currency'] == "2") {
+                $currency_code = "EUR";
+            }
+            ?>
+            <script type="text/javascript">
+                /*    jQuery(document).ready(function($) {
+                    jQuery('.buy_button').click(function(e){
+                        var package_id = jQuery(this).parent('form').children('#package_id').val();
+                        var paypal_url = jQuery(this).parent('form').children('#paypal_url').val();
+                        var default_currency = jQuery(this).parent('form').children('#default_currency').val();
+                        var user_id = jQuery(this).parent('form').children('#user_id').val();
+                                                        
+                        var data = {
+                            'action': 'purchase_package',
+                            'cmd': '_xclick',
+                            'currency_code': default_currency,
+                            'paypal_url': paypal_url,
+                            'package_id': package_id,
+                            'notify_url': '<?php echo $mism_package_settings['notify']; ?>',
+                            'return': '<?php echo $mism_package_settings['return']; ?>',
+                            'cancel_return': '<?php echo $mism_package_settings['cancel']; ?>',
+                            'business_email': '<?php echo $mism_package_settings['business_email']; ?>',
+                            'userid': user_id
+                        };
+                        // We can also pass the url value separately from ajaxurl for front end AJAX implementations
+                        jQuery.post('<?php echo get_option("siteurl") . "/wp-admin/admin-ajax.php"; ?>', data, function(response) {
+                            //alert('Got this from the server: ' + response);
+                            //window.location.href = response;
+                            jQuery('#form_buy_package'+package_id).attr('action',response);
+                            jQuery('#form_buy_package'+package_id).submit();
+                        });
+                    });
+                });*/
+            </script>
+            <div class="packages avia-table main_color avia-pricing-table-container avia-table-2  avia-builder-el-5  el_after_av_section  el_before_av_table  avia-builder-el-first ">
+                <div class="pricing-table-wrap">
+                    <ul class="pricing-table avia-desc-col">
+                        <li class="avia-heading-row">
+                            <div class="first-table-item">Package</div>
+                            <span class="pricing-extra"></span>
+                        </li>
+                        <li class="avia-pricing-row empty-table-cell">
+                            <span class="fallback-table-val">
+                                &nbsp;
+                            </span>
+                        </li>
+                        <li class="">Sites Allowed</li>
+                        <li class="">Duration (in months)</li>
+                        <li class="avia-button-row empty-table-cell">
+                            <span class="fallback-table-val">
+                                <div class="avia-button-wrap avia-button-center  avia-builder-el-6  el_before_av_button  avia-builder-el-first ">
+                                    <a class="avia-button  avia-icon_select-yes-left-icon avia-color-theme-color avia-size-medium avia-position-center " href="">
+                                        <span data-av_iconfont="entypo-fontello" data-av_icon="" aria-hidden="true" class="avia_button_icon avia_button_icon_left "></span>
+                                        <span class="avia_iconbox_title">Buy</span>
+                                    </a>
+                                </div>
+                                <p></p>
+                                <p></p>
+                            </span>
+                        </li>
+                    </ul>
+                </div>
+                <?php
+                $package_settings = get_option('mism_package_settings');
+                if ($package_settings['default_currency'] == "1") {
+                    $default_currency = '&dollar;';
+                } elseif ($package_settings['default_currency'] == "2") {
+                    $default_currency = '&euro;';
+                }
+
+                foreach ($packages AS $package) {
+                    ?>
+                    <div class="package pricing-table-wrap">
+                        <ul class="pricing-table ">
+                            <li class="avia-heading-row">
+                                <div class="first-table-item"><?php echo get_the_title($package->ID); ?></div>
+                                <span class="pricing-extra"></span>
+                            </li>
+                            <li class="avia-pricing-row">
+                                <?php echo $package_price = get_post_meta($package->ID, 'wpcf-price', true); ?>
+                                <span class="currency-symbol"><?php echo $default_currency; ?></span><br>
+
+                            </li>
+                            <li class="">
+                                <?php
+                                $sites = get_post_meta($package->ID, 'wpcf-sites-allowed', true);
+                                if ($sites == "-1") {
+                                    $sites = "Unlimited";
+                                }
+                                echo $sites;
+                                ?> Sites
+                            </li>
+                            <li class="">
+                                <?php
+                                $months = get_post_meta($package->ID, 'wpcf-duration', true);
+                                echo $months . ' months';
+                                ?>
+                            </li>
+                            <li class="avia-button-row">
+                                <div class="avia-button-wrap avia-button-center  avia-builder-el-6  el_before_av_button  avia-builder-el-first ">
+                                    <?php if (is_user_logged_in()) { ?>
+                                        <?php /* <a class="avia-button  avia-icon_select-yes-left-icon avia-color-theme-color avia-size-medium avia-position-center " href="">
+                                          <span data-av_iconfont="entypo-fontello" data-av_icon="" aria-hidden="true" class="avia_button_icon avia_button_icon_left "></span>
+                                          <span class="avia_iconbox_title">Buy</span>
+                                          </a> */ ?>
+
+                                        <form id="form_buy_package<?php echo $package->ID; ?>" method="POST" action="<?php echo get_option('siteurl') . '/checkout' ?>">
+                                            <input id="package_id" type="hidden" name="package_id" value="<?php echo $package->ID; ?>"/>
+                                            <input id="paypal_url" type="hidden" name="paypal_url" value="<?php echo $paypal_url ?>"/>
+                                            <input id="default_currency" type="hidden" name="currency_code" value="<?php echo $currency_code; ?>"/>
+                                            <input id="user_id" type="hidden" name="user_id" value="<?php echo get_current_user_id(); ?>"/>
+                                            <input type="hidden" name="custom" value="<?php echo get_current_user_id(); ?>"/>
+                                            <input type="hidden" name="cmd" value="_xclick"/>
+                                            <input type="hidden" name="tax" value="<?php echo $mism_package_settings['tax']; ?>"/>
+                                            <input type="hidden" name="business" value="<?php echo $mism_package_settings['business_email']; ?>"/>
+                                            <input type="hidden" name="return" value="<?php echo $mism_package_settings['return']; ?>"/>
+                                            <input type="hidden" name="notify_url" value="<?php echo $mism_package_settings['notify']; ?>"/>
+                                            <input type="hidden" name="cancel_return" value="<?php echo $mism_package_settings['cancel']; ?>"/>
+                                            <input type="hidden" name="amount" value="<?php echo $package_price; ?>"/>
+                                            <input type="hidden" name="item_name" value="<?php echo $package->post_title; ?>"/>
+                                            <input type="hidden" name="item_number" value="<?php echo $package->ID; ?>"/>
+                                            <input type="hidden" name="discount" value="<?php echo $mism_package_settings['discount']; ?>"/>
+
+
+                                            <input class="avia_iconbox_title buy_button avia-button  avia-color-green avia-size-medium" type="submit" name="buy_package" value="Buy"/>
+                                        </form>
+                                    <?php } else { ?> 
+                                        <a class="avia-button  avia-icon_select-yes-left-icon avia-color-theme-color avia-size-medium avia-position-center " href="<?php echo get_option('siteurl') . "/login"; ?>">
+                                            <span data-av_iconfont="entypo-fontello" data-av_icon="" aria-hidden="true" class="avia_button_icon avia_button_icon_left "></span>
+                                            <span class="avia_iconbox_title">Login</span>
+                                        </a>
+                                    <?php } ?>
+
+                                </div>
+                                <p></p>
+                                <p></p>
+                            </li>
+                        </ul>
+                    </div>
+                    <?php
+                }
+                ?>
+            </div>
+            <?php
+        }
+    } else {
+        ?>
+        <div class="avia_message_box avia-color-red avia-size-large avia-icon_select-yes avia-border-  avia-builder-el-2  el_after_av_notification  el_before_av_notification ">
+            <span class="avia_message_box_title">Note</span>
+            <div class="avia_message_box_content">
+                <span data-av_iconfont="entypo-fontello" data-av_icon="" aria-hidden="true" class="avia_message_box_icon"></span>
+                <p>You can purchase package after full consumption of all sites in current package.</p>
+            </div>
+            <p>Please contact our support for more information or read our documentation.</p>
+        </div>
+        <?php
+    }
+}
+
+add_action('wp_ajax_purchase_package', 'purchase_package_callback');
+
+function purchase_package_callback() {
+    global $wpdb;
+
+    $package_id = $_POST['package_id'];
+    $user_id = $_POST['userid'];
+    $package_details = get_post($package_id);
+
+    $package_name = $package_details->post_title;
+    $package_price = get_post_meta($package_id, 'wpcf-price', true);
+    $site_allowed = get_post_meta($package_id, 'wpcf-sites-allowed', true);
+    $site_consumed = 0; # No. of Sites consumed
+    $months = get_post_meta($package_id, 'wpcf-duration', true);
+    $mism_package_settings = get_option('mism_package_settings');
+    $discount = 0; //$mism_package_settings['discount'];
+    $tax = 0; //$mism_package_settings['tax'];
+    $date = date('Y-m-d H:i:s');
+    $currency_code = $_POST['currency_code'];
+    $business_email = $_POST['business_email'];
+    $return_url = $_POST['return'];
+    $notify_url = $_POST['notify_url'];
+    $cancel_url = $_POST['cancel_return'];
+    $paypal_url = $_POST['paypal_url'];
+    $purchased_date = date('Y-m-d H:i:s');  #Current Date
+    $expiry_date = date('Y-m-d H:i:s', strtotime('+' . $months . 'months'));
+    $status = 2; # payment pending status
+    $total_price = $package_price + $tax - $discount;
+
+    $data = array(
+        'cmd' => '_xclick',
+        'currency_code' => $currency_code,
+        'item_name' => $package_name,
+        'item_number' => $package_id,
+        'custom' => $id,
+        'amount' => $package_price,
+        'business' => $business_email,
+        'return' => $return_url,
+        'notify_url' => $notify_url,
+        'cancel_return' => $cancel_url,
+    );
+
+    #   Loop for posted values and append to querystring
+    $queryString = '';
+    foreach ($data as $key => $value) {
+        if ($key != "submit") {
+            //$value = urlencode(stripslashes($value));
+            $queryString .= "$key=$value&";
+        }
+    }
+
+    $sql = "SELECT count(*) FROM `" . $wpdb->base_prefix . "orders` WHERE package_id='" . $package_id . "' AND user_id='" . $user_id . "'";
+    $results = $wpdb->get_results($sql);
+
+    if ($results > 0) {
+        $sql = "INSERT INTO `" . $wpdb->base_prefix . "orders`(package_id, user_id, package_name, package_price, discount, tax, total_price, purchased_date, expiry_date, status) VALUES('" . $package_id . "','" . $user_id . "','" . $package_name . "','" . $package_price . "', '" . $discount . "','" . $tax . "','" . $total_price . "','" . $purchased_date . "','" . $expiry_date . "','" . $status . "')";
+        $wpdb->query($wpdb->prepare($sql));
+        $order_id = $wpdb->insert_id;
+
+        $query = "INSERT INTO `" . $wpdb->base_prefix . "package_counter`(order_id, site_allowed, site_consumed)VALUES('" . $order_id . "','" . $site_allowed . "','" . $site_consumed . "')";
+        $wpdb->query($wpdb->prepare($query));
+    }
+
+
+    //echo $paypal_url.$queryString;
+    echo $paypal_url;
+    wp_die();
+}

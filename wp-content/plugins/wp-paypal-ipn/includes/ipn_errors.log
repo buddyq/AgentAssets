@@ -1,0 +1,12 @@
+[08-Jun-2015 07:53:35 UTC] Invalid response status: 302
+[08-Jun-2015 08:16:39 UTC] Invalid response status: 302
+[08-Jun-2015 08:24:13 UTC] Invalid response status: 302
+[08-Jun-2015 09:13:54 UTC] Invalid response status: 302
+[08-Jun-2015 12:12:08 UTC] WordPress database error  for query UPDATE `aa_orders` SET status = '1' WHERE package_id='34' AND user_id = '1' AND status='2' made by do_action('wp_ajax_nopriv_mi_ipnlistener_notification'), call_user_func_array, mi_ipnlistener_notification_callback
+[16-Jun-2015 09:13:00 UTC] WordPress database error Table 'austin43_aalive.aa_orders' doesn't exist for query UPDATE `aa_orders` SET status = '1' WHERE package_id='51' AND user_id = '1' AND status='2' made by do_action('wp_ajax_nopriv_mi_ipnlistener_notification'), call_user_func_array, mi_ipnlistener_notification_callback
+[16-Jun-2015 09:13:00 UTC] WordPress database error Table 'austin43_aalive.aa_coupons' doesn't exist for query INSERT INTO `aa_coupons`(coupon_id, coupon_code, user_id, coupon_used_count) VALUES('38','Welcome8','1','1') made by do_action('wp_ajax_nopriv_mi_ipnlistener_notification'), call_user_func_array, mi_ipnlistener_notification_callback
+[08-Jan-2016 00:04:08 UTC] Invalid HTTP request method.
+[20-Feb-2016 23:21:18 UTC] Invalid HTTP request method.
+[01-Mar-2016 09:03:26 UTC] Invalid HTTP request method.
+[02-Apr-2016 16:01:01 UTC] Invalid HTTP request method.
+[05-May-2016 03:24:05 UTC] Invalid HTTP request method.

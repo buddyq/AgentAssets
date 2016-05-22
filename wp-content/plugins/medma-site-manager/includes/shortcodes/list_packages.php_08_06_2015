@@ -1,0 +1,180 @@
+<?php
+ob_start();
+add_shortcode('package_list','list_packages_callback');
+
+function list_packages_callback($atts)
+{
+    $atts = shortcode_atts(
+        array(
+            'title' => 'All Packages'
+        ), $atts, 'package_list' );
+
+    $args = array(
+        'post_type' => 'package',
+        'post_status' => 'publish',
+        'meta_key'  =>  'wpcf-status',
+        'meta_value'    =>  '1',
+        'posts_per_page' => '-1',
+        'orderby' => 'ID',
+        'order' => 'ASC'
+    );
+    
+    if(isset($_POST['buy_package']))
+    {
+        $post_id = $_POST['package_id'];
+        $post_detail = get_post($post_id);
+        $package_name = $post_detail->post_title;
+        $package_price = get_post_meta($post_id,'wpcf-price',true);
+        $sites = get_post_meta($package->ID,'wpcf-sites-allowed',true);
+        $months = get_post_meta($package->ID,'wpcf-duration',true);
+        $mism_package_settings = get_option( 'mism_package_settings' );
+        $discount = $mism_package_settings['discount'];
+        $tax = $mism_package_settings['tax'];
+        $date = date('Y-m-d H:i:s');
+        
+        
+        $data = array(
+        'cmd'           =>  '_xclick',
+        'currency_code' =>  'USD',
+        'item_name'     =>  'Test Product',
+        'item_number'   =>  '98765418',
+        'amount'        =>  '98',
+        'business'      =>  'suman@medma.in',
+        'return'        =>  'http://agentassets.com/',
+        'notify_url'    =>  'http://agentassets.com/wp-admin/admin-ajax.php?action=mi_ipnlistener_notification',
+        'cancel_return' =>  'http://agentassets.com/',
+        );
+        
+        #   Loop for posted values and append to querystring
+        $queryString = '';
+        foreach($data as $key => $value){
+            if($key!="submit")
+            {
+                $value = urlencode(stripslashes($value));
+                $queryString .= "$key=$value&amp;";
+            }
+        }
+        $paypal_url = 'https://www.sandbox.paypal.com/webscr?';
+        //echo $paypal_url.$queryString;
+        //wp_die('Paypal Call');
+        wp_redirect($paypal_url.$queryString); exit;
+
+        //$response = callPaypalIPN($data);
+        
+        //echo "<pre>";print_r($response);echo "</prE>";
+    }
+    
+    $packages = get_posts($args);
+    
+    if(count($packages)>0)
+    {
+        ?>
+        <div class="packages avia-table main_color avia-pricing-table-container avia-table-2  avia-builder-el-5  el_after_av_section  el_before_av_table  avia-builder-el-first ">
+            <div class="pricing-table-wrap">
+                <ul class="pricing-table avia-desc-col">
+                    <li class="avia-heading-row">
+                        <div class="first-table-item">Package</div>
+                        <span class="pricing-extra"></span>
+                    </li>
+                    <li class="avia-pricing-row empty-table-cell">
+                        <span class="fallback-table-val">
+                            &nbsp;
+                        </span>
+                    </li>
+                    <li class="">Sites Allowed</li>
+                    <li class="">Duration (in months)</li>
+                    <li class="avia-button-row empty-table-cell">
+                        <span class="fallback-table-val">
+                            <div class="avia-button-wrap avia-button-center  avia-builder-el-6  el_before_av_button  avia-builder-el-first ">
+                                <a class="avia-button  avia-icon_select-yes-left-icon avia-color-theme-color avia-size-medium avia-position-center " href="">
+                                    <span data-av_iconfont="entypo-fontello" data-av_icon="" aria-hidden="true" class="avia_button_icon avia_button_icon_left "></span>
+                                    <span class="avia_iconbox_title">Buy</span>
+                                </a>
+                            </div>
+                            <p></p>
+                            <p></p>
+                        </span>
+                    </li>
+                </ul>
+            </div>
+        <?php
+        $package_settings = get_option('mism_package_settings');
+        if($package_settings['default_currency']=="1")
+        {
+            $default_currency = '&dollar;';
+        }
+        elseif($package_settings['default_currency']=="2")
+        {
+            $default_currency = '&euro;';
+        }
+        
+        foreach($packages AS $package)
+        {
+            ?>
+            <div class="package pricing-table-wrap">
+                <ul class="pricing-table ">
+                    <li class="avia-heading-row">
+                        <div class="first-table-item"><?php echo get_the_title($package->ID);?></div>
+                        <span class="pricing-extra"></span>
+                    </li>
+                    <li class="avia-pricing-row">
+                        <?php echo get_post_meta($package->ID,'wpcf-price',true);?>
+                        <span class="currency-symbol"><?php echo $default_currency;?></span><br>
+                        
+                    </li>
+                    <li class="">
+                        <?php 
+                        $sites = get_post_meta($package->ID,'wpcf-sites-allowed',true);
+                        if($sites == "-1")
+                        {
+                            $sites = "Unlimited";
+                        }
+                        echo $sites;
+                        ?> Sites
+                    </li>
+                    <li class="">
+                        <?php 
+                        $months = get_post_meta($package->ID,'wpcf-duration',true);
+                        echo $months.' months';
+                        ?>
+                    </li>
+                    <li class="avia-button-row">
+                        <div class="avia-button-wrap avia-button-center  avia-builder-el-6  el_before_av_button  avia-builder-el-first ">
+                            <?php if(is_user_logged_in()){ ?>
+                            <?php /*<a class="avia-button  avia-icon_select-yes-left-icon avia-color-theme-color avia-size-medium avia-position-center " href="">
+                                <span data-av_iconfont="entypo-fontello" data-av_icon="" aria-hidden="true" class="avia_button_icon avia_button_icon_left "></span>
+                                <span class="avia_iconbox_title">Buy</span>
+                            </a>*/?>
+                            <form method="POST">
+                                <input type="hidden" name="package_id" value="<?php echo $package->ID;?>"/>
+                                <input type="hidden" name="item_name" value="Test Product"/>
+                                <input type="hidden" name="mc_gross" value="98"/>
+                                <input type="hidden" name="mc_currency" value="USD"/>
+                                <input type="hidden" name="business" value="suman@medma.in"/>
+                                <input type="hidden" name="return" value="http://agentassets.com/"/>
+                                <input type="hidden" name="cancel_return" value="http://agentassets.com/"/>
+                                <input type="hidden" name="notify_url" value="http://agentassets.com/wp-admin/admin-ajax.php?action=mi_ipnlistener_notification"/>
+                                
+                                <input class="avia_iconbox_title" type="submit" name="buy_package" value="Buy"/>
+                            </form>
+                            <?php }else{ ?> 
+                            <a class="avia-button  avia-icon_select-yes-left-icon avia-color-theme-color avia-size-medium avia-position-center " href="<?php echo get_option('siteurl')."/login";?>">
+                                <span data-av_iconfont="entypo-fontello" data-av_icon="" aria-hidden="true" class="avia_button_icon avia_button_icon_left "></span>
+                                <span class="avia_iconbox_title">Login</span>
+                            </a>
+                            <?php } ?>
+                            
+                        </div>
+                        <p></p>
+                        <p></p>
+                    </li>
+                </ul>
+            </div>
+            <?php
+        }
+        ?>
+        </div>
+        <?php
+    }
+}
+ob_end_flush();

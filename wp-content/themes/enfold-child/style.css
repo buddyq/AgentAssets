@@ -1,0 +1,13 @@
+/*
+Theme Name: AgentAssets Theme
+Theme URI: www.agentassets.com
+Description: <strong>Custom theme for AgentAssets.com</strong>
+Author: Buddy Quaid
+Author URI: http://www.agentassets.com
+Template: enfold
+Version: 1.0
+*/
+
+.wp-admin-bar-wp-logo a{
+  margin-top: 5px;
+}

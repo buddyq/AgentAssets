@@ -1,2 +1,7 @@
 wp-config.php
 /.idea
+/wp_trace.log
+/.ftpquota
+/wp-admin/wp_trace.log
+/wp-content/debug.log
+                

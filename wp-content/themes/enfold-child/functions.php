@@ -2,10 +2,17 @@
 /*
 Enfold functions overrides
 */
-
+// echo "<pre>"; print_r (get_template_directory_uri()); die("</pre>");
 add_theme_support('deactivate_layerslider');
 
 $avia_config['imgSize']['slider_post_img'] = array('width'=>500,  'height'=>375); // for homepage slider using post image
+
+add_action( 'admin_enqueue_scripts', 'load_admin_style' );
+      function load_admin_style() {
+        // wp_register_style( 'admin_css', get_template_directory_uri() . '/admin-style.css', false, '1.0.0' );
+//OR
+        wp_enqueue_style( 'admin_css', get_template_directory_uri() . '/css/admin-style.css', false, '1.0.0' );
+       }
 
 function rebranding_wordpress_logo(){
         global $wp_admin_bar;

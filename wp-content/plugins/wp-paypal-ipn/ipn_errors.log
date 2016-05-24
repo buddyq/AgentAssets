@@ -7342,3 +7342,702 @@
 [22-May-2016 15:31:03 UTC] WordPress database error Table 'austin43_aalive.aa_160_wysija_queue' doesn't exist for query DELETE a.* FROM `aa_160_wysija_queue` as a LEFT JOIN `aa_160_wysija_email` as b on a.email_id = b.email_id WHERE b.email_id IS NULL made by require_once('wp-load.php'), require_once('wp-config.php'), require_once('wp-settings.php'), do_action('init'), call_user_func_array, init_wysija_cron, WYSIJA_help_cron->run, WYSIJA_help_cron->check_scheduled_task, WYSIJA_help_cron->run_scheduled_task, WYSIJA::croned_queue, WYSIJA_help_queue->process, WYSIJA_help_queue->clear, WYSIJA_model->query
 [22-May-2016 15:31:03 UTC] WordPress database error Table 'austin43_aalive.aa_160_wysija_queue' doesn't exist for query DELETE a.* FROM `aa_160_wysija_queue` as a LEFT JOIN `aa_160_wysija_user` as b on a.user_id = b.user_id WHERE b.user_id IS NULL made by require_once('wp-load.php'), require_once('wp-config.php'), require_once('wp-settings.php'), do_action('init'), call_user_func_array, init_wysija_cron, WYSIJA_help_cron->run, WYSIJA_help_cron->check_scheduled_task, WYSIJA_help_cron->run_scheduled_task, WYSIJA::croned_queue, WYSIJA_help_queue->process, WYSIJA_help_queue->clear, WYSIJA_model->query
 [22-May-2016 15:31:03 UTC] WordPress database error Table 'austin43_aalive.aa_160_wysija_queue' doesn't exist for query SELECT COUNT(email_id) as count  FROM `aa_160_wysija_queue` WHERE send_at < 1463758263 made by require_once('wp-load.php'), require_once('wp-config.php'), require_once('wp-settings.php'), do_action('init'), call_user_func_array, init_wysija_cron, WYSIJA_help_cron->run, WYSIJA_help_cron->check_scheduled_task, WYSIJA_help_cron->run_scheduled_task, WYSIJA::croned_queue, WYSIJA_help_queue->process, WYSIJA_help_queue->clear, WYSIJA_model->count, WYSIJA_model->query
+[23-May-2016 01:31:53 UTC] WordPress database error Table 'austin43_aalive.aa_160_wysija_email' doesn't exist for query SELECT * FROM `aa_160_wysija_email` WHERE type=2 AND status IN ("1","3","99") ORDER BY email_id DESC made by require_once('wp-load.php'), require_once('wp-config.php'), require_once('wp-settings.php'), do_action('init'), call_user_func_array, init_wysija_cron, WYSIJA_help_cron->run, WYSIJA_help_cron->check_scheduled_task, WYSIJA_help_cron->run_scheduled_task, WYSIJA::check_scheduled_newsletters, WYSIJA_help_autonews->checkPostNotif, WYSIJA_model_email->get, WYSIJA_model->get, WYSIJA_model->getRows, WYSIJA_model->query
+[23-May-2016 01:31:53 UTC] WordPress database error Table 'austin43_aalive.aa_160_wysija_email' doesn't exist for query SELECT * FROM `aa_160_wysija_email` WHERE type=1 AND status=4 ORDER BY email_id DESC made by require_once('wp-load.php'), require_once('wp-config.php'), require_once('wp-settings.php'), do_action('init'), call_user_func_array, init_wysija_cron, WYSIJA_help_cron->run, WYSIJA_help_cron->check_scheduled_task, WYSIJA_help_cron->run_scheduled_task, WYSIJA::check_scheduled_newsletters, WYSIJA_help_autonews->checkScheduled, WYSIJA_model_email->get, WYSIJA_model->get, WYSIJA_model->getRows, WYSIJA_model->query
+[23-May-2016 01:31:53 UTC] WordPress database error Table 'austin43_aalive.aa_160_wysija_queue' doesn't exist for query SELECT c.*,a.* FROM aa_160_wysija_queue as a JOIN aa_160_wysija_email as b on a.`email_id` = b.`email_id`  JOIN aa_160_wysija_user as c on a.`user_id` = c.`user_id`  WHERE a.`send_at` <= 1463967113 AND b.`status` IN (1,3,99) ORDER BY a.`priority` ASC, a.`send_at` ASC, a.`user_id` ASC LIMIT 100 made by require_once('wp-load.php'), require_once('wp-config.php'), require_once('wp-settings.php'), do_action('init'), call_user_func_array, init_wysija_cron, WYSIJA_help_cron->run, WYSIJA_help_cron->check_scheduled_task, WYSIJA_help_cron->run_scheduled_task, WYSIJA::croned_queue, WYSIJA_help_queue->process, WYSIJA_model_queue->getReady, WYSIJA_model->query
+[23-May-2016 01:31:53 UTC] WordPress database error Table 'austin43_aalive.aa_160_wysija_queue' doesn't exist for query DELETE a.* FROM `aa_160_wysija_queue` as a LEFT JOIN `aa_160_wysija_user` as b on a.user_id = b.user_id WHERE b.status< 1 made by require_once('wp-load.php'), require_once('wp-config.php'), require_once('wp-settings.php'), do_action('init'), call_user_func_array, init_wysija_cron, WYSIJA_help_cron->run, WYSIJA_help_cron->check_scheduled_task, WYSIJA_help_cron->run_scheduled_task, WYSIJA::croned_queue, WYSIJA_help_queue->process, WYSIJA_help_queue->clear, WYSIJA_model->query
+[23-May-2016 01:31:53 UTC] WordPress database error Table 'austin43_aalive.aa_160_wysija_queue' doesn't exist for query DELETE a.* FROM `aa_160_wysija_queue` as a LEFT JOIN `aa_160_wysija_email` as b on a.email_id = b.email_id WHERE b.email_id IS NULL made by require_once('wp-load.php'), require_once('wp-config.php'), require_once('wp-settings.php'), do_action('init'), call_user_func_array, init_wysija_cron, WYSIJA_help_cron->run, WYSIJA_help_cron->check_scheduled_task, WYSIJA_help_cron->run_scheduled_task, WYSIJA::croned_queue, WYSIJA_help_queue->process, WYSIJA_help_queue->clear, WYSIJA_model->query
+[23-May-2016 01:31:53 UTC] WordPress database error Table 'austin43_aalive.aa_160_wysija_queue' doesn't exist for query DELETE a.* FROM `aa_160_wysija_queue` as a LEFT JOIN `aa_160_wysija_user` as b on a.user_id = b.user_id WHERE b.user_id IS NULL made by require_once('wp-load.php'), require_once('wp-config.php'), require_once('wp-settings.php'), do_action('init'), call_user_func_array, init_wysija_cron, WYSIJA_help_cron->run, WYSIJA_help_cron->check_scheduled_task, WYSIJA_help_cron->run_scheduled_task, WYSIJA::croned_queue, WYSIJA_help_queue->process, WYSIJA_help_queue->clear, WYSIJA_model->query
+[23-May-2016 01:31:53 UTC] WordPress database error Table 'austin43_aalive.aa_160_wysija_queue' doesn't exist for query SELECT COUNT(email_id) as count  FROM `aa_160_wysija_queue` WHERE send_at < 1463794313 made by require_once('wp-load.php'), require_once('wp-config.php'), require_once('wp-settings.php'), do_action('init'), call_user_func_array, init_wysija_cron, WYSIJA_help_cron->run, WYSIJA_help_cron->check_scheduled_task, WYSIJA_help_cron->run_scheduled_task, WYSIJA::croned_queue, WYSIJA_help_queue->process, WYSIJA_help_queue->clear, WYSIJA_model->count, WYSIJA_model->query
+[23-May-2016 02:22:06 UTC] WordPress database error Table 'austin43_aalive.aa_185_wysija_email' doesn't exist for query SELECT * FROM `aa_185_wysija_email` WHERE type=2 AND status IN ("1","3","99") ORDER BY email_id DESC made by require('wp-blog-header.php'), require_once('wp-includes/template-loader.php'), include('/themes/enfold/page.php'), get_template_part, locate_template, load_template, require('/themes/enfold/includes/loop-page.php'), the_content, apply_filters('the_content'), call_user_func_array, do_shortcode, preg_replace_callback, do_shortcode_tag, call_user_func, mism_create_new_site, wpmu_create_blog, do_action('wpmu_new_blog'), call_user_func_array, PluginManager->new_blog, activate_plugins, activate_plugin, do_action('activate_contact-form-7/wp-contact-form-7.php'), call_user_func_array, wpcf7_install, WPCF7_ContactForm->save, wp_insert_post, wp_transition_post_status, do_action('transition_post_status'), call_user_func_array, WYSIJA::hook_postNotification_transition, WYSIJA_model_email->get, WYSIJA_model->get, WYSIJA_model->getRows, WYSIJA_model->query
+[23-May-2016 02:22:06 UTC] WordPress database error Table 'austin43_aalive.aa_185_wysija_email' doesn't exist for query SELECT campaign_id, email_id, params, wj_styles, wj_data FROM `aa_185_wysija_email` WHERE type=2 AND status IN ("1","3","99") ORDER BY email_id DESC made by require('wp-blog-header.php'), require_once('wp-includes/template-loader.php'), include('/themes/enfold/page.php'), get_template_part, locate_template, load_template, require('/themes/enfold/includes/loop-page.php'), the_content, apply_filters('the_content'), call_user_func_array, do_shortcode, preg_replace_callback, do_shortcode_tag, call_user_func, mism_create_new_site, wpmu_create_blog, do_action('wpmu_new_blog'), call_user_func_array, PluginManager->new_blog, activate_plugins, activate_plugin, do_action('activate_contact-form-7/wp-contact-form-7.php'), call_user_func_array, wpcf7_install, WPCF7_ContactForm->save, wp_insert_post, wp_transition_post_status, do_action('transition_post_status'), call_user_func_array, WYSIJA::hook_postNotification_transition, WYSIJA_help_autonews->refresh_automatic_content, WYSIJA_model_email->get, WYSIJA_model->get, WYSIJA_model->getRows, WYSIJA_model->query
+[23-May-2016 02:22:06 UTC] PHP Warning:  fopen(/home/austin43/public_html/wp-content/plugins/royal_slider_v.3.1.91/newroyalslider.php): failed to open stream: No such file or directory in /home/austin43/public_html/wp-includes/functions.php on line 4568
+[23-May-2016 02:22:06 UTC] PHP Warning:  fread() expects parameter 1 to be resource, boolean given in /home/austin43/public_html/wp-includes/functions.php on line 4571
+[23-May-2016 02:22:06 UTC] PHP Warning:  fclose() expects parameter 1 to be resource, boolean given in /home/austin43/public_html/wp-includes/functions.php on line 4574
+[23-May-2016 02:22:06 UTC] PHP Warning:  array_keys() expects parameter 1 to be array, string given in /home/austin43/public_html/wp-includes/class-wp-roles.php on line 158
+[23-May-2016 02:22:06 UTC] PHP Warning:  Invalid argument supplied for foreach() in /home/austin43/public_html/wp-includes/class-wp-roles.php on line 158
+[23-May-2016 02:22:06 UTC] PHP Warning:  array_keys() expects parameter 1 to be array, string given in /home/austin43/public_html/wp-includes/class-wp-roles.php on line 158
+[23-May-2016 02:22:06 UTC] PHP Warning:  Invalid argument supplied for foreach() in /home/austin43/public_html/wp-includes/class-wp-roles.php on line 158
+[23-May-2016 02:22:06 UTC] PHP Warning:  array_keys() expects parameter 1 to be array, string given in /home/austin43/public_html/wp-includes/class-wp-roles.php on line 158
+[23-May-2016 02:22:06 UTC] PHP Warning:  Invalid argument supplied for foreach() in /home/austin43/public_html/wp-includes/class-wp-roles.php on line 158
+[23-May-2016 02:22:06 UTC] PHP Warning:  array_keys() expects parameter 1 to be array, string given in /home/austin43/public_html/wp-includes/class-wp-roles.php on line 158
+[23-May-2016 02:22:06 UTC] PHP Warning:  Invalid argument supplied for foreach() in /home/austin43/public_html/wp-includes/class-wp-roles.php on line 158
+[23-May-2016 02:22:06 UTC] PHP Warning:  array_keys() expects parameter 1 to be array, string given in /home/austin43/public_html/wp-includes/class-wp-roles.php on line 158
+[23-May-2016 02:22:06 UTC] PHP Warning:  Invalid argument supplied for foreach() in /home/austin43/public_html/wp-includes/class-wp-roles.php on line 158
+[23-May-2016 02:22:06 UTC] PHP Warning:  array_keys() expects parameter 1 to be array, string given in /home/austin43/public_html/wp-includes/class-wp-roles.php on line 158
+[23-May-2016 02:22:06 UTC] PHP Warning:  Invalid argument supplied for foreach() in /home/austin43/public_html/wp-includes/class-wp-roles.php on line 158
+[23-May-2016 02:22:06 UTC] PHP Warning:  array_keys() expects parameter 1 to be array, string given in /home/austin43/public_html/wp-includes/class-wp-roles.php on line 158
+[23-May-2016 02:22:06 UTC] PHP Warning:  Invalid argument supplied for foreach() in /home/austin43/public_html/wp-includes/class-wp-roles.php on line 158
+[23-May-2016 02:22:06 UTC] URL: https://37.60.243.141:2087/xml-api/cpanel
+[23-May-2016 02:22:06 UTC] DATA: domain=thepig.com&topdomain=thepig&cpanel_xmlapi_user=austin43&cpanel_xmlapi_module=Park&cpanel_xmlapi_func=park&cpanel_xmlapi_apiversion=2
+[23-May-2016 02:22:06 UTC] Authentication Header: Authorization: Basic YXVzdGluNDM6eWR1YjAyNjE=
+
+
+[23-May-2016 02:22:07 UTC] RESPONSE:
+ <?xml version="1.0" ?>
+<cpanelresult>
+    <error>Access denied</error>
+    <data>
+        <result>0</result>
+        <reason>Access denied</reason>
+    </data>
+</cpanelresult>
+
+[23-May-2016 02:22:07 UTC] WordPress database error Table 'austin43_aalive.aa_order_map' doesn't exist for query INSERT INTO `aa_order_map` (`user_id`, `site_id`, `counter_id`) VALUES (9, 185, 1) made by require('wp-blog-header.php'), require_once('wp-includes/template-loader.php'), include('/themes/enfold/page.php'), get_template_part, locate_template, load_template, require('/themes/enfold/includes/loop-page.php'), the_content, apply_filters('the_content'), call_user_func_array, do_shortcode, preg_replace_callback, do_shortcode_tag, call_user_func, mism_create_new_site
+[23-May-2016 03:26:04 UTC] WordPress database error Table 'austin43_aalive.aa_160_wysija_email' doesn't exist for query SELECT * FROM `aa_160_wysija_email` WHERE type=2 AND status IN ("1","3","99") ORDER BY email_id DESC made by require_once('wp-load.php'), require_once('wp-config.php'), require_once('wp-settings.php'), do_action('init'), call_user_func_array, init_wysija_cron, WYSIJA_help_cron->run, WYSIJA_help_cron->check_scheduled_task, WYSIJA_help_cron->run_scheduled_task, WYSIJA::check_scheduled_newsletters, WYSIJA_help_autonews->checkPostNotif, WYSIJA_model_email->get, WYSIJA_model->get, WYSIJA_model->getRows, WYSIJA_model->query
+[23-May-2016 03:26:04 UTC] WordPress database error Table 'austin43_aalive.aa_160_wysija_email' doesn't exist for query SELECT * FROM `aa_160_wysija_email` WHERE type=1 AND status=4 ORDER BY email_id DESC made by require_once('wp-load.php'), require_once('wp-config.php'), require_once('wp-settings.php'), do_action('init'), call_user_func_array, init_wysija_cron, WYSIJA_help_cron->run, WYSIJA_help_cron->check_scheduled_task, WYSIJA_help_cron->run_scheduled_task, WYSIJA::check_scheduled_newsletters, WYSIJA_help_autonews->checkScheduled, WYSIJA_model_email->get, WYSIJA_model->get, WYSIJA_model->getRows, WYSIJA_model->query
+[23-May-2016 03:26:04 UTC] WordPress database error Table 'austin43_aalive.aa_160_wysija_queue' doesn't exist for query SELECT c.*,a.* FROM aa_160_wysija_queue as a JOIN aa_160_wysija_email as b on a.`email_id` = b.`email_id`  JOIN aa_160_wysija_user as c on a.`user_id` = c.`user_id`  WHERE a.`send_at` <= 1463973964 AND b.`status` IN (1,3,99) ORDER BY a.`priority` ASC, a.`send_at` ASC, a.`user_id` ASC LIMIT 100 made by require_once('wp-load.php'), require_once('wp-config.php'), require_once('wp-settings.php'), do_action('init'), call_user_func_array, init_wysija_cron, WYSIJA_help_cron->run, WYSIJA_help_cron->check_scheduled_task, WYSIJA_help_cron->run_scheduled_task, WYSIJA::croned_queue, WYSIJA_help_queue->process, WYSIJA_model_queue->getReady, WYSIJA_model->query
+[23-May-2016 03:26:04 UTC] WordPress database error Table 'austin43_aalive.aa_160_wysija_queue' doesn't exist for query DELETE a.* FROM `aa_160_wysija_queue` as a LEFT JOIN `aa_160_wysija_user` as b on a.user_id = b.user_id WHERE b.status< 1 made by require_once('wp-load.php'), require_once('wp-config.php'), require_once('wp-settings.php'), do_action('init'), call_user_func_array, init_wysija_cron, WYSIJA_help_cron->run, WYSIJA_help_cron->check_scheduled_task, WYSIJA_help_cron->run_scheduled_task, WYSIJA::croned_queue, WYSIJA_help_queue->process, WYSIJA_help_queue->clear, WYSIJA_model->query
+[23-May-2016 03:26:04 UTC] WordPress database error Table 'austin43_aalive.aa_160_wysija_queue' doesn't exist for query DELETE a.* FROM `aa_160_wysija_queue` as a LEFT JOIN `aa_160_wysija_email` as b on a.email_id = b.email_id WHERE b.email_id IS NULL made by require_once('wp-load.php'), require_once('wp-config.php'), require_once('wp-settings.php'), do_action('init'), call_user_func_array, init_wysija_cron, WYSIJA_help_cron->run, WYSIJA_help_cron->check_scheduled_task, WYSIJA_help_cron->run_scheduled_task, WYSIJA::croned_queue, WYSIJA_help_queue->process, WYSIJA_help_queue->clear, WYSIJA_model->query
+[23-May-2016 03:26:04 UTC] WordPress database error Table 'austin43_aalive.aa_160_wysija_queue' doesn't exist for query DELETE a.* FROM `aa_160_wysija_queue` as a LEFT JOIN `aa_160_wysija_user` as b on a.user_id = b.user_id WHERE b.user_id IS NULL made by require_once('wp-load.php'), require_once('wp-config.php'), require_once('wp-settings.php'), do_action('init'), call_user_func_array, init_wysija_cron, WYSIJA_help_cron->run, WYSIJA_help_cron->check_scheduled_task, WYSIJA_help_cron->run_scheduled_task, WYSIJA::croned_queue, WYSIJA_help_queue->process, WYSIJA_help_queue->clear, WYSIJA_model->query
+[23-May-2016 03:26:04 UTC] WordPress database error Table 'austin43_aalive.aa_160_wysija_queue' doesn't exist for query SELECT COUNT(email_id) as count  FROM `aa_160_wysija_queue` WHERE send_at < 1463801164 made by require_once('wp-load.php'), require_once('wp-config.php'), require_once('wp-settings.php'), do_action('init'), call_user_func_array, init_wysija_cron, WYSIJA_help_cron->run, WYSIJA_help_cron->check_scheduled_task, WYSIJA_help_cron->run_scheduled_task, WYSIJA::croned_queue, WYSIJA_help_queue->process, WYSIJA_help_queue->clear, WYSIJA_model->count, WYSIJA_model->query
+[23-May-2016 08:19:25 UTC] WordPress database error Table 'austin43_aalive.aa_187_wysija_email' doesn't exist for query SELECT * FROM `aa_187_wysija_email` WHERE type=2 AND status IN ("1","3","99") ORDER BY email_id DESC made by require('wp-blog-header.php'), require_once('wp-includes/template-loader.php'), include('/themes/enfold/page.php'), get_template_part, locate_template, load_template, require('/themes/enfold/includes/loop-page.php'), the_content, apply_filters('the_content'), call_user_func_array, do_shortcode, preg_replace_callback, do_shortcode_tag, call_user_func, mism_create_new_site, wpmu_create_blog, do_action('wpmu_new_blog'), call_user_func_array, PluginManager->new_blog, activate_plugins, activate_plugin, do_action('activate_contact-form-7/wp-contact-form-7.php'), call_user_func_array, wpcf7_install, WPCF7_ContactForm->save, wp_insert_post, wp_transition_post_status, do_action('transition_post_status'), call_user_func_array, WYSIJA::hook_postNotification_transition, WYSIJA_model_email->get, WYSIJA_model->get, WYSIJA_model->getRows, WYSIJA_model->query
+[23-May-2016 08:19:25 UTC] WordPress database error Table 'austin43_aalive.aa_187_wysija_email' doesn't exist for query SELECT campaign_id, email_id, params, wj_styles, wj_data FROM `aa_187_wysija_email` WHERE type=2 AND status IN ("1","3","99") ORDER BY email_id DESC made by require('wp-blog-header.php'), require_once('wp-includes/template-loader.php'), include('/themes/enfold/page.php'), get_template_part, locate_template, load_template, require('/themes/enfold/includes/loop-page.php'), the_content, apply_filters('the_content'), call_user_func_array, do_shortcode, preg_replace_callback, do_shortcode_tag, call_user_func, mism_create_new_site, wpmu_create_blog, do_action('wpmu_new_blog'), call_user_func_array, PluginManager->new_blog, activate_plugins, activate_plugin, do_action('activate_contact-form-7/wp-contact-form-7.php'), call_user_func_array, wpcf7_install, WPCF7_ContactForm->save, wp_insert_post, wp_transition_post_status, do_action('transition_post_status'), call_user_func_array, WYSIJA::hook_postNotification_transition, WYSIJA_help_autonews->refresh_automatic_content, WYSIJA_model_email->get, WYSIJA_model->get, WYSIJA_model->getRows, WYSIJA_model->query
+[23-May-2016 08:19:25 UTC] PHP Warning:  fopen(/home/austin43/public_html/wp-content/plugins/royal_slider_v.3.1.91/newroyalslider.php): failed to open stream: No such file or directory in /home/austin43/public_html/wp-includes/functions.php on line 4568
+[23-May-2016 08:19:25 UTC] PHP Warning:  fread() expects parameter 1 to be resource, boolean given in /home/austin43/public_html/wp-includes/functions.php on line 4571
+[23-May-2016 08:19:25 UTC] PHP Warning:  fclose() expects parameter 1 to be resource, boolean given in /home/austin43/public_html/wp-includes/functions.php on line 4574
+[23-May-2016 08:19:25 UTC] PHP Warning:  array_keys() expects parameter 1 to be array, string given in /home/austin43/public_html/wp-includes/class-wp-roles.php on line 158
+[23-May-2016 08:19:25 UTC] PHP Warning:  Invalid argument supplied for foreach() in /home/austin43/public_html/wp-includes/class-wp-roles.php on line 158
+[23-May-2016 08:19:25 UTC] PHP Warning:  array_keys() expects parameter 1 to be array, string given in /home/austin43/public_html/wp-includes/class-wp-roles.php on line 158
+[23-May-2016 08:19:25 UTC] PHP Warning:  Invalid argument supplied for foreach() in /home/austin43/public_html/wp-includes/class-wp-roles.php on line 158
+[23-May-2016 08:19:25 UTC] PHP Warning:  array_keys() expects parameter 1 to be array, string given in /home/austin43/public_html/wp-includes/class-wp-roles.php on line 158
+[23-May-2016 08:19:25 UTC] PHP Warning:  Invalid argument supplied for foreach() in /home/austin43/public_html/wp-includes/class-wp-roles.php on line 158
+[23-May-2016 08:19:25 UTC] PHP Warning:  array_keys() expects parameter 1 to be array, string given in /home/austin43/public_html/wp-includes/class-wp-roles.php on line 158
+[23-May-2016 08:19:25 UTC] PHP Warning:  Invalid argument supplied for foreach() in /home/austin43/public_html/wp-includes/class-wp-roles.php on line 158
+[23-May-2016 08:19:25 UTC] PHP Warning:  array_keys() expects parameter 1 to be array, string given in /home/austin43/public_html/wp-includes/class-wp-roles.php on line 158
+[23-May-2016 08:19:25 UTC] PHP Warning:  Invalid argument supplied for foreach() in /home/austin43/public_html/wp-includes/class-wp-roles.php on line 158
+[23-May-2016 08:19:25 UTC] PHP Warning:  array_keys() expects parameter 1 to be array, string given in /home/austin43/public_html/wp-includes/class-wp-roles.php on line 158
+[23-May-2016 08:19:25 UTC] PHP Warning:  Invalid argument supplied for foreach() in /home/austin43/public_html/wp-includes/class-wp-roles.php on line 158
+[23-May-2016 08:19:25 UTC] PHP Warning:  array_keys() expects parameter 1 to be array, string given in /home/austin43/public_html/wp-includes/class-wp-roles.php on line 158
+[23-May-2016 08:19:25 UTC] PHP Warning:  Invalid argument supplied for foreach() in /home/austin43/public_html/wp-includes/class-wp-roles.php on line 158
+[23-May-2016 08:19:25 UTC] URL: https://37.60.243.141:2087/xml-api/cpanel
+[23-May-2016 08:19:25 UTC] DATA: domain=test2305&cpanel_xmlapi_user=austin43&cpanel_xmlapi_module=Park&cpanel_xmlapi_func=park&cpanel_xmlapi_apiversion=2
+[23-May-2016 08:19:25 UTC] Authentication Header: Authorization: Basic YXVzdGluNDM6eWR1YjAyNjE=
+
+
+[23-May-2016 08:19:25 UTC] RESPONSE:
+ <?xml version="1.0" ?>
+<cpanelresult>
+    <error>Access denied</error>
+    <data>
+        <result>0</result>
+        <reason>Access denied</reason>
+    </data>
+</cpanelresult>
+
+[23-May-2016 08:19:25 UTC] WordPress database error Table 'austin43_aalive.aa_order_map' doesn't exist for query INSERT INTO `aa_order_map` (`user_id`, `site_id`, `counter_id`) VALUES (9, 187, 1) made by require('wp-blog-header.php'), require_once('wp-includes/template-loader.php'), include('/themes/enfold/page.php'), get_template_part, locate_template, load_template, require('/themes/enfold/includes/loop-page.php'), the_content, apply_filters('the_content'), call_user_func_array, do_shortcode, preg_replace_callback, do_shortcode_tag, call_user_func, mism_create_new_site
+[23-May-2016 10:15:06 UTC] PHP Notice:  wpdb::escape is <strong>deprecated</strong> since version 3.6! Use wpdb::prepare() or esc_sql() instead. in /home/austin43/public_html/wp-includes/functions.php on line 3658
+[23-May-2016 10:18:44 UTC] PHP Notice:  get_currentuserinfo is <strong>deprecated</strong> since version 4.5! Use wp_get_current_user() instead. in /home/austin43/public_html/wp-includes/functions.php on line 3658
+[23-May-2016 10:19:30 UTC] PHP Notice:  Undefined index: remember in /home/austin43/public_html/wp-content/plugins/login-sidebar-widget/login_afo_widget.php on line 194
+[23-May-2016 10:19:31 UTC] PHP Notice:  Undefined offset: 0 in /home/austin43/public_html/wp-content/plugins/adminimize/inc-setup/admin-bar-items.php on line 87
+[23-May-2016 10:19:58 UTC] PHP Notice:  Undefined offset: 0 in /home/austin43/public_html/wp-content/plugins/adminimize/inc-setup/admin-bar-items.php on line 87
+[23-May-2016 10:20:56 UTC] PHP Notice:  Undefined variable: subdomain in /home/austin43/public_html/wp-content/plugins/medma-site-manager/includes/shortcodes/create_new_site.php on line 344
+[23-May-2016 10:20:56 UTC] PHP Notice:  Undefined offset: 0 in /home/austin43/public_html/wp-content/plugins/adminimize/inc-setup/admin-bar-items.php on line 87
+[23-May-2016 10:21:23 UTC] PHP Notice:  Undefined variable: subdomain in /home/austin43/public_html/wp-content/plugins/medma-site-manager/includes/shortcodes/create_new_site.php on line 344
+[23-May-2016 10:21:23 UTC] PHP Notice:  Undefined offset: 0 in /home/austin43/public_html/wp-content/plugins/adminimize/inc-setup/admin-bar-items.php on line 87
+[23-May-2016 10:21:44 UTC] PHP Notice:  Undefined variable: subdomain in /home/austin43/public_html/wp-content/plugins/medma-site-manager/includes/shortcodes/create_new_site.php on line 344
+[23-May-2016 10:21:44 UTC] PHP Notice:  Undefined offset: 0 in /home/austin43/public_html/wp-content/plugins/adminimize/inc-setup/admin-bar-items.php on line 87
+[23-May-2016 10:21:53 UTC] PHP Notice:  Undefined offset: 0 in /home/austin43/public_html/wp-content/plugins/adminimize/inc-setup/admin-bar-items.php on line 87
+[23-May-2016 10:22:03 UTC] PHP Notice:  update_blog_status was called with an argument that is <strong>deprecated</strong> since version 3.1 with no alternative available. in /home/austin43/public_html/wp-includes/functions.php on line 3844
+[23-May-2016 10:22:05 UTC] PHP Notice:  Undefined offset: 0 in /home/austin43/public_html/wp-content/plugins/adminimize/inc-setup/admin-bar-items.php on line 87
+[23-May-2016 10:22:09 UTC] PHP Notice:  Undefined offset: 0 in /home/austin43/public_html/wp-content/plugins/adminimize/inc-setup/admin-bar-items.php on line 87
+[23-May-2016 10:24:26 UTC] PHP Notice:  Undefined variable: subdomain in /home/austin43/public_html/wp-content/plugins/medma-site-manager/includes/shortcodes/create_new_site.php on line 344
+[23-May-2016 10:24:26 UTC] PHP Notice:  Undefined offset: 0 in /home/austin43/public_html/wp-content/plugins/adminimize/inc-setup/admin-bar-items.php on line 87
+[23-May-2016 10:24:35 UTC] PHP Notice:  Undefined offset: 0 in /home/austin43/public_html/wp-content/plugins/adminimize/inc-setup/admin-bar-items.php on line 87
+[23-May-2016 10:24:38 UTC] PHP Notice:  Undefined offset: 0 in /home/austin43/public_html/wp-content/plugins/adminimize/inc-setup/admin-bar-items.php on line 87
+[23-May-2016 10:24:52 UTC] PHP Notice:  Undefined variable: subdomain in /home/austin43/public_html/wp-content/plugins/medma-site-manager/includes/shortcodes/create_new_site.php on line 344
+[23-May-2016 10:24:52 UTC] PHP Notice:  Undefined offset: 0 in /home/austin43/public_html/wp-content/plugins/adminimize/inc-setup/admin-bar-items.php on line 87
+[23-May-2016 10:25:58 UTC] PHP Notice:  wpdb::escape is <strong>deprecated</strong> since version 3.6! Use wpdb::prepare() or esc_sql() instead. in /home/austin43/public_html/wp-includes/functions.php on line 3658
+[23-May-2016 10:27:08 UTC] WordPress database error Table 'austin43_aalive.aa_188_wysija_email' doesn't exist for query SELECT * FROM `aa_188_wysija_email` WHERE type=2 AND status IN ("1","3","99") ORDER BY email_id DESC made by require('wp-blog-header.php'), require_once('wp-includes/template-loader.php'), include('/themes/enfold/page.php'), get_template_part, locate_template, load_template, require('/themes/enfold/includes/loop-page.php'), the_content, apply_filters('the_content'), call_user_func_array, do_shortcode, preg_replace_callback, do_shortcode_tag, call_user_func, mism_create_new_site, wpmu_create_blog, do_action('wpmu_new_blog'), call_user_func_array, PluginManager->new_blog, activate_plugins, activate_plugin, do_action('activate_contact-form-7/wp-contact-form-7.php'), call_user_func_array, wpcf7_install, WPCF7_ContactForm->save, wp_insert_post, wp_transition_post_status, do_action('transition_post_status'), call_user_func_array, WYSIJA::hook_postNotification_transition, WYSIJA_model_email->get, WYSIJA_model->get, WYSIJA_model->getRows, WYSIJA_model->query
+[23-May-2016 10:27:08 UTC] WordPress database error Table 'austin43_aalive.aa_188_wysija_email' doesn't exist for query SELECT campaign_id, email_id, params, wj_styles, wj_data FROM `aa_188_wysija_email` WHERE type=2 AND status IN ("1","3","99") ORDER BY email_id DESC made by require('wp-blog-header.php'), require_once('wp-includes/template-loader.php'), include('/themes/enfold/page.php'), get_template_part, locate_template, load_template, require('/themes/enfold/includes/loop-page.php'), the_content, apply_filters('the_content'), call_user_func_array, do_shortcode, preg_replace_callback, do_shortcode_tag, call_user_func, mism_create_new_site, wpmu_create_blog, do_action('wpmu_new_blog'), call_user_func_array, PluginManager->new_blog, activate_plugins, activate_plugin, do_action('activate_contact-form-7/wp-contact-form-7.php'), call_user_func_array, wpcf7_install, WPCF7_ContactForm->save, wp_insert_post, wp_transition_post_status, do_action('transition_post_status'), call_user_func_array, WYSIJA::hook_postNotification_transition, WYSIJA_help_autonews->refresh_automatic_content, WYSIJA_model_email->get, WYSIJA_model->get, WYSIJA_model->getRows, WYSIJA_model->query
+[23-May-2016 10:27:08 UTC] PHP Warning:  fopen(/home/austin43/public_html/wp-content/plugins/royal_slider_v.3.1.91/newroyalslider.php): failed to open stream: No such file or directory in /home/austin43/public_html/wp-includes/functions.php on line 4568
+[23-May-2016 10:27:08 UTC] PHP Warning:  fread() expects parameter 1 to be resource, boolean given in /home/austin43/public_html/wp-includes/functions.php on line 4571
+[23-May-2016 10:27:08 UTC] PHP Warning:  fclose() expects parameter 1 to be resource, boolean given in /home/austin43/public_html/wp-includes/functions.php on line 4574
+[23-May-2016 10:27:08 UTC] PHP Warning:  array_keys() expects parameter 1 to be array, string given in /home/austin43/public_html/wp-includes/class-wp-roles.php on line 158
+[23-May-2016 10:27:08 UTC] PHP Warning:  Invalid argument supplied for foreach() in /home/austin43/public_html/wp-includes/class-wp-roles.php on line 158
+[23-May-2016 10:27:08 UTC] PHP Warning:  array_keys() expects parameter 1 to be array, string given in /home/austin43/public_html/wp-includes/class-wp-roles.php on line 158
+[23-May-2016 10:27:08 UTC] PHP Warning:  Invalid argument supplied for foreach() in /home/austin43/public_html/wp-includes/class-wp-roles.php on line 158
+[23-May-2016 10:27:08 UTC] PHP Warning:  array_keys() expects parameter 1 to be array, string given in /home/austin43/public_html/wp-includes/class-wp-roles.php on line 158
+[23-May-2016 10:27:08 UTC] PHP Warning:  Invalid argument supplied for foreach() in /home/austin43/public_html/wp-includes/class-wp-roles.php on line 158
+[23-May-2016 10:27:08 UTC] PHP Warning:  array_keys() expects parameter 1 to be array, string given in /home/austin43/public_html/wp-includes/class-wp-roles.php on line 158
+[23-May-2016 10:27:08 UTC] PHP Warning:  Invalid argument supplied for foreach() in /home/austin43/public_html/wp-includes/class-wp-roles.php on line 158
+[23-May-2016 10:27:08 UTC] PHP Warning:  array_keys() expects parameter 1 to be array, string given in /home/austin43/public_html/wp-includes/class-wp-roles.php on line 158
+[23-May-2016 10:27:08 UTC] PHP Warning:  Invalid argument supplied for foreach() in /home/austin43/public_html/wp-includes/class-wp-roles.php on line 158
+[23-May-2016 10:27:08 UTC] PHP Warning:  array_keys() expects parameter 1 to be array, string given in /home/austin43/public_html/wp-includes/class-wp-roles.php on line 158
+[23-May-2016 10:27:08 UTC] PHP Warning:  Invalid argument supplied for foreach() in /home/austin43/public_html/wp-includes/class-wp-roles.php on line 158
+[23-May-2016 10:27:08 UTC] PHP Warning:  array_keys() expects parameter 1 to be array, string given in /home/austin43/public_html/wp-includes/class-wp-roles.php on line 158
+[23-May-2016 10:27:08 UTC] PHP Warning:  Invalid argument supplied for foreach() in /home/austin43/public_html/wp-includes/class-wp-roles.php on line 158
+[23-May-2016 10:27:08 UTC] URL: https://37.60.243.141:2087/xml-api/cpanel
+[23-May-2016 10:27:08 UTC] DATA: domain=test2305.agentassets.com&topdomain=agentassets&cpanel_xmlapi_user=austin43&cpanel_xmlapi_module=Park&cpanel_xmlapi_func=park&cpanel_xmlapi_apiversion=2
+[23-May-2016 10:27:08 UTC] Authentication Header: Authorization: Basic YXVzdGluNDM6eWR1YjAyNjE=
+
+
+[23-May-2016 10:27:08 UTC] RESPONSE:
+ <?xml version="1.0" ?>
+<cpanelresult>
+    <error>Access denied</error>
+    <data>
+        <result>0</result>
+        <reason>Access denied</reason>
+    </data>
+</cpanelresult>
+
+[23-May-2016 10:27:08 UTC] WordPress database error Table 'austin43_aalive.aa_order_map' doesn't exist for query INSERT INTO `aa_order_map` (`user_id`, `site_id`, `counter_id`) VALUES (9, 188, 1) made by require('wp-blog-header.php'), require_once('wp-includes/template-loader.php'), include('/themes/enfold/page.php'), get_template_part, locate_template, load_template, require('/themes/enfold/includes/loop-page.php'), the_content, apply_filters('the_content'), call_user_func_array, do_shortcode, preg_replace_callback, do_shortcode_tag, call_user_func, mism_create_new_site
+[23-May-2016 10:27:22 UTC] PHP Notice:  wpdb::escape is <strong>deprecated</strong> since version 3.6! Use wpdb::prepare() or esc_sql() instead. in /home/austin43/public_html/wp-includes/functions.php on line 3658
+[23-May-2016 10:27:25 UTC] PHP Notice:  update_blog_status was called with an argument that is <strong>deprecated</strong> since version 3.1 with no alternative available. in /home/austin43/public_html/wp-includes/functions.php on line 3844
+[23-May-2016 10:27:28 UTC] PHP Notice:  Undefined offset: 0 in /home/austin43/public_html/wp-content/plugins/adminimize/inc-setup/admin-bar-items.php on line 87
+[23-May-2016 10:27:34 UTC] PHP Notice:  Undefined offset: 0 in /home/austin43/public_html/wp-content/plugins/adminimize/inc-setup/admin-bar-items.php on line 87
+[23-May-2016 10:27:50 UTC] WordPress database error Table 'austin43_aalive.aa_189_wysija_email' doesn't exist for query SELECT * FROM `aa_189_wysija_email` WHERE type=2 AND status IN ("1","3","99") ORDER BY email_id DESC made by require('wp-blog-header.php'), require_once('wp-includes/template-loader.php'), include('/themes/enfold/page.php'), get_template_part, locate_template, load_template, require('/themes/enfold/includes/loop-page.php'), the_content, apply_filters('the_content'), call_user_func_array, do_shortcode, preg_replace_callback, do_shortcode_tag, call_user_func, mism_create_new_site, wpmu_create_blog, do_action('wpmu_new_blog'), call_user_func_array, PluginManager->new_blog, activate_plugins, activate_plugin, do_action('activate_contact-form-7/wp-contact-form-7.php'), call_user_func_array, wpcf7_install, WPCF7_ContactForm->save, wp_insert_post, wp_transition_post_status, do_action('transition_post_status'), call_user_func_array, WYSIJA::hook_postNotification_transition, WYSIJA_model_email->get, WYSIJA_model->get, WYSIJA_model->getRows, WYSIJA_model->query
+[23-May-2016 10:27:50 UTC] WordPress database error Table 'austin43_aalive.aa_189_wysija_email' doesn't exist for query SELECT campaign_id, email_id, params, wj_styles, wj_data FROM `aa_189_wysija_email` WHERE type=2 AND status IN ("1","3","99") ORDER BY email_id DESC made by require('wp-blog-header.php'), require_once('wp-includes/template-loader.php'), include('/themes/enfold/page.php'), get_template_part, locate_template, load_template, require('/themes/enfold/includes/loop-page.php'), the_content, apply_filters('the_content'), call_user_func_array, do_shortcode, preg_replace_callback, do_shortcode_tag, call_user_func, mism_create_new_site, wpmu_create_blog, do_action('wpmu_new_blog'), call_user_func_array, PluginManager->new_blog, activate_plugins, activate_plugin, do_action('activate_contact-form-7/wp-contact-form-7.php'), call_user_func_array, wpcf7_install, WPCF7_ContactForm->save, wp_insert_post, wp_transition_post_status, do_action('transition_post_status'), call_user_func_array, WYSIJA::hook_postNotification_transition, WYSIJA_help_autonews->refresh_automatic_content, WYSIJA_model_email->get, WYSIJA_model->get, WYSIJA_model->getRows, WYSIJA_model->query
+[23-May-2016 10:27:50 UTC] PHP Warning:  fopen(/home/austin43/public_html/wp-content/plugins/royal_slider_v.3.1.91/newroyalslider.php): failed to open stream: No such file or directory in /home/austin43/public_html/wp-includes/functions.php on line 4568
+[23-May-2016 10:27:50 UTC] PHP Warning:  fread() expects parameter 1 to be resource, boolean given in /home/austin43/public_html/wp-includes/functions.php on line 4571
+[23-May-2016 10:27:50 UTC] PHP Warning:  fclose() expects parameter 1 to be resource, boolean given in /home/austin43/public_html/wp-includes/functions.php on line 4574
+[23-May-2016 10:27:51 UTC] PHP Warning:  array_keys() expects parameter 1 to be array, string given in /home/austin43/public_html/wp-includes/class-wp-roles.php on line 158
+[23-May-2016 10:27:51 UTC] PHP Warning:  Invalid argument supplied for foreach() in /home/austin43/public_html/wp-includes/class-wp-roles.php on line 158
+[23-May-2016 10:27:51 UTC] PHP Warning:  array_keys() expects parameter 1 to be array, string given in /home/austin43/public_html/wp-includes/class-wp-roles.php on line 158
+[23-May-2016 10:27:51 UTC] PHP Warning:  Invalid argument supplied for foreach() in /home/austin43/public_html/wp-includes/class-wp-roles.php on line 158
+[23-May-2016 10:27:51 UTC] PHP Warning:  array_keys() expects parameter 1 to be array, string given in /home/austin43/public_html/wp-includes/class-wp-roles.php on line 158
+[23-May-2016 10:27:51 UTC] PHP Warning:  Invalid argument supplied for foreach() in /home/austin43/public_html/wp-includes/class-wp-roles.php on line 158
+[23-May-2016 10:27:51 UTC] PHP Warning:  array_keys() expects parameter 1 to be array, string given in /home/austin43/public_html/wp-includes/class-wp-roles.php on line 158
+[23-May-2016 10:27:51 UTC] PHP Warning:  Invalid argument supplied for foreach() in /home/austin43/public_html/wp-includes/class-wp-roles.php on line 158
+[23-May-2016 10:27:51 UTC] PHP Warning:  array_keys() expects parameter 1 to be array, string given in /home/austin43/public_html/wp-includes/class-wp-roles.php on line 158
+[23-May-2016 10:27:51 UTC] PHP Warning:  Invalid argument supplied for foreach() in /home/austin43/public_html/wp-includes/class-wp-roles.php on line 158
+[23-May-2016 10:27:51 UTC] PHP Warning:  array_keys() expects parameter 1 to be array, string given in /home/austin43/public_html/wp-includes/class-wp-roles.php on line 158
+[23-May-2016 10:27:51 UTC] PHP Warning:  Invalid argument supplied for foreach() in /home/austin43/public_html/wp-includes/class-wp-roles.php on line 158
+[23-May-2016 10:27:51 UTC] PHP Warning:  array_keys() expects parameter 1 to be array, string given in /home/austin43/public_html/wp-includes/class-wp-roles.php on line 158
+[23-May-2016 10:27:51 UTC] PHP Warning:  Invalid argument supplied for foreach() in /home/austin43/public_html/wp-includes/class-wp-roles.php on line 158
+[23-May-2016 10:27:51 UTC] URL: https://37.60.243.141:2087/xml-api/cpanel
+[23-May-2016 10:27:51 UTC] DATA: domain=test230501.agentassents.com&topdomain=agentassents&cpanel_xmlapi_user=austin43&cpanel_xmlapi_module=Park&cpanel_xmlapi_func=park&cpanel_xmlapi_apiversion=2
+[23-May-2016 10:27:51 UTC] Authentication Header: Authorization: Basic YXVzdGluNDM6eWR1YjAyNjE=
+
+
+[23-May-2016 10:27:51 UTC] RESPONSE:
+ <?xml version="1.0" ?>
+<cpanelresult>
+    <error>Access denied</error>
+    <data>
+        <result>0</result>
+        <reason>Access denied</reason>
+    </data>
+</cpanelresult>
+
+[23-May-2016 10:27:51 UTC] WordPress database error Table 'austin43_aalive.aa_order_map' doesn't exist for query INSERT INTO `aa_order_map` (`user_id`, `site_id`, `counter_id`) VALUES (9, 189, 1) made by require('wp-blog-header.php'), require_once('wp-includes/template-loader.php'), include('/themes/enfold/page.php'), get_template_part, locate_template, load_template, require('/themes/enfold/includes/loop-page.php'), the_content, apply_filters('the_content'), call_user_func_array, do_shortcode, preg_replace_callback, do_shortcode_tag, call_user_func, mism_create_new_site
+[23-May-2016 10:31:41 UTC] PHP Notice:  Undefined offset: 0 in /home/austin43/public_html/wp-content/plugins/adminimize/inc-setup/admin-bar-items.php on line 87
+[23-May-2016 10:31:46 UTC] PHP Notice:  update_blog_status was called with an argument that is <strong>deprecated</strong> since version 3.1 with no alternative available. in /home/austin43/public_html/wp-includes/functions.php on line 3844
+[23-May-2016 10:31:48 UTC] PHP Notice:  Undefined offset: 0 in /home/austin43/public_html/wp-content/plugins/adminimize/inc-setup/admin-bar-items.php on line 87
+[23-May-2016 10:31:53 UTC] PHP Notice:  Undefined offset: 0 in /home/austin43/public_html/wp-content/plugins/adminimize/inc-setup/admin-bar-items.php on line 87
+[23-May-2016 10:32:17 UTC] PHP Notice:  Undefined offset: 0 in /home/austin43/public_html/wp-content/plugins/adminimize/inc-setup/admin-bar-items.php on line 87
+[23-May-2016 10:32:23 UTC] PHP Notice:  Undefined offset: 0 in /home/austin43/public_html/wp-content/plugins/adminimize/inc-setup/admin-bar-items.php on line 87
+[23-May-2016 10:32:26 UTC] PHP Notice:  Undefined offset: 0 in /home/austin43/public_html/wp-content/plugins/adminimize/inc-setup/admin-bar-items.php on line 87
+[23-May-2016 10:32:52 UTC] PHP Notice:  Undefined offset: 0 in /home/austin43/public_html/wp-content/plugins/adminimize/inc-setup/admin-bar-items.php on line 87
+[23-May-2016 10:51:15 UTC] PHP Notice:  wpdb::escape is <strong>deprecated</strong> since version 3.6! Use wpdb::prepare() or esc_sql() instead. in /home/austin43/public_html/wp-includes/functions.php on line 3658
+[23-May-2016 11:05:40 UTC] WordPress database error Table 'austin43_aalive.aa_190_wysija_email' doesn't exist for query SELECT * FROM `aa_190_wysija_email` WHERE type=2 AND status IN ("1","3","99") ORDER BY email_id DESC made by require('wp-blog-header.php'), require_once('wp-includes/template-loader.php'), include('/themes/enfold/page.php'), get_template_part, locate_template, load_template, require('/themes/enfold/includes/loop-page.php'), the_content, apply_filters('the_content'), call_user_func_array, do_shortcode, preg_replace_callback, do_shortcode_tag, call_user_func, mism_create_new_site, wpmu_create_blog, do_action('wpmu_new_blog'), call_user_func_array, PluginManager->new_blog, activate_plugins, activate_plugin, do_action('activate_contact-form-7/wp-contact-form-7.php'), call_user_func_array, wpcf7_install, WPCF7_ContactForm->save, wp_insert_post, wp_transition_post_status, do_action('transition_post_status'), call_user_func_array, WYSIJA::hook_postNotification_transition, WYSIJA_model_email->get, WYSIJA_model->get, WYSIJA_model->getRows, WYSIJA_model->query
+[23-May-2016 11:05:40 UTC] WordPress database error Table 'austin43_aalive.aa_190_wysija_email' doesn't exist for query SELECT campaign_id, email_id, params, wj_styles, wj_data FROM `aa_190_wysija_email` WHERE type=2 AND status IN ("1","3","99") ORDER BY email_id DESC made by require('wp-blog-header.php'), require_once('wp-includes/template-loader.php'), include('/themes/enfold/page.php'), get_template_part, locate_template, load_template, require('/themes/enfold/includes/loop-page.php'), the_content, apply_filters('the_content'), call_user_func_array, do_shortcode, preg_replace_callback, do_shortcode_tag, call_user_func, mism_create_new_site, wpmu_create_blog, do_action('wpmu_new_blog'), call_user_func_array, PluginManager->new_blog, activate_plugins, activate_plugin, do_action('activate_contact-form-7/wp-contact-form-7.php'), call_user_func_array, wpcf7_install, WPCF7_ContactForm->save, wp_insert_post, wp_transition_post_status, do_action('transition_post_status'), call_user_func_array, WYSIJA::hook_postNotification_transition, WYSIJA_help_autonews->refresh_automatic_content, WYSIJA_model_email->get, WYSIJA_model->get, WYSIJA_model->getRows, WYSIJA_model->query
+[23-May-2016 11:05:41 UTC] URL: https://37.60.243.141:2087/xml-api/cpanel
+[23-May-2016 11:05:41 UTC] DATA: domain=debug.test.com&topdomain=test&cpanel_xmlapi_user=austin43&cpanel_xmlapi_module=Park&cpanel_xmlapi_func=park&cpanel_xmlapi_apiversion=2
+[23-May-2016 11:05:41 UTC] Authentication Header: Authorization: Basic YXVzdGluNDM6eWR1YjAyNjE=
+
+
+[23-May-2016 11:05:41 UTC] RESPONSE:
+ <?xml version="1.0" ?>
+<cpanelresult>
+    <error>Access denied</error>
+    <data>
+        <result>0</result>
+        <reason>Access denied</reason>
+    </data>
+</cpanelresult>
+
+[23-May-2016 11:05:41 UTC] WordPress database error Table 'austin43_aalive.aa_order_map' doesn't exist for query INSERT INTO `aa_order_map` (`user_id`, `site_id`, `counter_id`) VALUES (9, 190, 1) made by require('wp-blog-header.php'), require_once('wp-includes/template-loader.php'), include('/themes/enfold/page.php'), get_template_part, locate_template, load_template, require('/themes/enfold/includes/loop-page.php'), the_content, apply_filters('the_content'), call_user_func_array, do_shortcode, preg_replace_callback, do_shortcode_tag, call_user_func, mism_create_new_site
+[23-May-2016 11:12:13 UTC] WordPress database error Table 'austin43_aalive.aa_191_wysija_email' doesn't exist for query SELECT * FROM `aa_191_wysija_email` WHERE type=2 AND status IN ("1","3","99") ORDER BY email_id DESC made by require('wp-blog-header.php'), require_once('wp-includes/template-loader.php'), include('/themes/enfold/page.php'), get_template_part, locate_template, load_template, require('/themes/enfold/includes/loop-page.php'), the_content, apply_filters('the_content'), call_user_func_array, do_shortcode, preg_replace_callback, do_shortcode_tag, call_user_func, mism_create_new_site, wpmu_create_blog, do_action('wpmu_new_blog'), call_user_func_array, PluginManager->new_blog, activate_plugins, activate_plugin, do_action('activate_contact-form-7/wp-contact-form-7.php'), call_user_func_array, wpcf7_install, WPCF7_ContactForm->save, wp_insert_post, wp_transition_post_status, do_action('transition_post_status'), call_user_func_array, WYSIJA::hook_postNotification_transition, WYSIJA_model_email->get, WYSIJA_model->get, WYSIJA_model->getRows, WYSIJA_model->query
+[23-May-2016 11:12:13 UTC] WordPress database error Table 'austin43_aalive.aa_191_wysija_email' doesn't exist for query SELECT campaign_id, email_id, params, wj_styles, wj_data FROM `aa_191_wysija_email` WHERE type=2 AND status IN ("1","3","99") ORDER BY email_id DESC made by require('wp-blog-header.php'), require_once('wp-includes/template-loader.php'), include('/themes/enfold/page.php'), get_template_part, locate_template, load_template, require('/themes/enfold/includes/loop-page.php'), the_content, apply_filters('the_content'), call_user_func_array, do_shortcode, preg_replace_callback, do_shortcode_tag, call_user_func, mism_create_new_site, wpmu_create_blog, do_action('wpmu_new_blog'), call_user_func_array, PluginManager->new_blog, activate_plugins, activate_plugin, do_action('activate_contact-form-7/wp-contact-form-7.php'), call_user_func_array, wpcf7_install, WPCF7_ContactForm->save, wp_insert_post, wp_transition_post_status, do_action('transition_post_status'), call_user_func_array, WYSIJA::hook_postNotification_transition, WYSIJA_help_autonews->refresh_automatic_content, WYSIJA_model_email->get, WYSIJA_model->get, WYSIJA_model->getRows, WYSIJA_model->query
+[23-May-2016 11:12:13 UTC] URL: https://37.60.243.141:2087/xml-api/cpanel
+[23-May-2016 11:12:13 UTC] DATA: domain=test230501.com&topdomain=test230501&cpanel_xmlapi_user=austin43&cpanel_xmlapi_module=Park&cpanel_xmlapi_func=park&cpanel_xmlapi_apiversion=2
+[23-May-2016 11:12:13 UTC] Authentication Header: Authorization: Basic YXVzdGluNDM6eWR1YjAyNjE=
+
+
+[23-May-2016 11:12:14 UTC] RESPONSE:
+ <?xml version="1.0" ?>
+<cpanelresult>
+    <error>Access denied</error>
+    <data>
+        <result>0</result>
+        <reason>Access denied</reason>
+    </data>
+</cpanelresult>
+
+[23-May-2016 11:12:14 UTC] WordPress database error Table 'austin43_aalive.aa_order_map' doesn't exist for query INSERT INTO `aa_order_map` (`user_id`, `site_id`, `counter_id`) VALUES (9, 191, 1) made by require('wp-blog-header.php'), require_once('wp-includes/template-loader.php'), include('/themes/enfold/page.php'), get_template_part, locate_template, load_template, require('/themes/enfold/includes/loop-page.php'), the_content, apply_filters('the_content'), call_user_func_array, do_shortcode, preg_replace_callback, do_shortcode_tag, call_user_func, mism_create_new_site
+[23-May-2016 11:13:28 UTC] WordPress database error Table 'austin43_aalive.aa_192_wysija_email' doesn't exist for query SELECT * FROM `aa_192_wysija_email` WHERE type=2 AND status IN ("1","3","99") ORDER BY email_id DESC made by require('wp-blog-header.php'), require_once('wp-includes/template-loader.php'), include('/themes/enfold/page.php'), get_template_part, locate_template, load_template, require('/themes/enfold/includes/loop-page.php'), the_content, apply_filters('the_content'), call_user_func_array, do_shortcode, preg_replace_callback, do_shortcode_tag, call_user_func, mism_create_new_site, wpmu_create_blog, do_action('wpmu_new_blog'), call_user_func_array, PluginManager->new_blog, activate_plugins, activate_plugin, do_action('activate_contact-form-7/wp-contact-form-7.php'), call_user_func_array, wpcf7_install, WPCF7_ContactForm->save, wp_insert_post, wp_transition_post_status, do_action('transition_post_status'), call_user_func_array, WYSIJA::hook_postNotification_transition, WYSIJA_model_email->get, WYSIJA_model->get, WYSIJA_model->getRows, WYSIJA_model->query
+[23-May-2016 11:13:28 UTC] WordPress database error Table 'austin43_aalive.aa_192_wysija_email' doesn't exist for query SELECT campaign_id, email_id, params, wj_styles, wj_data FROM `aa_192_wysija_email` WHERE type=2 AND status IN ("1","3","99") ORDER BY email_id DESC made by require('wp-blog-header.php'), require_once('wp-includes/template-loader.php'), include('/themes/enfold/page.php'), get_template_part, locate_template, load_template, require('/themes/enfold/includes/loop-page.php'), the_content, apply_filters('the_content'), call_user_func_array, do_shortcode, preg_replace_callback, do_shortcode_tag, call_user_func, mism_create_new_site, wpmu_create_blog, do_action('wpmu_new_blog'), call_user_func_array, PluginManager->new_blog, activate_plugins, activate_plugin, do_action('activate_contact-form-7/wp-contact-form-7.php'), call_user_func_array, wpcf7_install, WPCF7_ContactForm->save, wp_insert_post, wp_transition_post_status, do_action('transition_post_status'), call_user_func_array, WYSIJA::hook_postNotification_transition, WYSIJA_help_autonews->refresh_automatic_content, WYSIJA_model_email->get, WYSIJA_model->get, WYSIJA_model->getRows, WYSIJA_model->query
+[23-May-2016 11:13:28 UTC] URL: https://37.60.243.141:2087/xml-api/cpanel
+[23-May-2016 11:13:28 UTC] DATA: domain=test230502.com&topdomain=test230502&cpanel_xmlapi_user=austin43&cpanel_xmlapi_module=Park&cpanel_xmlapi_func=park&cpanel_xmlapi_apiversion=2
+[23-May-2016 11:13:28 UTC] Authentication Header: Authorization: Basic YXVzdGluNDM6eWR1YjAyNjE=
+
+
+[23-May-2016 11:13:28 UTC] RESPONSE:
+ <?xml version="1.0" ?>
+<cpanelresult>
+    <error>Access denied</error>
+    <data>
+        <result>0</result>
+        <reason>Access denied</reason>
+    </data>
+</cpanelresult>
+
+[23-May-2016 11:13:28 UTC] WordPress database error Table 'austin43_aalive.aa_order_map' doesn't exist for query INSERT INTO `aa_order_map` (`user_id`, `site_id`, `counter_id`) VALUES (9, 192, 1) made by require('wp-blog-header.php'), require_once('wp-includes/template-loader.php'), include('/themes/enfold/page.php'), get_template_part, locate_template, load_template, require('/themes/enfold/includes/loop-page.php'), the_content, apply_filters('the_content'), call_user_func_array, do_shortcode, preg_replace_callback, do_shortcode_tag, call_user_func, mism_create_new_site
+[23-May-2016 11:31:55 UTC] URL: https://37.60.243.141:2087/xml-api/cpanel
+[23-May-2016 11:31:55 UTC] DATA: domain=test230503.com&topdomain=test230503&cpanel_xmlapi_user=austin43&cpanel_xmlapi_module=Park&cpanel_xmlapi_func=park&cpanel_xmlapi_apiversion=2
+[23-May-2016 11:31:55 UTC] Authentication Header: Authorization: Basic YXVzdGluNDM6eWR1YjAyNjE=
+
+
+[23-May-2016 11:31:55 UTC] RESPONSE:
+ <?xml version="1.0" ?>
+<cpanelresult>
+    <error>Access denied</error>
+    <data>
+        <result>0</result>
+        <reason>Access denied</reason>
+    </data>
+</cpanelresult>
+
+[23-May-2016 11:31:55 UTC] WordPress database error Table 'austin43_aalive.aa_order_map' doesn't exist for query INSERT INTO `aa_order_map` (`user_id`, `site_id`, `counter_id`) VALUES (9, 193, 1) made by require('wp-blog-header.php'), require_once('wp-includes/template-loader.php'), include('/themes/enfold/page.php'), get_template_part, locate_template, load_template, require('/themes/enfold/includes/loop-page.php'), the_content, apply_filters('the_content'), call_user_func_array, do_shortcode, preg_replace_callback, do_shortcode_tag, call_user_func, mism_create_new_site
+[23-May-2016 13:59:35 UTC] URL: https://37.60.243.141:2087/xml-api/cpanel
+[23-May-2016 13:59:35 UTC] DATA: domain=1234someplace.com&topdomain=1234someplace&cpanel_xmlapi_user=austin43&cpanel_xmlapi_module=Park&cpanel_xmlapi_func=park&cpanel_xmlapi_apiversion=2
+[23-May-2016 13:59:35 UTC] Authentication Header: Authorization: Basic YXVzdGluNDM6eWR1YjAyNjE=
+
+
+[23-May-2016 13:59:35 UTC] RESPONSE:
+ <?xml version="1.0" ?>
+<cpanelresult>
+    <error>Access denied</error>
+    <data>
+        <result>0</result>
+        <reason>Access denied</reason>
+    </data>
+</cpanelresult>
+
+[23-May-2016 13:59:35 UTC] WordPress database error Table 'austin43_aalive.aa_order_map' doesn't exist for query INSERT INTO `aa_order_map` (`user_id`, `site_id`, `counter_id`) VALUES (9, 194, 1) made by require('wp-blog-header.php'), require_once('wp-includes/template-loader.php'), include('/themes/enfold/page.php'), get_template_part, locate_template, load_template, require('/themes/enfold/includes/loop-page.php'), the_content, apply_filters('the_content'), call_user_func_array, do_shortcode, preg_replace_callback, do_shortcode_tag, call_user_func, mism_create_new_site
+[23-May-2016 20:38:21 UTC] WordPress database error Table 'austin43_aalive.aa_191_wysija_email' doesn't exist for query SELECT * FROM `aa_191_wysija_email` WHERE type=2 AND status IN ("1","3","99") ORDER BY email_id DESC made by require_once('wp-load.php'), require_once('wp-config.php'), require_once('wp-settings.php'), do_action('init'), call_user_func_array, init_wysija_cron, WYSIJA_help_cron->run, WYSIJA_help_cron->check_scheduled_task, WYSIJA_help_cron->run_scheduled_task, WYSIJA::check_scheduled_newsletters, WYSIJA_help_autonews->checkPostNotif, WYSIJA_model_email->get, WYSIJA_model->get, WYSIJA_model->getRows, WYSIJA_model->query
+[23-May-2016 20:38:21 UTC] WordPress database error Table 'austin43_aalive.aa_191_wysija_email' doesn't exist for query SELECT * FROM `aa_191_wysija_email` WHERE type=1 AND status=4 ORDER BY email_id DESC made by require_once('wp-load.php'), require_once('wp-config.php'), require_once('wp-settings.php'), do_action('init'), call_user_func_array, init_wysija_cron, WYSIJA_help_cron->run, WYSIJA_help_cron->check_scheduled_task, WYSIJA_help_cron->run_scheduled_task, WYSIJA::check_scheduled_newsletters, WYSIJA_help_autonews->checkScheduled, WYSIJA_model_email->get, WYSIJA_model->get, WYSIJA_model->getRows, WYSIJA_model->query
+[23-May-2016 20:38:21 UTC] WordPress database error Table 'austin43_aalive.aa_191_wysija_queue' doesn't exist for query SELECT c.*,a.* FROM aa_191_wysija_queue as a JOIN aa_191_wysija_email as b on a.`email_id` = b.`email_id`  JOIN aa_191_wysija_user as c on a.`user_id` = c.`user_id`  WHERE a.`send_at` <= 1464035901 AND b.`status` IN (1,3,99) ORDER BY a.`priority` ASC, a.`send_at` ASC, a.`user_id` ASC LIMIT 100 made by require_once('wp-load.php'), require_once('wp-config.php'), require_once('wp-settings.php'), do_action('init'), call_user_func_array, init_wysija_cron, WYSIJA_help_cron->run, WYSIJA_help_cron->check_scheduled_task, WYSIJA_help_cron->run_scheduled_task, WYSIJA::croned_queue, WYSIJA_help_queue->process, WYSIJA_model_queue->getReady, WYSIJA_model->query
+[23-May-2016 20:38:21 UTC] WordPress database error Table 'austin43_aalive.aa_191_wysija_queue' doesn't exist for query DELETE a.* FROM `aa_191_wysija_queue` as a LEFT JOIN `aa_191_wysija_user` as b on a.user_id = b.user_id WHERE b.status< 1 made by require_once('wp-load.php'), require_once('wp-config.php'), require_once('wp-settings.php'), do_action('init'), call_user_func_array, init_wysija_cron, WYSIJA_help_cron->run, WYSIJA_help_cron->check_scheduled_task, WYSIJA_help_cron->run_scheduled_task, WYSIJA::croned_queue, WYSIJA_help_queue->process, WYSIJA_help_queue->clear, WYSIJA_model->query
+[23-May-2016 20:38:21 UTC] WordPress database error Table 'austin43_aalive.aa_191_wysija_queue' doesn't exist for query DELETE a.* FROM `aa_191_wysija_queue` as a LEFT JOIN `aa_191_wysija_email` as b on a.email_id = b.email_id WHERE b.email_id IS NULL made by require_once('wp-load.php'), require_once('wp-config.php'), require_once('wp-settings.php'), do_action('init'), call_user_func_array, init_wysija_cron, WYSIJA_help_cron->run, WYSIJA_help_cron->check_scheduled_task, WYSIJA_help_cron->run_scheduled_task, WYSIJA::croned_queue, WYSIJA_help_queue->process, WYSIJA_help_queue->clear, WYSIJA_model->query
+[23-May-2016 20:38:21 UTC] WordPress database error Table 'austin43_aalive.aa_191_wysija_queue' doesn't exist for query DELETE a.* FROM `aa_191_wysija_queue` as a LEFT JOIN `aa_191_wysija_user` as b on a.user_id = b.user_id WHERE b.user_id IS NULL made by require_once('wp-load.php'), require_once('wp-config.php'), require_once('wp-settings.php'), do_action('init'), call_user_func_array, init_wysija_cron, WYSIJA_help_cron->run, WYSIJA_help_cron->check_scheduled_task, WYSIJA_help_cron->run_scheduled_task, WYSIJA::croned_queue, WYSIJA_help_queue->process, WYSIJA_help_queue->clear, WYSIJA_model->query
+[23-May-2016 20:38:21 UTC] WordPress database error Table 'austin43_aalive.aa_191_wysija_queue' doesn't exist for query SELECT COUNT(email_id) as count  FROM `aa_191_wysija_queue` WHERE send_at < 1463863101 made by require_once('wp-load.php'), require_once('wp-config.php'), require_once('wp-settings.php'), do_action('init'), call_user_func_array, init_wysija_cron, WYSIJA_help_cron->run, WYSIJA_help_cron->check_scheduled_task, WYSIJA_help_cron->run_scheduled_task, WYSIJA::croned_queue, WYSIJA_help_queue->process, WYSIJA_help_queue->clear, WYSIJA_model->count, WYSIJA_model->query
+[23-May-2016 21:58:32 UTC] WordPress database error Table 'austin43_aalive.aa_191_wysija_email' doesn't exist for query SELECT * FROM `aa_191_wysija_email` WHERE type=2 AND status IN ("1","3","99") ORDER BY email_id DESC made by require_once('wp-load.php'), require_once('wp-config.php'), require_once('wp-settings.php'), do_action('init'), call_user_func_array, init_wysija_cron, WYSIJA_help_cron->run, WYSIJA_help_cron->check_scheduled_task, WYSIJA_help_cron->run_scheduled_task, WYSIJA::check_scheduled_newsletters, WYSIJA_help_autonews->checkPostNotif, WYSIJA_model_email->get, WYSIJA_model->get, WYSIJA_model->getRows, WYSIJA_model->query
+[23-May-2016 21:58:32 UTC] WordPress database error Table 'austin43_aalive.aa_191_wysija_email' doesn't exist for query SELECT * FROM `aa_191_wysija_email` WHERE type=1 AND status=4 ORDER BY email_id DESC made by require_once('wp-load.php'), require_once('wp-config.php'), require_once('wp-settings.php'), do_action('init'), call_user_func_array, init_wysija_cron, WYSIJA_help_cron->run, WYSIJA_help_cron->check_scheduled_task, WYSIJA_help_cron->run_scheduled_task, WYSIJA::check_scheduled_newsletters, WYSIJA_help_autonews->checkScheduled, WYSIJA_model_email->get, WYSIJA_model->get, WYSIJA_model->getRows, WYSIJA_model->query
+[23-May-2016 21:58:32 UTC] WordPress database error Table 'austin43_aalive.aa_191_wysija_queue' doesn't exist for query SELECT c.*,a.* FROM aa_191_wysija_queue as a JOIN aa_191_wysija_email as b on a.`email_id` = b.`email_id`  JOIN aa_191_wysija_user as c on a.`user_id` = c.`user_id`  WHERE a.`send_at` <= 1464040712 AND b.`status` IN (1,3,99) ORDER BY a.`priority` ASC, a.`send_at` ASC, a.`user_id` ASC LIMIT 100 made by require_once('wp-load.php'), require_once('wp-config.php'), require_once('wp-settings.php'), do_action('init'), call_user_func_array, init_wysija_cron, WYSIJA_help_cron->run, WYSIJA_help_cron->check_scheduled_task, WYSIJA_help_cron->run_scheduled_task, WYSIJA::croned_queue, WYSIJA_help_queue->process, WYSIJA_model_queue->getReady, WYSIJA_model->query
+[23-May-2016 21:58:32 UTC] WordPress database error Table 'austin43_aalive.aa_191_wysija_queue' doesn't exist for query DELETE a.* FROM `aa_191_wysija_queue` as a LEFT JOIN `aa_191_wysija_user` as b on a.user_id = b.user_id WHERE b.status< 1 made by require_once('wp-load.php'), require_once('wp-config.php'), require_once('wp-settings.php'), do_action('init'), call_user_func_array, init_wysija_cron, WYSIJA_help_cron->run, WYSIJA_help_cron->check_scheduled_task, WYSIJA_help_cron->run_scheduled_task, WYSIJA::croned_queue, WYSIJA_help_queue->process, WYSIJA_help_queue->clear, WYSIJA_model->query
+[23-May-2016 21:58:32 UTC] WordPress database error Table 'austin43_aalive.aa_191_wysija_queue' doesn't exist for query DELETE a.* FROM `aa_191_wysija_queue` as a LEFT JOIN `aa_191_wysija_email` as b on a.email_id = b.email_id WHERE b.email_id IS NULL made by require_once('wp-load.php'), require_once('wp-config.php'), require_once('wp-settings.php'), do_action('init'), call_user_func_array, init_wysija_cron, WYSIJA_help_cron->run, WYSIJA_help_cron->check_scheduled_task, WYSIJA_help_cron->run_scheduled_task, WYSIJA::croned_queue, WYSIJA_help_queue->process, WYSIJA_help_queue->clear, WYSIJA_model->query
+[23-May-2016 21:58:32 UTC] WordPress database error Table 'austin43_aalive.aa_191_wysija_queue' doesn't exist for query DELETE a.* FROM `aa_191_wysija_queue` as a LEFT JOIN `aa_191_wysija_user` as b on a.user_id = b.user_id WHERE b.user_id IS NULL made by require_once('wp-load.php'), require_once('wp-config.php'), require_once('wp-settings.php'), do_action('init'), call_user_func_array, init_wysija_cron, WYSIJA_help_cron->run, WYSIJA_help_cron->check_scheduled_task, WYSIJA_help_cron->run_scheduled_task, WYSIJA::croned_queue, WYSIJA_help_queue->process, WYSIJA_help_queue->clear, WYSIJA_model->query
+[23-May-2016 21:58:32 UTC] WordPress database error Table 'austin43_aalive.aa_191_wysija_queue' doesn't exist for query SELECT COUNT(email_id) as count  FROM `aa_191_wysija_queue` WHERE send_at < 1463867912 made by require_once('wp-load.php'), require_once('wp-config.php'), require_once('wp-settings.php'), do_action('init'), call_user_func_array, init_wysija_cron, WYSIJA_help_cron->run, WYSIJA_help_cron->check_scheduled_task, WYSIJA_help_cron->run_scheduled_task, WYSIJA::croned_queue, WYSIJA_help_queue->process, WYSIJA_help_queue->clear, WYSIJA_model->count, WYSIJA_model->query
+[23-May-2016 21:59:34 UTC] PHP Warning:  json_encode(): recursion detected in /home/austin43/public_html/wp-config.php on line 103
+[23-May-2016 21:59:34 UTC] PHP Warning:  json_encode(): recursion detected in /home/austin43/public_html/wp-config.php on line 103
+[23-May-2016 21:59:34 UTC] PHP Warning:  json_encode(): recursion detected in /home/austin43/public_html/wp-config.php on line 103
+[23-May-2016 21:59:34 UTC] PHP Warning:  json_encode(): recursion detected in /home/austin43/public_html/wp-config.php on line 103
+[23-May-2016 21:59:34 UTC] PHP Warning:  json_encode(): recursion detected in /home/austin43/public_html/wp-config.php on line 103
+[23-May-2016 21:59:34 UTC] PHP Warning:  json_encode(): recursion detected in /home/austin43/public_html/wp-config.php on line 103
+[23-May-2016 21:59:34 UTC] PHP Warning:  json_encode(): recursion detected in /home/austin43/public_html/wp-config.php on line 103
+[23-May-2016 21:59:34 UTC] PHP Warning:  json_encode(): recursion detected in /home/austin43/public_html/wp-config.php on line 103
+[23-May-2016 21:59:34 UTC] PHP Warning:  json_encode(): recursion detected in /home/austin43/public_html/wp-config.php on line 103
+[23-May-2016 21:59:34 UTC] PHP Warning:  json_encode(): recursion detected in /home/austin43/public_html/wp-config.php on line 103
+[23-May-2016 21:59:34 UTC] PHP Warning:  json_encode(): recursion detected in /home/austin43/public_html/wp-config.php on line 103
+[23-May-2016 21:59:34 UTC] PHP Warning:  json_encode(): recursion detected in /home/austin43/public_html/wp-config.php on line 103
+[23-May-2016 21:59:34 UTC] PHP Warning:  json_encode(): recursion detected in /home/austin43/public_html/wp-config.php on line 103
+[23-May-2016 21:59:34 UTC] PHP Warning:  json_encode(): recursion detected in /home/austin43/public_html/wp-config.php on line 103
+[23-May-2016 21:59:34 UTC] PHP Warning:  json_encode(): recursion detected in /home/austin43/public_html/wp-config.php on line 103
+[23-May-2016 21:59:34 UTC] PHP Warning:  json_encode(): recursion detected in /home/austin43/public_html/wp-config.php on line 103
+[23-May-2016 21:59:34 UTC] PHP Warning:  json_encode(): recursion detected in /home/austin43/public_html/wp-config.php on line 103
+[23-May-2016 21:59:34 UTC] PHP Warning:  json_encode(): recursion detected in /home/austin43/public_html/wp-config.php on line 103
+[23-May-2016 21:59:34 UTC] PHP Warning:  json_encode(): recursion detected in /home/austin43/public_html/wp-config.php on line 103
+[23-May-2016 21:59:34 UTC] PHP Warning:  json_encode(): recursion detected in /home/austin43/public_html/wp-config.php on line 103
+[23-May-2016 21:59:34 UTC] PHP Warning:  json_encode(): recursion detected in /home/austin43/public_html/wp-config.php on line 103
+[23-May-2016 21:59:34 UTC] PHP Warning:  json_encode(): recursion detected in /home/austin43/public_html/wp-config.php on line 103
+[23-May-2016 21:59:34 UTC] PHP Warning:  json_encode(): recursion detected in /home/austin43/public_html/wp-config.php on line 103
+[23-May-2016 21:59:34 UTC] PHP Warning:  json_encode(): recursion detected in /home/austin43/public_html/wp-config.php on line 103
+[23-May-2016 21:59:34 UTC] PHP Warning:  json_encode(): recursion detected in /home/austin43/public_html/wp-config.php on line 103
+[23-May-2016 21:59:34 UTC] PHP Warning:  json_encode(): recursion detected in /home/austin43/public_html/wp-config.php on line 103
+[23-May-2016 21:59:34 UTC] PHP Warning:  json_encode(): recursion detected in /home/austin43/public_html/wp-config.php on line 103
+[23-May-2016 21:59:34 UTC] PHP Warning:  json_encode(): recursion detected in /home/austin43/public_html/wp-config.php on line 103
+[23-May-2016 21:59:34 UTC] PHP Warning:  json_encode(): recursion detected in /home/austin43/public_html/wp-config.php on line 103
+[23-May-2016 21:59:34 UTC] PHP Warning:  json_encode(): recursion detected in /home/austin43/public_html/wp-config.php on line 103
+[23-May-2016 21:59:34 UTC] PHP Warning:  json_encode(): recursion detected in /home/austin43/public_html/wp-config.php on line 103
+[23-May-2016 21:59:34 UTC] PHP Warning:  json_encode(): recursion detected in /home/austin43/public_html/wp-config.php on line 103
+[23-May-2016 21:59:34 UTC] PHP Warning:  json_encode(): recursion detected in /home/austin43/public_html/wp-config.php on line 103
+[23-May-2016 21:59:34 UTC] PHP Warning:  json_encode(): recursion detected in /home/austin43/public_html/wp-config.php on line 103
+[23-May-2016 21:59:34 UTC] PHP Warning:  json_encode(): recursion detected in /home/austin43/public_html/wp-config.php on line 103
+[23-May-2016 21:59:34 UTC] PHP Warning:  json_encode(): recursion detected in /home/austin43/public_html/wp-config.php on line 103
+[23-May-2016 21:59:34 UTC] PHP Warning:  json_encode(): recursion detected in /home/austin43/public_html/wp-config.php on line 103
+[23-May-2016 21:59:34 UTC] PHP Warning:  json_encode(): recursion detected in /home/austin43/public_html/wp-config.php on line 103
+[23-May-2016 21:59:34 UTC] PHP Warning:  json_encode(): recursion detected in /home/austin43/public_html/wp-config.php on line 103
+[23-May-2016 21:59:34 UTC] PHP Warning:  json_encode(): recursion detected in /home/austin43/public_html/wp-config.php on line 103
+[23-May-2016 21:59:34 UTC] PHP Warning:  json_encode(): recursion detected in /home/austin43/public_html/wp-config.php on line 103
+[23-May-2016 21:59:34 UTC] PHP Warning:  json_encode(): recursion detected in /home/austin43/public_html/wp-config.php on line 103
+[23-May-2016 21:59:34 UTC] PHP Warning:  json_encode(): recursion detected in /home/austin43/public_html/wp-config.php on line 103
+[23-May-2016 21:59:34 UTC] PHP Warning:  json_encode(): recursion detected in /home/austin43/public_html/wp-config.php on line 103
+[23-May-2016 21:59:34 UTC] PHP Warning:  json_encode(): recursion detected in /home/austin43/public_html/wp-config.php on line 103
+[23-May-2016 21:59:34 UTC] PHP Warning:  json_encode(): recursion detected in /home/austin43/public_html/wp-config.php on line 103
+[23-May-2016 21:59:34 UTC] PHP Warning:  json_encode(): recursion detected in /home/austin43/public_html/wp-config.php on line 103
+[23-May-2016 21:59:34 UTC] PHP Warning:  json_encode(): recursion detected in /home/austin43/public_html/wp-config.php on line 103
+[23-May-2016 21:59:34 UTC] PHP Warning:  json_encode(): recursion detected in /home/austin43/public_html/wp-config.php on line 103
+[23-May-2016 21:59:34 UTC] PHP Warning:  json_encode(): recursion detected in /home/austin43/public_html/wp-config.php on line 103
+[23-May-2016 21:59:34 UTC] PHP Warning:  json_encode(): recursion detected in /home/austin43/public_html/wp-config.php on line 103
+[23-May-2016 21:59:34 UTC] PHP Warning:  json_encode(): recursion detected in /home/austin43/public_html/wp-config.php on line 103
+[23-May-2016 21:59:34 UTC] PHP Warning:  json_encode(): recursion detected in /home/austin43/public_html/wp-config.php on line 103
+[23-May-2016 21:59:34 UTC] PHP Warning:  json_encode(): recursion detected in /home/austin43/public_html/wp-config.php on line 103
+[23-May-2016 21:59:34 UTC] PHP Warning:  json_encode(): recursion detected in /home/austin43/public_html/wp-config.php on line 103
+[23-May-2016 21:59:34 UTC] PHP Warning:  json_encode(): recursion detected in /home/austin43/public_html/wp-config.php on line 103
+[23-May-2016 21:59:34 UTC] PHP Warning:  json_encode(): recursion detected in /home/austin43/public_html/wp-config.php on line 103
+[23-May-2016 21:59:34 UTC] PHP Warning:  json_encode(): recursion detected in /home/austin43/public_html/wp-config.php on line 103
+[24-May-2016 00:27:49 UTC] URL: https://37.60.243.141:2087/xml-api/cpanel
+[24-May-2016 00:27:49 UTC] DATA: domain=Dipshitagent.com&topdomain=dipshitagent&cpanel_xmlapi_user=austin43&cpanel_xmlapi_module=Park&cpanel_xmlapi_func=park&cpanel_xmlapi_apiversion=2
+[24-May-2016 00:27:49 UTC] Authentication Header: Authorization: Basic YXVzdGluNDM6eWR1YjAyNjE=
+
+
+[24-May-2016 00:27:49 UTC] RESPONSE:
+ <?xml version="1.0" ?>
+<cpanelresult>
+    <error>Access denied</error>
+    <data>
+        <result>0</result>
+        <reason>Access denied</reason>
+    </data>
+</cpanelresult>
+
+[24-May-2016 00:27:49 UTC] WordPress database error Table 'austin43_aalive.aa_order_map' doesn't exist for query INSERT INTO `aa_order_map` (`user_id`, `site_id`, `counter_id`) VALUES (9, 195, 1) made by require('wp-blog-header.php'), require_once('wp-includes/template-loader.php'), include('/themes/enfold/page.php'), get_template_part, locate_template, load_template, require('/themes/enfold/includes/loop-page.php'), the_content, apply_filters('the_content'), call_user_func_array, do_shortcode, preg_replace_callback, do_shortcode_tag, call_user_func, wpv_shortcode_wpv_post_body, apply_filters('the_content'), call_user_func_array, do_shortcode, preg_replace_callback, do_shortcode_tag, call_user_func, mism_create_new_site
+[24-May-2016 00:28:51 UTC] PHP Warning:  json_encode(): recursion detected in /home/austin43/public_html/wp-config.php on line 103
+[24-May-2016 00:28:51 UTC] PHP Warning:  json_encode(): recursion detected in /home/austin43/public_html/wp-config.php on line 103
+[24-May-2016 00:28:51 UTC] PHP Warning:  json_encode(): recursion detected in /home/austin43/public_html/wp-config.php on line 103
+[24-May-2016 00:28:51 UTC] PHP Warning:  json_encode(): recursion detected in /home/austin43/public_html/wp-config.php on line 103
+[24-May-2016 00:28:51 UTC] PHP Warning:  json_encode(): recursion detected in /home/austin43/public_html/wp-config.php on line 103
+[24-May-2016 00:28:51 UTC] PHP Warning:  json_encode(): recursion detected in /home/austin43/public_html/wp-config.php on line 103
+[24-May-2016 00:28:51 UTC] PHP Warning:  json_encode(): recursion detected in /home/austin43/public_html/wp-config.php on line 103
+[24-May-2016 00:28:51 UTC] PHP Warning:  json_encode(): recursion detected in /home/austin43/public_html/wp-config.php on line 103
+[24-May-2016 00:28:51 UTC] PHP Warning:  json_encode(): recursion detected in /home/austin43/public_html/wp-config.php on line 103
+[24-May-2016 00:28:51 UTC] PHP Warning:  json_encode(): recursion detected in /home/austin43/public_html/wp-config.php on line 103
+[24-May-2016 00:28:51 UTC] PHP Warning:  json_encode(): recursion detected in /home/austin43/public_html/wp-config.php on line 103
+[24-May-2016 00:28:51 UTC] PHP Warning:  json_encode(): recursion detected in /home/austin43/public_html/wp-config.php on line 103
+[24-May-2016 00:28:51 UTC] PHP Warning:  json_encode(): recursion detected in /home/austin43/public_html/wp-config.php on line 103
+[24-May-2016 00:28:51 UTC] PHP Warning:  json_encode(): recursion detected in /home/austin43/public_html/wp-config.php on line 103
+[24-May-2016 00:28:51 UTC] PHP Warning:  json_encode(): recursion detected in /home/austin43/public_html/wp-config.php on line 103
+[24-May-2016 00:28:51 UTC] PHP Warning:  json_encode(): recursion detected in /home/austin43/public_html/wp-config.php on line 103
+[24-May-2016 00:28:51 UTC] PHP Warning:  json_encode(): recursion detected in /home/austin43/public_html/wp-config.php on line 103
+[24-May-2016 00:28:51 UTC] PHP Warning:  json_encode(): recursion detected in /home/austin43/public_html/wp-config.php on line 103
+[24-May-2016 00:28:51 UTC] PHP Warning:  json_encode(): recursion detected in /home/austin43/public_html/wp-config.php on line 103
+[24-May-2016 00:28:51 UTC] PHP Warning:  json_encode(): recursion detected in /home/austin43/public_html/wp-config.php on line 103
+[24-May-2016 00:28:51 UTC] PHP Warning:  json_encode(): recursion detected in /home/austin43/public_html/wp-config.php on line 103
+[24-May-2016 00:28:51 UTC] PHP Warning:  json_encode(): recursion detected in /home/austin43/public_html/wp-config.php on line 103
+[24-May-2016 00:28:51 UTC] PHP Warning:  json_encode(): recursion detected in /home/austin43/public_html/wp-config.php on line 103
+[24-May-2016 00:28:51 UTC] PHP Warning:  json_encode(): recursion detected in /home/austin43/public_html/wp-config.php on line 103
+[24-May-2016 00:28:51 UTC] PHP Warning:  json_encode(): recursion detected in /home/austin43/public_html/wp-config.php on line 103
+[24-May-2016 00:28:51 UTC] PHP Warning:  json_encode(): recursion detected in /home/austin43/public_html/wp-config.php on line 103
+[24-May-2016 00:28:51 UTC] PHP Warning:  json_encode(): recursion detected in /home/austin43/public_html/wp-config.php on line 103
+[24-May-2016 00:28:51 UTC] PHP Warning:  json_encode(): recursion detected in /home/austin43/public_html/wp-config.php on line 103
+[24-May-2016 00:28:51 UTC] PHP Warning:  json_encode(): recursion detected in /home/austin43/public_html/wp-config.php on line 103
+[24-May-2016 00:28:51 UTC] PHP Warning:  json_encode(): recursion detected in /home/austin43/public_html/wp-config.php on line 103
+[24-May-2016 00:28:51 UTC] PHP Warning:  json_encode(): recursion detected in /home/austin43/public_html/wp-config.php on line 103
+[24-May-2016 00:28:51 UTC] PHP Warning:  json_encode(): recursion detected in /home/austin43/public_html/wp-config.php on line 103
+[24-May-2016 00:28:51 UTC] PHP Warning:  json_encode(): recursion detected in /home/austin43/public_html/wp-config.php on line 103
+[24-May-2016 00:28:51 UTC] PHP Warning:  json_encode(): recursion detected in /home/austin43/public_html/wp-config.php on line 103
+[24-May-2016 00:28:51 UTC] PHP Warning:  json_encode(): recursion detected in /home/austin43/public_html/wp-config.php on line 103
+[24-May-2016 00:28:51 UTC] PHP Warning:  json_encode(): recursion detected in /home/austin43/public_html/wp-config.php on line 103
+[24-May-2016 00:28:51 UTC] PHP Warning:  json_encode(): recursion detected in /home/austin43/public_html/wp-config.php on line 103
+[24-May-2016 00:28:51 UTC] PHP Warning:  json_encode(): recursion detected in /home/austin43/public_html/wp-config.php on line 103
+[24-May-2016 00:28:51 UTC] PHP Warning:  json_encode(): recursion detected in /home/austin43/public_html/wp-config.php on line 103
+[24-May-2016 00:28:51 UTC] PHP Warning:  json_encode(): recursion detected in /home/austin43/public_html/wp-config.php on line 103
+[24-May-2016 00:28:51 UTC] PHP Warning:  json_encode(): recursion detected in /home/austin43/public_html/wp-config.php on line 103
+[24-May-2016 00:28:51 UTC] PHP Warning:  json_encode(): recursion detected in /home/austin43/public_html/wp-config.php on line 103
+[24-May-2016 00:28:51 UTC] PHP Warning:  json_encode(): recursion detected in /home/austin43/public_html/wp-config.php on line 103
+[24-May-2016 00:28:51 UTC] PHP Warning:  json_encode(): recursion detected in /home/austin43/public_html/wp-config.php on line 103
+[24-May-2016 00:28:51 UTC] PHP Warning:  json_encode(): recursion detected in /home/austin43/public_html/wp-config.php on line 103
+[24-May-2016 00:28:51 UTC] PHP Warning:  json_encode(): recursion detected in /home/austin43/public_html/wp-config.php on line 103
+[24-May-2016 00:28:51 UTC] PHP Warning:  json_encode(): recursion detected in /home/austin43/public_html/wp-config.php on line 103
+[24-May-2016 00:28:51 UTC] PHP Warning:  json_encode(): recursion detected in /home/austin43/public_html/wp-config.php on line 103
+[24-May-2016 00:28:51 UTC] PHP Warning:  json_encode(): recursion detected in /home/austin43/public_html/wp-config.php on line 103
+[24-May-2016 00:28:51 UTC] PHP Warning:  json_encode(): recursion detected in /home/austin43/public_html/wp-config.php on line 103
+[24-May-2016 00:28:51 UTC] PHP Warning:  json_encode(): recursion detected in /home/austin43/public_html/wp-config.php on line 103
+[24-May-2016 00:28:51 UTC] PHP Warning:  json_encode(): recursion detected in /home/austin43/public_html/wp-config.php on line 103
+[24-May-2016 00:28:51 UTC] PHP Warning:  json_encode(): recursion detected in /home/austin43/public_html/wp-config.php on line 103
+[24-May-2016 00:28:51 UTC] PHP Warning:  json_encode(): recursion detected in /home/austin43/public_html/wp-config.php on line 103
+[24-May-2016 00:28:51 UTC] PHP Warning:  json_encode(): recursion detected in /home/austin43/public_html/wp-config.php on line 103
+[24-May-2016 00:28:51 UTC] PHP Warning:  json_encode(): recursion detected in /home/austin43/public_html/wp-config.php on line 103
+[24-May-2016 00:28:51 UTC] PHP Warning:  json_encode(): recursion detected in /home/austin43/public_html/wp-config.php on line 103
+[24-May-2016 00:28:51 UTC] PHP Warning:  json_encode(): recursion detected in /home/austin43/public_html/wp-config.php on line 103
+[24-May-2016 04:28:47 UTC] PHP Parse error:  syntax error, unexpected 'evel' (T_STRING) in /home/austin43/public_html/wp-content/themes/enfold/config-templatebuilder/avia-shortcodes/product_snippet_review.php on line 26
+[24-May-2016 04:47:55 UTC] PHP Warning:  json_encode(): recursion detected in /home/austin43/public_html/wp-config.php on line 103
+[24-May-2016 04:47:55 UTC] PHP Warning:  json_encode(): recursion detected in /home/austin43/public_html/wp-config.php on line 103
+[24-May-2016 04:47:55 UTC] PHP Warning:  json_encode(): recursion detected in /home/austin43/public_html/wp-config.php on line 103
+[24-May-2016 04:47:55 UTC] PHP Warning:  json_encode(): recursion detected in /home/austin43/public_html/wp-config.php on line 103
+[24-May-2016 04:47:55 UTC] PHP Warning:  json_encode(): recursion detected in /home/austin43/public_html/wp-config.php on line 103
+[24-May-2016 04:47:55 UTC] PHP Warning:  json_encode(): recursion detected in /home/austin43/public_html/wp-config.php on line 103
+[24-May-2016 04:47:55 UTC] PHP Warning:  json_encode(): recursion detected in /home/austin43/public_html/wp-config.php on line 103
+[24-May-2016 04:47:55 UTC] PHP Warning:  json_encode(): recursion detected in /home/austin43/public_html/wp-config.php on line 103
+[24-May-2016 04:47:55 UTC] PHP Warning:  json_encode(): recursion detected in /home/austin43/public_html/wp-config.php on line 103
+[24-May-2016 04:47:55 UTC] PHP Warning:  json_encode(): recursion detected in /home/austin43/public_html/wp-config.php on line 103
+[24-May-2016 04:47:55 UTC] PHP Warning:  json_encode(): recursion detected in /home/austin43/public_html/wp-config.php on line 103
+[24-May-2016 04:47:55 UTC] PHP Warning:  json_encode(): recursion detected in /home/austin43/public_html/wp-config.php on line 103
+[24-May-2016 04:47:55 UTC] PHP Warning:  json_encode(): recursion detected in /home/austin43/public_html/wp-config.php on line 103
+[24-May-2016 04:47:55 UTC] PHP Warning:  json_encode(): recursion detected in /home/austin43/public_html/wp-config.php on line 103
+[24-May-2016 04:47:55 UTC] PHP Warning:  json_encode(): recursion detected in /home/austin43/public_html/wp-config.php on line 103
+[24-May-2016 04:47:55 UTC] PHP Warning:  json_encode(): recursion detected in /home/austin43/public_html/wp-config.php on line 103
+[24-May-2016 04:47:55 UTC] PHP Warning:  json_encode(): recursion detected in /home/austin43/public_html/wp-config.php on line 103
+[24-May-2016 04:47:55 UTC] PHP Warning:  json_encode(): recursion detected in /home/austin43/public_html/wp-config.php on line 103
+[24-May-2016 04:47:55 UTC] PHP Warning:  json_encode(): recursion detected in /home/austin43/public_html/wp-config.php on line 103
+[24-May-2016 04:47:55 UTC] PHP Warning:  json_encode(): recursion detected in /home/austin43/public_html/wp-config.php on line 103
+[24-May-2016 04:47:55 UTC] PHP Warning:  json_encode(): recursion detected in /home/austin43/public_html/wp-config.php on line 103
+[24-May-2016 04:47:55 UTC] PHP Warning:  json_encode(): recursion detected in /home/austin43/public_html/wp-config.php on line 103
+[24-May-2016 04:47:55 UTC] PHP Warning:  json_encode(): recursion detected in /home/austin43/public_html/wp-config.php on line 103
+[24-May-2016 04:47:55 UTC] PHP Warning:  json_encode(): recursion detected in /home/austin43/public_html/wp-config.php on line 103
+[24-May-2016 04:47:55 UTC] PHP Warning:  json_encode(): recursion detected in /home/austin43/public_html/wp-config.php on line 103
+[24-May-2016 04:47:55 UTC] PHP Warning:  json_encode(): recursion detected in /home/austin43/public_html/wp-config.php on line 103
+[24-May-2016 04:47:55 UTC] PHP Warning:  json_encode(): recursion detected in /home/austin43/public_html/wp-config.php on line 103
+[24-May-2016 04:47:55 UTC] PHP Warning:  json_encode(): recursion detected in /home/austin43/public_html/wp-config.php on line 103
+[24-May-2016 04:47:55 UTC] PHP Warning:  json_encode(): recursion detected in /home/austin43/public_html/wp-config.php on line 103
+[24-May-2016 04:47:55 UTC] PHP Warning:  json_encode(): recursion detected in /home/austin43/public_html/wp-config.php on line 103
+[24-May-2016 04:47:55 UTC] PHP Warning:  json_encode(): recursion detected in /home/austin43/public_html/wp-config.php on line 103
+[24-May-2016 04:47:55 UTC] PHP Warning:  json_encode(): recursion detected in /home/austin43/public_html/wp-config.php on line 103
+[24-May-2016 04:47:55 UTC] PHP Warning:  json_encode(): recursion detected in /home/austin43/public_html/wp-config.php on line 103
+[24-May-2016 04:47:55 UTC] PHP Warning:  json_encode(): recursion detected in /home/austin43/public_html/wp-config.php on line 103
+[24-May-2016 04:47:55 UTC] PHP Warning:  json_encode(): recursion detected in /home/austin43/public_html/wp-config.php on line 103
+[24-May-2016 04:47:55 UTC] PHP Warning:  json_encode(): recursion detected in /home/austin43/public_html/wp-config.php on line 103
+[24-May-2016 04:47:55 UTC] PHP Warning:  json_encode(): recursion detected in /home/austin43/public_html/wp-config.php on line 103
+[24-May-2016 04:47:55 UTC] PHP Warning:  json_encode(): recursion detected in /home/austin43/public_html/wp-config.php on line 103
+[24-May-2016 04:47:55 UTC] PHP Warning:  json_encode(): recursion detected in /home/austin43/public_html/wp-config.php on line 103
+[24-May-2016 04:47:55 UTC] PHP Warning:  json_encode(): recursion detected in /home/austin43/public_html/wp-config.php on line 103
+[24-May-2016 04:47:55 UTC] PHP Warning:  json_encode(): recursion detected in /home/austin43/public_html/wp-config.php on line 103
+[24-May-2016 04:47:55 UTC] PHP Warning:  json_encode(): recursion detected in /home/austin43/public_html/wp-config.php on line 103
+[24-May-2016 04:47:55 UTC] PHP Warning:  json_encode(): recursion detected in /home/austin43/public_html/wp-config.php on line 103
+[24-May-2016 04:47:55 UTC] PHP Warning:  json_encode(): recursion detected in /home/austin43/public_html/wp-config.php on line 103
+[24-May-2016 04:47:55 UTC] PHP Warning:  json_encode(): recursion detected in /home/austin43/public_html/wp-config.php on line 103
+[24-May-2016 04:47:55 UTC] PHP Warning:  json_encode(): recursion detected in /home/austin43/public_html/wp-config.php on line 103
+[24-May-2016 04:47:55 UTC] PHP Warning:  json_encode(): recursion detected in /home/austin43/public_html/wp-config.php on line 103
+[24-May-2016 04:47:55 UTC] PHP Warning:  json_encode(): recursion detected in /home/austin43/public_html/wp-config.php on line 103
+[24-May-2016 04:47:55 UTC] PHP Warning:  json_encode(): recursion detected in /home/austin43/public_html/wp-config.php on line 103
+[24-May-2016 04:47:55 UTC] PHP Warning:  json_encode(): recursion detected in /home/austin43/public_html/wp-config.php on line 103
+[24-May-2016 04:47:55 UTC] PHP Warning:  json_encode(): recursion detected in /home/austin43/public_html/wp-config.php on line 103
+[24-May-2016 04:47:55 UTC] PHP Warning:  json_encode(): recursion detected in /home/austin43/public_html/wp-config.php on line 103
+[24-May-2016 04:47:55 UTC] PHP Warning:  json_encode(): recursion detected in /home/austin43/public_html/wp-config.php on line 103
+[24-May-2016 04:47:55 UTC] PHP Warning:  json_encode(): recursion detected in /home/austin43/public_html/wp-config.php on line 103
+[24-May-2016 04:47:55 UTC] PHP Warning:  json_encode(): recursion detected in /home/austin43/public_html/wp-config.php on line 103
+[24-May-2016 04:47:55 UTC] PHP Warning:  json_encode(): recursion detected in /home/austin43/public_html/wp-config.php on line 103
+[24-May-2016 04:47:55 UTC] PHP Warning:  json_encode(): recursion detected in /home/austin43/public_html/wp-config.php on line 103
+[24-May-2016 04:47:55 UTC] PHP Warning:  json_encode(): recursion detected in /home/austin43/public_html/wp-config.php on line 103
+[24-May-2016 04:47:55 UTC] PHP Warning:  json_encode(): recursion detected in /home/austin43/public_html/wp-config.php on line 103
+[24-May-2016 04:47:55 UTC] PHP Warning:  json_encode(): recursion detected in /home/austin43/public_html/wp-config.php on line 103
+[24-May-2016 04:47:55 UTC] PHP Warning:  json_encode(): recursion detected in /home/austin43/public_html/wp-config.php on line 103
+[24-May-2016 04:47:55 UTC] PHP Warning:  json_encode(): recursion detected in /home/austin43/public_html/wp-config.php on line 103
+[24-May-2016 04:47:55 UTC] PHP Warning:  json_encode(): recursion detected in /home/austin43/public_html/wp-config.php on line 103
+[24-May-2016 04:47:55 UTC] PHP Warning:  json_encode(): recursion detected in /home/austin43/public_html/wp-config.php on line 103
+[24-May-2016 04:47:55 UTC] PHP Warning:  json_encode(): recursion detected in /home/austin43/public_html/wp-config.php on line 103
+[24-May-2016 04:47:55 UTC] PHP Warning:  json_encode(): recursion detected in /home/austin43/public_html/wp-config.php on line 103
+[24-May-2016 04:47:55 UTC] PHP Warning:  json_encode(): recursion detected in /home/austin43/public_html/wp-config.php on line 103
+[24-May-2016 04:47:55 UTC] PHP Warning:  json_encode(): recursion detected in /home/austin43/public_html/wp-config.php on line 103
+[24-May-2016 04:47:55 UTC] PHP Warning:  json_encode(): recursion detected in /home/austin43/public_html/wp-config.php on line 103
+[24-May-2016 04:47:55 UTC] PHP Warning:  json_encode(): recursion detected in /home/austin43/public_html/wp-config.php on line 103
+[24-May-2016 04:47:55 UTC] PHP Warning:  json_encode(): recursion detected in /home/austin43/public_html/wp-config.php on line 103
+[24-May-2016 04:47:55 UTC] PHP Warning:  json_encode(): recursion detected in /home/austin43/public_html/wp-config.php on line 103
+[24-May-2016 04:47:55 UTC] PHP Warning:  json_encode(): recursion detected in /home/austin43/public_html/wp-config.php on line 103
+[24-May-2016 04:47:55 UTC] PHP Warning:  json_encode(): recursion detected in /home/austin43/public_html/wp-config.php on line 103
+[24-May-2016 04:47:55 UTC] PHP Warning:  json_encode(): recursion detected in /home/austin43/public_html/wp-config.php on line 103
+[24-May-2016 04:47:55 UTC] PHP Warning:  json_encode(): recursion detected in /home/austin43/public_html/wp-config.php on line 103
+[24-May-2016 04:47:55 UTC] PHP Warning:  json_encode(): recursion detected in /home/austin43/public_html/wp-config.php on line 103
+[24-May-2016 04:47:55 UTC] PHP Warning:  json_encode(): recursion detected in /home/austin43/public_html/wp-config.php on line 103
+[24-May-2016 04:47:55 UTC] PHP Warning:  json_encode(): recursion detected in /home/austin43/public_html/wp-config.php on line 103
+[24-May-2016 04:47:55 UTC] PHP Warning:  json_encode(): recursion detected in /home/austin43/public_html/wp-config.php on line 103
+[24-May-2016 04:47:55 UTC] PHP Warning:  json_encode(): recursion detected in /home/austin43/public_html/wp-config.php on line 103
+[24-May-2016 04:47:55 UTC] PHP Warning:  json_encode(): recursion detected in /home/austin43/public_html/wp-config.php on line 103
+[24-May-2016 04:47:55 UTC] PHP Warning:  json_encode(): recursion detected in /home/austin43/public_html/wp-config.php on line 103
+[24-May-2016 04:47:55 UTC] PHP Warning:  json_encode(): recursion detected in /home/austin43/public_html/wp-config.php on line 103
+[24-May-2016 04:47:55 UTC] PHP Warning:  json_encode(): recursion detected in /home/austin43/public_html/wp-config.php on line 103
+[24-May-2016 04:47:55 UTC] PHP Warning:  json_encode(): recursion detected in /home/austin43/public_html/wp-config.php on line 103
+[24-May-2016 04:47:55 UTC] PHP Warning:  json_encode(): recursion detected in /home/austin43/public_html/wp-config.php on line 103
+[24-May-2016 04:47:58 UTC] PHP Warning:  json_encode(): recursion detected in /home/austin43/public_html/wp-config.php on line 103
+[24-May-2016 04:47:58 UTC] PHP Warning:  json_encode(): recursion detected in /home/austin43/public_html/wp-config.php on line 103
+[24-May-2016 04:47:58 UTC] PHP Warning:  json_encode(): recursion detected in /home/austin43/public_html/wp-config.php on line 103
+[24-May-2016 04:47:58 UTC] PHP Warning:  json_encode(): recursion detected in /home/austin43/public_html/wp-config.php on line 103
+[24-May-2016 04:47:58 UTC] PHP Warning:  json_encode(): recursion detected in /home/austin43/public_html/wp-config.php on line 103
+[24-May-2016 04:47:58 UTC] PHP Warning:  json_encode(): recursion detected in /home/austin43/public_html/wp-config.php on line 103
+[24-May-2016 04:47:58 UTC] PHP Warning:  json_encode(): recursion detected in /home/austin43/public_html/wp-config.php on line 103
+[24-May-2016 04:47:58 UTC] PHP Warning:  json_encode(): recursion detected in /home/austin43/public_html/wp-config.php on line 103
+[24-May-2016 04:47:58 UTC] PHP Warning:  json_encode(): recursion detected in /home/austin43/public_html/wp-config.php on line 103
+[24-May-2016 04:47:58 UTC] PHP Warning:  json_encode(): recursion detected in /home/austin43/public_html/wp-config.php on line 103
+[24-May-2016 04:47:58 UTC] PHP Warning:  json_encode(): recursion detected in /home/austin43/public_html/wp-config.php on line 103
+[24-May-2016 04:47:58 UTC] PHP Warning:  json_encode(): recursion detected in /home/austin43/public_html/wp-config.php on line 103
+[24-May-2016 04:47:58 UTC] PHP Warning:  json_encode(): recursion detected in /home/austin43/public_html/wp-config.php on line 103
+[24-May-2016 04:47:58 UTC] PHP Warning:  json_encode(): recursion detected in /home/austin43/public_html/wp-config.php on line 103
+[24-May-2016 04:47:58 UTC] PHP Warning:  json_encode(): recursion detected in /home/austin43/public_html/wp-config.php on line 103
+[24-May-2016 04:47:58 UTC] PHP Warning:  json_encode(): recursion detected in /home/austin43/public_html/wp-config.php on line 103
+[24-May-2016 04:47:58 UTC] PHP Warning:  json_encode(): recursion detected in /home/austin43/public_html/wp-config.php on line 103
+[24-May-2016 04:47:58 UTC] PHP Warning:  json_encode(): recursion detected in /home/austin43/public_html/wp-config.php on line 103
+[24-May-2016 04:47:58 UTC] PHP Warning:  json_encode(): recursion detected in /home/austin43/public_html/wp-config.php on line 103
+[24-May-2016 04:47:58 UTC] PHP Warning:  json_encode(): recursion detected in /home/austin43/public_html/wp-config.php on line 103
+[24-May-2016 04:47:58 UTC] PHP Warning:  json_encode(): recursion detected in /home/austin43/public_html/wp-config.php on line 103
+[24-May-2016 04:47:58 UTC] PHP Warning:  json_encode(): recursion detected in /home/austin43/public_html/wp-config.php on line 103
+[24-May-2016 04:47:58 UTC] PHP Warning:  json_encode(): recursion detected in /home/austin43/public_html/wp-config.php on line 103
+[24-May-2016 04:47:58 UTC] PHP Warning:  json_encode(): recursion detected in /home/austin43/public_html/wp-config.php on line 103
+[24-May-2016 04:47:58 UTC] PHP Warning:  json_encode(): recursion detected in /home/austin43/public_html/wp-config.php on line 103
+[24-May-2016 04:47:58 UTC] PHP Warning:  json_encode(): recursion detected in /home/austin43/public_html/wp-config.php on line 103
+[24-May-2016 04:47:58 UTC] PHP Warning:  json_encode(): recursion detected in /home/austin43/public_html/wp-config.php on line 103
+[24-May-2016 04:47:58 UTC] PHP Warning:  json_encode(): recursion detected in /home/austin43/public_html/wp-config.php on line 103
+[24-May-2016 04:47:58 UTC] PHP Warning:  json_encode(): recursion detected in /home/austin43/public_html/wp-config.php on line 103
+[24-May-2016 04:47:58 UTC] PHP Warning:  json_encode(): recursion detected in /home/austin43/public_html/wp-config.php on line 103
+[24-May-2016 04:47:58 UTC] PHP Warning:  json_encode(): recursion detected in /home/austin43/public_html/wp-config.php on line 103
+[24-May-2016 04:47:58 UTC] PHP Warning:  json_encode(): recursion detected in /home/austin43/public_html/wp-config.php on line 103
+[24-May-2016 04:47:58 UTC] PHP Warning:  json_encode(): recursion detected in /home/austin43/public_html/wp-config.php on line 103
+[24-May-2016 04:47:58 UTC] PHP Warning:  json_encode(): recursion detected in /home/austin43/public_html/wp-config.php on line 103
+[24-May-2016 04:47:58 UTC] PHP Warning:  json_encode(): recursion detected in /home/austin43/public_html/wp-config.php on line 103
+[24-May-2016 04:47:58 UTC] PHP Warning:  json_encode(): recursion detected in /home/austin43/public_html/wp-config.php on line 103
+[24-May-2016 04:47:58 UTC] PHP Warning:  json_encode(): recursion detected in /home/austin43/public_html/wp-config.php on line 103
+[24-May-2016 04:47:58 UTC] PHP Warning:  json_encode(): recursion detected in /home/austin43/public_html/wp-config.php on line 103
+[24-May-2016 04:47:58 UTC] PHP Warning:  json_encode(): recursion detected in /home/austin43/public_html/wp-config.php on line 103
+[24-May-2016 04:47:58 UTC] PHP Warning:  json_encode(): recursion detected in /home/austin43/public_html/wp-config.php on line 103
+[24-May-2016 04:47:58 UTC] PHP Warning:  json_encode(): recursion detected in /home/austin43/public_html/wp-config.php on line 103
+[24-May-2016 04:47:58 UTC] PHP Warning:  json_encode(): recursion detected in /home/austin43/public_html/wp-config.php on line 103
+[24-May-2016 04:47:58 UTC] PHP Warning:  json_encode(): recursion detected in /home/austin43/public_html/wp-config.php on line 103
+[24-May-2016 04:47:58 UTC] PHP Warning:  json_encode(): recursion detected in /home/austin43/public_html/wp-config.php on line 103
+[24-May-2016 04:47:58 UTC] PHP Warning:  json_encode(): recursion detected in /home/austin43/public_html/wp-config.php on line 103
+[24-May-2016 04:47:58 UTC] PHP Warning:  json_encode(): recursion detected in /home/austin43/public_html/wp-config.php on line 103
+[24-May-2016 04:47:58 UTC] PHP Warning:  json_encode(): recursion detected in /home/austin43/public_html/wp-config.php on line 103
+[24-May-2016 04:47:58 UTC] PHP Warning:  json_encode(): recursion detected in /home/austin43/public_html/wp-config.php on line 103
+[24-May-2016 04:47:58 UTC] PHP Warning:  json_encode(): recursion detected in /home/austin43/public_html/wp-config.php on line 103
+[24-May-2016 04:47:58 UTC] PHP Warning:  json_encode(): recursion detected in /home/austin43/public_html/wp-config.php on line 103
+[24-May-2016 04:47:58 UTC] PHP Warning:  json_encode(): recursion detected in /home/austin43/public_html/wp-config.php on line 103
+[24-May-2016 04:47:58 UTC] PHP Warning:  json_encode(): recursion detected in /home/austin43/public_html/wp-config.php on line 103
+[24-May-2016 04:47:58 UTC] PHP Warning:  json_encode(): recursion detected in /home/austin43/public_html/wp-config.php on line 103
+[24-May-2016 04:47:58 UTC] PHP Warning:  json_encode(): recursion detected in /home/austin43/public_html/wp-config.php on line 103
+[24-May-2016 04:47:58 UTC] PHP Warning:  json_encode(): recursion detected in /home/austin43/public_html/wp-config.php on line 103
+[24-May-2016 04:47:58 UTC] PHP Warning:  json_encode(): recursion detected in /home/austin43/public_html/wp-config.php on line 103
+[24-May-2016 04:47:58 UTC] PHP Warning:  json_encode(): recursion detected in /home/austin43/public_html/wp-config.php on line 103
+[24-May-2016 04:47:58 UTC] PHP Warning:  json_encode(): recursion detected in /home/austin43/public_html/wp-config.php on line 103
+[24-May-2016 04:47:58 UTC] PHP Warning:  json_encode(): recursion detected in /home/austin43/public_html/wp-config.php on line 103
+[24-May-2016 04:47:58 UTC] PHP Warning:  json_encode(): recursion detected in /home/austin43/public_html/wp-config.php on line 103
+[24-May-2016 04:47:58 UTC] PHP Warning:  json_encode(): recursion detected in /home/austin43/public_html/wp-config.php on line 103
+[24-May-2016 04:47:58 UTC] PHP Warning:  json_encode(): recursion detected in /home/austin43/public_html/wp-config.php on line 103
+[24-May-2016 04:47:58 UTC] PHP Warning:  json_encode(): recursion detected in /home/austin43/public_html/wp-config.php on line 103
+[24-May-2016 04:47:58 UTC] PHP Warning:  json_encode(): recursion detected in /home/austin43/public_html/wp-config.php on line 103
+[24-May-2016 04:47:58 UTC] PHP Warning:  json_encode(): recursion detected in /home/austin43/public_html/wp-config.php on line 103
+[24-May-2016 04:47:58 UTC] PHP Warning:  json_encode(): recursion detected in /home/austin43/public_html/wp-config.php on line 103
+[24-May-2016 04:47:58 UTC] PHP Warning:  json_encode(): recursion detected in /home/austin43/public_html/wp-config.php on line 103
+[24-May-2016 04:47:58 UTC] PHP Warning:  json_encode(): recursion detected in /home/austin43/public_html/wp-config.php on line 103
+[24-May-2016 04:47:58 UTC] PHP Warning:  json_encode(): recursion detected in /home/austin43/public_html/wp-config.php on line 103
+[24-May-2016 04:47:58 UTC] PHP Warning:  json_encode(): recursion detected in /home/austin43/public_html/wp-config.php on line 103
+[24-May-2016 04:47:58 UTC] PHP Warning:  json_encode(): recursion detected in /home/austin43/public_html/wp-config.php on line 103
+[24-May-2016 04:47:58 UTC] PHP Warning:  json_encode(): recursion detected in /home/austin43/public_html/wp-config.php on line 103
+[24-May-2016 04:47:58 UTC] PHP Warning:  json_encode(): recursion detected in /home/austin43/public_html/wp-config.php on line 103
+[24-May-2016 04:47:58 UTC] PHP Warning:  json_encode(): recursion detected in /home/austin43/public_html/wp-config.php on line 103
+[24-May-2016 04:47:58 UTC] PHP Warning:  json_encode(): recursion detected in /home/austin43/public_html/wp-config.php on line 103
+[24-May-2016 04:47:58 UTC] PHP Warning:  json_encode(): recursion detected in /home/austin43/public_html/wp-config.php on line 103
+[24-May-2016 04:47:58 UTC] PHP Warning:  json_encode(): recursion detected in /home/austin43/public_html/wp-config.php on line 103
+[24-May-2016 04:47:58 UTC] PHP Warning:  json_encode(): recursion detected in /home/austin43/public_html/wp-config.php on line 103
+[24-May-2016 04:47:58 UTC] PHP Warning:  json_encode(): recursion detected in /home/austin43/public_html/wp-config.php on line 103
+[24-May-2016 04:47:58 UTC] PHP Warning:  json_encode(): recursion detected in /home/austin43/public_html/wp-config.php on line 103
+[24-May-2016 04:47:58 UTC] PHP Warning:  json_encode(): recursion detected in /home/austin43/public_html/wp-config.php on line 103
+[24-May-2016 04:47:58 UTC] PHP Warning:  json_encode(): recursion detected in /home/austin43/public_html/wp-config.php on line 103
+[24-May-2016 04:47:58 UTC] PHP Warning:  json_encode(): recursion detected in /home/austin43/public_html/wp-config.php on line 103
+[24-May-2016 04:47:58 UTC] PHP Warning:  json_encode(): recursion detected in /home/austin43/public_html/wp-config.php on line 103
+[24-May-2016 04:47:58 UTC] PHP Warning:  json_encode(): recursion detected in /home/austin43/public_html/wp-config.php on line 103
+[24-May-2016 04:47:58 UTC] PHP Warning:  json_encode(): recursion detected in /home/austin43/public_html/wp-config.php on line 103
+[24-May-2016 04:47:58 UTC] PHP Warning:  json_encode(): recursion detected in /home/austin43/public_html/wp-config.php on line 103
+[24-May-2016 06:02:30 UTC] URL: https://37.60.243.141:2087/xml-api/cpanel
+[24-May-2016 06:02:30 UTC] DATA: domain=test240501.com&topdomain=test240501&cpanel_xmlapi_user=austin43&cpanel_xmlapi_module=Park&cpanel_xmlapi_func=park&cpanel_xmlapi_apiversion=2
+[24-May-2016 06:02:30 UTC] Authentication Header: Authorization: Basic YXVzdGluNDM6eWR1YjAyNjE=
+
+
+[24-May-2016 06:02:31 UTC] RESPONSE:
+ <?xml version="1.0" ?>
+<cpanelresult>
+    <error>Access denied</error>
+    <data>
+        <result>0</result>
+        <reason>Access denied</reason>
+    </data>
+</cpanelresult>
+
+[24-May-2016 06:02:31 UTC] WordPress database error Table 'austin43_aalive.aa_order_map' doesn't exist for query INSERT INTO `aa_order_map` (`user_id`, `site_id`, `counter_id`) VALUES (9, 196, 1) made by require('wp-blog-header.php'), require_once('wp-includes/template-loader.php'), include('/themes/enfold/page.php'), get_template_part, locate_template, load_template, require('/themes/enfold/includes/loop-page.php'), the_content, apply_filters('the_content'), call_user_func_array, do_shortcode, preg_replace_callback, do_shortcode_tag, call_user_func, wpv_shortcode_wpv_post_body, apply_filters('the_content'), call_user_func_array, do_shortcode, preg_replace_callback, do_shortcode_tag, call_user_func, mism_create_new_site
+[24-May-2016 11:07:32 UTC] PHP Warning:  json_encode(): recursion detected in /home/austin43/public_html/wp-config.php on line 103
+[24-May-2016 11:07:32 UTC] PHP Warning:  json_encode(): recursion detected in /home/austin43/public_html/wp-config.php on line 103
+[24-May-2016 11:07:32 UTC] PHP Warning:  json_encode(): recursion detected in /home/austin43/public_html/wp-config.php on line 103
+[24-May-2016 11:07:32 UTC] PHP Warning:  json_encode(): recursion detected in /home/austin43/public_html/wp-config.php on line 103
+[24-May-2016 11:07:32 UTC] PHP Warning:  json_encode(): recursion detected in /home/austin43/public_html/wp-config.php on line 103
+[24-May-2016 11:07:32 UTC] PHP Warning:  json_encode(): recursion detected in /home/austin43/public_html/wp-config.php on line 103
+[24-May-2016 11:07:32 UTC] PHP Warning:  json_encode(): recursion detected in /home/austin43/public_html/wp-config.php on line 103
+[24-May-2016 11:07:32 UTC] PHP Warning:  json_encode(): recursion detected in /home/austin43/public_html/wp-config.php on line 103
+[24-May-2016 11:07:32 UTC] PHP Warning:  json_encode(): recursion detected in /home/austin43/public_html/wp-config.php on line 103
+[24-May-2016 11:07:32 UTC] PHP Warning:  json_encode(): recursion detected in /home/austin43/public_html/wp-config.php on line 103
+[24-May-2016 11:07:32 UTC] PHP Warning:  json_encode(): recursion detected in /home/austin43/public_html/wp-config.php on line 103
+[24-May-2016 11:07:32 UTC] PHP Warning:  json_encode(): recursion detected in /home/austin43/public_html/wp-config.php on line 103
+[24-May-2016 11:07:32 UTC] PHP Warning:  json_encode(): recursion detected in /home/austin43/public_html/wp-config.php on line 103
+[24-May-2016 11:07:32 UTC] PHP Warning:  json_encode(): recursion detected in /home/austin43/public_html/wp-config.php on line 103
+[24-May-2016 11:07:32 UTC] PHP Warning:  json_encode(): recursion detected in /home/austin43/public_html/wp-config.php on line 103
+[24-May-2016 11:07:32 UTC] PHP Warning:  json_encode(): recursion detected in /home/austin43/public_html/wp-config.php on line 103
+[24-May-2016 11:07:32 UTC] PHP Warning:  json_encode(): recursion detected in /home/austin43/public_html/wp-config.php on line 103
+[24-May-2016 11:07:32 UTC] PHP Warning:  json_encode(): recursion detected in /home/austin43/public_html/wp-config.php on line 103
+[24-May-2016 11:07:32 UTC] PHP Warning:  json_encode(): recursion detected in /home/austin43/public_html/wp-config.php on line 103
+[24-May-2016 11:07:32 UTC] PHP Warning:  json_encode(): recursion detected in /home/austin43/public_html/wp-config.php on line 103
+[24-May-2016 11:07:32 UTC] PHP Warning:  json_encode(): recursion detected in /home/austin43/public_html/wp-config.php on line 103
+[24-May-2016 11:07:32 UTC] PHP Warning:  json_encode(): recursion detected in /home/austin43/public_html/wp-config.php on line 103
+[24-May-2016 11:07:32 UTC] PHP Warning:  json_encode(): recursion detected in /home/austin43/public_html/wp-config.php on line 103
+[24-May-2016 11:07:32 UTC] PHP Warning:  json_encode(): recursion detected in /home/austin43/public_html/wp-config.php on line 103
+[24-May-2016 11:07:32 UTC] PHP Warning:  json_encode(): recursion detected in /home/austin43/public_html/wp-config.php on line 103
+[24-May-2016 11:07:32 UTC] PHP Warning:  json_encode(): recursion detected in /home/austin43/public_html/wp-config.php on line 103
+[24-May-2016 11:07:32 UTC] PHP Warning:  json_encode(): recursion detected in /home/austin43/public_html/wp-config.php on line 103
+[24-May-2016 11:07:32 UTC] PHP Warning:  json_encode(): recursion detected in /home/austin43/public_html/wp-config.php on line 103
+[24-May-2016 11:07:32 UTC] PHP Warning:  json_encode(): recursion detected in /home/austin43/public_html/wp-config.php on line 103
+[24-May-2016 11:07:32 UTC] PHP Warning:  json_encode(): recursion detected in /home/austin43/public_html/wp-config.php on line 103
+[24-May-2016 11:07:32 UTC] PHP Warning:  json_encode(): recursion detected in /home/austin43/public_html/wp-config.php on line 103
+[24-May-2016 11:07:32 UTC] PHP Warning:  json_encode(): recursion detected in /home/austin43/public_html/wp-config.php on line 103
+[24-May-2016 11:07:32 UTC] PHP Warning:  json_encode(): recursion detected in /home/austin43/public_html/wp-config.php on line 103
+[24-May-2016 11:07:32 UTC] PHP Warning:  json_encode(): recursion detected in /home/austin43/public_html/wp-config.php on line 103
+[24-May-2016 11:07:32 UTC] PHP Warning:  json_encode(): recursion detected in /home/austin43/public_html/wp-config.php on line 103
+[24-May-2016 11:07:32 UTC] PHP Warning:  json_encode(): recursion detected in /home/austin43/public_html/wp-config.php on line 103
+[24-May-2016 11:07:32 UTC] PHP Warning:  json_encode(): recursion detected in /home/austin43/public_html/wp-config.php on line 103
+[24-May-2016 11:07:32 UTC] PHP Warning:  json_encode(): recursion detected in /home/austin43/public_html/wp-config.php on line 103
+[24-May-2016 11:07:32 UTC] PHP Warning:  json_encode(): recursion detected in /home/austin43/public_html/wp-config.php on line 103
+[24-May-2016 11:07:32 UTC] PHP Warning:  json_encode(): recursion detected in /home/austin43/public_html/wp-config.php on line 103
+[24-May-2016 11:07:32 UTC] PHP Warning:  json_encode(): recursion detected in /home/austin43/public_html/wp-config.php on line 103
+[24-May-2016 11:07:32 UTC] PHP Warning:  json_encode(): recursion detected in /home/austin43/public_html/wp-config.php on line 103
+[24-May-2016 11:07:32 UTC] PHP Warning:  json_encode(): recursion detected in /home/austin43/public_html/wp-config.php on line 103
+[24-May-2016 11:07:32 UTC] PHP Warning:  json_encode(): recursion detected in /home/austin43/public_html/wp-config.php on line 103
+[24-May-2016 11:07:32 UTC] PHP Warning:  json_encode(): recursion detected in /home/austin43/public_html/wp-config.php on line 103
+[24-May-2016 11:07:32 UTC] PHP Warning:  json_encode(): recursion detected in /home/austin43/public_html/wp-config.php on line 103
+[24-May-2016 11:07:32 UTC] PHP Warning:  json_encode(): recursion detected in /home/austin43/public_html/wp-config.php on line 103
+[24-May-2016 11:07:32 UTC] PHP Warning:  json_encode(): recursion detected in /home/austin43/public_html/wp-config.php on line 103
+[24-May-2016 11:07:32 UTC] PHP Warning:  json_encode(): recursion detected in /home/austin43/public_html/wp-config.php on line 103
+[24-May-2016 11:07:32 UTC] PHP Warning:  json_encode(): recursion detected in /home/austin43/public_html/wp-config.php on line 103
+[24-May-2016 11:07:32 UTC] PHP Warning:  json_encode(): recursion detected in /home/austin43/public_html/wp-config.php on line 103
+[24-May-2016 11:07:32 UTC] PHP Warning:  json_encode(): recursion detected in /home/austin43/public_html/wp-config.php on line 103
+[24-May-2016 11:07:32 UTC] PHP Warning:  json_encode(): recursion detected in /home/austin43/public_html/wp-config.php on line 103
+[24-May-2016 11:07:32 UTC] PHP Warning:  json_encode(): recursion detected in /home/austin43/public_html/wp-config.php on line 103
+[24-May-2016 11:07:32 UTC] PHP Warning:  json_encode(): recursion detected in /home/austin43/public_html/wp-config.php on line 103
+[24-May-2016 11:07:32 UTC] PHP Warning:  json_encode(): recursion detected in /home/austin43/public_html/wp-config.php on line 103
+[24-May-2016 11:07:32 UTC] PHP Warning:  json_encode(): recursion detected in /home/austin43/public_html/wp-config.php on line 103
+[24-May-2016 11:07:32 UTC] PHP Warning:  json_encode(): recursion detected in /home/austin43/public_html/wp-config.php on line 103
+[24-May-2016 11:07:32 UTC] PHP Warning:  json_encode(): recursion detected in /home/austin43/public_html/wp-config.php on line 103
+[24-May-2016 11:07:32 UTC] PHP Warning:  json_encode(): recursion detected in /home/austin43/public_html/wp-config.php on line 103
+[24-May-2016 11:07:32 UTC] PHP Warning:  json_encode(): recursion detected in /home/austin43/public_html/wp-config.php on line 103
+[24-May-2016 11:07:32 UTC] PHP Warning:  json_encode(): recursion detected in /home/austin43/public_html/wp-config.php on line 103
+[24-May-2016 11:07:32 UTC] PHP Warning:  json_encode(): recursion detected in /home/austin43/public_html/wp-config.php on line 103
+[24-May-2016 11:07:32 UTC] PHP Warning:  json_encode(): recursion detected in /home/austin43/public_html/wp-config.php on line 103
+[24-May-2016 11:07:32 UTC] PHP Warning:  json_encode(): recursion detected in /home/austin43/public_html/wp-config.php on line 103
+[24-May-2016 11:07:32 UTC] PHP Warning:  json_encode(): recursion detected in /home/austin43/public_html/wp-config.php on line 103
+[24-May-2016 11:07:32 UTC] PHP Warning:  json_encode(): recursion detected in /home/austin43/public_html/wp-config.php on line 103
+[24-May-2016 11:07:32 UTC] PHP Warning:  json_encode(): recursion detected in /home/austin43/public_html/wp-config.php on line 103
+[24-May-2016 11:07:32 UTC] PHP Warning:  json_encode(): recursion detected in /home/austin43/public_html/wp-config.php on line 103
+[24-May-2016 11:07:32 UTC] PHP Warning:  json_encode(): recursion detected in /home/austin43/public_html/wp-config.php on line 103
+[24-May-2016 11:07:32 UTC] PHP Warning:  json_encode(): recursion detected in /home/austin43/public_html/wp-config.php on line 103
+[24-May-2016 11:07:32 UTC] PHP Warning:  json_encode(): recursion detected in /home/austin43/public_html/wp-config.php on line 103
+[24-May-2016 11:07:32 UTC] PHP Warning:  json_encode(): recursion detected in /home/austin43/public_html/wp-config.php on line 103
+[24-May-2016 11:07:32 UTC] PHP Warning:  json_encode(): recursion detected in /home/austin43/public_html/wp-config.php on line 103
+[24-May-2016 11:07:32 UTC] PHP Warning:  json_encode(): recursion detected in /home/austin43/public_html/wp-config.php on line 103
+[24-May-2016 11:07:32 UTC] PHP Warning:  json_encode(): recursion detected in /home/austin43/public_html/wp-config.php on line 103
+[24-May-2016 11:07:32 UTC] PHP Warning:  json_encode(): recursion detected in /home/austin43/public_html/wp-config.php on line 103
+[24-May-2016 11:07:32 UTC] PHP Warning:  json_encode(): recursion detected in /home/austin43/public_html/wp-config.php on line 103
+[24-May-2016 11:07:32 UTC] PHP Warning:  json_encode(): recursion detected in /home/austin43/public_html/wp-config.php on line 103
+[24-May-2016 11:07:32 UTC] PHP Warning:  json_encode(): recursion detected in /home/austin43/public_html/wp-config.php on line 103
+[24-May-2016 11:07:32 UTC] PHP Warning:  json_encode(): recursion detected in /home/austin43/public_html/wp-config.php on line 103
+[24-May-2016 11:07:32 UTC] PHP Warning:  json_encode(): recursion detected in /home/austin43/public_html/wp-config.php on line 103
+[24-May-2016 11:07:32 UTC] PHP Warning:  json_encode(): recursion detected in /home/austin43/public_html/wp-config.php on line 103
+[24-May-2016 11:07:32 UTC] PHP Warning:  json_encode(): recursion detected in /home/austin43/public_html/wp-config.php on line 103
+[24-May-2016 11:07:32 UTC] PHP Warning:  json_encode(): recursion detected in /home/austin43/public_html/wp-config.php on line 103
+[24-May-2016 11:07:32 UTC] PHP Warning:  json_encode(): recursion detected in /home/austin43/public_html/wp-config.php on line 103
+[24-May-2016 11:07:32 UTC] PHP Warning:  json_encode(): recursion detected in /home/austin43/public_html/wp-config.php on line 103

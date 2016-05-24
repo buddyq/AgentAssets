@@ -1,0 +1,38 @@
+/*
+Theme Name: Twenty Sixteen Child
+Theme URI: https://wordpress.org/themes/twentysixteen/
+Author: the WordPress team
+Author URI: https://wordpress.org/
+Description: Generic Twenty Sixteen Child Theme
+Version: 1.0
+Template: twentysixteen
+License: GNU General Public License v2 or later
+License URI: http://www.gnu.org/licenses/gpl-2.0.html
+Text Domain: twentysixteen
+*/
+
+@import url('../twentysixteen/style.css');
+
+/*.page-template-page_full-screen {overflow: hidden}*/
+.page-template-page_full-screen .site {margin: 0}
+.page-template-page_full-screen .site-inner {max-width: 100%}
+.page-template-page_full-screen .site-content {padding: 0}
+
+.page-template-page_full-screen header,
+.page-template-page_full-screen footer,
+.page-template-page_full-screen #wpadminbar,
+body.page-template-page_full-screen:before, 
+body.page-template-page_full-screen:after {display: none}
+
+html,
+.page-template-page_full-screen, 
+.page-template-page_full-screen .site, 
+.page-template-page_full-screen .site-content, 
+.page-template-page_full-screen .page, 
+.page-template-page_full-screen .site-inner, 
+.page-template-page_full-screen .entry-content {height: 100%}
+
+.page-template-page_full-screen,
+.page-template-page_full-screen .entry-content {background: #1a1a1a}
+
+html.js {margin-top: 0 !important}

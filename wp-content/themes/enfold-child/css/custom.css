@@ -1,0 +1,7 @@
+.wp-admin-bar-wp-logo a{
+  margin-top: 5px;
+}
+
+#header_meta a:hover{
+  color: #538774;
+}

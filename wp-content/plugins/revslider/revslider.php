@@ -9,7 +9,7 @@ Author URI: http://themepunch.com
 */
 
 // If this file is called directly, abort.
-update_option('revslider_table_version', '1.0.0');
+// update_option('revslider_table_version', '1.0.0');
 
 if ( ! defined( 'WPINC' ) ) {
 	die;

@@ -416,7 +416,7 @@ function mism_clone_blog($clone_from_blog_id, $clone_to_blog_id) {
 
     //update the preserved options to the options table of the clonned blog
     foreach ((array) $excluded_options_data as $excluded_option) {
-        update_blog_option($clone_to_blog_id, $excluded_option->option_name, $excluded_option->option_value);
+        update_blog_option($clone_to_blog_id, $excluded_option->option_name, maybe_unserialize($excluded_option->option_value));
     }
 
     $sql = "DELETE FROM `" . $new_table_prefix . "options` WHERE option_name='" . $new_table_prefix . "user_roles'";

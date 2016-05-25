@@ -4,4 +4,6 @@ wp-config.php
 /.ftpquota
 /wp-admin/wp_trace.log
 /wp-content/debug.log
+/wp-content/plugins/wp-paypal-ipn/ipn_errors.log 
+
                 

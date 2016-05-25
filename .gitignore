@@ -6,3 +6,5 @@ wp-config.php
 /wp-content/debug.log
 /wp-content/plugins/wp-paypal-ipn/ipn_errors.log 
 /local-tools
+/www
+/.well-known

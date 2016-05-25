@@ -17,20 +17,31 @@ add_shortcode('agentinformation_googleplus', 'agentinformation_googleplus_shortc
 function agentinformation_shortcode($atts) {
     $value = null;
     if (isset($atts['key'])) {
+		global $wpdb;
         $defaults = array(
             'profile_picture' => plugins_url('medma-site-manager').'/images/dummy_agent_pic.png',
             'broker_logo' => plugins_url('medma-site-manager').'/images/placeholder_wide.jpg',
         );
+        
+		$user_id = null;
+		$admins = get_users( 'blog_id='.$blog_id.'&orderby=ID&role=administrator' );			
+		foreach($admins as $admin) {
+			if ($admin->ID == 1) continue;
+			$user_id = $admin->ID;
+			break;
+		}
+		showVar($admin->user_login);
 
-        $user_id = get_current_user_id();
-        $value = get_user_meta($user_id, $atts['key'], true);
-
+		$value = get_user_meta($user_id, $atts['key'], true);
+		
         if (in_array($atts['key'], array(
             'profile_picture',
             'broker_logo'
         ))) {
             if (!empty($value)) {
+				switch_to_blog(1);
                 $value = wp_get_attachment_image_src($value, 'full');
+				restore_current_blog();
                 if (is_array($value))
                     $value = $value[0];
             }
@@ -40,6 +51,25 @@ function agentinformation_shortcode($atts) {
         }
     }
     return $value;
+}
+
+function showVar($var, $die, $label='') {
+    if (!isset($_GET['dev']))
+        return false;
+    echo '<pre>';
+    if (!empty($label))
+        echo $label . ': ';
+    if ($var === null)
+        echo 'NULL';
+    elseif ($var === false)
+        echo 'FALSE';
+    elseif ($var === '')
+        echo 'EMPTY STRING';
+    else
+        print_r($var);
+    echo '</pre>';
+    if ($die)
+        die();
 }
 
 

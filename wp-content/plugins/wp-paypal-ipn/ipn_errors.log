@@ -8041,3 +8041,141 @@
 [24-May-2016 11:07:32 UTC] PHP Warning:  json_encode(): recursion detected in /home/austin43/public_html/wp-config.php on line 103
 [24-May-2016 11:07:32 UTC] PHP Warning:  json_encode(): recursion detected in /home/austin43/public_html/wp-config.php on line 103
 [24-May-2016 11:07:32 UTC] PHP Warning:  json_encode(): recursion detected in /home/austin43/public_html/wp-config.php on line 103
+[25-May-2016 10:24:52 UTC] PHP Notice:  The called constructor method for WP_Widget in aveone_Tabs_Widget is <strong>deprecated</strong> since version 4.3.0! Use <pre>__construct()</pre> instead. in /var/web/agentassets/wp-includes/functions.php on line 3718
+[25-May-2016 10:24:52 UTC] PHP Stack trace:
+[25-May-2016 10:24:52 UTC] PHP   1. {main}() /var/web/agentassets/wp-admin/post.php:0
+[25-May-2016 10:24:52 UTC] PHP   2. require_once() /var/web/agentassets/wp-admin/post.php:12
+[25-May-2016 10:24:52 UTC] PHP   3. require_once() /var/web/agentassets/wp-admin/admin.php:31
+[25-May-2016 10:24:52 UTC] PHP   4. require_once() /var/web/agentassets/wp-load.php:37
+[25-May-2016 10:24:52 UTC] PHP   5. require_once() /var/web/agentassets/wp-config.php:94
+[25-May-2016 10:24:52 UTC] PHP   6. do_action() /var/web/agentassets/wp-settings.php:393
+[25-May-2016 10:24:52 UTC] PHP   7. call_user_func_array:{/var/web/agentassets/wp-includes/plugin.php:525}() /var/web/agentassets/wp-includes/plugin.php:525
+[25-May-2016 10:24:52 UTC] PHP   8. wp_widgets_init() /var/web/agentassets/wp-includes/plugin.php:525
+[25-May-2016 10:24:52 UTC] PHP   9. do_action() /var/web/agentassets/wp-includes/widgets.php:1475
+[25-May-2016 10:24:52 UTC] PHP  10. call_user_func_array:{/var/web/agentassets/wp-includes/plugin.php:525}() /var/web/agentassets/wp-includes/plugin.php:525
+[25-May-2016 10:24:52 UTC] PHP  11. aveone_tabs_load_widgets() /var/web/agentassets/wp-includes/plugin.php:525
+[25-May-2016 10:24:52 UTC] PHP  12. register_widget() /var/web/agentassets/wp-content/themes/aveone/library/functions/tabs-widget.php:6
+[25-May-2016 10:24:52 UTC] PHP  13. WP_Widget_Factory->register() /var/web/agentassets/wp-includes/widgets.php:113
+[25-May-2016 10:24:52 UTC] PHP  14. aveone_Tabs_Widget->aveone_Tabs_Widget() /var/web/agentassets/wp-includes/class-wp-widget-factory.php:57
+[25-May-2016 10:24:52 UTC] PHP  15. WP_Widget->WP_Widget() /var/web/agentassets/wp-content/themes/aveone/library/functions/tabs-widget.php:17
+[25-May-2016 10:24:52 UTC] PHP  16. _deprecated_constructor() /var/web/agentassets/wp-includes/class-wp-widget.php:181
+[25-May-2016 10:24:52 UTC] PHP  17. trigger_error() /var/web/agentassets/wp-includes/functions.php:3718
+[25-May-2016 10:24:53 UTC] PHP Notice:  The called constructor method for WP_Widget in aveone_Tabs_Widget is <strong>deprecated</strong> since version 4.3.0! Use <pre>__construct()</pre> instead. in /var/web/agentassets/wp-includes/functions.php on line 3718
+[25-May-2016 10:24:53 UTC] PHP Stack trace:
+[25-May-2016 10:24:53 UTC] PHP   1. {main}() /var/web/agentassets/index.php:0
+[25-May-2016 10:24:53 UTC] PHP   2. require() /var/web/agentassets/index.php:17
+[25-May-2016 10:24:53 UTC] PHP   3. require_once() /var/web/agentassets/wp-blog-header.php:13
+[25-May-2016 10:24:53 UTC] PHP   4. require_once() /var/web/agentassets/wp-load.php:37
+[25-May-2016 10:24:53 UTC] PHP   5. require_once() /var/web/agentassets/wp-config.php:94
+[25-May-2016 10:24:53 UTC] PHP   6. do_action() /var/web/agentassets/wp-settings.php:393
+[25-May-2016 10:24:53 UTC] PHP   7. call_user_func_array:{/var/web/agentassets/wp-includes/plugin.php:525}() /var/web/agentassets/wp-includes/plugin.php:525
+[25-May-2016 10:24:53 UTC] PHP   8. wp_widgets_init() /var/web/agentassets/wp-includes/plugin.php:525
+[25-May-2016 10:24:53 UTC] PHP   9. do_action() /var/web/agentassets/wp-includes/widgets.php:1475
+[25-May-2016 10:24:53 UTC] PHP  10. call_user_func_array:{/var/web/agentassets/wp-includes/plugin.php:525}() /var/web/agentassets/wp-includes/plugin.php:525
+[25-May-2016 10:24:53 UTC] PHP  11. aveone_tabs_load_widgets() /var/web/agentassets/wp-includes/plugin.php:525
+[25-May-2016 10:24:53 UTC] PHP  12. register_widget() /var/web/agentassets/wp-content/themes/aveone/library/functions/tabs-widget.php:6
+[25-May-2016 10:24:53 UTC] PHP  13. WP_Widget_Factory->register() /var/web/agentassets/wp-includes/widgets.php:113
+[25-May-2016 10:24:53 UTC] PHP  14. aveone_Tabs_Widget->aveone_Tabs_Widget() /var/web/agentassets/wp-includes/class-wp-widget-factory.php:57
+[25-May-2016 10:24:53 UTC] PHP  15. WP_Widget->WP_Widget() /var/web/agentassets/wp-content/themes/aveone/library/functions/tabs-widget.php:17
+[25-May-2016 10:24:53 UTC] PHP  16. _deprecated_constructor() /var/web/agentassets/wp-includes/class-wp-widget.php:181
+[25-May-2016 10:24:53 UTC] PHP  17. trigger_error() /var/web/agentassets/wp-includes/functions.php:3718
+[25-May-2016 10:24:54 UTC] PHP Notice:  wpdb::escape is <strong>deprecated</strong> since version 3.6! Use wpdb::prepare() or esc_sql() instead. in /var/web/agentassets/wp-includes/functions.php on line 3658
+[25-May-2016 10:24:54 UTC] PHP Stack trace:
+[25-May-2016 10:24:54 UTC] PHP   1. {main}() /var/web/agentassets/index.php:0
+[25-May-2016 10:24:54 UTC] PHP   2. require() /var/web/agentassets/index.php:17
+[25-May-2016 10:24:54 UTC] PHP   3. require_once() /var/web/agentassets/wp-blog-header.php:19
+[25-May-2016 10:24:54 UTC] PHP   4. do_action() /var/web/agentassets/wp-includes/template-loader.php:12
+[25-May-2016 10:24:54 UTC] PHP   5. call_user_func_array:{/var/web/agentassets/wp-includes/plugin.php:525}() /var/web/agentassets/wp-includes/plugin.php:525
+[25-May-2016 10:24:54 UTC] PHP   6. redirect_to_mapped_domain() /var/web/agentassets/wp-includes/plugin.php:525
+[25-May-2016 10:24:54 UTC] PHP   7. domain_mapping_siteurl() /var/web/agentassets/wp-content/plugins/wordpress-mu-domain-mapping/domain_mapping.php:702
+[25-May-2016 10:24:54 UTC] PHP   8. wpdb->escape() /var/web/agentassets/wp-content/plugins/wordpress-mu-domain-mapping/domain_mapping.php:519
+[25-May-2016 10:24:54 UTC] PHP   9. _deprecated_function() /var/web/agentassets/wp-includes/wp-db.php:1183
+[25-May-2016 10:24:54 UTC] PHP  10. trigger_error() /var/web/agentassets/wp-includes/functions.php:3658
+[25-May-2016 10:24:55 UTC] PHP Notice:  wpdb::escape is <strong>deprecated</strong> since version 3.6! Use wpdb::prepare() or esc_sql() instead. in /var/web/agentassets/wp-includes/functions.php on line 3658
+[25-May-2016 10:24:55 UTC] PHP Stack trace:
+[25-May-2016 10:24:55 UTC] PHP   1. {main}() /var/web/agentassets/wp-admin/post.php:0
+[25-May-2016 10:24:55 UTC] PHP   2. require_once() /var/web/agentassets/wp-admin/post.php:12
+[25-May-2016 10:24:55 UTC] PHP   3. do_action() /var/web/agentassets/wp-admin/admin.php:168
+[25-May-2016 10:24:55 UTC] PHP   4. call_user_func_array:{/var/web/agentassets/wp-includes/plugin.php:525}() /var/web/agentassets/wp-includes/plugin.php:525
+[25-May-2016 10:24:55 UTC] PHP   5. dm_redirect_admin() /var/web/agentassets/wp-includes/plugin.php:525
+[25-May-2016 10:24:55 UTC] PHP   6. domain_mapping_siteurl() /var/web/agentassets/wp-content/plugins/wordpress-mu-domain-mapping/domain_mapping.php:622
+[25-May-2016 10:24:55 UTC] PHP   7. wpdb->escape() /var/web/agentassets/wp-content/plugins/wordpress-mu-domain-mapping/domain_mapping.php:519
+[25-May-2016 10:24:55 UTC] PHP   8. _deprecated_function() /var/web/agentassets/wp-includes/wp-db.php:1183
+[25-May-2016 10:24:55 UTC] PHP   9. trigger_error() /var/web/agentassets/wp-includes/functions.php:3658
+[25-May-2016 10:24:56 UTC] PHP Notice:  The called constructor method for WP_Widget in aveone_Tabs_Widget is <strong>deprecated</strong> since version 4.3.0! Use <pre>__construct()</pre> instead. in /var/web/agentassets/wp-includes/functions.php on line 3718
+[25-May-2016 10:24:56 UTC] PHP Stack trace:
+[25-May-2016 10:24:56 UTC] PHP   1. {main}() /var/web/agentassets/wp-admin/admin-ajax.php:0
+[25-May-2016 10:24:56 UTC] PHP   2. require_once() /var/web/agentassets/wp-admin/admin-ajax.php:22
+[25-May-2016 10:24:56 UTC] PHP   3. require_once() /var/web/agentassets/wp-load.php:37
+[25-May-2016 10:24:56 UTC] PHP   4. require_once() /var/web/agentassets/wp-config.php:94
+[25-May-2016 10:24:56 UTC] PHP   5. do_action() /var/web/agentassets/wp-settings.php:393
+[25-May-2016 10:24:56 UTC] PHP   6. call_user_func_array:{/var/web/agentassets/wp-includes/plugin.php:525}() /var/web/agentassets/wp-includes/plugin.php:525
+[25-May-2016 10:24:56 UTC] PHP   7. wp_widgets_init() /var/web/agentassets/wp-includes/plugin.php:525
+[25-May-2016 10:24:56 UTC] PHP   8. do_action() /var/web/agentassets/wp-includes/widgets.php:1475
+[25-May-2016 10:24:56 UTC] PHP   9. call_user_func_array:{/var/web/agentassets/wp-includes/plugin.php:525}() /var/web/agentassets/wp-includes/plugin.php:525
+[25-May-2016 10:24:56 UTC] PHP  10. aveone_tabs_load_widgets() /var/web/agentassets/wp-includes/plugin.php:525
+[25-May-2016 10:24:56 UTC] PHP  11. register_widget() /var/web/agentassets/wp-content/themes/aveone/library/functions/tabs-widget.php:6
+[25-May-2016 10:24:56 UTC] PHP  12. WP_Widget_Factory->register() /var/web/agentassets/wp-includes/widgets.php:113
+[25-May-2016 10:24:56 UTC] PHP  13. aveone_Tabs_Widget->aveone_Tabs_Widget() /var/web/agentassets/wp-includes/class-wp-widget-factory.php:57
+[25-May-2016 10:24:56 UTC] PHP  14. WP_Widget->WP_Widget() /var/web/agentassets/wp-content/themes/aveone/library/functions/tabs-widget.php:17
+[25-May-2016 10:24:56 UTC] PHP  15. _deprecated_constructor() /var/web/agentassets/wp-includes/class-wp-widget.php:181
+[25-May-2016 10:24:56 UTC] PHP  16. trigger_error() /var/web/agentassets/wp-includes/functions.php:3718
+[25-May-2016 10:24:56 UTC] PHP Warning:  Cannot modify header information - headers already sent by (output started at /var/web/agentassets/wp-includes/functions.php:3897) in /var/web/agentassets/wp-includes/option.php on line 823
+[25-May-2016 10:24:56 UTC] PHP Stack trace:
+[25-May-2016 10:24:56 UTC] PHP   1. {main}() /var/web/agentassets/wp-admin/post.php:0
+[25-May-2016 10:24:56 UTC] PHP   2. include() /var/web/agentassets/wp-admin/post.php:173
+[25-May-2016 10:24:56 UTC] PHP   3. require_once() /var/web/agentassets/wp-admin/edit-form-advanced.php:472
+[25-May-2016 10:24:56 UTC] PHP   4. wp_user_settings() /var/web/agentassets/wp-admin/admin-header.php:58
+[25-May-2016 10:24:56 UTC] PHP   5. setcookie() /var/web/agentassets/wp-includes/option.php:823
+[25-May-2016 10:24:56 UTC] PHP Warning:  Cannot modify header information - headers already sent by (output started at /var/web/agentassets/wp-includes/functions.php:3897) in /var/web/agentassets/wp-includes/option.php on line 824
+[25-May-2016 10:24:56 UTC] PHP Stack trace:
+[25-May-2016 10:24:56 UTC] PHP   1. {main}() /var/web/agentassets/wp-admin/post.php:0
+[25-May-2016 10:24:56 UTC] PHP   2. include() /var/web/agentassets/wp-admin/post.php:173
+[25-May-2016 10:24:56 UTC] PHP   3. require_once() /var/web/agentassets/wp-admin/edit-form-advanced.php:472
+[25-May-2016 10:24:56 UTC] PHP   4. wp_user_settings() /var/web/agentassets/wp-admin/admin-header.php:58
+[25-May-2016 10:24:56 UTC] PHP   5. setcookie() /var/web/agentassets/wp-includes/option.php:824
+[25-May-2016 10:24:57 UTC] PHP Notice:  Undefined index: wid_title in /var/web/agentassets/wp-content/plugins/login-sidebar-widget/login_afo_widget.php on line 36
+[25-May-2016 10:24:57 UTC] PHP Stack trace:
+[25-May-2016 10:24:57 UTC] PHP   1. {main}() /var/web/agentassets/wp-admin/post.php:0
+[25-May-2016 10:24:57 UTC] PHP   2. include() /var/web/agentassets/wp-admin/post.php:173
+[25-May-2016 10:24:57 UTC] PHP   3. require_once() /var/web/agentassets/wp-admin/edit-form-advanced.php:472
+[25-May-2016 10:24:57 UTC] PHP   4. do_action() /var/web/agentassets/wp-admin/admin-header.php:113
+[25-May-2016 10:24:57 UTC] PHP   5. call_user_func_array:{/var/web/agentassets/wp-includes/plugin.php:525}() /var/web/agentassets/wp-includes/plugin.php:525
+[25-May-2016 10:24:57 UTC] PHP   6. siteorigin_panels_admin_enqueue_scripts() /var/web/agentassets/wp-includes/plugin.php:525
+[25-May-2016 10:24:57 UTC] PHP   7. login_wid->form() /var/web/agentassets/wp-content/plugins/siteorigin-panels/siteorigin-panels.php:422
+[25-May-2016 10:24:57 UTC] PHP Fatal error:  Uncaught exception 'Exception' with message 'fetch - <b>Unknown column 'type' in 'where clause'</b><br>---<br> Query: select * from aa_192_revslider_sliders where `type` != &#039;template&#039; OR `type` IS NULL order by id ASC' in /var/web/agentassets/wp-content/plugins/revslider/includes/framework/functions.class.php:14
+Stack trace:
+#0 /var/web/agentassets/wp-content/plugins/revslider/includes/framework/db.class.php(26): RevSliderFunctions::throwError('fetch - <b>Unkn...', -1)
+#1 /var/web/agentassets/wp-content/plugins/revslider/includes/framework/db.class.php(41): RevSliderDB->throwError('fetch - <b>Unkn...')
+#2 /var/web/agentassets/wp-content/plugins/revslider/includes/framework/db.class.php(145): RevSliderDB->checkForErrors('fetch')
+#3 /var/web/agentassets/wp-content/plugins/revslider/includes/slider.class.php(2791): RevSliderDB->fetch('aa_192_revslide...', '`type` != 'temp...', 'id', '', 'ASC')
+#4 /var/web/agentassets/wp-content/plugins/revslider/includes/slider.class.php(2869): RevSliderSlider->getArrS in /var/web/agentassets/wp-content/plugins/revslider/includes/framework/functions.class.php on line 14
+[25-May-2016 10:24:59 UTC] PHP Notice:  The called constructor method for WP_Widget in aveone_Tabs_Widget is <strong>deprecated</strong> since version 4.3.0! Use <pre>__construct()</pre> instead. in /var/web/agentassets/wp-includes/functions.php on line 3718
+[25-May-2016 10:24:59 UTC] PHP Stack trace:
+[25-May-2016 10:24:59 UTC] PHP   1. {main}() /var/web/agentassets/index.php:0
+[25-May-2016 10:24:59 UTC] PHP   2. require() /var/web/agentassets/index.php:17
+[25-May-2016 10:24:59 UTC] PHP   3. require_once() /var/web/agentassets/wp-blog-header.php:13
+[25-May-2016 10:24:59 UTC] PHP   4. require_once() /var/web/agentassets/wp-load.php:37
+[25-May-2016 10:24:59 UTC] PHP   5. require_once() /var/web/agentassets/wp-config.php:94
+[25-May-2016 10:24:59 UTC] PHP   6. do_action() /var/web/agentassets/wp-settings.php:393
+[25-May-2016 10:24:59 UTC] PHP   7. call_user_func_array:{/var/web/agentassets/wp-includes/plugin.php:525}() /var/web/agentassets/wp-includes/plugin.php:525
+[25-May-2016 10:24:59 UTC] PHP   8. wp_widgets_init() /var/web/agentassets/wp-includes/plugin.php:525
+[25-May-2016 10:24:59 UTC] PHP   9. do_action() /var/web/agentassets/wp-includes/widgets.php:1475
+[25-May-2016 10:24:59 UTC] PHP  10. call_user_func_array:{/var/web/agentassets/wp-includes/plugin.php:525}() /var/web/agentassets/wp-includes/plugin.php:525
+[25-May-2016 10:24:59 UTC] PHP  11. aveone_tabs_load_widgets() /var/web/agentassets/wp-includes/plugin.php:525
+[25-May-2016 10:24:59 UTC] PHP  12. register_widget() /var/web/agentassets/wp-content/themes/aveone/library/functions/tabs-widget.php:6
+[25-May-2016 10:24:59 UTC] PHP  13. WP_Widget_Factory->register() /var/web/agentassets/wp-includes/widgets.php:113
+[25-May-2016 10:24:59 UTC] PHP  14. aveone_Tabs_Widget->aveone_Tabs_Widget() /var/web/agentassets/wp-includes/class-wp-widget-factory.php:57
+[25-May-2016 10:24:59 UTC] PHP  15. WP_Widget->WP_Widget() /var/web/agentassets/wp-content/themes/aveone/library/functions/tabs-widget.php:17
+[25-May-2016 10:24:59 UTC] PHP  16. _deprecated_constructor() /var/web/agentassets/wp-includes/class-wp-widget.php:181
+[25-May-2016 10:24:59 UTC] PHP  17. trigger_error() /var/web/agentassets/wp-includes/functions.php:3718
+[25-May-2016 10:25:00 UTC] PHP Warning:  Cannot modify header information - headers already sent by (output started at /var/web/agentassets/wp-includes/functions.php:3897) in /var/web/agentassets/wp-includes/pluggable.php on line 1171
+[25-May-2016 10:25:00 UTC] PHP Stack trace:
+[25-May-2016 10:25:00 UTC] PHP   1. {main}() /var/web/agentassets/index.php:0
+[25-May-2016 10:25:00 UTC] PHP   2. require() /var/web/agentassets/index.php:17
+[25-May-2016 10:25:00 UTC] PHP   3. require_once() /var/web/agentassets/wp-blog-header.php:19
+[25-May-2016 10:25:00 UTC] PHP   4. do_action() /var/web/agentassets/wp-includes/template-loader.php:12
+[25-May-2016 10:25:00 UTC] PHP   5. call_user_func_array:{/var/web/agentassets/wp-includes/plugin.php:525}() /var/web/agentassets/wp-includes/plugin.php:525
+[25-May-2016 10:25:00 UTC] PHP   6. redirect_canonical() /var/web/agentassets/wp-includes/plugin.php:525
+[25-May-2016 10:25:00 UTC] PHP   7. wp_redirect() /var/web/agentassets/wp-includes/canonical.php:507
+[25-May-2016 10:25:00 UTC] PHP   8. header() /var/web/agentassets/wp-includes/pluggable.php:1171

@@ -159,7 +159,7 @@ function cu_edit_profile_form()
     $attachment_id = get_user_meta($user_id, 'profile_picture', true);
     if($attachment_id!=""){
         $profile_pic_url = wp_get_attachment_image_src($attachment_id,'full');
-        $profile_pic = $profile_pic_url[0];
+        $profile_pic = is_array($profile_pic_url) ? $profile_pic_url[0] : (plugins_url('medma-site-manager').'/images/dummy_agent_pic.png');
     }else{
         $profile_pic = plugins_url('medma-site-manager').'/images/dummy_agent_pic.png';
     }
@@ -167,7 +167,7 @@ function cu_edit_profile_form()
     $broker_attachment_id = get_user_meta($user_id, 'broker_logo', true);
     if($broker_attachment_id!=""){
         $broker_pic_url = wp_get_attachment_image_src($broker_attachment_id,'full');
-        $broker_pic = $broker_pic_url[0];
+        $broker_pic = is_array($broker_pic_url) ? $broker_pic_url[0] : (plugins_url('medma-site-manager').'/images/placeholder_wide.jpg');
     }else{
         $broker_pic = plugins_url('medma-site-manager').'/images/placeholder_wide.jpg';
     }

@@ -13,6 +13,7 @@ require_once( ABSPATH . 'wp-admin/includes/media.php' );
 # Include Files
 include 'includes/shortcodes/register-form.php';
 include 'includes/shortcodes/profile-form.php';
+include 'includes/shortcodes/agentinformation.php';
 include 'includes/meta-boxes.php';
 include 'includes/filters.php';
 include 'includes/actions.php';

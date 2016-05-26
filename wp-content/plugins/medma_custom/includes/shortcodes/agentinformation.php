@@ -24,7 +24,7 @@ function agentinformation_shortcode($atts) {
         );
         $blog_id = get_current_blog_id();
 
-		$user_id = null;
+		$user_id = 1;
 		$admins = get_users( 'blog_id='.$blog_id.'&orderby=ID&role=administrator' );			
 		foreach($admins as $admin) {
 			if ($admin->ID == 1 && $blog_id != 1) continue;

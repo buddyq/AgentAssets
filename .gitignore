@@ -8,3 +8,4 @@ wp-config.php
 /local-tools
 /www
 /.well-known
+/db-dumps

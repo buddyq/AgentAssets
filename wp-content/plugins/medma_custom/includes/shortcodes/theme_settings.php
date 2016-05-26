@@ -828,25 +828,31 @@ function mi_sub_agent_information() {
             
             if (    isset( $_POST['profile_picture_upload_nonce'] )    && wp_verify_nonce( $_POST['profile_picture_upload_nonce'], 'profile_picture_upload' ))       
             {
-                   require_once( ABSPATH . 'wp-admin/includes/file.php' );
+                require_once( ABSPATH . 'wp-admin/includes/file.php' );
 
-                   $file = $_FILES['profile_picture_upload'];
+                $file = $_FILES['profile_picture_upload'];
 
-                   $overrides = array(
-                            'test_form' => false,
-                            'test_size' => true,
-                            'test_upload' => true, 
-                    );
+                $overrides = array(
+                        'test_form' => false,
+                        'test_size' => true,
+                        'test_upload' => true,
+                );
 
-                   $profile_picture_results = wp_handle_sideload( $file, $overrides );
-                   
-                    if (!empty($profile_picture_results['error'])) {
-                            // insert any error handling here
-                    } else {
-                            update_user_meta($user_id,'profile_picture', $profile_picture_results['url']);
-                            // perform any actions here based in the above results
-                    }
+                // Set up options array to add this file as an attachment
+                $attachment = array(
+                    'post_title' => addslashes($input_agent_name.'-'.$user_id),
+                    'post_content' => '',
+                    'post_status' => 'inherit'
+                );
+                switch_to_blog(1);
+                $profile_picture_id = media_handle_upload('profile_picture_upload', 0 , $attachment, $overrides);
+                restore_current_blog();
 
+                if (is_wp_error($profile_picture_id)) {
+                        var_dump($profile_picture_id);
+                } else {
+                    update_user_meta($user_id,'profile_picture',$profile_picture_id);
+                }
            } else {
 
                    // The security check failed, maybe show the user an error.
@@ -864,19 +870,25 @@ function mi_sub_agent_information() {
                             'test_upload' => true, 
                     );
 
-                   $broker_logo_results = wp_handle_sideload( $file, $overrides );
-                  
-                    if (!empty($broker_logo_results['error'])) {
-                            // insert any error handling here
-                    } else {
-                            update_user_meta($user_id,'broker_logo', $broker_logo_results['url']);
-                            // perform any actions here based in the above results
-                    }
+                // Set up options array to add this file as an attachment
+                $attachment = array(
+                    'post_title' => addslashes($input_agent_name.'-'.$user_id),
+                    'post_content' => '',
+                    'post_status' => 'inherit'
+                );
+                switch_to_blog(1);
+                $broker_logo_id = media_handle_upload('broker_logo_upload', 0 , $attachment, $overrides);
+                restore_current_blog();
 
-           } else {
+                if (is_wp_error($broker_logo_id)) {
+                    var_dump($broker_logo_id);
+                } else {
+                    update_user_meta($user_id,'broker_logo',$broker_logo_id);
+                }
 
+            } else {
                    // The security check failed, maybe show the user an error.
-           }
+            }
             
             
             update_user_meta($user_id,'first_name',$input_agent_name);

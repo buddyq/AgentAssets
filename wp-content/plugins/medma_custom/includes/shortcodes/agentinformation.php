@@ -22,7 +22,8 @@ function agentinformation_shortcode($atts) {
             'profile_picture' => plugins_url('medma-site-manager').'/images/dummy_agent_pic.png',
             'broker_logo' => plugins_url('medma-site-manager').'/images/placeholder_wide.jpg',
         );
-        
+        $blog_id = get_current_blog_id();
+
 		$user_id = null;
 		$admins = get_users( 'blog_id='.$blog_id.'&orderby=ID&role=administrator' );			
 		foreach($admins as $admin) {
@@ -30,17 +31,20 @@ function agentinformation_shortcode($atts) {
 			$user_id = $admin->ID;
 			break;
 		}
-		showVar($admin->user_login);
-
 		$value = get_user_meta($user_id, $atts['key'], true);
-		
         if (in_array($atts['key'], array(
             'profile_picture',
             'broker_logo'
         ))) {
             if (!empty($value)) {
+                $size = 'full';
+                if(!empty($atts['size'])) {
+                    $size = $atts['size'];
+                } else if (!empty($atts['width']) && !empty($atts['height'])) {
+                    $size = array($atts['width'], $atts['height']);
+                }
 				switch_to_blog(1);
-                $value = wp_get_attachment_image_src($value, 'full');
+                $value = wp_get_attachment_image_src($value, $size);
 				restore_current_blog();
                 if (is_array($value))
                     $value = $value[0];
@@ -73,46 +77,57 @@ function showVar($var, $die, $label='') {
 }
 
 
-function agentinformation_first_name_shortcode() {
-    return agentinformation_shortcode(array('key' => 'first_name'));
+function agentinformation_first_name_shortcode($attr = array()) {
+    $attr['key'] = 'first_name';
+    return agentinformation_shortcode($attr);
 }
 
-function agentinformation_designation_shortcode() {
-    return agentinformation_shortcode(array('key' => 'designation'));
+function agentinformation_designation_shortcode($attr = array()) {
+    $attr['key'] = 'designation';
+       return agentinformation_shortcode($attr);;
 }
 
-function agentinformation_business_phone_shortcode() {
-    return agentinformation_shortcode(array('key' => 'business_phone'));
+function agentinformation_business_phone_shortcode($attr = array()) {
+    $attr['key'] = 'business_phone';
+       return agentinformation_shortcode($attr);
 }
 
-function agentinformation_mobile_phone_shortcode() {
-    return agentinformation_shortcode(array('key' => 'mobile_phone'));
+function agentinformation_mobile_phone_shortcode($attr = array()) {
+    $attr['key'] = 'mobile_phone';
+       return agentinformation_shortcode($attr);
 }
 
-function agentinformation_profile_picture_url_shortcode() {
-    return agentinformation_shortcode(array('key' => 'profile_picture'));
+function agentinformation_profile_picture_url_shortcode($attr = array()) {
+    $attr['key'] = 'profile_picture';
+       return agentinformation_shortcode($attr);
 }
 
-function agentinformation_broker_name_shortcode() {
-    return agentinformation_shortcode(array('key' => 'broker'));
+function agentinformation_broker_name_shortcode($attr = array()) {
+    $attr['key'] = 'broker';
+       return agentinformation_shortcode($attr);
 }
 
-function agentinformation_broker_website_shortcode() {
-    return agentinformation_shortcode(array('key' => 'broker_website'));
+function agentinformation_broker_website_shortcode($attr = array()) {
+    $attr['key'] = 'broker_website';
+       return agentinformation_shortcode($attr);
 }
 
-function agentinformation_broker_logo_url_shortcode() {
-    return agentinformation_shortcode(array('key' => 'broker_logo'));
+function agentinformation_broker_logo_url_shortcode($attr = array()) {
+    $attr['key'] = 'broker_logo';
+       return agentinformation_shortcode($attr);
 }
 
-function agentinformation_facebook_shortcode() {
-    return agentinformation_shortcode(array('key' => 'facebook'));
+function agentinformation_facebook_shortcode($attr = array()) {
+    $attr['key'] = 'facebook';
+       return agentinformation_shortcode($attr);
 }
 
-function agentinformation_twitter_shortcode() {
-    return agentinformation_shortcode(array('key' => 'twitter'));
+function agentinformation_twitter_shortcode($attr = array()) {
+    $attr['key'] = 'twitter';
+       return agentinformation_shortcode($attr);
 }
 
-function agentinformation_googleplus_shortcode() {
-    return agentinformation_shortcode(array('key' => 'googleplus'));
+function agentinformation_googleplus_shortcode($attr = array()) {
+    $attr['key'] = 'googleplus';
+       return agentinformation_shortcode($attr);
 }

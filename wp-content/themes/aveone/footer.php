@@ -70,7 +70,7 @@
                         // echo "<pre>"; print_r ($attach_detail); die("</pre>");
                        
                       if(!empty($agent_profile_picture)){ ?>
-                                    <img style="height:100px; width:auto;" src="<?php echo $agent_profile_picture; ?>" alt="Profile Picture"/>
+                                    <img style="height:100px; width:auto;" src="<?php echo do_shortcode( '[agentinformation_profile_picture_url height="100"]' );?>" alt="Profile Picture"/>
                                 <?php }else{ ?>
                                     <img style="height:100px; width:auto;" src="<?php echo plugins_url('medma-site-manager'); ?>/images/dummy_agent_pic.png" alt="Profile Picture"/>
                                 <?php } ?>

@@ -4,88 +4,23 @@
  */
 global $avia_config;
 
-if (!isset($_POST['add_coupon'])) {
-    if ((!isset($_POST['package_id']) && !isset($_POST['order_id'])) || ($_POST['package_id'] == NULL && $_POST['order_id'] == NULL)) {
-        wp_redirect(home_url());
-    }
-}
-
 get_header();
 if (get_post_meta(get_the_ID(), 'header', true) != 'no')
     echo avia_title();
 $mism_package_settings = get_option('mism_package_settings');
 
-if ($mism_package_settings['default_currency'] == '1') {
-    $currency_code = 'USD';
-} elseif ($mism_package_settings['default_currency'] == '2') {
-    $currency_code = 'EUR';
-}
-
 if (isset($_POST['package_id'])) {
     $_SESSION['package_id'] = $_POST['package_id'];
 }
-$package_id = $_SESSION['package_id'];
-$package_price = get_post_meta($package_id, 'wpcf-price', true);
 
+global $wpdb;
+$user_id = get_current_user_id();
+$total_package = $wpdb->get_results("SELECT id FROM `" . $wpdb->base_prefix . "orders` WHERE user_id = '" . $user_id . "' AND status='1'");
 
-if (isset($_POST['add_coupon']) && $_POST['add_coupon'] = "Apply Coupon") {
-    global $wpdb;
+echo "<pre>"; print_r ($total_package); die("</pre>");
 
-    $discount_code = $_POST['discount_code'];
-
-    $args = array(
-        'post_type' => 'coupon',
-        'post_status' => 'publish',
-        's' => $discount_code,
-        'exact' => true
-    );
-    $coupon_details = get_posts($args);
-    $coupon_id = $coupon_details['0']->ID;
-    $discount_type = get_post_meta($coupon_id, 'wpcf-discount-type', true);
-    $allusers = get_post_meta($coupon_details[0]->ID, 'micu_coupon_users', true);
-    $discount_amount = get_post_meta($coupon_id, 'wpcf-total-discount', true);
-
-    $current_user_id = get_current_user_id();
-
-    foreach ($allusers AS $singleUser) {
-        if (($singleUser->ID == $current_user_id) || $singleUser->ID == '0') {
-            $discount = $discount_amount;
-            $discount_flag = 1;
-        } elseif (empty($_POST['discount_code'])) {
-            $discount = 0;
-        } else {
-            $discount = 0;
-        }
-    }
-}
-
-# Paypal URL (LIVE/Sandbox)
-$paypal_url = '';
-if ($mism_package_settings['environment'] == "1") {
-    $paypal_url = 'https://www.sandbox.paypal.com/webscr?';
-} elseif ($mism_package_settings['environment'] == "2") {
-    $paypal_url = 'https://www.paypal.com/webscr?';
-}
-
-$price = $package_price;
-
-# Tax Calcultation
-$tax = 0;
-if (isset($mism_package_settings['tax'])) {
-    $tax = ($price * $mism_package_settings['tax']) / 100; # Considered Tax is provided in percentage, calcultation for tax
-}
-
-if ($discount_flag == 1) {
-# Discount Calculation
-    $discount = 0;
-    if ($discount_type == "1") { # Discount type amount
-        $discount = $price - $discount_amount;
-    } elseif ($discount_type == "2") { # Discount type percentage
-        $discount = (($price * $discount_amount) / 100);
-    }
-}
-$total_amount = $price + $tax - $discount;
 ?>
+
 <script type="text/javascript">
     jQuery(document).ready(function($) {
         jQuery('#checkout-button').click(function(e){

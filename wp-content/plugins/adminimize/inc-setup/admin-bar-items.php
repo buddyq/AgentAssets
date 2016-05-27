@@ -84,8 +84,8 @@ function _mw_adminimize_change_admin_bar() {
 
 	// Get current user data.
 	$user      = wp_get_current_user();
-	//if ( !is_array($user->roles) || ! isset($user->roles[ 0 ]) ) { // hack!! todo - remove it
-	if ( ! $user->roles[ 0 ] ) {
+	if ( !is_array($user->roles) || ! isset($user->roles[ 0 ]) ) { // hack!! todo - remove it
+	//if ( ! $user->roles[ 0 ] ) {
 		return;
 	}
 	$user_role = $user->roles[ 0 ];

@@ -416,7 +416,7 @@ function mism_clone_table($old_table, $new_table) {
     $table_scheme = $wpdb->get_results('SHOW FULL COLUMNS `'.$old_table.'`');
     if (!is_null($table_scheme) && false !== $wpdb->query('DROP TABLE IF EXISTS `'.$new_table.'`')) {
         foreach($table_scheme as $col) {
-            $create_column = $col->Field . ' ' . $col->Type;
+            $create_column = '`' . $col->Field . '` ' . $col->Type;
 
             if ('NO' === $col->Null) {
                 $create_column .= ' NOT NULL';
@@ -453,7 +453,7 @@ function mism_clone_table($old_table, $new_table) {
                 throw new Exception('Can\'t cope rows from '.$old_table.' to '.$new_table);
             }
         } else {
-            throw new Exception('Can\'t create table '.$new_table);
+            throw new Exception('Can\'t create table '.$new_table. '<br/><br/>'.$create_sql);
         }
     } else {
         throw new Exception('Can\'t load table metadata '.$old_table);

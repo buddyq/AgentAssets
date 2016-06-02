@@ -411,6 +411,7 @@ function mism_clone_table($old_table, $new_table) {
     global $wpdb;
     $clone_columns = array();
     $clone_keys = array();
+    $primary_keys = array();
     $clone_fields = array();
 
     $table_scheme = $wpdb->get_results('SHOW FULL COLUMNS FROM `'.$old_table.'`');
@@ -433,7 +434,10 @@ function mism_clone_table($old_table, $new_table) {
                 $create_column .= ' COLLATE '.$col->Collation;
             }
             if ('PRI' === $col->Key) {
-                $clone_keys[] = 'PRIMARY KEY (`' . $col->Field . '`)';
+                if (0 < count($primary_keys)) {
+                    $clone_keys[] = 'KEY `' . $col->Field . '` (`' . $col->Field . '`)';
+                }
+                $primary_keys[] = '`' . $col->Field . '`';
             } else if ('UNI' === $col->Key) {
                 $clone_keys[] = 'UNIQUE KEY (`' . $col->Field . '`)';
             }
@@ -444,6 +448,9 @@ function mism_clone_table($old_table, $new_table) {
 
         $create_sql = 'CREATE TABLE `'.$new_table.'` (';
         $create_sql .= implode(', ', $clone_columns);
+        if (0 < count($primary_keys)) {
+            $create_sql .= 'PRIMARY KEY (' . implode(', ', $primary_keys). ')';
+        }
         if (0 < count($clone_keys)) {
             $create_sql .= ', '.implode(', ', $clone_keys);
         }

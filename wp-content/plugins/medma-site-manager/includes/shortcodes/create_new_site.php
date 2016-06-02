@@ -447,7 +447,7 @@ function mism_clone_table($old_table, $new_table) {
         if (0 < count($clone_keys)) {
             $create_sql .= ', '.implode(', ', $clone_keys);
         }
-        $create_sql = ') ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci';
+        $create_sql .= ') ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci';
         if (false !== $wpdb->query($create_sql)) {
             if (false === $wpdb->query('INSERT INTO `'.$new_table.'` SELECT * FROM `'.$old_table.'`')) {
                 throw new Exception('Can\'t cope rows from '.$old_table.' to '.$new_table);

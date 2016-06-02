@@ -1,8 +1,9 @@
 wp-config.php
 /.idea
 /wp_trace.log
-/.ftpquota
 /wp-admin/wp_trace.log
+/wp-admin/network/wp_trace.log
+/.ftpquota
 /wp-content/debug.log
 /wp-content/plugins/wp-paypal-ipn/ipn_errors.log 
 /local-tools

@@ -409,52 +409,10 @@ function mism_clone_blog($clone_from_blog_id, $clone_to_blog_id) {
 function mism_clone_table($old_table, $new_table) {
     /** @var wpdb */
     global $wpdb;
-    $clone_columns = array();
-    $clone_keys = array();
-    $primary_keys = array();
-    $clone_fields = array();
 
-    $table_scheme = $wpdb->get_results('SHOW FULL COLUMNS FROM `'.$old_table.'`');
-    if (!is_null($table_scheme) && false !== $wpdb->query('DROP TABLE IF EXISTS `'.$new_table.'`')) {
-        foreach($table_scheme as $col) {
-            $create_column = '`' . $col->Field . '` ' . $col->Type;
-
-            if ('NO' === $col->Null) {
-                $create_column .= ' NOT NULL';
-            } else if ('YES' === $col->Null && is_null($col->Default)) {
-                $create_column .= ' DEFAULT NULL';
-            }
-            if (!empty($col->Default)) {
-                $create_column .= " DEFAULT '" . $col->Default . "'";
-            }
-            if (!empty($col->Extra)) {
-                $create_column .= ' ' . $col->Extra;
-            }
-            if (!is_null($col->Collation)) {
-                $create_column .= ' COLLATE '.$col->Collation;
-            }
-            if ('PRI' === $col->Key) {
-                if (0 < count($primary_keys)) {
-                    $clone_keys[] = 'KEY `' . $col->Field . '` (`' . $col->Field . '`)';
-                }
-                $primary_keys[] = '`' . $col->Field . '`';
-            } else if ('UNI' === $col->Key) {
-                $clone_keys[] = 'UNIQUE KEY (`' . $col->Field . '`)';
-            }
-
-            $clone_columns[] = $create_column;
-            $clone_fields[] = $col->Field;
-        }
-
-        $create_sql = 'CREATE TABLE `'.$new_table.'` (';
-        $create_sql .= implode(', ', $clone_columns);
-        if (0 < count($primary_keys)) {
-            $create_sql .= 'PRIMARY KEY (' . implode(', ', $primary_keys). ')';
-        }
-        if (0 < count($clone_keys)) {
-            $create_sql .= ', '.implode(', ', $clone_keys);
-        }
-        $create_sql .= ') ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci';
+    $create_sql = $wpdb->get_var('SHOW CREATE TABLE `'.$old_table.'`');
+    if (!is_null($create_sql) && false !== $wpdb->query('DROP TABLE IF EXISTS `'.$new_table.'`')) {
+        $create_sql = str_replace($old_table, $new_table, $create_sql);
         if (false !== $wpdb->query($create_sql)) {
             if (false === $wpdb->query('INSERT INTO `'.$new_table.'` SELECT * FROM `'.$old_table.'`')) {
                 throw new Exception('Can\'t cope rows from '.$old_table.' to '.$new_table);

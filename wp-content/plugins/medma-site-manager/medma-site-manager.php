@@ -14,6 +14,8 @@
 # Files Added
 include 'XML-API/xmlapi.php';
 
+require_once 'includes/ordermap.class.php';
+
 require_once 'includes/post-types.php';
 
 require_once 'includes/metaboxes.php';

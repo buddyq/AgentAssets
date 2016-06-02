@@ -161,17 +161,8 @@ function mism_create_new_site($atts) {
                                 $counter_consumed = ($counter_details[0]->site_consumed + 1);
                                 $sql = "UPDATE `" . $wpdb->base_prefix . "package_counter` SET site_consumed='" . $counter_consumed . "' WHERE order_id='" . $order_id . "'";
                                 $counter_id = $wpdb->query($sql);
-                                
-                                $order_maping = $wpdb->insert($wpdb->base_prefix . 'order_map', array(
-                                    'user_id' => $userID,
-                                    'site_id' => $blog_id,
-                                    'counter_id' => $counter_id
-                                        ), array(
-                                    '%d',
-                                    '%d',
-                                    '%d'
-                                        )
-                                );
+
+                                OrderMap::addNewRelation($userID, $blog_id, $counter_id);
                                 ?>
                                 <div class="avia_message_box avia-color-green avia-size-large avia-icon_select-yes avia-border-  avia-builder-el-0  el_before_av_notification  avia-builder-el-first ">
                                     <span class="avia_message_box_title"><?php _e('Success', 'mism'); ?></span>
@@ -201,17 +192,8 @@ function mism_create_new_site($atts) {
                             $counter_consumed = ($counter_details[0]->site_consumed + 1);
                             $sql = "UPDATE `" . $wpdb->base_prefix . "package_counter` SET site_consumed='" . $counter_consumed . "' WHERE order_id='" . $order_id . "'";
                             $counter_id = $wpdb->query($sql);
-                                
-                            $order_maping = $wpdb->insert($wpdb->base_prefix . 'order_map', array(
-                                'user_id' => $userID,
-                                'site_id' => $blog_id,
-                                'counter_id' => $counter_id
-                                    ), array(
-                                '%d',
-                                '%d',
-                                '%d'
-                                    )
-                                );
+
+                            OrderMap::addNewRelation($userID, $blog_id, $counter_id);
                             
                             $html .= '<div class="avia_message_box avia-color-red avia-size-large avia-icon_select-yes avia-border-  avia-builder-el-2  el_after_av_notification  el_before_av_notification ">';
                             $html .= '<span class="avia_message_box_title">Note</span>';
@@ -403,15 +385,7 @@ function mism_clone_blog($clone_from_blog_id, $clone_to_blog_id) {
     //we have got the data which we need to update again later
     //now for each table, let us clone
     foreach ($tables as $table) {
-        //drop table
-        //clone table
-        $query_drop = "DROP TABLE {$new_table_prefix}{$table}";
-
-        $query_copy = "CREATE TABLE {$new_table_prefix}{$table} AS (SELECT * FROM {$old_table_prefix}{$table})";
-        //drop table
-        $wpdb->query($query_drop);
-        //clone table
-        $wpdb->query($query_copy);
+        mism_clone_table($old_table_prefix . $table, $new_table_prefix . $table);
     }
 
     //update the preserved options to the options table of the clonned blog
@@ -429,7 +403,61 @@ function mism_clone_blog($clone_from_blog_id, $clone_to_blog_id) {
     // $sql = "UPDATE `" . $new_table_prefix . "postmeta` SET meta_value = REPLACE (meta_value, '{ADMINEMAIL}', '".get_option('admin_email')."') WHERE meta_value LIKE '%{ADMINEMAIL}%'";
     //    $sql = "ALTER TABLE `" . $new_table_prefix . "posts` MODIFY ID BIGINT PRIMARY KEY AUTO_INCREMENT";
     //    $wpdb->query($sql);
-    
+
+}
+
+function mism_clone_table($old_table, $new_table) {
+    /** @var wpdb */
+    global $wpdb;
+    $clone_columns = array();
+    $clone_keys = array();
+    $clone_fields = array();
+
+    $table_scheme = $wpdb->get_results('SHOW FULL COLUMNS `'.$old_table.'`');
+    if (!is_null($table_scheme) && false !== $wpdb->query('DROP TABLE IF EXISTS `'.$new_table.'`')) {
+        foreach($table_scheme as $col) {
+            $create_column = $col->Field . ' ' . $col->Type;
+
+            if ('NO' === $col->Null) {
+                $create_column .= ' NOT NULL';
+            } else if ('YES' === $col->Null && is_null($col->Default)) {
+                $create_column .= ' DEFAULT NULL';
+            }
+            if (!empty($col->Default)) {
+                $create_column .= " DEFAULT '" . $col->Default . "'";
+            }
+            if (!empty($col->Extra)) {
+                $create_column .= ' ' . $col->Extra;
+            }
+            if (!is_null($col->Collation)) {
+                $create_column .= ' COLLATE '.$col->Collation;
+            }
+            if ('PRI' === $col->Key) {
+                $clone_keys[] = 'PRIMARY KEY (`' . $col->Field . '`)';
+            } else if ('UNI' === $col->Key) {
+                $clone_keys[] = 'UNIQUE KEY (`' . $col->Field . '`)';
+            }
+
+            $clone_columns[] = $create_column;
+            $clone_fields[] = $col->Field;
+        }
+
+        $create_sql = 'CREATE TABLE `'.$new_table.'` (';
+        $create_sql .= implode(', ', $clone_columns);
+        if (0 < count($clone_keys)) {
+            $create_sql .= ', '.implode(', ', $clone_keys);
+        }
+        $create_sql = ') ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci';
+        if (false !== $wpdb->query($create_sql)) {
+            if (false === $wpdb->query('INSERT INTO `'.$new_table.'` SELECT * FROM `'.$old_table.'`')) {
+                throw new Exception('Can\'t cope rows from '.$old_table.' to '.$new_table);
+            }
+        } else {
+            throw new Exception('Can\'t create table '.$new_table);
+        }
+    } else {
+        throw new Exception('Can\'t load table metadata '.$old_table);
+    }
 }
 
 class MISM_Files {
@@ -482,16 +510,20 @@ class MISM_Files {
     public static function recurse_copy($src, $dst, $exclude_dirs = array()) {
         //echo "recurse<br/>";
         $dir = opendir($src);
-        @mkdir($dst);
+        if (!is_dir($dst)) {
+            mkdir($dst);
+        }
         while (false !== ( $file = readdir($dir))) {
             if (( $file != '.' ) && ( $file != '..' )) {
-                if (is_dir($src . '/' . $file)) {
+                $srcFile = str_replace('//', '/', $src . '/' . $file);
+                $dstFile = str_replace('//', '/', $dst . '/' . $file);
+                if (is_dir($srcFile)) {
                     if (!in_array($file, $exclude_dirs)) {
 
-                        MISM_Files::recurse_copy($src . '/' . $file, $dst . '/' . $file);
+                        MISM_Files::recurse_copy($srcFile, $dstFile);
                     }
                 } else {
-                    copy($src . '/' . $file, $dst . '/' . $file);
+                    copy($srcFile, $dstFile);
                 }
             }
         }
@@ -506,9 +538,9 @@ class MISM_Files {
      */
     public static function init_dir($path) {
         //echo "init<br/>";
-        $e = error_reporting(0);
+        //$e = error_reporting(0);
 
-        if (!file_exists($path)) {
+        if (!is_dir($path)) {
             return mkdir($path, 0777);
         } else if (is_dir($path)) {
             if (!is_writable($path)) {
@@ -517,7 +549,7 @@ class MISM_Files {
             return true;
         }
 
-        error_reporting($e);
+        //error_reporting($e);
         return false;
     }
 

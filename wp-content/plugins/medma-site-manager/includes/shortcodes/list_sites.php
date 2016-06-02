@@ -16,7 +16,7 @@ function mism_list_sites($atts)
     {
         
         //$blogs = get_blogs_of_user(get_current_user_id(),false);
-        $blogs = OrderMap::getUserBlogsDetailed(get_current_blog_id());
+        $blogs = OrderMap::getUserBlogsDetailed(get_current_user_id());
        $html .= '<div class="tng-responsive-table">';
         
         if(count($blogs)>0)
@@ -76,7 +76,7 @@ function mism_list_sites($atts)
     elseif($atts['type']=="all")
     {
         //$blogs = get_blogs_of_user(get_current_user_id(),false);
-        $blogs = OrderMap::getUserBlogsDetailed(get_current_blog_id());
+        $blogs = OrderMap::getUserBlogsDetailed(get_current_user_id());
         
         if(count($blogs)>0)
         {
@@ -122,7 +122,7 @@ function mism_list_sites($atts)
     elseif($atts['type']=="delete")
     {
         //$blogs = get_blogs_of_user(get_current_user_id(),false);
-        $blogs = OrderMap::getUserBlogsDetailed(get_current_blog_id());
+        $blogs = OrderMap::getUserBlogsDetailed(get_current_user_id());
         
         
         if(count($blogs)>0)

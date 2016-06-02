@@ -413,7 +413,7 @@ function mism_clone_table($old_table, $new_table) {
     $clone_keys = array();
     $clone_fields = array();
 
-    $table_scheme = $wpdb->get_results('SHOW FULL COLUMNS `'.$old_table.'`');
+    $table_scheme = $wpdb->get_results('SHOW FULL COLUMNS FROM `'.$old_table.'`');
     if (!is_null($table_scheme) && false !== $wpdb->query('DROP TABLE IF EXISTS `'.$new_table.'`')) {
         foreach($table_scheme as $col) {
             $create_column = '`' . $col->Field . '` ' . $col->Type;

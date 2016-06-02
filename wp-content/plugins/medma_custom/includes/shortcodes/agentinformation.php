@@ -1,7 +1,5 @@
 <?php
-
 add_shortcode('agentinformation', 'agentinformation_shortcode');
-
 add_shortcode('agentinformation_first_name', 'agentinformation_first_name_shortcode');
 add_shortcode('agentinformation_designation', 'agentinformation_designation_shortcode');
 add_shortcode('agentinformation_business_phone', 'agentinformation_business_phone_shortcode');
@@ -13,46 +11,88 @@ add_shortcode('agentinformation_broker_logo_url', 'agentinformation_broker_logo_
 add_shortcode('agentinformation_facebook', 'agentinformation_facebook_shortcode');
 add_shortcode('agentinformation_twitter', 'agentinformation_twitter_shortcode');
 add_shortcode('agentinformation_googleplus', 'agentinformation_googleplus_shortcode');
+add_shortcode('agentinformation_bloginfo', 'agentinformation_bloginfo_shortcode');
 
 function agentinformation_shortcode($atts) {
-    $value = null;
-    if (isset($atts['key'])) {
-		global $wpdb;
-        $defaults = array(
-            'profile_picture' => plugins_url('medma-site-manager').'/images/dummy_agent_pic.png',
-            'broker_logo' => plugins_url('medma-site-manager').'/images/placeholder_wide.jpg',
-        );
-        $blog_id = get_current_blog_id();
 
-		$user_id = 1;
-		$admins = get_users( 'blog_id='.$blog_id.'&orderby=ID&role=administrator' );			
-		foreach($admins as $admin) {
-			if ($admin->ID == 1 && $blog_id != 1) continue;
-			$user_id = $admin->ID;
-			break;
-		}
-		$value = get_user_meta($user_id, $atts['key'], true);
-        if (in_array($atts['key'], array(
-            'profile_picture',
-            'broker_logo'
-        ))) {
-            if (!empty($value)) {
-                $size = 'full';
-                if(!empty($atts['size'])) {
-                    $size = $atts['size'];
-                } else if (!empty($atts['width']) && !empty($atts['height'])) {
-                    $size = array($atts['width'], $atts['height']);
-                }
-				switch_to_blog(1);
-                $value = wp_get_attachment_image_src($value, $size);
-				restore_current_blog();
-                if (is_array($value))
-                    $value = $value[0];
+    $value = null;
+    
+    if (isset($atts['key'])) 
+    {
+		  
+		  global $wpdb;
+      
+      $defaults = array(
+      'profile_picture' => plugins_url('medma-site-manager').'/images/dummy_agent_pic.png',
+      'broker_logo' => plugins_url('medma-site-manager').'/images/placeholder_wide.jpg',
+      );
+      
+      $blog_id = get_current_blog_id();
+
+		  $user_id = 1;
+  		
+  		$admins = get_users( 'blog_id='.$blog_id.'&orderby=ID&role=administrator' );			
+  		
+  		foreach($admins as $admin) 
+  		{
+  			if ($admin->ID == 1 && $blog_id != 1) continue;
+  			$user_id = $admin->ID;
+  			break;
+  		}
+
+  		$value = get_user_meta($user_id, $atts['key'], true);
+      
+      // get_image_tag( $id, $alt, $title, $align, $size );
+      // $value = get_image_tag($value, $alt, $title, $align, $atts['size']);
+      
+      if (in_array($atts['key'], array('profile_picture','broker_logo') )) 
+      {
+        if (!empty($value)) 
+        {
+          $size = 'full';
+      
+          if (!empty($atts['size'])) {
+            $size = $atts['size'];
+          } 
+          else if (!empty($atts['width']) && !empty($atts['height'])) {
+            $size = array($atts['width'], $atts['height']);
+          }
+          // switch_to_blog($blog_id);
+          // $value = get_user_meta($user_id, $atts['key'], true);
+          
+  			  if (is_numeric($value) && $value > 0 )
+          {
+            
+            switch_to_blog(1);
+            // echo "SIZE: ".$size;
+            // $value_url = wp_get_attachment_image($value, $size);
+            $value = get_image_tag($value, $alt, $title, $align, $atts['size']);
+            // $value_url = get_image_tag($value, $alt, $title, $align, $size);
+            
+            if ( is_array($value_url) )
+            {
+              $value_url = $value_url[0];
             }
-        }
-        if (isset($defaults[$atts['key']]) && empty($value)) {
-            $value = $defaults[$atts['key']];
-        }
+            switch_to_blog( $blog_id );
+          }
+          else
+          {
+            $value_url = $value;
+          }
+  			  
+          // $value = wp_get_attachment_image_src($value, $size);
+          switch_to_blog($blog_id);
+                
+          // if (is_array($value))
+          // $value = $value[0];
+          }
+        
+      }
+    
+       if (isset($defaults[$atts['key']]) && empty($value)) 
+       {
+        $value = $defaults[$atts['key']];
+       }
     }
     return $value;
 }
@@ -70,7 +110,7 @@ function showVar($var, $die, $label='') {
     elseif ($var === '')
         echo 'EMPTY STRING';
     else
-        print_r($var);
+        // print_r($var);
     echo '</pre>';
     if ($die)
         die();
@@ -130,4 +170,10 @@ function agentinformation_twitter_shortcode($attr = array()) {
 function agentinformation_googleplus_shortcode($attr = array()) {
     $attr['key'] = 'googleplus';
        return agentinformation_shortcode($attr);
+}
+
+function agentinformation_bloginfo_shortcode($attr = array()) {
+    $key = $attr['key'];
+    $value = get_bloginfo($key);
+       return $value;
 }

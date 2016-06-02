@@ -14,16 +14,16 @@ global $avia_config;
 			<div class='container'>
 
 				<main class='template-page content  <?php avia_layout_class( 'content' ); ?> units' <?php avia_markup_helper(array('context' => 'content','post_type'=>'page'));?>>
-          <h1>jlkj</h1>
-                    <?php
-                    /* Run the loop to output the posts.
-                    * If you want to overload this in a child theme then include a file
-                    * called loop-page.php and that will be used instead.
-                    */
+				  
+          <?php
+          /* Run the loop to output the posts.
+          * If you want to overload this in a child theme then include a file
+          * called loop-page.php and that will be used instead.
+          */
 
-                    $avia_config['size'] = avia_layout_class( 'main' , false) == 'entry_without_sidebar' ? '' : 'entry_with_sidebar';
-                    get_template_part( 'includes/loop', 'page' );
-                    ?>
+          $avia_config['size'] = avia_layout_class( 'main' , false) == 'entry_without_sidebar' ? '' : 'entry_with_sidebar';
+          get_template_part( 'includes/loop', 'page' );
+          ?>
 
 				<!--end content-->
 				</main>

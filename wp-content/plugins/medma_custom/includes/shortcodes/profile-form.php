@@ -157,6 +157,7 @@ function cu_edit_profile_form()
     $username = $user_details->data->user_login;
     $email = $user_details->data->user_email;
     $attachment_id = get_user_meta($user_id, 'profile_picture', true);
+
     if($attachment_id!=""){
         $profile_pic_url = wp_get_attachment_image_src($attachment_id,'full');
         $profile_pic = is_array($profile_pic_url) ? $profile_pic_url[0] : (plugins_url('medma-site-manager').'/images/dummy_agent_pic.png');
@@ -175,6 +176,7 @@ function cu_edit_profile_form()
     $html = '';
     if(isset($_GET['form']) && $_GET['form']=="edit")
     {
+
         # Fetch User Meta Information
         $firstName = get_user_meta($user_id, 'first_name', true);
         $businessPhone = get_user_meta($user_id, 'business_phone', true);
@@ -439,7 +441,7 @@ function cu_edit_profile_form()
         
         $html .= '<tr>';
         $html .= '<td>';
-        $html .= '<label for="micu_designation">'.__('Designation','micu').' </label>';
+        $html .= '<label for="micu_designation">'.__('Designations','micu').' </label>';
         $html .= '</td>';
 
         $html .= '<td>';

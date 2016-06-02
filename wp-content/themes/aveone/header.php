@@ -60,10 +60,11 @@
   
   <?php } else { ?>
   
-   <?php $aveone_header_logo = aveone_get_option('evl_header_logo', '');
+   <?php $aveone_header_logo = aveone_get_option('evl_header_logo', 'aveone-header-logo');
     if ($aveone_header_logo) {
         echo "<div class='logo-container'>";
-        echo "<a href=".get_site_url()."><img id='logo-image' class='img-responsive' src=".$aveone_header_logo." /></a>";
+        // echo "<a href=".get_site_url()."><img id='logo-image' class='img-responsive' src=".$aveone_header_logo." /></a>";
+        echo "<a href=".get_site_url().">".do_shortcode('[agentinformation_broker_logo_url size=aveone-header-logo]')."</a>";
         echo "</div>";
     }
     else

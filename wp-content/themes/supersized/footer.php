@@ -1,6 +1,6 @@
                   </div>
             </div>  
-                
+
                 <footer id="footer" class="footer-wrapper">
                     <div class="container">
                         <div class="col-sm-6">
@@ -21,13 +21,15 @@
                                         if($broker_logo != "")
                                         {
                                             ?>
-                                            <img src="<?php echo  $broker_logo;?>" height="80" alt="<?php echo get_user_meta($users['0']->data->ID,'broker',true);?>">
+                                            <?php echo do_shortcode('[agentinformation_broker_logo_url size=ss-broker-logo]'); ?>
+                                            <!-- <img src="<?php echo $broker_logo;?>" height="80" alt="<?php echo get_user_meta($users['0']->data->ID,'broker',true);?>"> -->
                                             <?php
                                         }
                                         else
                                         {
                                             ?>
-                                            <img src="<?php echo get_template_directory_uri();?>/images/broker_logo.jpg" height="80" alt="<?php echo get_user_meta($users['0']->data->ID,'broker',true);?>">
+
+                                            <!-- <img src="<?php echo get_template_directory_uri();?>/images/broker_logo.jpg" height="80" alt="<?php echo get_user_meta($users['0']->data->ID,'broker',true);?>"> -->
                                             <?php
                                         }
                                         ?>
@@ -88,7 +90,7 @@
                                         <li class="social">
                                             <?php
 
-                                    $attachment_id = get_user_meta($users['0']->data->ID,'profile_picture',true);
+                                    // $attachment_id = get_user_meta($users['0']->data->ID,'profile_picture',true);
                                     
                                     $facebook_url = get_user_meta($users['0']->data->ID,'facebook',true);
                                     $twitter_url = get_user_meta($users['0']->data->ID,'twitter',true);
@@ -104,26 +106,24 @@
 
                                 <div id="agent-pic" class="col-sm-3">
                                     <?php 
-
-                                    $attachment_id = get_user_meta($users['0']->data->ID,'profile_picture',true);
+                                    $profilepic = do_shortcode('[agentinformation_profile_picture_url size=ss-agent-img]');
+                                    // $attachment_id = get_user_meta($users['0']->data->ID,'profile_picture',true);
                                     $facebook_url = get_user_meta($users['0']->data->ID,'facebook',true);
                                     $twitter_url = get_user_meta($users['0']->data->ID,'twitter',true);
                                     $googleplus_url = get_user_meta($users['0']->data->ID,'googleplus',true);
                                     switch_to_blog(1);  # Switching to Admin
-                                    $attach_details = wp_get_attachment_image_src($attachment_id,'full');
+                                    // $attach_details = wp_get_attachment_image_src($attachment_id,'full');
                                     
-                                $profilepic = $attach_details[0];
+                                // $profilepic = $attach_details[0];
                                 //$profilepic = $user_data['agent_image'];
                                     restore_current_blog();
                                     if($profilepic !="")
                                     {
-                                        ?>
-                                        <img style="width:auto; height:136px;" src="<?php echo $profilepic;?>" alt="Agent Photo">
-                                        <?php
+                                      echo $profilepic;
                                     }
                                     else
                                     {
-                                        ?>
+                                      ?>
                                         <img style="width:auto; height:136px;" src="<?php echo get_template_directory_uri();?>/images/agent_pic.jpg" alt="Agent Photo">
                                         <?php
                                     }

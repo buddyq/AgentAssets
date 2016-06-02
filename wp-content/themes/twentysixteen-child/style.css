@@ -12,7 +12,7 @@ Text Domain: twentysixteen
 */
 
 @import url('../twentysixteen/style.css');
-
+#menu a{ box-shadow: none;}
 /*.page-template-page_full-screen {overflow: hidden}*/
 .page-template-page_full-screen .site {margin: 0}
 .page-template-page_full-screen .site-inner {max-width: 100%}

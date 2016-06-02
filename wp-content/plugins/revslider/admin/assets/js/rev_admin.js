@@ -1061,7 +1061,7 @@ var RevSliderAdmin = new function(){
 							
 							jQuery(this).dialog("close");
 						}else{
-							alert(rev_lang.this_feature_only_if_activated);
+							jQuery('#regsiter-to-access-store-none').click();
 						}
 					}
 				}

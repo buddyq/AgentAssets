@@ -506,6 +506,13 @@ $slider_addons = apply_filters('revslider_slide_addons', array(), $slide, $slide
 									<option value="zoom-out"><?php _e('zoom-out', 'revslider'); ?></option>
 								</select>
 								
+								
+								<span class="rs-layer-toolbar-space" style="margin-right: 10px"></span>
+
+								<!-- HOVER Z-INDEX -->
+								<i class="rs-mini-layer-icon eg-icon-resize-vertical rs-toolbar-icon tipsy_enabled_top" title="<?php _e("Z-Index",'revslider'); ?>" style="margin-right:10px"></i>
+								<input type="text" style="width:90px; padding-right:10px;" class="rs-staticcustomstylechange textbox-caption rs-layer-input-field tipsy_enabled_top" title="<?php _e("Hover Z-Index (Enter z-index level or enter auto for default value)",'revslider'); ?>" id="hover_zindex" name="hover_zindex" value="auto">
+								
 							</span>
 
 							<!-- LAYER TOGGLE SETTINGS -->
@@ -1750,6 +1757,7 @@ $slider_addons = apply_filters('revslider_slide_addons', array(), $slide, $slide
 						<a href="javascript:void(0)" id="button_add_layer_video" data-isstatic="<?php echo $add_static; ?>" class="add-layer-button" ><i class="rs-icon-layervideo_n"></i><span class="add-layer-txt"><?php _e("Video",'revslider')?></span></a>
 						<a href="javascript:void(0)" id="button_add_layer_button" data-isstatic="<?php echo $add_static; ?>" class="add-layer-button" ><i class="rs-icon-layerbutton_n"></i><span class="add-layer-txt"><?php _e("Button",'revslider')?></span></a>
 						<a href="javascript:void(0)" id="button_add_layer_shape" data-isstatic="<?php echo $add_static; ?>" class="add-layer-button" ><i class="rs-icon-layershape_n"></i><span class="add-layer-txt"><?php _e("Shape",'revslider')?></span></a>
+						<!--<a href="javascript:void(0)" id="button_add_layer_group" data-isstatic="<?php echo $add_static; ?>" class="add-layer-button" ><i class="rs-icon-layergroup_n"></i><span class="add-layer-txt"><?php _e("Group",'revslider')?></span></a>-->
 						<a href="javascript:void(0)" id="button_add_layer_svg" data-isstatic="<?php echo $add_static; ?>" class="add-layer-button" ><i class="rs-icon-layersvg_n"></i><span class="add-layer-txt"><?php _e("Object",'revslider')?></span></a>
 						<a href="javascript:void(0)" id="button_add_layer_import" data-isstatic="<?php echo $add_static; ?>" class="add-layer-button" ><i class="eg-icon-download"></i><span class="add-layer-txt"><?php _e("Import",'revslider')?></span></a>
 					</div>
@@ -2961,8 +2969,8 @@ $slider_addons = apply_filters('revslider_slide_addons', array(), $slide, $slide
 			<option <# if( data['action'] == 'togglefullscreen' ){ #>selected="selected" <# } #>value="togglefullscreen"><?php _e("Toggle FullScreen",'revslider'); ?></option>
 			<option <# if( data['action'] == 'gofullscreen' ){ #>selected="selected" <# } #>value="gofullscreen"><?php _e("Go FullScreen",'revslider'); ?></option>
 			<option <# if( data['action'] == 'exitfullscreen' ){ #>selected="selected" <# } #>value="exitfullscreen"><?php _e("Exit FullScreen",'revslider'); ?></option>
+			<?php do_action( 'rs_action_add_layer_action' ); ?>
 		</select>
-
 		<!-- SIMPLE LINK PARAMETERS -->
 		<span class="action-link-wrapper" style="display:none;">
 			<span><?php _e("Link Url",'revslider'); ?></span>
@@ -3051,7 +3059,7 @@ $slider_addons = apply_filters('revslider_slide_addons', array(), $slide, $slide
 				<option value="keep"><?php _e("Keep last selected State",'revslider'); ?></option>
 			</select>
 		</span>
-		<span class="action-delay-wrapper" style="display: none; white-space:nowrap">>
+		<span class="action-delay-wrapper" style="display: none; white-space:nowrap">
 			<span class="rs-layer-toolbar-space"  style="width:30px"></span>
 			<span><?php _e("Delay",'revslider'); ?></span>
 			<span class="rs-layer-toolbar-space"></span>

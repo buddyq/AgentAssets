@@ -410,7 +410,7 @@ function mism_clone_table($old_table, $new_table) {
     /** @var wpdb */
     global $wpdb;
 
-    $create_sql = $wpdb->get_var('SHOW CREATE TABLE `'.$old_table.'`');
+    $create_sql = $wpdb->get_var('SHOW CREATE TABLE `'.$old_table.'`', 1);
     if (!is_null($create_sql) && false !== $wpdb->query('DROP TABLE IF EXISTS `'.$new_table.'`')) {
         $create_sql = str_replace($old_table, $new_table, $create_sql);
         if (false !== $wpdb->query($create_sql)) {

@@ -12,8 +12,8 @@ function mism_blog_delete( $blog_id, $drop )
         /** @var wpdb */
         global $wpdb;
         $blogInfo = OrderMap::getBlogInfo($blog_id);
-        $wpdb->query('UPDATE `'.$wpdb->base_prefix . 'package_counter` SET `site_consumed` = `site_consumed` - 1 WHERE `id` = '.$blogInfo->counter_id);
-
-
+        if ($wpdb->query('UPDATE `'.$wpdb->base_prefix . 'package_counter` SET `site_consumed` = `site_consumed` - 1 WHERE `id` = '.$blogInfo->counter_id)) {
+            OrderMap::dropRelation($blog_id);
+        }
     }
 }

@@ -59,5 +59,9 @@ class OrderMap {
         return $blogs;
     }
 
-
+    public static function dropRelation($blog_id) {
+        /** @var wpdb */
+        global $wpdb;
+        return $wpdb->delete($wpdb->base_prefix. self::tableName(), 'blog_id = '.(int)$blog_id);
+    }
 }

@@ -48,9 +48,13 @@ function mism_list_sites($atts)
                     }
                     $html .= '</td>';
                     $html .= '<td data-title="Action">';
-                   // $html .= '<input class="listblog_edit" type="submit" name="edit_site" value="Edit"/>';
-                    $html .= '<input data-id="'.$blog->userblog_id.'" class="listblog_delete button" data-sending-label="Deleting..." type="submit" name="delete_site" value="Delete"/>';
-                    $html .= '<input id="listblog_id" type="hidden" name="blog_id" value="'.$blog->userblog_id.'"/>';
+                    if (0 != $blog->deleted) {
+                        $html .= 'This site is no longer available.<br/>After moderation it will be dropped.';
+                    } else {
+                        // $html .= '<input class="listblog_edit" type="submit" name="edit_site" value="Edit"/>';
+                        $html .= '<input data-id="' . $blog->userblog_id . '" class="listblog_delete button" data-sending-label="Deleting..." type="submit" name="delete_site" value="Delete"/>';
+                        $html .= '<input id="listblog_id" type="hidden" name="blog_id" value="' . $blog->userblog_id . '"/>';
+                    }
                     $html .= '</td>';
                     $html .= '</tr>';
                     $active_count++;

@@ -12,9 +12,9 @@ class OrderMap {
         $counterTable = $wpdb->base_prefix . 'package_counter';
         $counter_id = $wpdb->get_var('SELECT `id` FORM `'.$counterTable.'` WHERE `order_id` = '.(int)$order_id. 'LIMIT 1');
         if ($counter_id) {
-            $wpdb->query('UPDATE `'.$counterTable.'` SET `site_consumed` = `site_consumed` + 1 WHERE `id` = '.(int)$counter_id );
-            $wpdb->query('INSERT INTO `'.self::tableName().'`(`user_id`,`site_id`,`counter_id`) VALUE ('
+            $wpdb->query('INSERT INTO `'.self::tableName().'`( `user_id` , `site_id` , `counter_id` ) VALUES ('
                 .(int)$user_id.','.(int)$blog_id.','.(int)$counter_id.')');
+            $wpdb->query('UPDATE `'.$counterTable.'` SET `site_consumed` = `site_consumed` + 1 WHERE `id` = '.(int)$counter_id );
         }
     }
 

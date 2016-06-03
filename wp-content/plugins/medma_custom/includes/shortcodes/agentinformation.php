@@ -66,13 +66,16 @@ function agentinformation_shortcode($atts) {
             switch_to_blog(1);
             // echo "SIZE: ".$size;
             // $value_url = wp_get_attachment_image($value, $size);
-            $value = get_image_tag($value, $alt, $title, $align, $atts['size']);
+              $alt = (empty($atts['alt'])) ? '' : $atts['alt'];
+              $title = (empty($atts['title'])) ? '' : $atts['title'];
+              $align = (empty($atts['align'])) ? '' : $atts['align'];
+            $value = get_image_tag($value, $alt, $title, $align, $size);
             // $value_url = get_image_tag($value, $alt, $title, $align, $size);
             
-            if ( is_array($value_url) )
+            /*if ( is_array($value_url) )
             {
               $value_url = $value_url[0];
-            }
+            }*/
             switch_to_blog( $blog_id );
           }
           else

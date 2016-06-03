@@ -8,14 +8,14 @@
 
 function aveone_option_name() {
 
-// This gets the theme name from the stylesheet (lowercase and without spaces)
-$themename = wp_get_theme();
-$themename = $themename['Name'];
-$themename = preg_replace("/\W/", "", strtolower($themename) );
+  // This gets the theme name from the stylesheet (lowercase and without spaces)
+  $themename = wp_get_theme();
+  $themename = $themename['Name'];
+  $themename = preg_replace("/\W/", "", strtolower($themename) );
 
-$aveone_settings = get_option('aveone');
-$aveone_settings['id'] = 'aveone-theme';
-update_option('aveone', $aveone_settings); 
+  $aveone_settings = get_option('aveone');
+  $aveone_settings['id'] = 'aveone-theme';
+  update_option('aveone', $aveone_settings); 
 
 }
 
@@ -27,212 +27,29 @@ update_option('aveone', $aveone_settings);
 
 function aveone_options() {
 
+  // Pull all the categories into an array
+  $options_categories = array();
+  $options_categories_obj = get_categories();
+  foreach ($options_categories_obj as $category) {
+  $options_categories[$category->cat_ID] = $category->cat_name;
+  }
 
-// Pull all the categories into an array
-$options_categories = array();
-$options_categories_obj = get_categories();
-foreach ($options_categories_obj as $category) {
-$options_categories[$category->cat_ID] = $category->cat_name;
-}
+  // Pull all the pages into an array
+  $options_pages = array();
+  $options_pages_obj = get_pages('sort_column=post_parent,menu_order');
+  $options_pages[''] = 'Select a page:';
+  foreach ($options_pages_obj as $page) {
+  $options_pages[$page->ID] = $page->post_title;
+  }
 
-// Pull all the pages into an array
-$options_pages = array();
-$options_pages_obj = get_pages('sort_column=post_parent,menu_order');
-$options_pages[''] = 'Select a page:';
-foreach ($options_pages_obj as $page) {
-$options_pages[$page->ID] = $page->post_title;
-}
+  // If using image radio buttons, define a directory path
+  $imagepath = get_template_directory_uri() . '/library/functions/images/';
+  $imagepathfolder = get_template_directory_uri() . '/library/media/images/';
+  $aveone_shortname = "evl";
+  $template_url = get_template_directory_uri();
 
-// If using image radio buttons, define a directory path
-$imagepath = get_template_directory_uri() . '/library/functions/images/';
-$imagepathfolder = get_template_directory_uri() . '/library/media/images/';
-$aveone_shortname = "evl";
-$template_url = get_template_directory_uri();
+  $options = array();
 
-$options = array();
-
-
-// Layout
-/*
-$options[] = array( "name" => $aveone_shortname."-tab-1", "id" => $aveone_shortname."-tab-1",
-"type" => "open-tab");
-
-// Favicon Option @since 3.1.5
-$options['evl_favicon'] = array(
-"name" => __( 'Custom Favicon', 'aveone' ),
-"desc" => __( 'Upload custom favicon.', 'aveone' ),
-"id" => $aveone_shortname."_favicon",
-"type" => "upload"
-);
-
-$options['evl_layout'] = array( 
-"name" => __( 'Select a layout', 'aveone' ),
-"desc" => __( 'Select main content and sidebar alignment.', 'aveone' ),
-"id" => $aveone_shortname."_layout",
-"std" => "2cl",
-"type" => "images",
-"options" => array(
-'1c' => $imagepath . '1c.png',
-'2cl' => $imagepath . '2cl.png',
-'2cr' => $imagepath . '2cr.png',
-'3cm' => $imagepath . '3cm.png',
-'3cr' => $imagepath . '3cr.png',
-'3cl' => $imagepath . '3cl.png'
-)
-);
-
-$options['evl_width_layout'] = array( 
-"name" => __( 'Layout Style', 'aveone' ),
-"desc" => __( '<strong>Boxed version</strong> automatically enables custom background', 'aveone' ),
-"id" => $aveone_shortname."_width_layout",
-"std" => "fixed",
-"type" => "select",
-"options" => array(
-'fixed' => __( 'Boxed &nbsp;&nbsp;&nbsp;(default)', 'aveone' ),
-'fluid' => __( 'Wide', 'aveone' )
-)
-);
-
-$options['evl_width_px'] = array( 
-"name" => __( 'Layout Width', 'aveone' ),
-"desc" => __( 'Select the width for your website', 'aveone' ),
-"id" => $aveone_shortname."_width_px",
-"std" => "1200",
-"type" => "text",
-
-);
-
-
-
-$options[] = array( "name" => $aveone_shortname."-tab-1", "id" => $aveone_shortname."-tab-1",
-"type" => "close-tab" );
-
-
-
-// Posts
-
-$options[] = array( "name" => $aveone_shortname."-tab-2", "id" => $aveone_shortname."-tab-2",
-"type" => "open-tab");
-
-
-
-$options['evl_post_layout'] = array( "name" => __( 'Blog layout', 'aveone' ),
-"desc" => __( 'Grid layout with <strong>3</strong> posts per row is recommended to use with disabled <strong>Sidebar(s)</strong>', 'aveone' ),
-"id" => $aveone_shortname."_post_layout",
-"type" => "images",
-"std" => "two",
-"options" => array(
-'one' => $imagepath . 'one-post.png',
-'two' => $imagepath . 'two-posts.png',
-'three' => $imagepath . 'three-posts.png',
-));
-
-$options['evl_excerpt_thumbnail'] = array( "name" => __( 'Enable post excerpts', 'aveone' ),
-"desc" => __( 'Check this box if you want to display post excerpts on one column blog layout', 'aveone' ),
-"id" => $aveone_shortname."_excerpt_thumbnail",
-"type" => "checkbox",
-"std" => "0");
-
-$options['evl_featured_images'] = array( "name" => __( 'Enable featured images', 'aveone' ),
-"desc" => __( 'Check this box if you want to display featured images', 'aveone' ),
-"id" => $aveone_shortname."_featured_images",
-"type" => "checkbox",
-"std" => "1");
-
-$options['evl_blog_featured_image'] = array( "name" => __( 'Enable featured image on Single Blog Posts', 'aveone' ),
-"desc" => __( 'Check this box if you want to display featured image on Single Blog Posts', 'aveone' ),
-"id" => $aveone_shortname."_blog_featured_image",
-"type" => "checkbox",
-"std" => "0");
-    
-$options['evl_thumbnail_default_images'] = array( "name" => __( 'Hide default thumbnail images', 'aveone' ),
-"desc" => __( 'Check this box if you don\'t want to display default thumbnail images', 'aveone' ),
-"id" => $aveone_shortname."_thumbnail_default_images",
-"type" => "checkbox",
-"std" => "0");
-    
-
-$options['evl_author_avatar'] = array( "name" => __( 'Enable post author avatar', 'aveone' ),
-"desc" => __( 'Check this box if you want to display post author avatar', 'aveone' ),
-"id" => $aveone_shortname."_author_avatar",
-"type" => "checkbox",
-"std" => "0");
-
-$options['evl_posts_excerpt_title_length'] = array( "name" => __( 'Post Title Excerpt Length', 'aveone' ),
-"desc" => __( 'Enter number of characters for Post Title Excerpt. This works only if a grid layout is enabled.', 'aveone' ),
-"id" => $aveone_shortname."_posts_excerpt_title_length",
-"type" => "text",
-"std" => "40"
-);   
-
-$options['evl_header_meta'] = array( "name" => __( 'Post meta header placement', 'aveone' ),
-"desc" => __( 'Choose placement of the post meta header - Date, Author, Comments', 'aveone' ),
-"id" => $aveone_shortname."_header_meta",
-"type" => "select",
-"std" => "single_archive",
-"options" => array(
-'single_archive' => __( 'Single posts + Archive pages &nbsp;&nbsp;&nbsp;(default)', 'aveone' ),
-'single' => __( 'Single posts', 'aveone' ),
-'disable' => __( 'Disable', 'aveone' )
-));
-
-$options['evl_category_page_title'] = array( "name" => __( 'Category Page Title', 'aveone' ),
-"desc" => __( 'Enable page title in category pages ?', 'aveone' ),
-"id" => $aveone_shortname."_category_page_title",
-"type" => "select",
-"std" => "1",
-"options" => array(
-"1" => __( 'Enable', 'aveone' ),
-"0" => __( 'Disable', 'aveone' )
-));
-
-$options['evl_share_this'] = array( "name" => __( '\'Share This\' buttons placement', 'aveone' ),
-"desc" => __( 'Choose placement of the \'Share This\' buttons', 'aveone' ),
-"id" => $aveone_shortname."_share_this",
-"type" => "select",
-"std" => "single",
-"options" => array(
-'single' => __( 'Single posts &nbsp;&nbsp;&nbsp;(default)', 'aveone' ),
-'single_archive' => __( 'Single posts + Archive pages', 'aveone' ),
-'all' => __( 'All pages', 'aveone' ),
-'disable' => __( 'Disable', 'aveone' )
-));
-
-$options['evl_post_links'] = array( "name" => __( 'Position of previous/next posts links', 'aveone' ),
-"desc" => __( 'Choose the position of the <strong>Previous/Next Post</strong> links', 'aveone' ),
-"id" => $aveone_shortname."_post_links",
-"type" => "select",
-"std" => "after",
-"options" => array(
-'after' => __( 'After posts &nbsp;&nbsp;&nbsp;(default)', 'aveone' ),
-'before' => __( 'Before posts', 'aveone' ),
-'both' => __( 'Both', 'aveone' )
-));
-
-$options['evl_similar_posts'] = array( "name" => __( 'Display Similar posts', 'aveone' ),
-"desc" => __( 'Choose if you want to display <strong>Similar posts</strong> in articles', 'aveone' ),
-"id" => $aveone_shortname."_similar_posts",
-"type" => "select",
-"std" => "disable",
-"options" => array(
-'disable' => __( 'Disable &nbsp;&nbsp;&nbsp;(default)', 'aveone' ),
-'category' => __( 'Match by categories', 'aveone' ),
-'tag' => __( 'Match by tags', 'aveone' )
-));
-
-$options['evl_pagination_type'] = array( "name" => __( 'Pagination Type', 'aveone' ),
-"desc" => __( 'Select the pagination type for the assigned blog page in Settings > Reading.', 'aveone' ),
-"id" => $aveone_shortname."_pagination_type",
-"type" => "select",
-"std" => "pagination",
-"options" => array(
-'pagination' => __( 'Pagination', 'aveone' ),
-'infinite' => __( 'Infinite Scroll', 'aveone' )
-));
-
-$options[] = array( "name" => $aveone_shortname."-tab-2", "id" => $aveone_shortname."-tab-2",
-"type" => "close-tab" );
-*/
 
 // Subscribe buttons
 
@@ -246,39 +63,7 @@ $options['evl_social_media_note'] = array( "name" => __( 'Note:', 'aveone' ),
 "std" => ''
 );
 
-/*
-// Facebook
 
-$options['evl_facebook'] = array( "name" => __( 'Facebook', 'aveone' ),
-"desc" => __( 'Insert your Facebook URL', 'aveone' ),
-"id" => $aveone_shortname."_facebook",
-"type" => "text",
-"std" => "");
-
-// Twitter
-
-$options['evl_twitter_id'] = array( "name" => __( 'Twitter', 'aveone' ),
-"desc" => __( 'Insert your Twitter URL', 'aveone' ),
-"id" => $aveone_shortname."_twitter_id",
-"type" => "text",
-"std" => "");
-
-// Google Plus
-
-$options['evl_googleplus'] = array( "name" => __( 'Google Plus', 'aveone' ),
-"desc" => __( 'Insert your Google Plus profile URL', 'aveone' ),
-"id" => $aveone_shortname."_googleplus",
-"type" => "text",
-"std" => "");
-
-// Pinterest
-
-$options['evl_pinterest'] = array( "name" => __( 'Pinterest', 'aveone' ),
-"desc" => __( 'Insert your Pinterest profile URL', 'aveone' ),
-"id" => $aveone_shortname."_pinterest",
-"type" => "text",
-"std" => "");
-*/
 $options[] = array( "name" => $aveone_shortname."-tab-2", "id" => $aveone_shortname."-tab-2",
 "type" => "close-tab" );
 
@@ -301,124 +86,12 @@ $options['evl_header_logo'] = array( "name" => __( 'Custom logo', 'aveone' ),
 "id" => $aveone_shortname."_header_logo",
 "type" => "upload",
 "std" => "");
-/*
-$options['evl_pos_logo'] = array( "name" => __( 'Logo position', 'aveone' ),
-"desc" => __( 'Choose the position of your custom logo', 'aveone' ),
-"id" => $aveone_shortname."_pos_logo",
-"type" => "select",
-"std" => "left",
-"options" => array(
-'left' => __( 'Left &nbsp;&nbsp;&nbsp;(default)', 'aveone' ),
-'center' => __( 'Center', 'aveone' ),    
-'right' => __( 'Right', 'aveone' ),
-'disable' => __( 'Disable', 'aveone' )
-));
 
-$options['evl_blog_title'] = array( "name" => __( 'Disable Blog Title', 'aveone' ),
-"desc" => __( 'Check this box if you don\'t want to display title of your blog', 'aveone' ),
-"id" => $aveone_shortname."_blog_title",
-"type" => "checkbox",
-"std" => "0");
-
-$options['evl_tagline_pos'] = array( "name" => __( 'Blog Tagline position', 'aveone' ),
-"desc" => __( 'Choose the position of blog tagline', 'aveone' ),
-"id" => $aveone_shortname."_tagline_pos",
-"type" => "select",
-"std" => "next",
-"options" => array(
-'next' => __( 'Next to blog title &nbsp;&nbsp;&nbsp;(default)', 'aveone' ),
-'above' => __( 'Above blog title', 'aveone' ),
-'under' => __( 'Under blog title', 'aveone' ),
-'disable' => __( 'Disable', 'aveone' )
-));
-
-$options['evl_main_menu'] = array( "name" => __( 'Disable main menu', 'aveone' ),
-"desc" => __( 'Check this box if you don\'t want to display main menu', 'aveone' ),
-"id" => $aveone_shortname."_main_menu",
-"type" => "checkbox",
-"std" => "0");
-    
-$options['evl_main_menu_hover_effect'] = array( "name" => __( 'Disable main menu Hover Effect', 'aveone' ),
-"desc" => __( 'Check this box if you don\'t want to display main menu hover effect', 'aveone' ),
-"id" => $aveone_shortname."_main_menu_hover_effect",
-"type" => "checkbox",
-"std" => "0");
-    
-    
-
-$options['evl_sticky_header'] = array( "name" => __( 'Enable sticky header', 'aveone' ),
-"desc" => __( 'Check this box if you want to display sticky header', 'aveone' ),
-"id" => $aveone_shortname."_sticky_header",
-"type" => "checkbox",
-"std" => "1");
-
-$options['evl_searchbox'] = array( "name" => __( 'Enable searchbox in main menu', 'aveone' ),
-"desc" => __( 'Check this box if you want to display searchbox in main menu', 'aveone' ),
-"id" => $aveone_shortname."_searchbox",
-"type" => "checkbox",
-"std" => "1");
-
-$options['evl_widgets_header'] = array( "name" => __( 'Number of widget cols in header', 'aveone' ),
-"desc" => __( 'Select how many header widget areas you want to display.', 'aveone' ),
-"id" => $aveone_shortname."_widgets_header",
-"type" => "images",
-"std" => "disable",
-"options" => array(
-'disable' => $imagepath . '1c.png',
-'one' => $imagepath . 'header-widgets-1.png',
-'two' => $imagepath . 'header-widgets-2.png',
-'three' => $imagepath . 'header-widgets-3.png',
-'four' => $imagepath . 'header-widgets-4.png',
-));
-
-$options['evl_header_widgets_placement'] = array(
-"name" => __( 'Header widgets placement', 'aveone' ),
-"desc" => __( 'Choose where to display header widgets', 'aveone' ),
-"id" => $aveone_shortname."_header_widgets_placement",
-"std" => "home",
-"type" => "select",
-"options" => array(
-'home' => __( 'Home page &nbsp;&nbsp;&nbsp;(default)', 'aveone' ),
-'single' => __( 'Single Post', 'aveone' ),
-'page' => __( 'Pages', 'aveone' ),
-'all' => __( 'All pages', 'aveone' ),
-'custom' => __( 'Select Per Post/Page', 'aveone' )
-)
-);*/
 
 $options[] = array( "name" => $aveone_shortname."-tab-1", "id" => $aveone_shortname."-tab-1",
 "type" => "close-tab" );
 
 
-// Footer content
-/*
-$options[] = array( "name" => $aveone_shortname."-tab-2", "id" => $aveone_shortname."-tab-2",
-"type" => "open-tab");
-
-$options['evl_widgets_num'] = array( "name" => __( 'Number of widget cols in footer', 'aveone' ),
-"desc" => __( 'Select how many footer widget areas you want to display.', 'aveone' ),
-"id" => $aveone_shortname."_widgets_num",
-"type" => "images",
-"std" => "disable",
-"options" => array(
-'disable' => $imagepath . '1c.png',
-'one' => $imagepath . 'footer-widgets-1.png',
-'two' => $imagepath . 'footer-widgets-2.png',
-'three' => $imagepath . 'footer-widgets-3.png',
-'four' => $imagepath . 'footer-widgets-4.png',
-));
-
-$options['evl_footer_content'] = array( "name" => __( 'Custom footer', 'aveone' ),
-"desc" => __( 'Available <strong>HTML</strong> tags and attributes:<br /><br /> <code> &lt;b&gt; &lt;i&gt; &lt;a href="" title=""&gt; &lt;blockquote&gt; &lt;del datetime=""&gt; <br /> &lt;ins datetime=""&gt; &lt;img src="" alt="" /&gt; &lt;ul&gt; &lt;ol&gt; &lt;li&gt; <br /> &lt;code&gt; &lt;em&gt; &lt;strong&gt; &lt;div&gt; &lt;span&gt; &lt;h1&gt; &lt;h2&gt; &lt;h3&gt; &lt;h4&gt; &lt;h5&gt; &lt;h6&gt; <br /> &lt;table&gt; &lt;tbody&gt; &lt;tr&gt; &lt;td&gt; &lt;br /&gt; &lt;hr /&gt;</code>', 'aveone' ),
-"id" => $aveone_shortname."_footer_content",
-"type" => "textarea",
-"std" => "<p id=\"copyright\"><span class=\"credits\"><a href=\"http://theme4press.com/aveone-multipurpose-wordpress-theme/\">aveone</a> theme by Theme4Press&nbsp;&nbsp;&bull;&nbsp;&nbsp;Powered by <a href=\"http://wordpress.org\">WordPress</a></span></p>"
-); 
-
-$options[] = array( "name" => $aveone_shortname."-tab-2", "id" => $aveone_shortname."-tab-2",
-"type" => "close-tab" );
-
-*/
 // Typography
 
 $options[] = array( "id" => $aveone_shortname."-tab-8",
@@ -469,69 +142,7 @@ $options['evl_heading_font'] = array( "name" => __( 'Headings font', 'aveone' ),
 $options[] = array( "name" => $aveone_shortname."-tab-8", "id" => $aveone_shortname."-tab-8",
 "type" => "close-tab" );
 
-/*
-// Extra Options
 
-$options[] = array( "id" => $aveone_shortname."-tab-7",
-"type" => "open-tab");
-
-$options['evl_breadcrumbs'] = array( "name" => __( 'Enable Breadcrumbs Navigation', 'aveone' ),
-"desc" => __( 'Check this box if you want to enable breadcrumbs navigation', 'aveone' ),
-"id" => $aveone_shortname."_breadcrumbs",
-"type" => "checkbox",
-"std" => "1");
-
-$options['evl_nav_links'] = array( "name" => __( 'Position of navigation links', 'aveone' ),
-"desc" => __( 'Choose the position of the <strong>Older/Newer Posts</strong> links', 'aveone' ),
-"id" => $aveone_shortname."_nav_links",
-"type" => "select",
-"std" => "after",
-"options" => array(
-'after' => __( 'After posts &nbsp;&nbsp;&nbsp;(default)', 'aveone' ),
-'before' => __( 'Before posts', 'aveone' ),
-'both' => __( 'Both', 'aveone' )
-));
-
-$options['evl_pos_button'] = array( "name" => __( 'Position of \'Back to Top\' button', 'aveone' ),
-"desc" => "",
-"id" => $aveone_shortname."_pos_button",
-"type" => "select",
-"std" => "right",
-"options" => array(
-'disable' => __( 'Disable', 'aveone' ),
-'left' => __( 'Left', 'aveone' ),
-'right' => __( 'Right &nbsp;&nbsp;&nbsp;(default)', 'aveone' ),
-'middle' => __( 'Middle', 'aveone' )
-));
-
-$options['evl_parallax_slider_support'] = array( "name" => __( 'Enable Parallax Slider support', 'aveone' ),
-"desc" => __( 'Check this box if you want to enable Parallax Slider support', 'aveone' ),
-"id" => $aveone_shortname."_parallax_slider_support",
-"type" => "checkbox",
-"std" => "1");
-
-$options['evl_carousel_slider'] = array( "name" => __( 'Enable Carousel Slider support', 'aveone' ),
-"desc" => __( 'Check this box if you want to enable Carousel Slider support', 'aveone' ),
-"id" => $aveone_shortname."_carousel_slider",
-"type" => "checkbox",
-"std" => "1");
-
-$options['evl_status_gmap'] = array( "name" => __( 'Enable Google Map Scripts', 'aveone' ),
-"desc" => __( 'Check this box if you want to enable Google Map Scripts', 'aveone' ),
-"id" => $aveone_shortname."_status_gmap",
-"type" => "checkbox",
-"std" => "1");
-
-$options['evl_animatecss'] = array( "name" => __( 'Enable Animate.css plugin support', 'aveone' ),
-"desc" => __( 'Check this box if you want to enable Animate.css plugin support - (menu hover effect, featured image hover effect, button hover effect, etc.)', 'aveone' ),
-"id" => $aveone_shortname."_animatecss",
-"type" => "checkbox",
-"std" => "1");
-
-$options[] = array( "name" => $aveone_shortname."-tab-7", "id" => $aveone_shortname."-tab-7",
-"type" => "close-tab" );
-
-*/
 // General Styling
 
 
@@ -667,321 +278,6 @@ $options[] = array( "name" => $aveone_shortname."-tab-10", "id" => $aveone_short
 "type" => "close-tab" );
 
 
-// Custom CSS
-/*
-$options[] = array( "id" => $aveone_shortname."-tab-11",
-"type" => "open-tab");
-
-$options['evl_css_content'] = array( "name" => __( 'Custom CSS', 'aveone' ),
-"desc" => '<strong>'.__( 'For advanced users only', 'aveone' ).'</strong>: '.__( 'insert custom CSS, default', 'aveone' ).' <a href="'.$template_url.'/style.css" target="_blank">style.css</a> '.__( 'file', 'aveone' ).'',
-"id" => $aveone_shortname."_css_content",
-"type" => "textarea",
-"std" => "");
-
-$options[] = array( "name" => $aveone_shortname."-tab-11", "id" => $aveone_shortname."-tab-11",
-"type" => "close-tab" );
-
-
-// Parallax Slider
-
-$options[] = array( "id" => $aveone_shortname."-tab-8",
-"type" => "open-tab");
-
-
-$options['evl_parallax_slider'] = array( "name" => __( 'Parallax Slider placement', 'aveone' ),
-"desc" => __( 'Display Parallax Slider on the homepage, all pages or select the slider in the post/page edit mode.', 'aveone' ),
-"id" => $aveone_shortname."_parallax_slider",
-"type" => "select",
-"std" => "post",
-"options" => array(
-'homepage' => __( 'Homepage only', 'aveone' ),
-'post' => __( 'Manually select in a Post/Page edit mode &nbsp;&nbsp;&nbsp;(default)', 'aveone' ),
-'all' => __( 'All pages', 'aveone' )
-));
-
-$options['evl_parallax_speed'] = array( "name" => __( 'Parallax Speed', 'aveone' ),
-"desc" => __( 'Input the time between transitions (Default: 4000);', 'aveone' ),
-"id" => $aveone_shortname."_parallax_speed",
-"type" => "text",
-"std" => "4000");
-
-$options['evl_parallax_slide_title_font'] = array( "name" => __( 'Slider Title font', 'aveone' ),
-"desc" => __( 'Select the typography you want for the slide title. * non web-safe font.', 'aveone' ),
-"id" => $aveone_shortname."_parallax_slide_title_font",
-"type" => "typography",
-"std" => array('size' => '36px', 'face' => 'Roboto','style' => 'normal','color' => '')
-);
-
-$options['evl_parallax_slide_desc_font'] = array( "name" => __( 'Slider Description font', 'aveone' ),
-"desc" => __( 'Select the typography you want for the slide description. * non web-safe font.', 'aveone' ),
-"id" => $aveone_shortname."_parallax_slide_desc_font",
-"type" => "typography",
-"std" => array('size' => '18px', 'face' => 'Roboto','style' => 'normal','color' => '')
-);
-
-$options['evl_show_slide1'] = array( "name" => __( 'Enable Slide 1', 'aveone' ),
-"desc" => __( 'Check this box to enable Slide 1', 'aveone' ),
-"id" => $aveone_shortname."_show_slide1",
-"type" => "checkbox",
-"std" => "1");
-
-$options['evl_slide1_img'] = array( "name" => __( 'Slide 1 Image', 'aveone' ),
-"desc" => __( 'Upload an image for the Slide 1, or specify an image URL directly.', 'aveone' ),
-"id" => $aveone_shortname."_slide1_img",
-"type" => "upload",
-"class" => "hidden",
-"std" => $imagepathfolder . 'parallax/6.png');
-
-$options['evl_slide1_title'] = array( "name" => __( 'Slide 1 Title', 'aveone' ),
-"desc" => "",
-"id" => $aveone_shortname."_slide1_title",
-"type" => "text",
-"class" => "hidden",
-"std" => __( 'Super Awesome WP Theme', 'aveone' ));
-
-$options['evl_slide1_desc'] = array( "name" => __( 'Slide 1 Description', 'aveone' ),
-"desc" => "",
-"id" => $aveone_shortname."_slide1_desc",
-"type" => "textarea",
-"class" => "hidden",
-"std" => __( 'Absolutely free of cost theme with amazing design and premium features which will impress your visitors', 'aveone' ));
-
-$options['evl_slide1_button'] = array( "name" => __( 'Slide 1 Button', 'aveone' ),
-"desc" => "",
-"id" => $aveone_shortname."_slide1_button",
-"type" => "textarea",
-"class" => "hidden",
-"std" => '<a class="da-link" href="#">'.__( 'Learn more', 'aveone' ).'</a>' );
-
-$options['evl_show_slide2'] = array( "name" => __( 'Enable Slide 2', 'aveone' ),
-"desc" => __( 'Check this box to enable Slide 2', 'aveone' ),
-"id" => $aveone_shortname."_show_slide2",
-"type" => "checkbox",
-"std" => "1");
-
-$options['evl_slide2_img'] = array( "name" => __( 'Slide 2 Image', 'aveone' ),
-"desc" => __( 'Upload an image for the Slide 2, or specify an image URL directly.', 'aveone' ),
-"id" => $aveone_shortname."_slide2_img",
-"type" => "upload",
-"class" => "hidden",
-"std" => $imagepathfolder . 'parallax/5.png');
-
-$options['evl_slide2_title'] = array( "name" => __( 'Slide 2 Title', 'aveone' ),
-"desc" => "",
-"id" => $aveone_shortname."_slide2_title",
-"type" => "text",
-"class" => "hidden",
-"std" => __( 'Bootstrap and Font Awesome Ready', 'aveone' ));
-
-$options['evl_slide2_desc'] = array( "name" => __( 'Slide 2 Description', 'aveone' ),
-"desc" => "",
-"id" => $aveone_shortname."_slide2_desc",
-"type" => "textarea",
-"class" => "hidden",
-"std" => __( 'Built-in Bootstrap Elements and Font Awesome let you do amazing things with your website', 'aveone' ));
-
-$options['evl_slide2_button'] = array( "name" => __( 'Slide 2 Button', 'aveone' ),
-"desc" => "",
-"id" => $aveone_shortname."_slide2_button",
-"type" => "textarea",
-"class" => "hidden",
-"std" => '<a class="da-link" href="#">'.__( 'Learn more', 'aveone' ).'</a>');
-
-$options['evl_show_slide3'] = array( "name" => __( 'Enable Slide 3', 'aveone' ),
-"desc" => __( 'Check this box to enable Slide 3', 'aveone' ),
-"id" => $aveone_shortname."_show_slide3",
-"type" => "checkbox",
-"std" => "1");
-
-$options['evl_slide3_img'] = array( "name" => __( 'Slide 3 Image', 'aveone' ),
-"desc" => __( 'Upload an image for the Slide 3, or specify an image URL directly.', 'aveone' ),
-"id" => $aveone_shortname."_slide3_img",
-"type" => "upload",
-"class" => "hidden",
-"std" => $imagepathfolder . 'parallax/4.png');
-
-$options['evl_slide3_title'] = array( "name" => __( 'Slide 3 Title', 'aveone' ),
-"desc" => "",
-"id" => $aveone_shortname."_slide3_title",
-"type" => "text",
-"class" => "hidden",
-"std" => __( 'Easy to use control panel', 'aveone' ));
-
-$options['evl_slide3_desc'] = array( "name" => __( 'Slide 3 Description', 'aveone' ),
-"desc" => "",
-"id" => $aveone_shortname."_slide3_desc",
-"type" => "textarea",
-"class" => "hidden",
-"std" => __( 'Select of 500+ Google Fonts, choose layout as you need, set up your social links', 'aveone' ));
-
-$options['evl_slide3_button'] = array( "name" => __( 'Slide 3 Button', 'aveone' ),
-"desc" => "",
-"id" => $aveone_shortname."_slide3_button",
-"type" => "textarea",
-"class" => "hidden",
-"std" => '<a class="da-link" href="#">'.__( 'Learn more', 'aveone' ).'</a>' );
-
-$options['evl_show_slide4'] = array( "name" => __( 'Enable Slide 4', 'aveone' ),
-"desc" => __( 'Check this box to enable Slide 4', 'aveone' ),
-"id" => $aveone_shortname."_show_slide4",
-"type" => "checkbox",
-"std" => "1");
-
-$options['evl_slide4_img'] = array( "name" => __( 'Slide 4 Image', 'aveone' ),
-"desc" => __( 'Upload an image for the Slide 4, or specify an image URL directly.', 'aveone' ),
-"id" => $aveone_shortname."_slide4_img",
-"type" => "upload",
-"class" => "hidden",
-"std" => $imagepathfolder . 'parallax/1.png');
-
-$options['evl_slide4_title'] = array( "name" => __( 'Slide 4 Title', 'aveone' ),
-"desc" => "",
-"id" => $aveone_shortname."_slide4_title",
-"type" => "text",
-"class" => "hidden",
-"std" => __( 'Fully responsive theme', 'aveone' ));
-
-$options['evl_slide4_desc'] = array( "name" => __( 'Slide 4 Description', 'aveone' ),
-"desc" => "",
-"id" => $aveone_shortname."_slide4_desc",
-"type" => "textarea",
-"class" => "hidden",
-"std" => __( 'Adaptive to any screen depending on the device being used to view the site', 'aveone' ));
-
-$options['evl_slide4_button'] = array( "name" => __( 'Slide 4 Button', 'aveone' ),
-"desc" => "",
-"id" => $aveone_shortname."_slide4_button",
-"type" => "textarea",
-"class" => "hidden",
-"std" => '<a class="da-link" href="#">'.__( 'Learn more', 'aveone' ).'</a>' );
-
-$options['evl_show_slide5'] = array( "name" => __( 'Enable Slide 5', 'aveone' ),
-"desc" => __( 'Check this box to enable Slide 5', 'aveone' ),
-"id" => $aveone_shortname."_show_slide5",
-"type" => "checkbox",
-"std" => "1");
-
-$options['evl_slide5_img'] = array( "name" => __( 'Slide 5 Image', 'aveone' ),
-"desc" => __( 'Upload an image for the Slide 5, or specify an image URL directly.', 'aveone' ),
-"id" => $aveone_shortname."_slide5_img",
-"type" => "upload",
-"class" => "hidden",
-"std" => $imagepathfolder . 'parallax/3.png');
-
-$options['evl_slide5_title'] = array( "name" => __( 'Slide 5 Title', 'aveone' ),
-"desc" => "",
-"id" => $aveone_shortname."_slide5_title",
-"type" => "text",
-"class" => "hidden",
-"std" => __( 'Unlimited color schemes', 'aveone' ));
-
-$options['evl_slide5_desc'] = array( "name" => __( 'Slide 5 Description', 'aveone' ),
-"desc" => "",
-"id" => $aveone_shortname."_slide5_desc",
-"type" => "textarea",
-"class" => "hidden",
-"std" => __( 'Upload your own logo, change background color or images, select links color which you love - it\'s limitless', 'aveone' ));
-
-$options['evl_slide5_button'] = array( "name" => __( 'Slide 5 Button', 'aveone' ),
-"desc" => "",
-"id" => $aveone_shortname."_slide5_button",
-"type" => "textarea",
-"class" => "hidden",
-"std" => '<a class="da-link" href="#">'.__( 'Learn more', 'aveone' ).'</a>' );
-
-
-$options[] = array( "name" => $aveone_shortname."-tab-9", "id" => $aveone_shortname."-tab-9",
-"type" => "close-tab" );*/
-/*
-
-// Posts Slider
-
-$options[] = array( "id" => $aveone_shortname."-tab-9",
-"type" => "open-tab");
-
-$options['evl_posts_slider'] = array( "name" => __( 'Posts Slider placement', 'aveone' ),
-"desc" => __( 'Display Posts Slider on the homepage, all pages or select the slider in the post/page edit mode.', 'aveone' ),
-"id" => $aveone_shortname."_posts_slider",
-"type" => "select",
-"std" => "post",
-"options" => array(
-'homepage' => __( 'Homepage only', 'aveone' ),
-'post' => __( 'Manually select in a Post/Page edit mode &nbsp;&nbsp;&nbsp;(default)', 'aveone' ),
-'all' => __( 'All pages', 'aveone' )
-));
-
-$options['evl_posts_number'] = array( "name" => __( 'Number of posts to display', 'aveone' ),
-"desc" => "",
-"id" => $aveone_shortname."_posts_number",
-"type" => "select",
-"std" => "5",
-"options" => array(
-'1' => '1',
-'2' => '2',
-'3' => '3',
-'4' => '4',
-'5' => '5 &nbsp;&nbsp;&nbsp;'.__( '(default)', 'aveone' ),
-'6' => '6',
-'7' => '7',
-'8' => '8',
-'9' => '9',
-'10' => '10',
-));
-
-$options['evl_posts_slider_content'] = array( "name" => __( 'Slideshow content', 'aveone' ),
-"desc" => __( 'Choose to display latest posts or posts of a category.', 'aveone' ),
-"id" => $aveone_shortname."_posts_slider_content",
-"type" => "select",
-"std" => "recent",
-"options" => array(
-'recent' => __( 'Recent posts &nbsp;&nbsp;&nbsp;(default)', 'aveone' ),
-'category' => __( 'Posts in category', 'aveone' )
-));
-
-$options['evl_posts_slider_id'] = array( "name" => __( 'Category ID(s)', 'aveone' ),
-"desc" => __( 'Enter category ID(s) of posts separated by commas, e.g. 1,6,59,86. <strong>Posts in category</strong> option must be enabled', 'aveone' ),
-"id" => $aveone_shortname."_posts_slider_id",
-"type" => "text",
-"std" => ""
-);
-
-$options['evl_carousel_speed'] = array( "name" => __( 'Slider Speed', 'aveone' ),
-"desc" => __( 'Input the time between transitions (Default: 3500);', 'aveone' ),
-"id" => $aveone_shortname."_carousel_speed",
-"type" => "text",
-"std" => "7000");
-
-$options['evl_carousel_slide_title_font'] = array( "name" => __( 'Slider Title font', 'aveone' ),
-"desc" => __( 'Select the typography you want for the slide title. * non web-safe font.', 'aveone' ),
-"id" => $aveone_shortname."_carousel_slide_title_font",
-"type" => "typography",
-"std" => array('size' => '36px', 'face' => 'Roboto','style' => 'normal','color' => '')
-);
-
-$options['evl_carousel_slide_desc_font'] = array( "name" => __( 'Slider Description font', 'aveone' ),
-"desc" => __( 'Select the typography you want for the slide description. * non web-safe font.', 'aveone' ),
-"id" => $aveone_shortname."_carousel_slide_desc_font",
-"type" => "typography",
-"std" => array('size' => '18px', 'face' => 'Roboto','style' => 'normal','color' => '')
-);
-
-$options[] = array( "name" => $aveone_shortname."-tab-9", "id" => $aveone_shortname."-tab-9",
-"type" => "close-tab" );
-
-// Back Up Options
-
-$options[] = array( "id" => $aveone_shortname."-tab-12",
-"type" => "open-tab");
-
-$options[] = array( "name" => __( 'Backup Options', 'aveone' ),
-"type" => "backup",
-"id" => $aveone_shortname."_backup"
-);
-
-$options[] = array( "name" => $aveone_shortname."-tab-12", "id" => $aveone_shortname."-tab-12",
-"type" => "close-tab" );
-
-*/
 // Contact Options
 
 $options[] = array( "id" => $aveone_shortname."-tab-6",
@@ -1070,221 +366,10 @@ $options['evl_map_zoom_level'] = array( "name" => __( 'Map Zoom Level', 'aveone'
 "std" => "18",
 "type" => "text");
 
-
 $options[] = array( "name" => $aveone_shortname."-tab-6", "id" => $aveone_shortname."-tab-6",
 "type" => "close-tab" );
 
-/*
-// Bootstrap Slider
 
-$options[] = array( "id" => $aveone_shortname."-tab-14",
-"type" => "open-tab");
-
-$options['evl_bootstrap_slider'] = array( "name" => __( 'Bootstrap Slider placement', 'aveone' ),
-"desc" => __( 'Display Bootstrap Slider on the homepage, all pages or select the slider in the post/page edit mode.', 'aveone' ),
-"id" => $aveone_shortname."_bootstrap_slider",
-"type" => "select",
-"std" => "homepage",
-"options" => array(
-'homepage' => __( 'Homepage only &nbsp;&nbsp;&nbsp;(default)', 'aveone' ),
-'post' => __( 'Manually select in a Post/Page edit mode', 'aveone' ),
-'all' => __( 'All pages', 'aveone' )
-));
-
-$options['evl_bootstrap_speed'] = array( "name" => __( 'Speed', 'aveone' ),
-"desc" => __( 'Input the time between transitions (Default: 7000);', 'aveone' ),
-"id" => $aveone_shortname."_bootstrap_speed",
-"type" => "text",
-"std" => "7000");
-
-$options['evl_bootstrap_slide_title_font'] = array( "name" => __( 'Slider Title font', 'aveone' ),
-"desc" => __( 'Select the typography you want for the slide title. * non web-safe font.', 'aveone' ),
-"id" => $aveone_shortname."_bootstrap_slide_title_font",
-"type" => "typography",
-"std" => array('size' => '36px', 'face' => 'Roboto','style' => 'normal','color' => '')
-);
-
-$options['evl_bootstrap_slide_desc_font'] = array( "name" => __( 'Slider Description font', 'aveone' ),
-"desc" => __( 'Select the typography you want for the slide description. * non web-safe font.', 'aveone' ),
-"id" => $aveone_shortname."_bootstrap_slide_desc_font",
-"type" => "typography",
-"std" => array('size' => '18px', 'face' => 'Roboto','style' => 'normal','color' => '')
-);
-
-$options['evl_bootstrap_slide1'] = array( "name" => __( 'Enable Slide 1', 'aveone' ),
-"desc" => __( 'Check this box to enable Slide 1', 'aveone' ),
-"id" => $aveone_shortname."_bootstrap_slide1",
-"type" => "checkbox",
-"std" => "1");
-
-$options['evl_bootstrap_slide1_img'] = array( "name" => __( 'Slide 1 Image', 'aveone' ),
-"desc" => __( 'Upload an image for the Slide 1, or specify an image URL directly.', 'aveone' ),
-"id" => $aveone_shortname."_bootstrap_slide1_img",
-"type" => "upload",
-"class" => "hidden",
-"std" => $imagepathfolder . 'bootstrap-slider/1.jpg');
-
-$options['evl_bootstrap_slide1_title'] = array( "name" => __( 'Slide 1 Title', 'aveone' ),
-"desc" => "",
-"id" => $aveone_shortname."_bootstrap_slide1_title",
-"type" => "text",
-"class" => "hidden",
-"std" => __( 'Super Awesome WP Theme', 'aveone' ));
-
-$options['evl_bootstrap_slide1_desc'] = array( "name" => __( 'Slide 1 Description', 'aveone' ),
-"desc" => "",
-"id" => $aveone_shortname."_bootstrap_slide1_desc",
-"type" => "textarea",
-"class" => "hidden",
-"std" => __( 'Absolutely free of cost theme with amazing design and premium features which will impress your visitors', 'aveone' ));
-
-$options['evl_bootstrap_slide1_button'] = array( "name" => __( 'Slide 1 Button', 'aveone' ),
-"desc" => "",
-"id" => $aveone_shortname."_bootstrap_slide1_button",
-"type" => "textarea",
-"class" => "hidden",
-"std" => '<a class="button" href="#">'.__( 'Learn more', 'aveone' ).'</a>' );
-
-$options['evl_bootstrap_slide2'] = array( "name" => __( 'Enable Slide 2', 'aveone' ),
-"desc" => __( 'Check this box to enable Slide 2', 'aveone' ),
-"id" => $aveone_shortname."_bootstrap_slide2",
-"type" => "checkbox",
-"std" => "1");
-
-$options['evl_bootstrap_slide2_img'] = array( "name" => __( 'Slide 2 Image', 'aveone' ),
-"desc" => __( 'Upload an image for the Slide 2, or specify an image URL directly.', 'aveone' ),
-"id" => $aveone_shortname."_bootstrap_slide2_img",
-"type" => "upload",
-"class" => "hidden",
-"std" => $imagepathfolder . 'bootstrap-slider/2.jpg');
-
-$options['evl_bootstrap_slide2_title'] = array( "name" => __( 'Slide 2 Title', 'aveone' ),
-"desc" => "",
-"id" => $aveone_shortname."_bootstrap_slide2_title",
-"type" => "text",
-"class" => "hidden",
-"std" => __( 'Bootstrap and Font Awesome Ready', 'aveone' ));
-
-$options['evl_bootstrap_slide2_desc'] = array( "name" => __( 'Slide 2 Description', 'aveone' ),
-"desc" => "",
-"id" => $aveone_shortname."_bootstrap_slide2_desc",
-"type" => "textarea",
-"class" => "hidden",
-"std" => __( 'Built-in Bootstrap Elements and Font Awesome let you do amazing things with your website', 'aveone' ));
-
-$options['evl_bootstrap_slide2_button'] = array( "name" => __( 'Slide 2 Button', 'aveone' ),
-"desc" => "",
-"id" => $aveone_shortname."_bootstrap_slide2_button",
-"type" => "textarea",
-"class" => "hidden",
-"std" => '<a class="button" href="#">'.__( 'Learn more', 'aveone' ).'</a>' );
-
-$options['evl_bootstrap_slide3'] = array( "name" => __( 'Enable Slide 3', 'aveone' ),
-"desc" => __( 'Check this box to enable Slide 3', 'aveone' ),
-"id" => $aveone_shortname."_bootstrap_slide3",
-"type" => "checkbox",
-"std" => "1");
-
-$options['evl_bootstrap_slide3_img'] = array( "name" => __( 'Slide 3 Image', 'aveone' ),
-"desc" => __( 'Upload an image for the Slide 3, or specify an image URL directly.', 'aveone' ),
-"id" => $aveone_shortname."_bootstrap_slide3_img",
-"type" => "upload",
-"class" => "hidden",
-"std" => $imagepathfolder . 'bootstrap-slider/3.jpg');
-
-$options['evl_bootstrap_slide3_title'] = array( "name" => __( 'Slide 3 Title', 'aveone' ),
-"desc" => "",
-"id" => $aveone_shortname."_bootstrap_slide3_title",
-"type" => "text",
-"class" => "hidden",
-"std" => __( 'Easy to use control panel', 'aveone' ));
-
-$options['evl_bootstrap_slide3_desc'] = array( "name" => __( 'Slide 3 Description', 'aveone' ),
-"desc" => "",
-"id" => $aveone_shortname."_bootstrap_slide3_desc",
-"type" => "textarea",
-"class" => "hidden",
-"std" => __( 'Select of 500+ Google Fonts, choose layout as you need, set up your social links', 'aveone' ));
-
-$options['evl_bootstrap_slide3_button'] = array( "name" => __( 'Slide 3 Button', 'aveone' ),
-"desc" => "",
-"id" => $aveone_shortname."_bootstrap_slide3_button",
-"type" => "textarea",
-"class" => "hidden",
-"std" => '<a class="button" href="#">'.__( 'Learn more', 'aveone' ).'</a>' );
-
-$options['evl_bootstrap_slide4'] = array( "name" => __( 'Enable Slide 4', 'aveone' ),
-"desc" => __( 'Check this box to enable Slide 4', 'aveone' ),
-"id" => $aveone_shortname."_bootstrap_slide4",
-"type" => "checkbox",
-"std" => "1");
-
-$options['evl_bootstrap_slide4_img'] = array( "name" => __( 'Slide 4 Image', 'aveone' ),
-"desc" => __( 'Upload an image for the Slide 4, or specify an image URL directly.', 'aveone' ),
-"id" => $aveone_shortname."_bootstrap_slide4_img",
-"type" => "upload",
-"class" => "hidden",
-"std" => $imagepathfolder . 'bootstrap-slider/4.jpg');
-
-$options['evl_bootstrap_slide4_title'] = array( "name" => __( 'Slide 4 Title', 'aveone' ),
-"desc" => "",
-"id" => $aveone_shortname."_bootstrap_slide4_title",
-"type" => "text",
-"class" => "hidden",
-"std" => __( 'Fully responsive theme', 'aveone' ));
-
-$options['evl_bootstrap_slide4_desc'] = array( "name" => __( 'Slide 4 Description', 'aveone' ),
-"desc" => "",
-"id" => $aveone_shortname."_bootstrap_slide4_desc",
-"type" => "textarea",
-"class" => "hidden",
-"std" => __( 'Adaptive to any screen depending on the device being used to view the site', 'aveone' ));
-
-$options['evl_bootstrap_slide4_button'] = array( "name" => __( 'Slide 4 Button', 'aveone' ),
-"desc" => "",
-"id" => $aveone_shortname."_bootstrap_slide4_button",
-"type" => "textarea",
-"class" => "hidden",
-"std" => '<a class="button" href="#">'.__( 'Learn more', 'aveone' ).'</a>' );
-
-$options['evl_bootstrap_slide5'] = array( "name" => __( 'Enable Slide 5', 'aveone' ),
-"desc" => __( 'Check this box to enable Slide 5', 'aveone' ),
-"id" => $aveone_shortname."_bootstrap_slide5",
-"type" => "checkbox",
-"std" => "1");
-
-$options['evl_bootstrap_slide5_img'] = array( "name" => __( 'Slide 5 Image', 'aveone' ),
-"desc" => __( 'Upload an image for the Slide 5, or specify an image URL directly.', 'aveone' ),
-"id" => $aveone_shortname."_bootstrap_slide5_img",
-"type" => "upload",
-"class" => "hidden",
-"std" => $imagepathfolder . 'bootstrap-slider/5.jpg');
-
-$options['evl_bootstrap_slide5_title'] = array( "name" => __( 'Slide 5 Title', 'aveone' ),
-"desc" => "",
-"id" => $aveone_shortname."_bootstrap_slide5_title",
-"type" => "text",
-"class" => "hidden",
-"std" => __( 'Unlimited color schemes', 'aveone' ));
-
-$options['evl_bootstrap_slide5_desc'] = array( "name" => __( 'Slide 5 Description', 'aveone' ),
-"desc" => "",
-"id" => $aveone_shortname."_bootstrap_slide5_desc",
-"type" => "textarea",
-"class" => "hidden",
-"std" => __( 'Upload your own logo, change background color or images, select links color which you love - it\'s limitless', 'aveone' ));
-
-$options['evl_bootstrap_slide5_button'] = array( "name" => __( 'Slide 5 Button', 'aveone' ),
-"desc" => "",
-"id" => $aveone_shortname."_bootstrap_slide5_button",
-"type" => "textarea",
-"class" => "hidden",
-"std" => '<a class="button" href="#">'.__( 'Learn more', 'aveone' ).'</a>', 'aveone' );
-
-$options[] = array( "name" => $aveone_shortname."-tab-14", "id" => $aveone_shortname."-tab-14",
-"type" => "close-tab" );
-
-*/
 // Agent Information
 
 $options[] = array( "id" => $aveone_shortname."-tab-7", "type" => "open-tab");
@@ -1296,60 +381,6 @@ $options['evl_agent_info_note'] = array( "name" => __( 'Note:', 'aveone' ),
 "std" => ''
 );
 
-
-/*
-echo get_current_user_id();
-$usertitle = get_user_meta(get_current_user_id(),'first_name',true);
-$options['evl_agent_title'] = array( "name" => __( 'Agent Title', 'aveone' ),
-"desc" => "",
-"id" => $aveone_shortname."_agent_title",
-"type" => "text",
-"std" => $usertitle
-);
-
-$designation = get_user_meta(get_current_user_id(),'designation',true);
-$options['evl_agent_designation'] = array( "name" => __( 'Agent Designation', 'aveone' ),
-"desc" => "",
-"id" => $aveone_shortname."_agent_designation",
-"type" => "text",
-"std" => $designation
-);
-
-$options['evl_agent_phone1'] = array( "name" => __( 'Agent Phone 1', 'aveone' ),
-"desc" => "",
-"id" => $aveone_shortname."_agent_phone1",
-"type" => "text",
-"std" => '(512) 794-6644'
-);
-
-$options['evl_agent_phone2'] = array( "name" => __( 'Agent Phone 2', 'aveone' ),
-"desc" => "",
-"id" => $aveone_shortname."_agent_phone2",
-"type" => "text",
-"std" => '(512) 555-2222'
-);
-
-$options['evl_agent_email'] = array( "name" => __( 'Agent Email', 'aveone' ),
-"desc" => "",
-"id" => $aveone_shortname."_agent_email",
-"type" => "text",
-"std" => 'agent@website.com'
-);
-
-$options['evl_agent_image'] = array( "name" => __( 'Agent Image', 'aveone' ),
-"desc" => "",
-"id" => $aveone_shortname."_agent_image",
-"type" => "upload",
-"std" => ''
-);
-
-$options['evl_agent_company_logo'] = array( "name" => __( 'Agent Company Logo', 'aveone' ),
-"desc" => "",
-"id" => $aveone_shortname."_agent_company_logo",
-"type" => "upload",
-"std" => ''
-);
-*/
 $options[] = array( "name" => $aveone_shortname."-tab-7", 
 "id" => $aveone_shortname."-tab-7",
 "type" => "close-tab" );
@@ -1380,7 +411,6 @@ $options['evl_printable_info_note'] = array( "name" => __( 'Note:', 'aveone' ),
 "type" => "note-for-printables",
 "std" => ''
 );
-
 
 
 $options[] = array( "name" => $aveone_shortname."-tab-4", 
@@ -1624,8 +654,6 @@ $options[] = array( "name" => $aveone_shortname."-tab-5",
 "type" => "close-tab" );
 
 
-
-
 return $options;
 }
 
@@ -1648,7 +676,7 @@ function aveone_customizer_register( $wp_customize ) {
             'name' => __( 'General', 'aveone'),
             'priority' => 101,
             'settings' => array(
-				'evl_favicon',
+				        'evl_favicon',
                 'evl_layout',            
                 'evl_width_layout',
                 'evl_width_px',

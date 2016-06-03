@@ -393,11 +393,11 @@ a:hover { text-decoration: underline; }
 
 /* Headings */
 h1, h2, h3, h4, h5, h6 { color:#999480; font-family:'Roboto';font-weight:normal;font-style:normal!important; clear: both;margin-bottom:15px; }
-h1 { font-size: 46px; line-height: 46px; padding: 5px 0px;letter-spacing:-2px;  }
-h2 { font-size: 40px; line-height: 40px; padding: 5px 0px;letter-spacing:-1px;  }
-h3 { font-size: 34px; line-height: 34px; padding: 5px 0px;letter-spacing:-1px;  }
-h4 { font-size: 27px; line-height: 27px; padding: 5px 0px;letter-spacing:-1px; }
-h5 { font-size: 20px; line-height: 20px; padding: 5px 0px; }
+h1 { font-size: 46px; line-height: 46px; padding: 5px 0px;}
+h2 { font-size: 40px; line-height: 40px; padding: 5px 0px;}
+h3 { font-size: 34px; line-height: 34px; padding: 5px 0px;}
+h4 { font-size: 27px; line-height: 27px; padding: 5px 0px;}
+h5 { font-size: 20px; line-height: 20px; padding: 5px 0px;}
 h6 { font-size: 14px; line-height: 18px; padding: 5px 0px; }
 
 
@@ -1146,7 +1146,12 @@ text-shadow:0 1px 0 #000;color:#fff;
 
 /* Containers */
 
-.container-header {margin-top:0px!important;margin-bottom:0px!important;}
+.container-header {
+  margin-top: 0px!important;
+  margin-bottom: 0px!important;
+  padding: 5px;
+  min-height: 136px;
+}
 .container-menu {margin:0 auto!important;padding-bottom:10px!important;position:relative!important;z-index:99!important;}
 
 .menu-header:after {
@@ -1668,10 +1673,12 @@ div#carousel {
 #slides li { border-left: 5px solid #000000; }
 #slides li:first-child { border-left: none; }
 #primary .entry-title { border-bottom: 1px solid #FFFFFF; color:#FFFFFF !important; margin: 10px 0 0 0; }
-.property-details h3.heading{ font-size: 20px;
-    font-style: italic !important;
-    font-weight: bolder;
-    text-transform: uppercase;}
+.property-details h3.heading{ 
+/*  font-size: 20px;
+  font-style: italic !important;
+  font-weight: bolder;
+  text-transform: uppercase;*/
+}
 .contact-page input, .contact-page textarea, .contact-page select{ width: 100%; color: #000;}
 
 .contact-page input{
@@ -1878,7 +1885,7 @@ img { max-width: inherit !important;}
     font-size: 13px !important;
 }
 
-.heading, .property-tour-links h3{ color: #999480; font-style: italic !important;  }
+.property-tour-links h3{ color: #999480; font-style: italic !important;  }
 
 #menu-main-menu li a {
     max-height: 50px;

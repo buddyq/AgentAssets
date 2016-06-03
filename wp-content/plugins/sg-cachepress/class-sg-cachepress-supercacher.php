@@ -457,7 +457,7 @@ class SG_CachePress_Supercacher {
 	 */
 	public static function return_check_is_nginx()
 	{
-	    $url = get_site_url();
+	    $url = get_home_url();
 	    $headers = self::request_data( $url );
 	    
 	    if( isset($headers['server']) && !empty($headers['server']) )

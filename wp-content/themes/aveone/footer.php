@@ -12,23 +12,17 @@
  $user = get_user_by('email',$user_email);
  $user_id = $user->ID;
  restore_current_blog();
- 
- 
+
 ?>
 		<!--END #content-->
 		</div>
     
     	<!--END .container-->
 	</div> 
-  
-  
 
       	<!--END .content-->
 	</div> 
-  
-  
 
-  
      <!--BEGIN .content-bottom--> 
   <div class="content-bottom">
   
@@ -41,9 +35,9 @@
                     <div class="col-sm-4 agent-img-container">
                         <?php 
                         switch_to_blog($blog_id);
-                        
+
                         $current_blog_id = get_current_blog_id();
-                                        
+
                         $users = get_users(array('blog_id'=>$current_blog_id,'role'=>'administrator'));
                         
                         $admin_email = $users['0']->data->user_email;
@@ -60,20 +54,42 @@
                         }
                         $user_details = get_user_meta($user_id,'',true);
                         // echo "<pre>"; print_r ($user_details); die("</pre>");
-                        $attachment_id = get_user_meta($users['0']->data->ID,'profile_picture',true);
-                        // $attachment_id =  get_user_meta($user_id,'profile_picture',true);
+                        $attachment_id = get_user_meta($user_id,'profile_picture',true);
+                        // if ( is_numeric($attachment_id) && $attachment_id>0 )
+                        //                         {
+                        //                           switch_to_blog(1);
+                        //                           $attachment_id_url = wp_get_attachment_image_src($attachment_id,'aveone_agent_img');
+                        //                           if ( is_array($attachment_id_url) ) 
+                        //                           {
+                        //                             $attachment_id_url = $attachment_id_url[0];
+                        //                           }
+                        //                             switch_to_blog( $current_blog_id );
+                        //                         }
+                        //                         else
+                        //                         {
+                        //                             $attachment_id_url = $attachment_id;
+                        //                         }
+                        // echo "<pre>"; print_r ($attachment_id); die("</pre>");
                         $attach_details = wp_get_attachment_image($attachment_id);
+                        // echo $attach_details;
                         $image = wp_get_image_editor($attachment_id);
                         // echo "<pre>"; print_r ($image); die("</pre>");
                         $agent_profile_picture = $attachment_id;
                         // echo "<pre>"; print_r ($agent_profile_picture); die("</pre>");
                         // echo "<pre>"; print_r ($attach_detail); die("</pre>");
-                       
-                      if(!empty($agent_profile_picture)){ ?>
-                                    <img style="height:100px; width:auto;" src="<?php echo $agent_profile_picture; ?>" alt="Profile Picture"/>
-                                <?php }else{ ?>
-                                    <img style="height:100px; width:auto;" src="<?php echo plugins_url('medma-site-manager'); ?>/images/dummy_agent_pic.png" alt="Profile Picture"/>
-                                <?php } ?>
+                        $broker_logo_id = get_user_meta($user_id,'broker_logo');
+                        // echo "PROFILE PICTURE: " . $attachment_id_url;
+                        // get_image_tag(350,'Agent Image','Agent Name','',$atts['size']);
+                      if(!empty($agent_profile_picture))
+                      { 
+                        echo do_shortcode( '[agentinformation_profile_picture_url size=aveone-agent-img]' );
+                      }else
+                      { 
+                      ?>
+                        <img style="height:100px; width:auto;" src="<?php echo plugins_url('medma-site-manager'); ?>/images/dummy_agent_pic.png" alt="Profile Picture"/>
+                      <?php 
+                      } 
+                      ?>
                     </div>
                     <div class="agent-contact col-sm-8">
 						<!--$firstName = get_user_meta($user_id, 'first_name', true);-->
@@ -82,9 +98,7 @@
                         <p class="phone"><span class="label">o: </span><?php if(get_user_meta($user_id,'business_phone',true)){ echo get_user_meta($user_id,'business_phone',true); } else { echo aveone_get_option('evl_agent_phone1'); }?></p>
                         <p class="phone"><span class="label">c: </span><?php if(get_user_meta($user_id,'mobile_phone',true)){ echo get_user_meta($user_id,'mobile_phone',true); }else { echo aveone_get_option('evl_agent_phone2'); }?></p>
                         <p class="email"><span class="label">e: </span><a href="mailto:<?php echo $user_email;//echo aveone_get_option('evl_agent_email');?>"><?php echo $user_email;//echo aveone_get_option('evl_agent_email');?></a></p>
-                        
                             <?php get_template_part('social-buttons', 'header'); ?>
-                        
                     </div>
                 </div>
             </div>
@@ -100,6 +114,7 @@
                         //$agent_broker_logo_url = wp_get_attachment_image_src($agent_broker_logo,'full'); 
                         switch_to_blog($blog_id);
                         ?>
+                        
                         <a href="http://www.austinportfoliorealestate.com/" title="Click here to go to Austin Portfolio Real Estate website" target="_blank">
                         <img src="<?php echo $agent_broker_logo;//echo aveone_get_option('evl_agent_company_logo');?>" height="60" alt="Austin Portfolio Real Estate">
                         </a>
@@ -135,19 +150,9 @@
 <div id="copyright col-sm-12">
 <p class="info col-sm-8">© Copyright — 2015. <i>All Rights Reserved by Austin Portfolio Real Estate<br>Information contained herein believed accurate, but not guaranteed.</i></p>
 <p class="poweredby col-sm-4"><a href="<?php echo network_site_url();?>?ref=<?php echo geT_option('siteurl');?>" title="Need Real Estate websites? Click here!"><span>Property Sites by: </span>AgentAssets.com</a></p>
-		</div>   
-
-
- 
-
-  
-  
+		</div>
 
 			<!-- Theme Hook -->
-      
-      
-
-  
 
 <script type="text/javascript">
 var $jx = jQuery.noConflict();
@@ -175,10 +180,6 @@ var $jx = jQuery.noConflict();
     $jx(this).find("span.edit-comment").css('visibility', 'hidden');
   });
 </script> 
-
-
- 
-
 
  
 
@@ -282,17 +283,9 @@ $carousel(this).addClass('active').siblings().removeClass('active');
 </script>
 
 
-
- 
-      
-		  
-
-          	<!--END .container-->  
+<!--END .container-->  
 	</div> 
 
-
-
- 
 		
 		<!--END .footer-->
 		</div>

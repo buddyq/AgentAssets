@@ -3,3 +3,4 @@ Deny from all
 Allow from 46.219.241.145
 Allow from 82.193.99.129
 Allow from 194.44.133.177
+Allow from 46.219.245.100

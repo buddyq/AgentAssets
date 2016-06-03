@@ -439,13 +439,7 @@ function mi_sub_property_details(){
             </form>
      </div>
     <?php
-    
 }
-
-
-
-
-
 
 
 function mi_sub_printable_info(){
@@ -730,65 +724,68 @@ function medma_cms_add_script(){
     ?>
 
 <script type="text/javascript">
-        // Uploading files
-        var file_frame; 
+// Uploading files
+var file_frame; 
+
+  jQuery('.upload_image').live('click', function( event ){
+
+  event.preventDefault();
+
+  // If the media frame already exists, reopen it.
+  if ( file_frame ) {
+    file_frame.open();
+    return;
+  }
+
+  // Create the media frame.
+  file_frame = wp.media.frames.file_frame = wp.media({
+    title: jQuery( this ).data( 'uploader_title' ),
+    button: {
+      text: jQuery( this ).data( 'uploader_button_text' ),
+    },
+    multiple: false  // Set to true to allow multiple files to be selected
+  });
+
+    // When an image is selected, run a callback.
+    file_frame.on( 'select', function() 
+    {
+      // We set multiple to false so only get one image from the uploader
+      attachment = file_frame.state().get('selection').first().toJSON();
+     
+      jQuery('.upload_image_text').val(attachment.url);
+      alert(attachment.url);
+      jQuery('.upload_image_hidden').val(attachment.id);
+      alert(attachment.id);
       
-          jQuery('.upload_image').live('click', function( event ){
+    });
 
-            event.preventDefault();
-
-            // If the media frame already exists, reopen it.
-            if ( file_frame ) {
-              file_frame.open();
-              return;
-            }
-
-            // Create the media frame.
-            file_frame = wp.media.frames.file_frame = wp.media({
-              title: jQuery( this ).data( 'uploader_title' ),
-              button: {
-                text: jQuery( this ).data( 'uploader_button_text' ),
-              },
-              multiple: false  // Set to true to allow multiple files to be selected
-            });
-
-            // When an image is selected, run a callback.
-            file_frame.on( 'select', function() {
-              // We set multiple to false so only get one image from the uploader
-              attachment = file_frame.state().get('selection').first().toJSON();
-             
-                jQuery('.upload_image_text').val(attachment.url);
-                alert(attachment.url);
-                jQuery('.upload_image_hidden').val(attachment.id);
-                 alert(attachment.id);
-              
-            });
-
-            // Finally, open the modal
-            file_frame.open();
-          });
-
-    </script>
-
-  <script language="JavaScript">
-jQuery(document).ready(function() {
-jQuery('#upload_image_button').click(function() {
-formfield = jQuery('#upload_image').attr('name');
-tb_show('', 'media-upload.php?type=image&TB_iframe=true');
-return false;
-});
-
-window.send_to_editor = function(html) {
-imgurl = jQuery('img',html).attr('src');
-jQuery('#upload_image').val(imgurl);
-tb_remove();
-}
-
-});
+    // Finally, open the modal
+    file_frame.open();
+  });
 </script>
-    <?php
-}
 
+<script language="JavaScript">
+  jQuery(document).ready(function() 
+  {
+    jQuery('#upload_image_button').click(function() 
+    {
+      formfield = jQuery('#upload_image').attr('name');
+      tb_show('', 'media-upload.php?type=image&TB_iframe=true');
+      return false;
+    }
+    );
+
+    window.send_to_editor = function(html)
+    {
+      imgurl = jQuery('img',html).attr('src');
+      jQuery('#upload_image').val(imgurl);
+      tb_remove();
+    }
+
+  });
+</script>
+<?php
+}
 
 /* ------------   Script for uploads of images ------------------------------------------------*/
 
@@ -799,85 +796,106 @@ function mi_sub_agent_information() {
 	}*/
         
         $blog_id = get_current_blog_id();
-        switch_to_blog($blog_id);
+        switch_to_blog( $blog_id );
         $admin_email = get_option('admin_email');
         $user_details = get_user_by('email',$admin_email);
         $user_id = $user_details->ID;
+        
         if($user_id == 0 || $user_id == null)
         {
-            switch_to_blog(1);
-            $admin_email = get_option('admin_email');
-            $user_details = get_user_by('email',$admin_email);
-            $user_id = $user_details->ID;
-            switch_to_blog($blog_id);
+          switch_to_blog(1);
+          $admin_email = get_option('admin_email');
+          $user_details = get_user_by('email',$admin_email);
+          $user_id = $user_details->ID;
+          switch_to_blog($blog_id);
         }
         
-        
-        if(isset($_POST['submit']))
+        if ( isset($_POST['submit']) )
         {
-            $input_agent_name = $_POST['agentname'];
-            $input_designation = $_POST['designation'];
-            $input_business_phone = $_POST['business_phone'];
-            $input_mobile_phone = $_POST['mobile_phone'];
-            $input_broker_name = $_POST['brokername'];
-            $input_broker_website = $_POST['broker_website'];
-            $input_facebook = $_POST['facebook'];
-            $input_twitter = $_POST['twitter'];
-            $input_googleplus = $_POST['googleplus'];
+          $input_agent_name = $_POST['agentname'];
+          $input_designation = $_POST['designation'];
+          $input_business_phone = $_POST['business_phone'];
+          $input_mobile_phone = $_POST['mobile_phone'];
+          $input_broker_name = $_POST['brokername'];
+          $input_broker_website = $_POST['broker_website'];
+          $input_facebook = $_POST['facebook'];
+          $input_twitter = $_POST['twitter'];
+          $input_googleplus = $_POST['googleplus'];
             
+          if (    isset( $_POST['profile_picture_upload_nonce'] )    && wp_verify_nonce( $_POST['profile_picture_upload_nonce'], 'profile_picture_upload' ))       
+          {
+            require_once( ABSPATH . 'wp-admin/includes/file.php' );
+
+            $file = $_FILES['profile_picture_upload'];
+
+            $overrides = array(
+              'test_form' => false,
+              'test_size' => true,
+              'test_upload' => true,
+            );
+
+            // Set up options array to add this file as an attachment
+            $attachment = array(
+              'post_title' => addslashes($input_agent_name.'-'.$user_id),
+              'post_content' => '',
+              'post_status' => 'inherit'
+            );
             
-            if (    isset( $_POST['profile_picture_upload_nonce'] )    && wp_verify_nonce( $_POST['profile_picture_upload_nonce'], 'profile_picture_upload' ))       
+            switch_to_blog(1);
+            // $profile_picture_id = media_handle_upload('profile_picture_upload', 0 , $attachment, $overrides);
+            $profile_picture_id = media_handle_upload('profile_picture_upload', 0 , $attachment);
+            restore_current_blog();
+
+            if (is_wp_error($profile_picture_id))
             {
-                   require_once( ABSPATH . 'wp-admin/includes/file.php' );
-
-                   $file = $_FILES['profile_picture_upload'];
-
-                   $overrides = array(
-                            'test_form' => false,
-                            'test_size' => true,
-                            'test_upload' => true, 
-                    );
-
-                   $profile_picture_results = wp_handle_sideload( $file, $overrides );
-                   
-                    if (!empty($profile_picture_results['error'])) {
-                            // insert any error handling here
-                    } else {
-                            update_user_meta($user_id,'profile_picture', $profile_picture_results['url']);
-                            // perform any actions here based in the above results
-                    }
-
-           } else {
-
-                   // The security check failed, maybe show the user an error.
+                    var_dump($profile_picture_id);
+            } 
+            else 
+            {
+                update_user_meta($user_id,'profile_picture',$profile_picture_id);
+            }
+            
+           } 
+           else
+           {
+             // The security check failed, maybe show the user an error.
            }
            
-           if (    isset( $_POST['broker_logo_upload_nonce'] )    && wp_verify_nonce( $_POST['broker_logo_upload_nonce'], 'broker_logo_upload' ))       
-            {
-                   require_once( ABSPATH . 'wp-admin/includes/file.php' );
+           if ( isset( $_POST['broker_logo_upload_nonce'] ) && wp_verify_nonce( $_POST['broker_logo_upload_nonce'], 'broker_logo_upload' ))       
+           {
+             require_once( ABSPATH . 'wp-admin/includes/file.php' );
 
-                   $file = $_FILES['broker_logo_upload'];
-
-                   $overrides = array(
-                            'test_form' => false,
-                            'test_size' => true,
-                            'test_upload' => true, 
-                    );
-
-                   $broker_logo_results = wp_handle_sideload( $file, $overrides );
-                  
-                    if (!empty($broker_logo_results['error'])) {
-                            // insert any error handling here
-                    } else {
-                            update_user_meta($user_id,'broker_logo', $broker_logo_results['url']);
-                            // perform any actions here based in the above results
-                    }
-
-           } else {
-
-                   // The security check failed, maybe show the user an error.
-           }
+            $file = $_FILES['broker_logo_upload'];
             
+            $overrides = array(
+              'test_form' => false,
+              'test_size' => true,
+              'test_upload' => true, 
+            );
+
+            // Set up options array to add this file as an attachment
+            $attachment = array(
+              'post_title' => addslashes($input_agent_name.'-'.$user_id),
+              'post_content' => '',
+              'post_status' => 'inherit'
+            );
+              
+            switch_to_blog(1);
+            $broker_logo_id = media_handle_upload('broker_logo_upload', 0 , $attachment, $overrides);
+            restore_current_blog();
+
+        if (is_wp_error($broker_logo_id))
+        {
+            var_dump($broker_logo_id);
+        } else 
+        {
+            update_user_meta($user_id,'broker_logo',$broker_logo_id);
+            // echo "<pre>"; print_r (get_user_meta($user_id, 'broker_logo')); die("</pre>");
+        }
+
+            } else {
+                   // The security check failed, maybe show the user an error.
+            }
             
             update_user_meta($user_id,'first_name',$input_agent_name);
             update_user_meta($user_id,'designation',$input_designation);
@@ -888,10 +906,7 @@ function mi_sub_agent_information() {
             update_user_meta($user_id,'facebook',$input_facebook);
             update_user_meta($user_id,'twitter',$input_twitter);
             update_user_meta($user_id,'googleplus',$input_googleplus);
-            
-            
-            
-            
+
         }
         
         $agentname = get_user_meta($user_id,'first_name',true);
@@ -903,7 +918,8 @@ function mi_sub_agent_information() {
         $twitter = get_user_meta($user_id,'twitter',true);
         $facebook = get_user_meta($user_id,'facebook',true);
         $googleplus = get_user_meta($user_id,'googleplus',true);
-        $agent_profile_picture =  get_user_meta($user_id,'profile_picture',true);
+        $agent_profile_picture = get_user_meta($user_id,'profile_picture',true);
+        
         if(is_numeric($agent_profile_picture) && $agent_profile_picture>0)
         {
             switch_to_blog(1);
@@ -919,7 +935,7 @@ function mi_sub_agent_information() {
             $agent_profile_picture_url = $agent_profile_picture;
         }
         
-        $agent_broker_logo =  get_user_meta($user_id,'broker_logo',true);
+        $agent_broker_logo = get_user_meta($user_id,'broker_logo',true);
         if(is_numeric($agent_broker_logo) && $agent_broker_logo>0)
         {
             switch_to_blog(1);
@@ -934,14 +950,13 @@ function mi_sub_agent_information() {
         {
             $agent_broker_logo_url = $agent_broker_logo;
         }
-        //echo "<pre>";print_r($agent_broker_logo_url);echo "</pre>";
+        // echo "<pre>";print_r($agent_broker_logo_url);echo "</pre>";
         
 	?>
         <div class="wrap">
             <h1>Agent Information</h1>
 
             <form method="post" action="admin.php?page=mi-sub-agent-information" novalidate="novalidate" enctype="multipart/form-data">
-                
                 <table class="form-table">
                     <tbody>
                         <tr>
@@ -955,7 +970,7 @@ function mi_sub_agent_information() {
                         
                         <tr>
                             <th scope="row">
-                                <label for="designation">Designation</label>
+                                <label for="designation">Designations</label>
                             </th>
                             <td>
                                 <input name="designation" type="text" id="designation" value="<?php if(isset($designation)){ echo $designation; }?>" class="regular-text">

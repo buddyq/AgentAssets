@@ -8,11 +8,22 @@ add_theme_support('deactivate_layerslider');
 $avia_config['imgSize']['slider_post_img'] = array('width'=>500,  'height'=>375); // for homepage slider using post image
 
 add_action( 'admin_enqueue_scripts', 'load_admin_style' );
-      function load_admin_style() {
-        // wp_register_style( 'admin_css', get_template_directory_uri() . '/admin-style.css', false, '1.0.0' );
-//OR
-        wp_enqueue_style( 'admin_css', get_template_directory_uri() . '/css/admin-style.css', false, '1.0.0' );
-       }
+
+
+function load_admin_style() {
+  // wp_register_style( 'admin_css', get_template_directory_uri() . '/admin-style.css', false, '1.0.0' );
+  //OR
+  wp_enqueue_style( 'admin_css', get_template_directory_uri() . '/css/admin-style.css', false, '1.0.0' );
+}
+ 
+// Used for the conditional output on the pricing page. 
+function show_packages(){
+  global $wpdb;
+  $user_id = get_current_user_id();
+  $total_package = $wpdb->get_results("SELECT id FROM `" . $wpdb->base_prefix . "orders` WHERE user_id = '" . $user_id . "' AND status='1'");
+  $has_package = $total_package;
+  return $has_package;
+}
 
 function rebranding_wordpress_logo(){
         global $wp_admin_bar;

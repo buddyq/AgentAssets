@@ -162,7 +162,7 @@ function mism_create_new_site($atts) {
                                 $sql = "UPDATE `" . $wpdb->base_prefix . "package_counter` SET site_consumed='" . $counter_consumed . "' WHERE order_id='" . $order_id . "'";
                                 $counter_id = $wpdb->query($sql);
 
-                                OrderMap::addNewRelation($userID, $blog_id, $counter_id);
+                                OrderMap::addNewRelation($userID, $blog_id, $order_id);
                                 ?>
                                 <div class="avia_message_box avia-color-green avia-size-large avia-icon_select-yes avia-border-  avia-builder-el-0  el_before_av_notification  avia-builder-el-first ">
                                     <span class="avia_message_box_title"><?php _e('Success', 'mism'); ?></span>
@@ -193,7 +193,7 @@ function mism_create_new_site($atts) {
                             $sql = "UPDATE `" . $wpdb->base_prefix . "package_counter` SET site_consumed='" . $counter_consumed . "' WHERE order_id='" . $order_id . "'";
                             $counter_id = $wpdb->query($sql);
 
-                            OrderMap::addNewRelation($userID, $blog_id, $counter_id);
+                            OrderMap::addNewRelation($userID, $blog_id, $order_id);
                             
                             $html .= '<div class="avia_message_box avia-color-red avia-size-large avia-icon_select-yes avia-border-  avia-builder-el-2  el_after_av_notification  el_before_av_notification ">';
                             $html .= '<span class="avia_message_box_title">Note</span>';

@@ -30,6 +30,7 @@ require_once 'includes/settings/package-settings.php';
 require_once 'includes/ajax_action_callbacks.php';
 
 require_once 'includes/actions.php';
+require_once 'includes/filters.php';
 
 /*
  * Load Stylesheet to Header

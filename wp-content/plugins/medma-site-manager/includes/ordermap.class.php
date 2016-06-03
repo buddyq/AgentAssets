@@ -10,11 +10,11 @@ class OrderMap {
         global $wpdb;
 
         $counterTable = $wpdb->base_prefix . 'package_counter';
-        $counter_id = $wpdb->get_var('SELECT `id` FORM `'.$counterTable.'` WHERE `order_id` = '.(int)$order_id);
+        $counter_id = $wpdb->get_var('SELECT `id` FORM `'.$counterTable.'` WHERE `order_id` = '.(int)$order_id. 'LIMIT 1');
         if ($counter_id) {
             $wpdb->query('UPDATE `'.$counterTable.'` SET `site_consumed` = `site_consumed` + 1 WHERE `id` = '.(int)$counter_id );
-            $wpdb->query($wpdb->prepare('INSERT INTO `'.self::tableName().'` (`user_id`,`site_id`,`counter_id`) VALUE (?,?,?)',
-                array($user_id, $blog_id, $counter_id)));
+            $wpdb->query('INSERT INTO `'.self::tableName().'`(`user_id`,`site_id`,`counter_id`) VALUE ('
+                .(int)$user_id.','.(int)$blog_id.','.(int)$counter_id.')');
         }
     }
 
@@ -63,7 +63,7 @@ class OrderMap {
         $blogInfo = self::getBlogInfo($blog_id);
         if ($blogInfo) {
             $wpdb->query('UPDATE `'.$wpdb->base_prefix . 'package_counter` SET `site_consumed` = `site_consumed` - 1 WHERE `id` = '.$blogInfo->counter_id);
-            $wpdb->query('DELETE FROM `'.self::tableName().'` WHERE `blog_id` = '.(int)$blog_id);
+            $wpdb->query('DELETE FROM `'.self::tableName().'` WHERE `site_id` = '.(int)$blog_id);
         }
     }
 }

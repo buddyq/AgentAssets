@@ -158,10 +158,6 @@ function mism_create_new_site($atts) {
                             restore_current_blog();
                             if ($result) {
                                 # Update Package Status
-                                $counter_consumed = ($counter_details[0]->site_consumed + 1);
-                                $sql = "UPDATE `" . $wpdb->base_prefix . "package_counter` SET site_consumed='" . $counter_consumed . "' WHERE order_id='" . $order_id . "'";
-                                $counter_id = $wpdb->query($sql);
-
                                 OrderMap::addNewRelation($userID, $blog_id, $order_id);
                                 ?>
                                 <div class="avia_message_box avia-color-green avia-size-large avia-icon_select-yes avia-border-  avia-builder-el-0  el_before_av_notification  avia-builder-el-first ">
@@ -188,11 +184,6 @@ function mism_create_new_site($atts) {
                                 $html .= '</div>';
                             }
                         } else {
-                            
-                            $counter_consumed = ($counter_details[0]->site_consumed + 1);
-                            $sql = "UPDATE `" . $wpdb->base_prefix . "package_counter` SET site_consumed='" . $counter_consumed . "' WHERE order_id='" . $order_id . "'";
-                            $counter_id = $wpdb->query($sql);
-
                             OrderMap::addNewRelation($userID, $blog_id, $order_id);
                             
                             $html .= '<div class="avia_message_box avia-color-red avia-size-large avia-icon_select-yes avia-border-  avia-builder-el-2  el_after_av_notification  el_before_av_notification ">';

@@ -15,6 +15,7 @@ Author URI: http://avifoujdar.wordpress.com/
 	  ()-()
 **/
 
+include_once dirname( __FILE__ ) . '/message_class.php';
 include_once dirname( __FILE__ ) . '/settings.php';
 include_once dirname( __FILE__ ) . '/login_afo_widget.php';
 include_once dirname( __FILE__ ) . '/forgot_pass_class.php';

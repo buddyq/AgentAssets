@@ -219,6 +219,13 @@ try{
 
 		$productFront = new RevSliderFront(RS_PLUGIN_FILE_PATH);
 	}
+
+	$rsv = get_option('rs_version', 0);
+	if(version_compare($revSliderVersion, $rsv, '>')){
+		RevSliderFront::createDBTables();
+		RevSliderPluginUpdate::do_update_checks();
+		update_option('rs_version', $revSliderVersion);
+	}
 	
 	add_action('plugins_loaded', array( 'RevSliderFront', 'createDBTables' )); //add update checks
 	add_action('plugins_loaded', array( 'RevSliderPluginUpdate', 'do_update_checks' )); //add update checks

@@ -12,10 +12,7 @@ add_action( 'admin_menu', 'wr_no_captcha_menu' );
 add_action( 'admin_init', 'wr_no_captcha_display_options' );
 add_action( 'login_enqueue_scripts', 'wr_no_captcha_login_form_script' );
 add_action( 'login_enqueue_scripts', 'wr_no_captcha_css' );
-add_action( 'wp_enqueue_scripts', 'wr_no_captcha_login_form_script' );
-add_action( 'wp_enqueue_scripts', 'wr_no_captcha_css' );
 add_action( 'login_form', 'wr_no_captcha_render_login_captcha' );
-add_action( 'login_afo_form', 'wr_no_captcha_render_login_captcha' );
 add_filter( 'wp_authenticate_user', 'wr_no_captcha_verify_login_captcha', 10, 2 );
 
 function wr_no_captcha_menu() {

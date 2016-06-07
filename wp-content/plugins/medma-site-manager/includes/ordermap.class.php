@@ -21,7 +21,7 @@ class OrderMap {
     public static function getBlogOwner($blog_id) {
         /** @var wpdb */
         global $wpdb;
-        return $wpdb->get_var('SELECT `user_id` FROM `'.self::tableName().'` WHERE `blog_id` = '.(int)$blog_id . ' LIMIT 1');
+        return $wpdb->get_var('SELECT `user_id` FROM `'.self::tableName().'` WHERE `site_id` = '.(int)$blog_id . ' LIMIT 1');
     }
 
     public static function getBlogInfo($blog_id) {

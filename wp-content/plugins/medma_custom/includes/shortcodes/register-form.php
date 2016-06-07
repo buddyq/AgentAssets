@@ -6,193 +6,217 @@ function cu_register_form()
 {
     if(isset($_POST['submit']))
     {
-		
-		global $wpdb;
-        $username = $_POST['micu_username'];
-	      $email = $_POST['micu_email'];
-        $password = trim($_POST['micu_pwd']);
-        $name = $_POST['micu_name'];
-        $business_phone = $_POST['micu_business_phone'];
-        $mobile_phone = $_POST['micu_mobile_phone'];
-        $broker = $_POST['micu_broker'];
-        $broker_website = $_POST['micu_broker_website'];
-        $twitter = $_POST['micu_twitter'];
-        $facebook = $_POST['micu_facebook'];
-        $googleplus = $_POST['micu_googleplus'];
-        $billing_address_1 = $_POST['micu_billing_address_1'];
-        $billing_address_2 = $_POST['micu_billing_address_2'];
-        $billing_city = $_POST['micu_billing_city'];
-        $billing_state = $_POST['micu_billing_state'];
-        $billing_zip = $_POST['micu_billing_zip'];
-        $billing_email = $_POST['micu_billing_email'];
-        
-        $return_url = $_POST['micu_return_url'];
-        remove_action('wpmu_new_user', newuser_notify_siteadmin, 999);
-        # User Created
-        $user_id = wpmu_create_user( $username, $password, $email );
-        if(isset($user_id) && $user_id>0)
-        {
-            
-            # Profile Picture Upload
-            $profile_picture_id = '';
-            if(isset($_FILES['micu_profile_picture']['error']) && $_FILES['micu_profile_picture']['error']=="0")
-            {
-                // Get the type of the uploaded file. This is returned as "type/extension"
-                $arr_file_type = wp_check_filetype(basename($_FILES['micu_profile_picture']['name']));
-                $uploaded_file_type = $arr_file_type['type'];
+        if (apply_filters('register_cu_form_captcha', true)) {
 
-                // Set an array containing a list of acceptable formats
-                $allowed_file_types = array('image/jpg','image/jpeg','image/gif','image/png');
 
-                // If the uploaded file is the right format
-                if(in_array($uploaded_file_type, $allowed_file_types)) {
+            global $wpdb;
+            $username = $_POST['micu_username'];
+            $email = $_POST['micu_email'];
+            $password = trim($_POST['micu_pwd']);
+            $name = $_POST['micu_name'];
+            $business_phone = $_POST['micu_business_phone'];
+            $mobile_phone = $_POST['micu_mobile_phone'];
+            $broker = $_POST['micu_broker'];
+            $broker_website = $_POST['micu_broker_website'];
+            $twitter = $_POST['micu_twitter'];
+            $facebook = $_POST['micu_facebook'];
+            $googleplus = $_POST['micu_googleplus'];
+            $billing_address_1 = $_POST['micu_billing_address_1'];
+            $billing_address_2 = $_POST['micu_billing_address_2'];
+            $billing_city = $_POST['micu_billing_city'];
+            $billing_state = $_POST['micu_billing_state'];
+            $billing_zip = $_POST['micu_billing_zip'];
+            $billing_email = $_POST['micu_billing_email'];
 
-                    // Options array for the wp_handle_upload function. 'test_upload' => false
-                    $upload_overrides = array( 'test_form' => false ); 
+            $return_url = $_POST['micu_return_url'];
+            remove_action('wpmu_new_user', newuser_notify_siteadmin, 999);
+            # User Created
+            $user_id = wpmu_create_user($username, $password, $email);
+            if (isset($user_id) && $user_id > 0) {
 
-                    // Handle the upload using WP's wp_handle_upload function. Takes the posted file and an options array
-                    $uploaded_file = wp_handle_upload($_FILES['micu_profile_picture'], $upload_overrides);
+                # Profile Picture Upload
+                $profile_picture_id = '';
+                if (isset($_FILES['micu_profile_picture']['error']) && $_FILES['micu_profile_picture']['error'] == "0") {
+                    // Get the type of the uploaded file. This is returned as "type/extension"
+                    $arr_file_type = wp_check_filetype(basename($_FILES['micu_profile_picture']['name']));
+                    $uploaded_file_type = $arr_file_type['type'];
 
-                    // If the wp_handle_upload call returned a local path for the image
-                    if(isset($uploaded_file['file'])) {
+                    // Set an array containing a list of acceptable formats
+                    $allowed_file_types = array('image/jpg', 'image/jpeg', 'image/gif', 'image/png');
 
-                        // The wp_insert_attachment function needs the literal system path, which was passed back from wp_handle_upload
-                        $file_name_and_location = $uploaded_file['file'];
+                    // If the uploaded file is the right format
+                    if (in_array($uploaded_file_type, $allowed_file_types)) {
 
-                        // Generate a title for the image that'll be used in the media library
-                        $file_title_for_media_library = $name.'-'.$user_id;
+                        // Options array for the wp_handle_upload function. 'test_upload' => false
+                        $upload_overrides = array('test_form' => false);
 
-                        // Set up options array to add this file as an attachment
-                        $attachment = array(
-                            'post_mime_type' => $uploaded_file_type,
-                            'post_title' => addslashes($file_title_for_media_library),
-                            'post_content' => '',
-                            'post_status' => 'inherit'
-                        );
+                        // Handle the upload using WP's wp_handle_upload function. Takes the posted file and an options array
+                        $uploaded_file = wp_handle_upload($_FILES['micu_profile_picture'], $upload_overrides);
 
-                        // Run the wp_insert_attachment function. This adds the file to the media library and generates the thumbnails. If you wanted to attch this image to a post, you could pass the post id as a third param and it'd magically happen.
-                        $profile_picture_id = wp_insert_attachment( $attachment, $file_name_and_location );
-                        $attach_data = wp_generate_attachment_metadata( $profile_picture_id, $file_name_and_location );
-                        wp_update_attachment_metadata($profile_picture_id,  $attach_data);
+                        // If the wp_handle_upload call returned a local path for the image
+                        if (isset($uploaded_file['file'])) {
 
-                        // Now, update the user meta to associate the new image with the user profile picture
-                        update_user_meta($user_id,'profile_picture',$profile_picture_id);
+                            // The wp_insert_attachment function needs the literal system path, which was passed back from wp_handle_upload
+                            $file_name_and_location = $uploaded_file['file'];
 
+                            // Generate a title for the image that'll be used in the media library
+                            $file_title_for_media_library = $name . '-' . $user_id;
+
+                            // Set up options array to add this file as an attachment
+                            $attachment = array(
+                                'post_mime_type' => $uploaded_file_type,
+                                'post_title' => addslashes($file_title_for_media_library),
+                                'post_content' => '',
+                                'post_status' => 'inherit'
+                            );
+
+                            // Run the wp_insert_attachment function. This adds the file to the media library and generates the thumbnails. If you wanted to attch this image to a post, you could pass the post id as a third param and it'd magically happen.
+                            $profile_picture_id = wp_insert_attachment($attachment, $file_name_and_location);
+                            $attach_data = wp_generate_attachment_metadata($profile_picture_id, $file_name_and_location);
+                            wp_update_attachment_metadata($profile_picture_id, $attach_data);
+
+                            // Now, update the user meta to associate the new image with the user profile picture
+                            update_user_meta($user_id, 'profile_picture', $profile_picture_id);
+
+                        }
                     }
                 }
-            }
-            
-            # Broker Logo Upload
-            $broker_logo_id = '';
-            if(isset($_FILES['micu_broker_logo']['error']) && $_FILES['micu_broker_logo']['error']=="0")
-            {
-                // Get the type of the uploaded file. This is returned as "type/extension"
-                $arr_file_type = wp_check_filetype(basename($_FILES['micu_broker_logo']['name']));
-                $uploaded_file_type = $arr_file_type['type'];
 
-                // Set an array containing a list of acceptable formats
-                $allowed_file_types = array('image/jpg','image/jpeg','image/gif','image/png');
+                # Broker Logo Upload
+                $broker_logo_id = '';
+                if (isset($_FILES['micu_broker_logo']['error']) && $_FILES['micu_broker_logo']['error'] == "0") {
+                    // Get the type of the uploaded file. This is returned as "type/extension"
+                    $arr_file_type = wp_check_filetype(basename($_FILES['micu_broker_logo']['name']));
+                    $uploaded_file_type = $arr_file_type['type'];
 
-                // If the uploaded file is the right format
-                if(in_array($uploaded_file_type, $allowed_file_types)) {
+                    // Set an array containing a list of acceptable formats
+                    $allowed_file_types = array('image/jpg', 'image/jpeg', 'image/gif', 'image/png');
 
-                    // Options array for the wp_handle_upload function. 'test_upload' => false
-                    $upload_overrides = array( 'test_form' => false ); 
+                    // If the uploaded file is the right format
+                    if (in_array($uploaded_file_type, $allowed_file_types)) {
 
-                    // Handle the upload using WP's wp_handle_upload function. Takes the posted file and an options array
-                    $uploaded_file = wp_handle_upload($_FILES['micu_broker_logo'], $upload_overrides);
+                        // Options array for the wp_handle_upload function. 'test_upload' => false
+                        $upload_overrides = array('test_form' => false);
 
-                    // If the wp_handle_upload call returned a local path for the image
-                    if(isset($uploaded_file['file'])) {
+                        // Handle the upload using WP's wp_handle_upload function. Takes the posted file and an options array
+                        $uploaded_file = wp_handle_upload($_FILES['micu_broker_logo'], $upload_overrides);
 
-                        // The wp_insert_attachment function needs the literal system path, which was passed back from wp_handle_upload
-                        $file_name_and_location = $uploaded_file['file'];
+                        // If the wp_handle_upload call returned a local path for the image
+                        if (isset($uploaded_file['file'])) {
 
-                        // Generate a title for the image that'll be used in the media library
-                        $file_title_for_media_library = $name.'-'.$user_id;
+                            // The wp_insert_attachment function needs the literal system path, which was passed back from wp_handle_upload
+                            $file_name_and_location = $uploaded_file['file'];
 
-                        // Set up options array to add this file as an attachment
-                        $attachment = array(
-                            'post_mime_type' => $uploaded_file_type,
-                            'post_title' => addslashes($file_title_for_media_library),
-                            'post_content' => '',
-                            'post_status' => 'inherit'
-                        );
+                            // Generate a title for the image that'll be used in the media library
+                            $file_title_for_media_library = $name . '-' . $user_id;
 
-                        // Run the wp_insert_attachment function. This adds the file to the media library and generates the thumbnails. If you wanted to attch this image to a post, you could pass the post id as a third param and it'd magically happen.
-                        $broker_logo_id = wp_insert_attachment( $attachment, $file_name_and_location );
-                        require_once(ABSPATH . "wp-admin" . '/includes/image.php');
-                        $attach_data = wp_generate_attachment_metadata( $broker_logo_id, $file_name_and_location );
-                        wp_update_attachment_metadata($broker_logo_id,  $attach_data);
+                            // Set up options array to add this file as an attachment
+                            $attachment = array(
+                                'post_mime_type' => $uploaded_file_type,
+                                'post_title' => addslashes($file_title_for_media_library),
+                                'post_content' => '',
+                                'post_status' => 'inherit'
+                            );
 
-                        // Now, update the user meta to associate the new image with the user profile picture
-                        update_user_meta($user_id,'broker_logo',$broker_logo_id);
+                            // Run the wp_insert_attachment function. This adds the file to the media library and generates the thumbnails. If you wanted to attch this image to a post, you could pass the post id as a third param and it'd magically happen.
+                            $broker_logo_id = wp_insert_attachment($attachment, $file_name_and_location);
+                            require_once(ABSPATH . "wp-admin" . '/includes/image.php');
+                            $attach_data = wp_generate_attachment_metadata($broker_logo_id, $file_name_and_location);
+                            wp_update_attachment_metadata($broker_logo_id, $attach_data);
 
+                            // Now, update the user meta to associate the new image with the user profile picture
+                            update_user_meta($user_id, 'broker_logo', $broker_logo_id);
+
+                        }
                     }
                 }
+
+                # User Meta Added and Updated
+                update_user_meta($user_id, 'first_name', $name);
+                update_user_meta($user_id, 'business_phone', $business_phone);
+                update_user_meta($user_id, 'mobile_phone', $mobile_phone);
+                update_user_meta($user_id, 'broker', $broker);
+                update_user_meta($user_id, 'broker_website', $broker_website);
+                update_user_meta($user_id, 'twitter', $twitter);
+                update_user_meta($user_id, 'facebook', $facebook);
+                update_user_meta($user_id, 'googleplus', $googleplus);
+                update_user_meta($user_id, 'billing_address_1', $billing_address_1);
+                update_user_meta($user_id, 'billing_address_2', $billing_address_2);
+                update_user_meta($user_id, 'billing_city', $billing_city);
+                update_user_meta($user_id, 'billing_state', $billing_state);
+                update_user_meta($user_id, 'billing_zip', $billing_zip);
+                update_user_meta($user_id, 'billing_email', $billing_email);
+
+                # Notification Mail sent to User
+                wpmu_welcome_user_notification($user_id, $password);
+                $user_data_list = array(
+                    'ID' => $user_id,
+                    'name' => $name,
+                    'business_phone' => $business_phone,
+                    'mobile_phone' => $mobile_phone,
+                    'broker' => $broker,
+                    'broker_website' => $broker_website,
+                    'twitter' => $twitter,
+                    'facebook' => $facebook,
+                    'googleplus' => $googleplus,
+                    'billing_address_1' => $billing_address_1,
+                    'billing_address_2' => $billing_address_2,
+                    'billing_city' => $billing_city,
+                    'billing_state' => $billing_state,
+                    'billing_zip' => $billing_zip,
+                    'billing_email' => $billing_email,
+
+
+                );
+                do_action('medma_custom_admin_user_notification', $user_data_list);
+                ?>
+                <div
+                    class="avia_message_box avia-color-green avia-size-large avia-icon_select-yes avia-border-  avia-builder-el-0  el_before_av_notification  avia-builder-el-first ">
+                    <span class="avia_message_box_title">Success</span>
+
+                    <div class="avia_message_box_content">
+                        <span class="avia_message_box_icon" aria-hidden="true" data-av_icon=""
+                              data-av_iconfont="entypo-fontello"></span>
+
+                        <p><?php _e('You are successfully registered.', 'micu'); ?></p>
+                        <h6><?php printf(__('Check your inbox at <strong>%s</strong>', 'micu'), $email); ?></h6>
+                    </div>
+                </div>
+                <?php
+            } else {
+
+                ?>
+                <div
+                    class="avia_message_box avia-color-red avia-size-large avia-icon_select-yes avia-border-  avia-builder-el-2  el_after_av_notification  el_before_av_notification ">
+                    <span class="avia_message_box_title"><?php _e('ERROR', 'micu'); ?></span>
+
+                    <div class="avia_message_box_content">
+                        <span class="avia_message_box_icon" aria-hidden="true" data-av_icon=""
+                              data-av_iconfont="entypo-fontello"></span>
+
+                        <p>Sign up process failed. Please try again.</p>
+                        <?php /*<h6><?php printf( __( 'Back to <a href="%s">Registration Form</a>' ), $return_url); ?></h6>*/
+                        ?>
+                    </div>
+                    <p>Either Username or Email already exists.</p>
+                </div>
+                <?php
             }
-            
-            # User Meta Added and Updated
-            update_user_meta($user_id, 'first_name', $name );
-            update_user_meta($user_id, 'business_phone', $business_phone );
-            update_user_meta($user_id, 'mobile_phone', $mobile_phone );
-            update_user_meta($user_id, 'broker', $broker );
-            update_user_meta($user_id, 'broker_website', $broker_website );
-            update_user_meta($user_id, 'twitter', $twitter );
-            update_user_meta($user_id, 'facebook', $facebook );
-            update_user_meta($user_id, 'googleplus', $googleplus );
-            update_user_meta($user_id, 'billing_address_1', $billing_address_1 );
-            update_user_meta($user_id, 'billing_address_2', $billing_address_2 );
-            update_user_meta($user_id, 'billing_city', $billing_city );
-            update_user_meta($user_id, 'billing_state', $billing_state );
-            update_user_meta($user_id, 'billing_zip', $billing_zip );
-            update_user_meta($user_id, 'billing_email', $billing_email );
-            
-            # Notification Mail sent to User
-            wpmu_welcome_user_notification($user_id, $password);    
-            $user_data_list = array(
-                'ID' => $user_id,
-                'name' => $name,
-                'business_phone' => $business_phone,
-                'mobile_phone' => $mobile_phone,
-                'broker' => $broker,
-                'broker_website' => $broker_website,
-                'twitter' => $twitter,
-                'facebook' => $facebook,
-                'googleplus' => $googleplus,
-                'billing_address_1' => $billing_address_1,
-                'billing_address_2' => $billing_address_2,
-                'billing_city' => $billing_city,
-                'billing_state' => $billing_state,
-                'billing_zip' => $billing_zip,
-                'billing_email' => $billing_email,
-                
-                
-            );
-            do_action( 'medma_custom_admin_user_notification', $user_data_list );
+        } else {
             ?>
-            <div class="avia_message_box avia-color-green avia-size-large avia-icon_select-yes avia-border-  avia-builder-el-0  el_before_av_notification  avia-builder-el-first ">
-                <span class="avia_message_box_title">Success</span>
+            <div
+                class="avia_message_box avia-color-red avia-size-large avia-icon_select-yes avia-border-  avia-builder-el-2  el_after_av_notification  el_before_av_notification ">
+                <span class="avia_message_box_title"><?php _e('ERROR', 'micu'); ?></span>
+
                 <div class="avia_message_box_content">
-                    <span class="avia_message_box_icon" aria-hidden="true" data-av_icon="" data-av_iconfont="entypo-fontello"></span>
-                    <p><?php _e( 'You are successfully registered.','micu' ); ?></p>
-                    <h6><?php printf( __( 'Check your inbox at <strong>%s</strong>','micu' ), $email ); ?></h6>
-                </div>
-            </div>
-            <?php
-        }
-        else
-        {
-			
-			?>
-            <div class="avia_message_box avia-color-red avia-size-large avia-icon_select-yes avia-border-  avia-builder-el-2  el_after_av_notification  el_before_av_notification ">
-                <span class="avia_message_box_title"><?php _e( 'ERROR','micu' ); ?></span>
-                <div class="avia_message_box_content">
-                    <span class="avia_message_box_icon" aria-hidden="true" data-av_icon="" data-av_iconfont="entypo-fontello"></span>
+                        <span class="avia_message_box_icon" aria-hidden="true" data-av_icon=""
+                              data-av_iconfont="entypo-fontello"></span>
+
                     <p>Sign up process failed. Please try again.</p>
-                    <?php /*<h6><?php printf( __( 'Back to <a href="%s">Registration Form</a>' ), $return_url); ?></h6>*/?>
+                    <?php /*<h6><?php printf( __( 'Back to <a href="%s">Registration Form</a>' ), $return_url); ?></h6>*/
+                    ?>
                 </div>
-                <p>Either Username or Email already exists.</p>
+                <p>The captcha verification are incorrect.</p>
             </div>
             <?php
         }
@@ -395,6 +419,10 @@ function cu_register_form()
         $html .= '</p>';
 
         $html .= '</fieldset>';
+        ob_start();
+        do_action('register_cu_form');
+        $html .= ob_get_clean();
+
 
         $html .= '<input type="hidden" name="micu_return_url" value="'.$_SERVER['REQUEST_URI'].'">';
         $html .= '<input id="form-submit" name="submit" type="submit" value="Submit" class="button" data-sending-label="Processing"><span class="wploaderimg" style="   display: none;margin: 0 10px;"><img style="margin: -10px 0;" src="'.plugins_url("medma_custom").'/images/wpspin.gif"/></span>';

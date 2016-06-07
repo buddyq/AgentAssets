@@ -939,31 +939,31 @@ function mi_sub_agent_information()
             require_once(ABSPATH . 'wp-admin/includes/file.php');
 
             $file = $_FILES['profile_picture_upload'];
+            if ($file) {
+                $overrides = array(
+                    'test_form' => false,
+                    'test_size' => true,
+                    'test_upload' => true,
+                );
 
-            $overrides = array(
-                'test_form' => false,
-                'test_size' => true,
-                'test_upload' => true,
-            );
+                // Set up options array to add this file as an attachment
+                $attachment = array(
+                    'post_title' => addslashes($input_agent_name . '-' . $user_id),
+                    'post_content' => '',
+                    'post_status' => 'inherit'
+                );
 
-            // Set up options array to add this file as an attachment
-            $attachment = array(
-                'post_title' => addslashes($input_agent_name . '-' . $user_id),
-                'post_content' => '',
-                'post_status' => 'inherit'
-            );
+                //switch_to_blog(1);
+                // $profile_picture_id = media_handle_upload('profile_picture_upload', 0 , $attachment, $overrides);
+                $profile_picture_id = media_handle_upload('profile_picture_upload', 0, $attachment);
+                //restore_current_blog();
 
-            //switch_to_blog(1);
-            // $profile_picture_id = media_handle_upload('profile_picture_upload', 0 , $attachment, $overrides);
-            $profile_picture_id = media_handle_upload('profile_picture_upload', 0, $attachment);
-            //restore_current_blog();
-
-            if (is_wp_error($profile_picture_id)) {
-                var_dump($profile_picture_id);
-            } else {
-                update_user_meta($user_id, 'profile_picture', array($blog_id, $profile_picture_id));
+                if (is_wp_error($profile_picture_id)) {
+                    //var_dump($profile_picture_id);
+                } else {
+                    update_user_meta($user_id, 'profile_picture', array($blog_id, $profile_picture_id));
+                }
             }
-
         } else {
             // The security check failed, maybe show the user an error.
         }
@@ -973,27 +973,29 @@ function mi_sub_agent_information()
 
             $file = $_FILES['broker_logo_upload'];
 
-            $overrides = array(
-                'test_form' => false,
-                'test_size' => true,
-                'test_upload' => true,
-            );
+            if ($file) {
+                $overrides = array(
+                    'test_form' => false,
+                    'test_size' => true,
+                    'test_upload' => true,
+                );
 
-            // Set up options array to add this file as an attachment
-            $attachment = array(
-                'post_title' => addslashes($input_agent_name . '-' . $user_id),
-                'post_content' => '',
-                'post_status' => 'inherit'
-            );
+                // Set up options array to add this file as an attachment
+                $attachment = array(
+                    'post_title' => addslashes($input_agent_name . '-' . $user_id),
+                    'post_content' => '',
+                    'post_status' => 'inherit'
+                );
 
-            //switch_to_blog(1);
-            $broker_logo_id = media_handle_upload('broker_logo_upload', 0, $attachment, $overrides);
-            //restore_current_blog();
+                //switch_to_blog(1);
+                $broker_logo_id = media_handle_upload('broker_logo_upload', 0, $attachment, $overrides);
+                //restore_current_blog();
 
-            if (is_wp_error($broker_logo_id)) {
-                var_dump($broker_logo_id);
-            } else {
-                update_user_meta($user_id, 'broker_logo', array($blog_id, $broker_logo_id));
+                if (is_wp_error($broker_logo_id)) {
+                    //var_dump($broker_logo_id);
+                } else {
+                    update_user_meta($user_id, 'broker_logo', array($blog_id, $broker_logo_id));
+                }
             }
 
         } else {
@@ -1022,26 +1024,43 @@ function mi_sub_agent_information()
     $facebook = get_user_meta($user_id, 'facebook', true);
     $googleplus = get_user_meta($user_id, 'googleplus', true);
     $agent_profile_picture = get_user_meta($user_id, 'profile_picture', true);
-
     if (is_numeric($agent_profile_picture) && $agent_profile_picture > 0) {
-        switch_to_blog(1);
+        $attachment_blog_id = 1;
+        if (is_array($agent_profile_picture)) {
+            $attachment_blog_id = $agent_profile_picture[0];
+            $agent_profile_picture = $agent_profile_picture[1];
+        }
+        if ($attachment_blog_id != $blog_id) {
+            switch_to_blog($attachment_blog_id);
+        }
         $agent_profile_picture_url = wp_get_attachment_image_src($agent_profile_picture, 'full');
         if (is_array($agent_profile_picture_url)) {
             $agent_profile_picture_url = $agent_profile_picture_url[0];
         }
-        switch_to_blog($blog_id);
+        if ($attachment_blog_id != $blog_id) {
+            switch_to_blog($blog_id);
+        }
     } else {
         $agent_profile_picture_url = $agent_profile_picture;
     }
 
     $agent_broker_logo = get_user_meta($user_id, 'broker_logo', true);
     if (is_numeric($agent_broker_logo) && $agent_broker_logo > 0) {
-        switch_to_blog(1);
+        $attachment_blog_id = 1;
+        if (is_array($agent_broker_logo)) {
+            $attachment_blog_id = $agent_broker_logo[0];
+            $agent_broker_logo = $agent_broker_logo[1];
+        }
+        if ($attachment_blog_id != $blog_id) {
+            switch_to_blog($attachment_blog_id);
+        }
         $agent_broker_logo_url = wp_get_attachment_image_src($agent_broker_logo, 'full');
         if (is_array($agent_broker_logo_url)) {
             $agent_broker_logo_url = $agent_broker_logo_url[0];
         }
-        switch_to_blog($blog_id);
+        if ($attachment_blog_id != $blog_id) {
+            switch_to_blog($blog_id);
+        }
     } else {
         $agent_broker_logo_url = $agent_broker_logo;
     }

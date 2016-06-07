@@ -140,12 +140,13 @@ function cu_register_form()
                 update_user_meta($user_id, 'twitter', $twitter);
                 update_user_meta($user_id, 'facebook', $facebook);
                 update_user_meta($user_id, 'googleplus', $googleplus);
-                update_user_meta($user_id, 'billing_address_1', $billing_address_1);
+                /*update_user_meta($user_id, 'billing_address_1', $billing_address_1);
                 update_user_meta($user_id, 'billing_address_2', $billing_address_2);
                 update_user_meta($user_id, 'billing_city', $billing_city);
                 update_user_meta($user_id, 'billing_state', $billing_state);
                 update_user_meta($user_id, 'billing_zip', $billing_zip);
                 update_user_meta($user_id, 'billing_email', $billing_email);
+                */
 
                 # Notification Mail sent to User
                 wpmu_welcome_user_notification($user_id, $password);
@@ -158,14 +159,14 @@ function cu_register_form()
                     'broker_website' => $broker_website,
                     'twitter' => $twitter,
                     'facebook' => $facebook,
-                    'googleplus' => $googleplus,
+                    'googleplus' => $googleplus/*,
                     'billing_address_1' => $billing_address_1,
                     'billing_address_2' => $billing_address_2,
                     'billing_city' => $billing_city,
                     'billing_state' => $billing_state,
                     'billing_zip' => $billing_zip,
                     'billing_email' => $billing_email,
-
+                    */
 
                 );
                 do_action('medma_custom_admin_user_notification', $user_data_list);
@@ -380,6 +381,7 @@ function cu_register_form()
 
         $html .= '</fieldset>';
 
+        /*
         # BILLING INFORMATION
         $html .= '<div class="av-special-heading av-special-heading-h3 meta-heading   avia-builder-el-4  el_after_av_textblock  el_before_av_contact ">';
         $html .= '<h3 class="av-special-heading-tag" itemprop="headline">'.__('Billing Information','micu').'</h3>';
@@ -419,6 +421,7 @@ function cu_register_form()
         $html .= '</p>';
 
         $html .= '</fieldset>';
+        */
         ob_start();
         do_action('register_cu_form');
         $html .= ob_get_clean() . '<br/></br>';
@@ -533,6 +536,7 @@ function medma_custom_admin_user_notification_callback($userdata){
         $googleplus = '#';
     }
 
+    /*
     $billing_address_1 = $userdata['billing_address_1'];
     if(!$billing_address_1){
         $billing_address_1 = 'N/A';
@@ -561,7 +565,7 @@ function medma_custom_admin_user_notification_callback($userdata){
     $billing_email = $userdata['billing_email'];
     if(!$billing_email){
         $billing_email = 'N/A';
-    }
+    }*/
     
     $msg = '<p>Dear Admin,</p>'
             . '<p>&nbsp;</p>'
@@ -577,12 +581,13 @@ function medma_custom_admin_user_notification_callback($userdata){
             . '<p>Twitter: http://twitter.com/'.$twitter.'</p>'
             . '<p>Facebook: http://facebook.com/'.$facebook.'</p>'
             . '<p>Google Plus: http://plus.google.com/'.$googleplus.'</p>'
-            . '<p>Billing Address 1: '.$billing_address_1.'</p>'
+          /*  . '<p>Billing Address 1: '.$billing_address_1.'</p>'
             . '<p>Billing Address 2: '.$billing_address_2.'</p>'
             . '<p>Billing City: '.$billing_city.'</p>'
             . '<p>Billing State: '.$billing_state.'</p>'
             . '<p>Billing Zip: '.$billing_zip.'</p>'
             . '<p>Billing Email: '.$billing_email.'</p>'
+          */
             . '<p>&nbsp;</p>'
             . '<p>Thanks,</p>'
             . '<p> '.$user->user_nicename.' </p>';

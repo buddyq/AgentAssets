@@ -8,19 +8,20 @@ Author: aigletter
 Author URI: http://agentassets.com
 */
 
+add_action( 'wp_enqueue_scripts', 'wr_no_captcha_login_form_script' );
+add_action( 'wp_enqueue_scripts', 'wr_no_captcha_css' );
+
 class AgentassetsCommon {
 
     public static function run() { $o = new AgentassetsCommon; $o->init(); }
 
     public function init() {
-        add_action( 'plugins_loaded', array($this, 'plugins_loaded' ));
+        add_action( 'init', array($this, 'plugins_loaded' ));
     }
 
     public function plugins_loaded() {
-        add_action( 'wp_enqueue_scripts', 'wr_no_captcha_login_form_script' );
-        add_action( 'wp_enqueue_scripts', 'wr_no_captcha_css' );
         add_action( 'login_afo_form', 'wr_no_captcha_render_login_captcha' );
-
+	add_action( 'register_cu_form', 'wr_no_captcha_render_login_captcha' );
         add_filter( 'register_cu_form_captcha', array($this, 'recaptcha_verify'));
     }
 

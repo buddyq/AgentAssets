@@ -421,7 +421,7 @@ function cu_register_form()
         $html .= '</fieldset>';
         ob_start();
         do_action('register_cu_form');
-        $html .= ob_get_clean();
+        $html .= ob_get_clean() . '<br/></br>';
 
 
         $html .= '<input type="hidden" name="micu_return_url" value="'.$_SERVER['REQUEST_URI'].'">';

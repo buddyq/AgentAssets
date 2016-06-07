@@ -13,94 +13,69 @@ add_shortcode('agentinformation_twitter', 'agentinformation_twitter_shortcode');
 add_shortcode('agentinformation_googleplus', 'agentinformation_googleplus_shortcode');
 add_shortcode('agentinformation_bloginfo', 'agentinformation_bloginfo_shortcode');
 
-function agentinformation_shortcode($atts) {
-
+function agentinformation_shortcode($atts)
+{
     $value = null;
-    
-    if (isset($atts['key'])) 
-    {
-		  
-		  global $wpdb;
-      
-      $defaults = array(
-      'profile_picture' => plugins_url('medma-site-manager').'/images/dummy_agent_pic.png',
-      'broker_logo' => plugins_url('medma-site-manager').'/images/placeholder_wide.jpg',
-      );
-      
-      $blog_id = get_current_blog_id();
+    if (isset($atts['key'])) {
+        $defaults = array(
+            'profile_picture' => plugins_url('medma-site-manager') . '/images/dummy_agent_pic.png',
+            'broker_logo' => plugins_url('medma-site-manager') . '/images/placeholder_wide.jpg',
+        );
 
-		  $user_id = 1;
-  		
-  		$admins = get_users( 'blog_id='.$blog_id.'&orderby=ID&role=administrator' );			
-  		
-  		foreach($admins as $admin) 
-  		{
-  			if ($admin->ID == 1 && $blog_id != 1) continue;
-  			$user_id = $admin->ID;
-  			break;
-  		}
+        $blog_id = get_current_blog_id();
+        $user_id = OrderMap::getBlogOwner($blog_id);
 
-  		$value = get_user_meta($user_id, $atts['key'], true);
-      
-      // get_image_tag( $id, $alt, $title, $align, $size );
-      // $value = get_image_tag($value, $alt, $title, $align, $atts['size']);
-      
-      if (in_array($atts['key'], array('profile_picture','broker_logo') )) 
-      {
-        if (!empty($value)) 
-        {
-          $size = 'full';
-      
-          if (!empty($atts['size'])) {
-            $size = $atts['size'];
-          } 
-          else if (!empty($atts['width']) && !empty($atts['height'])) {
-            $size = array($atts['width'], $atts['height']);
-          }
-          // switch_to_blog($blog_id);
-          // $value = get_user_meta($user_id, $atts['key'], true);
-          
-  			  if (is_numeric($value) && $value > 0 )
-          {
-            
-            switch_to_blog(1);
-            // echo "SIZE: ".$size;
-            // $value_url = wp_get_attachment_image($value, $size);
-              $alt = (empty($atts['alt'])) ? '' : $atts['alt'];
-              $title = (empty($atts['title'])) ? '' : $atts['title'];
-              $align = (empty($atts['align'])) ? '' : $atts['align'];
-            $value = get_image_tag($value, $alt, $title, $align, $size);
-            // $value_url = get_image_tag($value, $alt, $title, $align, $size);
-            
-            /*if ( is_array($value_url) )
-            {
-              $value_url = $value_url[0];
-            }*/
-            switch_to_blog( $blog_id );
-          }
-          else
-          {
-            $value_url = $value;
-          }
-  			  
-          // $value = wp_get_attachment_image_src($value, $size);
-          switch_to_blog($blog_id);
-                
-          // if (is_array($value))
-          // $value = $value[0];
-          }
-        
-      }
-    
-       if (isset($defaults[$atts['key']]) && empty($value)) 
-       {
-        $value = $defaults[$atts['key']];
-       }
+        $value = get_user_meta($user_id, $atts['key'], true);
+
+        if (in_array($atts['key'], array('profile_picture', 'broker_logo'))) {
+            if (!empty($value)) {
+                $size = 'full';
+
+                if (!empty($atts['size'])) {
+                    $size = $atts['size'];
+                } else if (!empty($atts['width']) && !empty($atts['height'])) {
+                    $size = array($atts['width'], $atts['height']);
+                }
+
+                $attachment_blog_id = 1;
+                if (is_array($value)) {
+                    $attachment_blog_id = $value[0];
+                    $value = $value[1];
+                }
+                if (is_numeric($value) && $value > 0) {
+
+                    if ($attachment_blog_id != $blog_id) {
+                        switch_to_blog($attachment_blog_id);
+                    }
+                    $alt = (empty($atts['alt'])) ? '' : $atts['alt'];
+                    $title = (empty($atts['title'])) ? '' : $atts['title'];
+                    $align = (empty($atts['align'])) ? '' : $atts['align'];
+                    $value = get_image_tag($value, $alt, $title, $align, $size);
+
+                    if ($attachment_blog_id != $blog_id) {
+                        switch_to_blog($blog_id);
+                    }
+                }
+            }
+        }
+
+        if (isset($defaults[$atts['key']]) && empty($value)) {
+            $value = $defaults[$atts['key']];
+        }
     }
     return $value;
 }
 
-function showVar($var, $die, $label='') {
+/**
+ * function for debug values
+ *
+ * @param $var
+ * @param $die
+ * @param string $label
+ * @return bool
+ */
+function showVar($var, $die, $label = '')
+{
     if (!isset($_GET['dev']))
         return false;
     echo '<pre>';
@@ -114,69 +89,81 @@ function showVar($var, $die, $label='') {
         echo 'EMPTY STRING';
     else
         // print_r($var);
-    echo '</pre>';
+        echo '</pre>';
     if ($die)
         die();
 }
 
 
-function agentinformation_first_name_shortcode($attr = array()) {
+function agentinformation_first_name_shortcode($attr = array())
+{
     $attr['key'] = 'first_name';
     return agentinformation_shortcode($attr);
 }
 
-function agentinformation_designation_shortcode($attr = array()) {
+function agentinformation_designation_shortcode($attr = array())
+{
     $attr['key'] = 'designation';
-       return agentinformation_shortcode($attr);;
+    return agentinformation_shortcode($attr);;
 }
 
-function agentinformation_business_phone_shortcode($attr = array()) {
+function agentinformation_business_phone_shortcode($attr = array())
+{
     $attr['key'] = 'business_phone';
-       return agentinformation_shortcode($attr);
+    return agentinformation_shortcode($attr);
 }
 
-function agentinformation_mobile_phone_shortcode($attr = array()) {
+function agentinformation_mobile_phone_shortcode($attr = array())
+{
     $attr['key'] = 'mobile_phone';
-       return agentinformation_shortcode($attr);
+    return agentinformation_shortcode($attr);
 }
 
-function agentinformation_profile_picture_url_shortcode($attr = array()) {
+function agentinformation_profile_picture_url_shortcode($attr = array())
+{
     $attr['key'] = 'profile_picture';
-       return agentinformation_shortcode($attr);
+    return agentinformation_shortcode($attr);
 }
 
-function agentinformation_broker_name_shortcode($attr = array()) {
+function agentinformation_broker_name_shortcode($attr = array())
+{
     $attr['key'] = 'broker';
-       return agentinformation_shortcode($attr);
+    return agentinformation_shortcode($attr);
 }
 
-function agentinformation_broker_website_shortcode($attr = array()) {
+function agentinformation_broker_website_shortcode($attr = array())
+{
     $attr['key'] = 'broker_website';
-       return agentinformation_shortcode($attr);
+    return agentinformation_shortcode($attr);
 }
 
-function agentinformation_broker_logo_url_shortcode($attr = array()) {
+function agentinformation_broker_logo_url_shortcode($attr = array())
+{
     $attr['key'] = 'broker_logo';
-       return agentinformation_shortcode($attr);
+    return agentinformation_shortcode($attr);
 }
 
-function agentinformation_facebook_shortcode($attr = array()) {
+function agentinformation_facebook_shortcode($attr = array())
+{
     $attr['key'] = 'facebook';
-       return agentinformation_shortcode($attr);
+    return agentinformation_shortcode($attr);
 }
 
-function agentinformation_twitter_shortcode($attr = array()) {
+function agentinformation_twitter_shortcode($attr = array())
+{
     $attr['key'] = 'twitter';
-       return agentinformation_shortcode($attr);
+    return agentinformation_shortcode($attr);
 }
 
-function agentinformation_googleplus_shortcode($attr = array()) {
+function agentinformation_googleplus_shortcode($attr = array())
+{
     $attr['key'] = 'googleplus';
-       return agentinformation_shortcode($attr);
+    return agentinformation_shortcode($attr);
 }
 
-function agentinformation_bloginfo_shortcode($attr = array()) {
+function agentinformation_bloginfo_shortcode($attr = array())
+{
     $key = $attr['key'];
     $value = get_bloginfo($key);
-       return $value;
+    return $value;
 }

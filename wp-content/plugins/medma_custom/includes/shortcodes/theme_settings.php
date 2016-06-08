@@ -1023,13 +1023,15 @@ function mi_sub_agent_information()
     $twitter = get_user_meta($user_id, 'twitter', true);
     $facebook = get_user_meta($user_id, 'facebook', true);
     $googleplus = get_user_meta($user_id, 'googleplus', true);
+
     $agent_profile_picture = get_user_meta($user_id, 'profile_picture', true);
+    $attachment_blog_id = 1;
+    if (is_array($agent_profile_picture)) {
+        $attachment_blog_id = $agent_profile_picture[0];
+        $agent_profile_picture = $agent_profile_picture[1];
+    }
+
     if (is_numeric($agent_profile_picture) && $agent_profile_picture > 0) {
-        $attachment_blog_id = 1;
-        if (is_array($agent_profile_picture)) {
-            $attachment_blog_id = $agent_profile_picture[0];
-            $agent_profile_picture = $agent_profile_picture[1];
-        }
         if ($attachment_blog_id != $blog_id) {
             switch_to_blog($attachment_blog_id);
         }
@@ -1045,12 +1047,13 @@ function mi_sub_agent_information()
     }
 
     $agent_broker_logo = get_user_meta($user_id, 'broker_logo', true);
+    $attachment_blog_id = 1;
+    if (is_array($agent_broker_logo)) {
+        $attachment_blog_id = $agent_broker_logo[0];
+        $agent_broker_logo = $agent_broker_logo[1];
+    }
+
     if (is_numeric($agent_broker_logo) && $agent_broker_logo > 0) {
-        $attachment_blog_id = 1;
-        if (is_array($agent_broker_logo)) {
-            $attachment_blog_id = $agent_broker_logo[0];
-            $agent_broker_logo = $agent_broker_logo[1];
-        }
         if ($attachment_blog_id != $blog_id) {
             switch_to_blog($attachment_blog_id);
         }
@@ -1064,8 +1067,6 @@ function mi_sub_agent_information()
     } else {
         $agent_broker_logo_url = $agent_broker_logo;
     }
-    // echo "<pre>";print_r($agent_broker_logo_url);echo "</pre>";
-
     ?>
     <div class="wrap">
         <h1>Agent Information</h1>

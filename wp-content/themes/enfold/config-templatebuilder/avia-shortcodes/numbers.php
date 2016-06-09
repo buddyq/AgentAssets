@@ -55,7 +55,7 @@ if ( !class_exists( 'avia_sc_animated_numbers' ) )
 										
 					array(	
 							"name" 	=> __("Description",'avia_framework' ),
-							"desc" 	=> __("Add some content to be displayed bellow the number",'avia_framework' ),
+							"desc" 	=> __("Add some content to be displayed below the number",'avia_framework' ),
 							"id" 	=> "content",
 							"type" 	=> "textarea",
 							"std" 	=> __("Click here to add your own text", "avia_builder" )),

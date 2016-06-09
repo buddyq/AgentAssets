@@ -226,7 +226,7 @@ function avia_woo_save_category_fields( $term_id )
 add_action( 'admin_enqueue_scripts', 'av_woo_enqueue_color_picker' );
 function av_woo_enqueue_color_picker( $hook_suffix ) {
     // first check that $hook_suffix is appropriate for your admin page
-    if($hook_suffix == 'edit-tags.php' && isset($_GET['taxonomy']) && $_GET['taxonomy'] == 'product_cat'){
+    if( ($hook_suffix == 'edit-tags.php' || $hook_suffix == 'term.php') && isset($_GET['taxonomy']) && $_GET['taxonomy'] == 'product_cat'){
     
     	wp_enqueue_style(  'wp-color-picker' );
 		wp_enqueue_script( 'wp-color-picker' );

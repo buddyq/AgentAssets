@@ -379,6 +379,7 @@ function avia_nl2br (str, is_xhtml)
 					over: function(event, ui)
 					{
 						var dropable = $(this);
+						
 						if(obj.droping_allowed(ui.helper, dropable))
 						{
 							dropable.addClass('avia-hover-active');
@@ -1412,7 +1413,7 @@ function avia_nl2br (str, is_xhtml)
 	$.AviaBuilder.shortcodes.deleteItem = function(clicked, obj)
 	{
 		var $_clicked = $(clicked),
-			item      = $_clicked.parents('.avia_sortable_element:eq(0)'), parent = false, removeCell = false, item_hide = 200;
+			item      = $_clicked.parents('.avia_sortable_element:eq(0)'), parent = false, removeCell = false, item_hide = 200, force_drop_init = false;
 		
 		//check if it is a column	
 		if(!item.length) 
@@ -1445,9 +1446,7 @@ function avia_nl2br (str, is_xhtml)
 				return false;
 			}
 		}
-		
-		
-		
+				
 		obj.targetInsertInactive();
 		
 		item.hide(item_hide, function()
@@ -1458,7 +1457,33 @@ function avia_nl2br (str, is_xhtml)
 			}
 			
 			item.remove();
-			if(parent && parent.length) obj.updateInnerTextarea(parent);
+			if(parent && parent.length) 
+			{ 
+				obj.updateInnerTextarea(parent);
+				var parent_container = parent.parents('.avia_layout_section:eq(0)'),
+					parent_cell		 = parent.find('.avia_layout_cell:eq(0)');
+				
+				
+				
+				if(parent_container.length || parent_cell.length)
+				{
+					//if the section is empty -> bugfix for column delete that renders the section unusable
+					if( parent_container.length && parent_container.find(".avia_inner_shortcode .avia_inner_shortcode " + obj.datastorage).val() == 'undefined')
+					{
+						obj.activate_element_dropping(parent_container, "destroy");
+					}
+					
+					
+/*					todo: apply fix for layouts to grid cells as well
+	
+					if( parent_cell.length && String(parent_cell.find(".avia_inner_shortcode .avia_inner_shortcode " + obj.datastorage).val()) == 'undefined')
+					{
+						obj.activate_element_dropping(parent_cell, "destroy");
+					}
+*/
+					
+				}
+			}
 			
 			obj.updateTextarea();
 			

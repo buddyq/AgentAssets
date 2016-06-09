@@ -14,6 +14,7 @@ $google_fonts = apply_filters('avf_google_heading_font', array(	__('Default', 'a
 						'Cabin'=>'Cabin',
 						'Cardo'=>'Cardo',
 						'Carme'=>'Carme',
+						'Caveat'=>'Caveat:400,700',
 						'Coda'=>'Coda',
 						'Comfortaa'=>'Comfortaa:300,400,700',
 						'Coustard'=>'Coustard',
@@ -25,10 +26,12 @@ $google_fonts = apply_filters('avf_google_heading_font', array(	__('Default', 'a
 						'Droid Serif'=>'Droid Serif',
 	
 						'EB Garamond'=>'EB Garamond',
+						'Exo'=>'Exo:900,700,400,100',
 						
 						
 						'Finger Paint'=>'Finger Paint',
 						'Fjord One'=>'Fjord One',
+						'Flamenco'=>'Flamenco:400,300',
 	
 	
 						'Great Vibes'=>'Great Vibes',
@@ -50,6 +53,7 @@ $google_fonts = apply_filters('avf_google_heading_font', array(	__('Default', 'a
 						'Mate SC'=>'Mate SC',
 						'Marck Script'=>'Marck Script',
 						'Mako'=>'Mako',
+						'Megrim'=>'Megrim',
 						'Merriweather'=>'Merriweather:300,400,700',
 						'Metrophobic'=>'Metrophobic',
 						'Molengo'=>'Molengo',
@@ -63,12 +67,14 @@ $google_fonts = apply_filters('avf_google_heading_font', array(	__('Default', 'a
 						'Open Sans'=>'Open Sans:400,600',
 						'Open Sans Condensed'=>'Open Sans Condensed:300,700',
 						'Orbitron'=>'Orbitron',
+						'Oregano'=>'Oregano',
 						'Oswald'=>'Oswald',
 	
 						'Pacifico'=>'Pacifico',
 						'Petit Formal Script'=>'Petit Formal Script',
-						'Poly'=>'Poly',
 						'Podkova'=>'Podkova',
+						'Poiret One'=>'Poiret One',
+						'Poly'=>'Poly',
 						'PT Sans'=>'PT Sans',
 	
 						'Quattrocento'=>'Quattrocento',

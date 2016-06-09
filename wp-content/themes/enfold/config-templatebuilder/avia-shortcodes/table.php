@@ -109,7 +109,6 @@ if ( !class_exists( 'avia_sc_table' ) )
 							"id" 	=> "pricing_table_design",
 							"type" 	=> "select",
 							"std" 	=> "avia_pricing_default",
-							"required" => array("purpose","equals","pricing"),
 							"subtype" => array(
 								__('Default', 'avia_framework') => 'avia_pricing_default',
 								__('Minimal', 'avia_framework') => 'avia_pricing_minimal')
@@ -128,8 +127,6 @@ if ( !class_exists( 'avia_sc_table' ) )
 							),
 								
 						
-						
-								
 						array(	
 							"name" 	=> __("Table Caption", 'avia_framework' ),
 							"desc" 	=> __("Add a short caption to the table so visitors know what the data is about", 'avia_framework' ),
@@ -321,11 +318,12 @@ if ( !class_exists( 'avia_sc_table' ) )
 			function data_table($table_rows, $atts, $meta)
 			{	
 				$responsive_style = "";
-
+				$class = $meta['el_class']." ".$atts['pricing_table_design'];
+				
                 $markup = avia_markup_helper(array('context' => 'table','echo'=>false, 'custom_markup'=>$meta['custom_markup']));
 
                 $output = "<div class='avia-data-table-wrap ".$atts['responsive_styling']."'>";
-				$output .= "<table class='avia-table avia-data-table avia-table-".self::$table_count." ".$meta['el_class']."' $markup>";
+				$output .= "<table class='avia-table avia-data-table avia-table-".self::$table_count." ".$class."' $markup>";
 				$output .=	$atts['caption'] ? "<caption>".$atts['caption']."</caption>" : "";
 				$output .= "<tbody>";	
 				$counter = 0;

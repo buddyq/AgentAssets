@@ -172,7 +172,7 @@ if( !class_exists( 'avia_style_generator' ) )
 					//first of all we need to build the selector string
 					$selectorArray 	= $this->stylewizard[$style['id']]['selector'];
 					$sectionCheck	= $this->stylewizard[$style['id']]['sections'];
-					
+	
 					foreach($selectorArray as $selector => $ruleset)
 					{
 						$temp_selector  = "";
@@ -189,13 +189,29 @@ if( !class_exists( 'avia_style_generator' ) )
 							$selector = str_replace("[hover]", "", $selector);
 						}
 						
-						
 						//if sections are enabled make sure that the selector string gets generated for each section
 						if($sectionActive && $sectionCheck && isset($avia_config['color_sets']))
 						{
+							//check if all color sections are selected. if so we dont need to loop several times but only once
+							$all_sets_selected 		= true;
+							$color_sets_to_iterate 	= $avia_config['color_sets'];
+							
 							foreach($avia_config['color_sets'] as $key => $name)
 							{
-								if( isset($style[$key]) && $style[$key] != 'disabled')
+								if( empty($style[$key]) ||  (isset($style[$key]) && $style[$key] == 'disabled'))
+								{
+									$all_sets_selected = false;
+								}
+							}
+							
+							if($all_sets_selected)
+							{
+								$color_sets_to_iterate = array('all_colors' => '');
+							}
+							
+							foreach($color_sets_to_iterate as $key => $name)
+							{
+								if( (isset($style[$key]) && $style[$key] != 'disabled' ) || $key == 'all_colors')
 								{
 									if(!empty($temp_selector)) $temp_selector .= ", ";
 									$temp_selector .= str_replace("[sections]", ".".$key, $selector);
@@ -212,10 +228,7 @@ if( !class_exists( 'avia_style_generator' ) )
 						//we got the selector stored in $selector, now we need to generate the rules
 						foreach($style as $key => $value)
 						{
-							
-							
-							
-							
+			
 							if($value != "" && $value != "true" && $value != "disabled" && $key != "id")
 							{
 								if( is_array( $ruleset ) )

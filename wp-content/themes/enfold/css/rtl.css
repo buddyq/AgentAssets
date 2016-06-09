@@ -183,3 +183,5 @@ left: 0!important;
 .rtl .post-meta-infos time {
     float: right;
 }
+
+.avia_transform .rtl .border-extra-arrow-down { left: auto; right: 50%; }

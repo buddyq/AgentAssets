@@ -1,9 +1,17 @@
 (function($)
 {	
     "use strict";
-
+	
+	//fix back forward cache issue: http://stackoverflow.com/questions/11979156/mobile-safari-back-button
+    $(window).bind("pageshow", function(event) {
+	    if (event.originalEvent.persisted) {
+	     avia_site_preloader();
+	    }
+	});
+	
     $(document).ready(function()
-    {	
+    {	    
+	    
         var aviabodyclasses = AviaBrowserDetection('html');
 
 		$.avia_utilities = $.avia_utilities || {};
@@ -32,7 +40,7 @@
         //show scroll top button
         avia_scroll_top_fade();
         
-        //show scroll top button
+        //site preloader script
         avia_site_preloader();
         
         //creates search tooltip
@@ -909,7 +917,7 @@
 		{
 			
 			var defaults = {
-				groups			:	['.avia-slideshow', '.avia-gallery', '.portfolio-preview-image', '.portfolio-preview-content', '.isotope', '.post-entry', '.sidebar', '#main', '.main_menu'], 
+				groups			:	['.avia-slideshow', '.avia-gallery', '.av-instagram-pics', '.portfolio-preview-image', '.portfolio-preview-content', '.isotope', '.post-entry', '.sidebar', '#main', '.main_menu'], 
 				autolinkElements:   'a.lightbox, a[rel^="prettyPhoto"], a[rel^="lightbox"], a[href$=jpg], a[href$=png], a[href$=gif], a[href$=jpeg], a[href*=".jpg?"], a[href*=".png?"], a[href*=".gif?"], a[href*=".jpeg?"], a[href$=".mov"] , a[href$=".swf"] , a:regex(href, .vimeo\.com/[0-9]) , a[href*="youtube.com/watch"] , a[href*="screenr.com"], a[href*="iframe=true"]',
 				videoElements	: 	'a[href$=".mov"] , a[href$=".swf"] , a:regex(href, .vimeo\.com/[0-9]) , a[href*="youtube.com/watch"] , a[href*="screenr.com"], a[href*="iframe=true"]',
 				exclude			:	'.noLightbox, .noLightbox a, .fakeLightbox, .lightbox-added, a[href*="dropbox.com"]',

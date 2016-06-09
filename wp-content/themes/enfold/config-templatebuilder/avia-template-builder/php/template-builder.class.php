@@ -258,6 +258,8 @@ if ( !class_exists( 'AviaBuilder' ) ) {
 		 **/
 		public function setFullwidthElements($elements = array())
 	 	{
+		 	$elements = apply_filters('avf_fwd_elements', $elements);
+		 	
 			AviaBuilder::$full_el_no_section = $elements;
 			AviaBuilder::$full_el = array_merge(array('av_section'), $elements);
 		}

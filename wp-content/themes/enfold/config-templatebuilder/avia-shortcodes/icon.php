@@ -150,7 +150,9 @@ if ( !class_exists( 'av_font_icon' ) )
                     "name"  => __("Icon Color", 'avia_framework' ),
                     "desc"  => __("Here you can set the  color of the icon. Enter no value if you want to use the standard font color.", 'avia_framework' ),
                     "id"    => "color",
+                    "rgba" 	=> true,
                     "type"  => "colorpicker"),	
+                    
 				array(
 						"type" 	=> "close_div",
 						'nodescription' => true

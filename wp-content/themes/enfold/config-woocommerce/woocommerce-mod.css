@@ -172,6 +172,10 @@ td select{margin:0; min-width:100px;}
 .term-description{position: relative; clear: both; margin-bottom:10px; font-size: 12px;}
 .slideshow_container + .term-description{ top:-18px;}
 
+#top button:disabled{
+	opacity: 0.4;
+	cursor: not-allowed;
+}
 /*JS fanciness*/
 
 

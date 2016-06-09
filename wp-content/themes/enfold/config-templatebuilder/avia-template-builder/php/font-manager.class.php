@@ -5,6 +5,7 @@ class avia_font_manager{
 	var $paths = array();
 	var $svg_file;
 	var $font_name = 'unknown';
+	var $origin_font_name = '';
 	var $svg_config = array();
 	static $charlist = array(); 
 	static $charlist_fallback = array(); 
@@ -35,6 +36,9 @@ class avia_font_manager{
 	
 	function add_zipped_font()
 	{
+		
+		
+		
 		//check if referer is ok
 		if(function_exists('check_ajax_referer')) { check_ajax_referer('avia_nonce_save_backend'); }
 		
@@ -114,6 +118,15 @@ class avia_font_manager{
 	    
 	    if ( $zip->open( $zipfile ) ) 
 	    { 
+		    $zip_paths = pathinfo($zipfile);
+		    
+		    //check name scheme if user wants to rename the file 
+		    if( isset( $zip_paths['filename'] ) && strpos( $zip_paths['filename'], 'iconset.' ) === 0)
+		    {
+			    $this->font_name = str_replace('iconset.', "", $zip_paths['filename']);
+		    }
+		    
+		    
 	        for ( $i=0; $i < $zip->numFiles; $i++ ) 
 	        { 
 	        	
@@ -167,7 +180,7 @@ class avia_font_manager{
 	function create_config($config_only = false)
 	{
 		$this->svg_file = $this->find_svg();
-		
+
 		if(empty($this->svg_file))
 		{
 			$this->delete_folder($this->paths['tempdir']);
@@ -190,7 +203,11 @@ class avia_font_manager{
 			$xml = simplexml_load_string($response);
 			
 			$font_attr = $xml->defs->font->attributes();
-			$this->font_name = (string) $font_attr['id'];
+			
+			if( $this->font_name == 'unknown')
+			{
+				$this->font_name = (string) $font_attr['id'];
+			}
 			
 			$glyphs = $xml->defs->font->children();
 			foreach($glyphs as $item => $glyph)
@@ -274,7 +291,15 @@ class avia_font_manager{
 			$path_parts = pathinfo($file);
 			if(strpos($path_parts['filename'], '.dev') === false && in_array($path_parts['extension'], $extensions) )
 			{
-				rename($file, trailingslashit($path_parts['dirname']).$this->font_name.'.'.$path_parts['extension']);
+				
+				if ( (!empty( $this->origin_font_name ) && $this->origin_font_name == strtolower($path_parts['filename'])) || empty( $this->origin_font_name ))
+				{
+					rename($file, trailingslashit($path_parts['dirname']).$this->font_name.'.'.$path_parts['extension']);
+				}
+				else
+				{
+					unlink($file);
+				}
 			}
 		} 
 		
@@ -351,10 +376,23 @@ class avia_font_manager{
 	function find_svg()
 	{
 		$files = scandir($this->paths['tempdir']);
-
+		
+		//fetch the eot file first so we know the acutal filename, in case there are multiple svg files, then based on that find the svg file
+		$filename = "";
 		foreach($files as $file)
 		{ 
-			if(strpos(strtolower($file), '.svg')  !== false && $file[0] != '.')
+			if(strpos(strtolower($file), '.eot')  !== false && $file[0] != '.')
+			{
+				$filename = strtolower( pathinfo($file, PATHINFO_FILENAME) );
+				continue;
+			}
+		}
+		
+		$this->origin_font_name = $filename;
+		
+		foreach($files as $file)
+		{ 
+			if(strpos(strtolower($file), $filename.'.svg')  !== false && $file[0] != '.')
 			{
 				return $file;
 			}

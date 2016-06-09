@@ -61,7 +61,13 @@ $tags               = wp_get_post_tags($this_id);
 if (!empty($tags) && is_array($tags))
 {
      $tag_ids = array();
-     foreach ($tags as $tag ) $tag_ids[] = (int)$tag->term_id;
+     foreach ($tags as $tag ) {
+	     
+	     if($tag->slug != "portrait" && $tag->slug != "landscape")
+	     {
+	     	$tag_ids[] = (int)$tag->term_id;
+	     }
+	 }
 
      if(!empty($tag_ids))
      {

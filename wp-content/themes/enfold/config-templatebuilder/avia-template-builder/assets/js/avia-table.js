@@ -93,7 +93,7 @@
 				{
 					var columns	 = $scope.find('.avia-template-row .avia-table-cell');
 			
-					if(columns.length <= 14)
+					if(columns.length <= 21)
 					{
 						var	template = $scope.find('.avia-template-row .avia-table-cell:eq(1)'),
 							insert	 = $scope.find('.avia-table-row .avia-table-cell-delete'),

@@ -336,7 +336,7 @@ margin-top:0px;
 
 .html_header_sidebar .av_default_container_wrap, .html_header_sidebar .container_wrap_first{ float: left; }
 
-/*main header on top, logo bellow*/
+/*main header on top, logo below*/
 
 .html_top_nav_header #header_main_alternate{border-top:none; border-bottom-style: solid; border-bottom-width:1px; }
 .html_top_nav_header.html_minimal_header #header_main_alternate{border:none;}
@@ -657,7 +657,7 @@ text-decoration: underline;
 #top #wrap_all .av_header_border_disabled .av-menu-button > a{border:none; }
 .av-menu-button + .av-menu-button{margin-left: -10px;}
 .av-menu-button + .av-menu-button > a{padding-left:0px;}
-.av-menu-button > a .avia-menu-text{ padding: 9px;}
+#top .av-menu-button > a .avia-menu-text{ padding: 9px;}
 #top .av-menu-button > a .avia-menu-text{border: 2px solid;  border-radius: 2px;}
 .av-menu-button > a .avia-menu-fx{display:none}
 .av-menu-button-colored  > a .avia-menu-text{ padding: 11px 10px 10px 10px; }
@@ -3558,6 +3558,7 @@ animation:         avia_pop_small 0.5s 1 cubic-bezier(0.175, 0.885, 0.320, 1.275
 		.responsive.html_header_top.html_header_sticky.html_bottom_nav_header.html_mobile_menu_tablet #main{ margin-top:-50px; }
 		.responsive.html_header_top.html_header_sticky.html_bottom_nav_header.html_top_nav_header.html_mobile_menu_tablet #main{ margin-top:0; }
 		
+		.responsive #top .av-hide-on-tablet{display:none !important;}
 		}
 
 	/* All Mobile Sizes (devices and browser) */
@@ -3586,7 +3587,9 @@ animation:         avia_pop_small 0.5s 1 cubic-bezier(0.175, 0.885, 0.320, 1.275
 		.responsive .title_container .breadcrumb{position: relative;right:auto; top:-6px; margin:0; left:-2px;}
 		.responsive .pagination{padding-left: 0; padding-right: 0;}
 		.responsive #header .main_menu .social_bookmarks{display:none;}
-
+		.responsive #top .av-hide-on-mobile, .responsive #top .av-hide-on-tablet{display:none !important;}
+		
+		
 		/*header*/
 		.responsive #top .av_header_transparency.av_alternate_logo_active .logo a > img{opacity:1}
 		.responsive #top .av_header_transparency .logo img.alternate{display:none;}

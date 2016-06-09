@@ -12,7 +12,7 @@ if(!function_exists('avia_find_layersliders'))
 	    $table_name = $wpdb->prefix . "layerslider";
 	 
 	    // Get sliders
-	    $sliders = $wpdb->get_results( "SELECT * FROM $table_name WHERE flag_hidden = '0' AND flag_deleted = '0' ORDER BY date_c ASC LIMIT 100" );
+	    $sliders = $wpdb->get_results( "SELECT * FROM $table_name WHERE flag_hidden = '0' AND flag_deleted = '0' ORDER BY date_c ASC LIMIT 300" );
 	 	
 	 	if(empty($sliders)) return;
 	 	

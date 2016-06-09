@@ -304,6 +304,8 @@ transition: 		opacity 0.3s ease-in-out;}
 	clear:both;
 }
 
+
+
 .avia_transform .av-extra-border-element .av-extra-border-outer{
 overflow: hidden;
 height:100%;
@@ -1516,20 +1518,20 @@ animation:         avia-bg-move 1.2s linear infinite; /* IE 10+ */
 
 
 
-.avia-datepicker-div{ background: #fff; border:1px solid #e1e1e1; }
-.avia-datepicker-div a{ color:#333; background-color: #f8f8f8; }
-.avia-datepicker-div a.ui-state-active{ color:#8bba34; }
-.avia-datepicker-div a.ui-state-highlight{ color:#8bba34; }
-.avia-datepicker-div a.ui-state-hover{ color:#FFF; background-color: #bbb; }
-.avia-datepicker-div .ui-datepicker-buttonpane button{ background-color: #8BBA34; color: #FFF; border-color: #8BBA34; }
+#top .avia-datepicker-div{ background: #fff; border:1px solid #e1e1e1; font-size:15px;}
+#top .avia-datepicker-div a{ color:#333; background-color: #f8f8f8; background-image:none; }
+#top .avia-datepicker-div a.ui-state-active{ color:#8bba34; }
+#top .avia-datepicker-div a.ui-state-highlight{ color:#8bba34; }
+#top .avia-datepicker-div a.ui-state-hover{ color:#FFF; background-color: #bbb; }
+#top .avia-datepicker-div .ui-datepicker-buttonpane button{ background-color: #8BBA34; color: #FFF; border-color: #8BBA34; }
 
 
-.avia-datepicker-div.ui-datepicker { width: 300px; padding: 20px; display: none; box-shadow: 0px 0px 44px 0px rgba(0, 0, 0, 0.2);}
-.avia-datepicker-div.ui-datepicker .ui-datepicker-header { position:relative; padding:.2em 0; }
-.avia-datepicker-div.ui-datepicker .ui-datepicker-prev, .avia-datepicker-div.ui-datepicker .ui-datepicker-next { position:absolute; top: 3px; width: 50px;   text-align: center; line-height: 32px; cursor: pointer;}
-.avia-datepicker-div.ui-datepicker .ui-datepicker-prev { left:2px; }
-.avia-datepicker-div.ui-datepicker .ui-datepicker-next { right:2px; }
-.avia-datepicker-div.ui-datepicker .ui-datepicker-title { margin: 0px 53px; line-height: 32px; text-align: center; font-weight: bold; letter-spacing: 1.5px; text-transform: uppercase;}
+#top .avia-datepicker-div.ui-datepicker { width: 300px; padding: 20px; display: none; box-shadow: 0px 0px 44px 0px rgba(0, 0, 0, 0.2); border-radius: 0;}
+#top .avia-datepicker-div.ui-datepicker .ui-datepicker-header { position:relative; padding:.2em 0; background: transparent; border: none;}
+#top .avia-datepicker-div.ui-datepicker .ui-datepicker-prev, #top .avia-datepicker-div.ui-datepicker .ui-datepicker-next { position:absolute; top: 4px; width: 50px;   text-align: center; line-height: 34px; height: 34px; cursor: pointer; border-radius: 0; text-decoration: none; }
+#top .avia-datepicker-div.ui-datepicker .ui-datepicker-prev { left:2px; }
+#top .avia-datepicker-div.ui-datepicker .ui-datepicker-next { right:2px; }
+#top .avia-datepicker-div.ui-datepicker .ui-datepicker-title { margin: 0px 53px; line-height: 32px; text-align: center; font-weight: bold; letter-spacing: 1.5px; text-transform: uppercase;}
 
 #top .ui-datepicker-title select {
     width: 72px;
@@ -1540,19 +1542,29 @@ animation:         avia-bg-move 1.2s linear infinite; /* IE 10+ */
     border-radius: 0px;
 }
 
-.avia-datepicker-div.ui-datepicker .ui-datepicker-title select { font-size:1em; margin:1px 0; }
-.avia-datepicker-div.ui-datepicker select.ui-datepicker-month-year {width: 100%;}
-.avia-datepicker-div.ui-datepicker select.ui-datepicker-month,
-.avia-datepicker-div.ui-datepicker select.ui-datepicker-year { width: 49%;}
-.avia-datepicker-div.ui-datepicker table {width: 100%; font-size: .9em; border-collapse: collapse; margin:0 0 .4em; }
-.avia-datepicker-div.ui-datepicker th { padding: .7em .3em; text-align: center; font-weight: bold; border: 0;  }
-.avia-datepicker-div.ui-datepicker td { border: 0; padding: 1px; }
-.avia-datepicker-div.ui-datepicker td span, .ui-datepicker td a { display: block; padding: .2em; text-align: center; text-decoration: none; }
-.avia-datepicker-div.ui-datepicker .ui-datepicker-buttonpane { background-image: none; margin: .7em 0 0 0; padding:0 .2em; border-left: 0; border-right: 0; border-bottom: 0; }
-.avia-datepicker-div.ui-datepicker .ui-datepicker-buttonpane button { float: right; margin: .5em .2em .4em; cursor: pointer; padding: 10px 20px; width:auto; overflow:visible; border: none;
-border-radius: 3px;}
-.avia-datepicker-div.ui-datepicker .ui-datepicker-buttonpane button.ui-datepicker-current { float:left; }
-
+#top .avia-datepicker-div.ui-datepicker .ui-datepicker-title select { font-size:14px; margin:1px; }
+#top .avia-datepicker-div.ui-datepicker select.ui-datepicker-month-year {width: 100%;}
+#top .avia-datepicker-div.ui-datepicker select.ui-datepicker-month,
+#top .avia-datepicker-div.ui-datepicker select.ui-datepicker-year { width: 48%;}
+#top .avia-datepicker-div.ui-datepicker select.ui-datepicker-year {float:right;}
+#top .avia-datepicker-div.ui-datepicker table {width: 100%; font-size: .9em; border-collapse: collapse; margin:0 0 .4em; }
+#top .avia-datepicker-div.ui-datepicker th { padding: .7em .3em; text-align: center; font-weight: bold; border: 0;  }
+#top .avia-datepicker-div.ui-datepicker td { border: 0; padding: 1px; }
+#top .avia-datepicker-div.ui-datepicker td span, #top .avia-datepicker-div.ui-datepicker td a { border:none; display: block; padding: .2em; text-align: center; text-decoration: none; }
+#top .avia-datepicker-div.ui-datepicker .ui-datepicker-buttonpane { background-image: none; margin: .7em 0 0 0; padding:0 .2em; border-left: 0; border-right: 0; border-bottom: 0; }
+#top .avia-datepicker-div.ui-datepicker .ui-datepicker-buttonpane button { float: right; margin: .5em 0 .4em; cursor: pointer; padding: 10px 20px; width:auto; overflow:visible; border: none; background-image: none;
+border-radius: 3px; font-size: 13px;}
+#top .avia-datepicker-div.ui-datepicker .ui-datepicker-buttonpane button.ui-datepicker-current { float:left; }
+#top .avia-datepicker-div .ui-widget-content{background: transparent; border: none;}
+#top .avia-datepicker-div.ui-datepicker .ui-datepicker-prev span, #top .avia-datepicker-div.ui-datepicker .ui-datepicker-next span{
+	text-indent: 0;
+    overflow: visible;
+    background-image: none;
+    display: inline;
+    position: static;
+    margin: 0;
+    font-weight: normal;
+}
 
 /* RTL support */
 .avia-datepicker-div.ui-datepicker-rtl { direction: rtl; }
@@ -1618,7 +1630,7 @@ border-radius: 3px;}
 @media only screen and (max-width: 479px) {
 
 	.responsive .avia_ajax_form .form_element{
-	width:100%; clear: both; margin-right:0; float: none;
+	width:100%; clear: both; margin-right:0; margin-left:0;  float: none;
 	}
 }
 
@@ -1629,7 +1641,7 @@ Table
 /*data table*/
 
 
-div .avia-table {background: transparent; width:100%; clear:both; margin:30px 0;}
+div .avia-table {background: transparent; width:100%; clear:both; margin:30px 0; table-layout: fixed;}
 .avia-data-table .avia-heading-row .avia-desc-col{border-top:none; border-left:none;}
 .avia-data-table .avia-button-row td{text-align: center;}
 .avia-data-table .avia-center-col{text-align: center;}
@@ -1638,6 +1650,12 @@ div .avia-table {background: transparent; width:100%; clear:both; margin:30px 0;
 .avia-data-table .avia-desc-col{text-align: right;}
 .avia-data-table .avia-pricing-row small{display: block; font-size: 11px; font-style: italic; line-height: 1.7em; }
 .avia-data-table .avia-pricing-row .avia-desc-col{font-size: 14px; text-align: right;}
+
+/*minimal data table*/
+.avia-data-table.avia_pricing_minimal th,
+.avia-data-table.avia_pricing_minimal td{text-align: center; padding:12px; color: inherit; }
+#top .avia-data-table.avia_pricing_minimal tr{background: transparent;}
+
 
 
 @media only screen and (max-width: 767px)
@@ -1929,7 +1947,7 @@ table-layout: fixed;
 }
 
 #top .isotope-item.special_av_fullwidth .av_table_col .grid-entry-excerpt {
-    font-size: 13px;
+    font-size: 1em;
     font-style: normal;
 }
 
@@ -2260,6 +2278,7 @@ visibility: hidden;
 opacity: 0;
 }
 
+#top .masonry-no-border{border-top:none;}
 
 .av-masonry-entry.av-landscape-img{
 width:49.80%;
@@ -2386,7 +2405,9 @@ animation:         avia_msonry_show 0.8s 1 cubic-bezier(0.175, 0.885, 0.320, 1.0
 #top .av-caption-style-overlay a.av-masonry-item-with-image .av-inner-masonry-content{ display: table; position: relative; height: 100%;width:100%; bottom:0;}
 #top .av-fixed-size .av-masonry-entry.av-masonry-item-no-image .av-inner-masonry-content-pos,
 #top .av-caption-style-overlay a.av-masonry-item-with-image .av-inner-masonry-content-pos{display:table-cell;  vertical-align: middle; text-align: center;}
-
+#top .av-caption-style-overlay a.av-masonry-item-with-image .av-inner-masonry {
+    background: transparent;
+}
 
 
 
@@ -2888,7 +2909,7 @@ padding:20px;
 .avia-testimonial-name{display:block;}
 .avia-testimonial-arrow-wrap{display:none;}
 
-.avia-testimonial-wrapper{display:table; margin: 30px 0; clear:both; }
+.avia-testimonial-wrapper{display:table; margin: 30px 0; clear:both; width: 100%; table-layout: fixed; }
 .avia-testimonial-row{display: table-row;}
 body div .avia-testimonial{display: table-cell; float:none;}
 
@@ -2919,10 +2940,11 @@ transform:scale(1);
 .avia-slider-testimonials .avia-testimonial-content p:last-child{margin-bottom: 0;}
 .avia-slider-testimonials .avia-testimonial-arrow-wrap{display: block; position: absolute; top: -14px; left: 14px; overflow: hidden; width: 10px; height: 10px;}
 .avia-slider-testimonials .avia-testimonial-name{font-size:14px;}
+.avia_mobile .avia-slider-testimonials {pointer-events: none;}
 
 
 /*slider large*/
-#top .av-large-testimonial-slider { text-align: center; }
+#top .av-large-testimonial-slider { text-align: center; pointer-events: all;}
 #top .av-large-testimonial-slider .avia-testimonial-content{ border:none; padding: 0; background: transparent; font-size: 1.3em; line-height: 1.65em;}
 #top .av-large-testimonial-slider .avia-testimonial-meta{display: inline-block; width:auto; margin:30px 0 0 0;}
 #top .av-large-testimonial-slider .avia-testimonial-arrow-wrap{display:none;}
@@ -2972,6 +2994,7 @@ background: black;
 background: rgba(0, 0, 0, 0.5);
 padding: 1px 10px 2px 10px;
 border-radius: 3px;
+line-height: 21px;
 }
 .progressbar-icon{float:left;margin-right:5px;}
 .icon-bar-no .progressbar-icon{display:none;}
@@ -3734,6 +3757,7 @@ display: block;
 
 /*caption frame*/
 .avia-caption-content{line-height: 1.3em;}
+.avia-caption-content p {margin:15px 0;}
 
 .caption_framed .slideshow_caption .avia-caption-content p, .caption_framed .slideshow_caption .avia-caption-title,
 .avia-caption .avia-caption-content p, .avia-caption .avia-caption-title{
@@ -3898,8 +3922,8 @@ background-position: center center;
 
 
 .avia-multi-slideshow-button{min-width: 140px;}
-.avia-multi-slideshow-button.avia-slideshow-button{margin-right:10px;}
-.avia-multi-slideshow-button.avia-slideshow-button-2{margin-left:10px;}
+.avia-multi-slideshow-button.avia-slideshow-button{margin-right:20px;}
+.avia-multi-slideshow-button.avia-slideshow-button-2{margin-right:0px;}
 
 #top .scroll-down-link {
 height: 60px;
@@ -4201,6 +4225,10 @@ Partner/Logo Slider + Content Slider
 	}
 }
 
+@media only screen and (max-width: 479px)
+{
+	.responsive #top #wrap_all .avia-logo-element-container.avia-logo-grid .flex_column{margin:0;}
+}
 
 
 
@@ -4367,8 +4395,10 @@ position: relative;
 }
 
 #top .mobile_menu_toggle .av-current-placeholder{font-size: 14px; vertical-align: bottom; display: inline-block; margin-left:20px;}
-
-
+#top .av-subnav-menu li:hover > ul { z-index: 10; }
+#top .av-submenu-container:hover {
+    z-index: 400 !important;
+}
 
 
 @media only screen and (max-width: 767px)

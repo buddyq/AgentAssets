@@ -9,17 +9,13 @@
 	$av_lightbox		= avia_get_option('lightbox_active') != "disabled" ? 'av-default-lightbox' : 'av-custom-lightbox';
 	$preloader			= avia_get_option('preloader') == "preloader" ? 'av-preloader-active av-preloader-enabled' : 'av-preloader-disabled';
 	$sidebar_styling 	= avia_get_option('sidebar_styling');
-	$filterable_classes = avia_header_class( avia_header_class_string() );
+	$filterable_classes = avia_header_class_filter( avia_header_class_string() );
 
 	
 ?><!DOCTYPE html>
-<html <?php language_attributes(); ?> class="<?php echo " html_{$style} ".$responsive." ".$preloader." ".$av_lightbox." ".$filterable_classes ?> ">
+<html <?php language_attributes(); ?> class="<?php echo "html_{$style} ".$responsive." ".$preloader." ".$av_lightbox." ".$filterable_classes ?> ">
 <head>
 <meta charset="<?php bloginfo( 'charset' ); ?>" />
-
-<!-- page title, displayed in your browser bar -->
-<title><?php if(function_exists('avia_set_title_tag')) { echo avia_set_title_tag(); } ?></title>
-
 <?php
 /*
  * outputs a rel=follow or nofollow tag to circumvent google duplicate content for archives
@@ -27,11 +23,6 @@
  */
  if (function_exists('avia_set_follow')) { echo avia_set_follow(); }
 
-
- /*
- * outputs a favicon if defined
- */
- if (function_exists('avia_favicon'))    { echo avia_favicon(avia_get_option('favicon')); }
 ?>
 
 
@@ -80,7 +71,7 @@ wp_head();
 
 	} ?>
 		
-	<div id='main' data-scroll-offset='<?php echo avia_header_setting('header_scroll_offset'); ?>'>
+	<div id='main' class='all_colors' data-scroll-offset='<?php echo avia_header_setting('header_scroll_offset'); ?>'>
 
 	<?php 
 		

@@ -455,7 +455,7 @@
 	{
 		loading: false, 
 		finished: false, 
-		src: 'https://maps.googleapis.com/maps/api/js?v=3.6&callback=aviaOnGoogleMapsLoaded' 
+		src: 'https://maps.googleapis.com/maps/api/js?v=3.24&callback=aviaOnGoogleMapsLoaded' 
 	}
 	
   	$.AviaMapsAPI.prototype =
@@ -517,6 +517,7 @@
 				center: new google.maps.LatLng(this.$data.marker[0].lat, this.$data.marker[0].long),
 				styles:[{featureType: "poi", elementType: "labels", stylers: [ { visibility: "off" }] }]
 			};
+			
 
 			this.map = new google.maps.Map(this.container, this.mapVars);
 		
@@ -546,7 +547,7 @@
 		
 		_applyMapStyle: function()
 		{
-			var stylers = [], style = [], mapType;
+			var stylers = [], style = [], mapType, style_color = "";
 			
 			if(this.$data.hue != "") stylers.push({hue: this.$data.hue});
 			if(this.$data.saturation != "") stylers.push({saturation: this.$data.saturation});
@@ -563,7 +564,47 @@
 						  	{ visibility: "off" }
 					      ]
 					    }];
+					    
+				
+				if(this.$data.saturation == "fill")
+				{
+					    
+					style_color = this.$data.hue || "#242424";
 					
+					var c = style_color.substring(1);      // strip #
+					var rgb = parseInt(c, 16);   // convert rrggbb to decimal
+					var r = (rgb >> 16) & 0xff;  // extract red
+					var g = (rgb >>  8) & 0xff;  // extract green
+					var b = (rgb >>  0) & 0xff;  // extract blue
+					
+					var luma = 0.2126 * r + 0.7152 * g + 0.0722 * b; // per ITU-R BT.709
+					var lightness = 1;
+					
+					if (luma > 60) {
+					    lightness = -1;
+					}
+					if (luma > 230) {
+					    lightness = -2;
+					}
+					
+				style = [
+{"featureType":"all","elementType":"all","stylers":[{"color":style_color},{"lightness":0}]},
+{"featureType":"all","elementType":"labels.text.fill","stylers":[{"color":style_color},{"lightness":(25 * lightness)}]},
+{"featureType":"all","elementType":"labels.text.stroke","stylers":[{"visibility":"on"},{"color":style_color},{"lightness":3}]},
+{"featureType":"all","elementType":"labels.icon","stylers":[{"visibility":"off"}]},
+{"featureType":"administrative","elementType":"geometry.fill","stylers":[{"color":style_color},{"lightness":30}]},
+{"featureType":"administrative","elementType":"geometry.stroke","stylers":[{"color":style_color},{"lightness":30},{"weight":1.2}]},
+{"featureType":"landscape","elementType":"geometry","stylers":[{visibility: 'simplified'},{"color":style_color},{"lightness":3}]},
+{"featureType":"poi","elementType":"geometry","stylers":[{ "visibility": "off" }]},
+{"featureType":"road.highway","elementType":"geometry.fill","stylers":[{"color":style_color},{"lightness":-3}]},
+{"featureType":"road.highway","elementType":"geometry.stroke","stylers":[{"color":style_color},{"lightness":2},{"weight":0.2}]},
+{"featureType":"road.arterial","elementType":"geometry","stylers":[{"color":style_color},{"lightness":-3}]},
+{"featureType":"road.local","elementType":"geometry","stylers":[{"color":style_color},{"lightness":-3}]},
+{"featureType":"transit","elementType":"geometry","stylers":[{"color":style_color},{"lightness":-3}]},
+{"featureType":"water","elementType":"geometry","stylers":[{"color":style_color},{"lightness":-20}]}
+						];
+				}	
+				
 				mapType = new google.maps.StyledMapType(style, { name:"av_map_style" });
 				this.map.mapTypes.set('av_styled_map', mapType);
 				this.map.setMapTypeId('av_styled_map');
@@ -4473,12 +4514,14 @@ Avia Slideshow
 		
 		_slide: function(dir)
 		{
-			var sliderWidth		= this.$slider.width(),
+			var dynamic			= false, //todo: pass by option if a slider is dynamic
+				modifier		= dynamic == true ? 2 : 1,
+				sliderWidth		= this.$slider.width(),
 				direction		= dir === 'next' ? -1 : 1,
 				property  		= this.browserPrefix + 'transform',
 				reset			= {}, transition = {},  transition2 = {},
 				trans_val 		= ( sliderWidth * direction * -1),
-				trans_val2 		= ( sliderWidth * direction);
+				trans_val2 		= ( sliderWidth * direction) / modifier;
 			
 			//do a css3 animation
 			if(this.cssActive)
@@ -4505,17 +4548,25 @@ Avia Slideshow
 				transition2.left = 0;
 			}
 			
+			if(dynamic)
+			{
+				transition['z-index']  = "1";
+				transition2['z-index']  = "2";
+			}
+			
 			this._slide_animate(reset, transition, transition2);
 		},
 		
 		_slide_up: function(dir)
 		{
-			var sliderHeight	= this.$slider.height(),
+			var dynamic			= true, //todo: pass by option if a slider is dynamic
+				modifier		= dynamic == true ? 2 : 1,
+				sliderHeight	= this.$slider.height(),
 				direction		= dir === 'next' ? -1 : 1,
 				property  		= this.browserPrefix + 'transform',
 				reset			= {}, transition = {},  transition2 = {},
 				trans_val 		= ( sliderHeight * direction * -1),
-				trans_val2 		= ( sliderHeight * direction);
+				trans_val2 		= ( sliderHeight * direction) / modifier;
 			
 			//do a css3 animation
 			if(this.cssActive)
@@ -4542,6 +4593,11 @@ Avia Slideshow
 				transition2.top = 0;
 			}
 			
+			if(dynamic)
+			{
+				transition['z-index']  = "1";
+				transition2['z-index']  = "2";
+			}
 			this._slide_animate(reset, transition, transition2);
 		},
 		
@@ -4744,6 +4800,11 @@ Avia Slideshow
 			
 			this.slideshow = new this._timer( function()
 			{
+				/*
+				var videoApi = self.$slides.eq(self.current).data('aviaVideoApi')
+				if(!videoApi){}
+				*/
+				
 				self._navigate( 'next' );
 		
 				if ( self.options.autoplay )

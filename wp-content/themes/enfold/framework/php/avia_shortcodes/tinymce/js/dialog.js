@@ -262,7 +262,7 @@ var scnDialogHelper = {
     	if(!nonce) return;
         jQuery(a).hasClass("scn-validation-marker") && this.validatelinkFor(a);
         jQuery("#scn-preview h3:first").addClass("scn-loading");
-        jQuery("#scn-preview-iframe").attr("src", avia_framework_globals.frameworkUrl + "php/avia_shortcodes/preview-shortcode-external.php?nonce="+nonce+"&shortcode=" + encodeURIComponent(this.makeShortcode()))
+        jQuery("#scn-preview-iframe").attr("src", avia_framework_globals.frameworkUrl + "php/avia_shortcodes/av-prev.php?nonce="+nonce+"&shortcode=" + encodeURIComponent(this.makeShortcode()))
     },
     validatelinkFor: function (a) {
         var b = jQuery(a);

@@ -1294,7 +1294,7 @@ if(!function_exists('avia_generate_grid_dimension'))
 	function avia_generate_grid_dimension($options, $color_set, $styles)
 	{
 		global $avia_config;
-		extract($options);
+		if ( $options !== "" ){ extract($options); }
 		
 		if(empty($content_width))  $content_width 	= 73;
 		if(empty($combined_width)) $combined_width 	= 100;
@@ -1475,7 +1475,15 @@ if(!function_exists('avia_generate_stylesheet'))
 
 
 
+/*favicon in front and backend*/
+add_action('wp_head', 'avia_add_favicon');
+add_action('admin_head', 'avia_add_favicon');
 
+
+function avia_add_favicon()
+{
+	echo "\n".avia_favicon(avia_get_option('favicon'))."\n";
+}
 
 
 

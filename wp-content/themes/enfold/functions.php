@@ -501,8 +501,26 @@ add_theme_support( 'avia_post_meta_compat');
 add_theme_support('force-post-thumbnails-in-widget');
 
 
+/*
+ * display page titles via wordpress default output
+ */
+function av_theme_slug_setup() 
+{
+   add_theme_support( 'title-tag' );
+}
 
+add_action( 'after_setup_theme', 'av_theme_slug_setup' );
 
+/*title fallback*/
+if ( ! function_exists( '_wp_render_title_tag' ) )
+{
+    function av_theme_slug_render_title() 
+    {
+	    echo "<title>" . avia_set_title_tag() ."</title>";
+	}
+	add_action( 'wp_head', 'av_theme_slug_render_title' );
+}
+    
 
 
 

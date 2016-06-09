@@ -2,6 +2,8 @@
 $weight 	= array(__('Default','avia_framework') => '' , __('Normal','avia_framework') =>'normal', __('Bold','avia_framework')=>'bold', __('Light','avia_framework')=>'lighter');
 $transform 	= array(__('Default','avia_framework') => '' , __('None'  ,'avia_framework') =>'none', __('Uppercase','avia_framework')=>'uppercase', __('Lowercase','avia_framework')=>'lowercase');
 $align 	= array(__('Default','avia_framework') => '' , __('Left'  ,'avia_framework') =>'left', __('Center','avia_framework')=>'center', __('Right','avia_framework')=>'right');
+$decoration = array(__('Default','avia_framework') => '' , __('None','avia_framework')=>'none !important' , __('Underline'  ,'avia_framework') =>'underline !important', __('Overline','avia_framework')=>'overline !important', __('Line Trough','avia_framework')=>'line-through !important');
+$display 	= array(__('Default','avia_framework') => '' , __('Inline','avia_framework') =>'inline', __('Inline Block','avia_framework')=>'inline-block', __('Block','avia_framework')=>'block');
 
 
 $advanced = array();
@@ -35,6 +37,47 @@ $advanced['blockquote'] = array(
 								'font_family' 		=> array('type' => 'font', 'name'=> __("Font Family",'avia_framework'), 'options' => $google_fonts),
 							)
 );
+
+$advanced['underline'] = array(
+	"id"			=> "underline", //needs to match array key
+	"name"			=> "&lt;u&gt;",
+	"group" 		=> __("Tags",'avia_framework'),
+	"description"	=> __("Change the styling for all &lt;u&gt; (underline) tags",'avia_framework'),
+	"selector"		=> array("#top [sections] u, #top [sections] span[style*='text-decoration: underline;'], #top [sections] span[style*='text-decoration:underline;']"=> ""),
+	"sections"		=> true,
+	"hover"			=> false,
+	"edit"			=> array(	'color' 			=> array('type' => 'colorpicker', 'name'=> __("Font Color",'avia_framework')), 
+								'background_color' 	=> array('type' => 'colorpicker', 'name'=> __("Background Color",'avia_framework')),
+								'font_size' 		=> array('type' => 'size', 'range' => '10-80', 'name'=> __("Font Size",'avia_framework')),
+								'font_weight' 		=> array('type' => 'select', 'name'=> __("Font Weight",'avia_framework'), 'options' => $weight),
+								'line_height' 		=> array('type' => 'size', 'range' => '0.7-2', 'increment' => 0.1, 'unit' => 'em',  'name'=> __("Line Height",'avia_framework')),
+								'font_family' 		=> array('type' => 'font', 'name'=> __("Font Family",'avia_framework'), 'options' => $google_fonts),
+								'text_decoration' 	=> array('type' => 'select', 'name'=> __("Text Decoration",'avia_framework'), 'options' => $decoration),
+								'display' 			=> array('type' => 'select', 'name'=> __("Display",'avia_framework'), 'options' => $display),
+							)
+);
+
+
+$advanced['mark'] = array(
+	"id"			=> "mark", //needs to match array key
+	"name"			=> "&lt;mark&gt;",
+	"group" 		=> __("Tags",'avia_framework'),
+	"description"	=> __("Change the styling for all &lt;mark&gt; tags",'avia_framework'),
+	"selector"		=> array("#top [sections] mark"=> ""),
+	"sections"		=> true,
+	"hover"			=> false,
+	"edit"			=> array(	'color' 			=> array('type' => 'colorpicker', 'name'=> __("Font Color",'avia_framework')), 
+								'background_color' 	=> array('type' => 'colorpicker', 'name'=> __("Background Color",'avia_framework')),
+								'font_size' 		=> array('type' => 'size', 'range' => '10-80', 'name'=> __("Font Size",'avia_framework')),
+								'font_weight' 		=> array('type' => 'select', 'name'=> __("Font Weight",'avia_framework'), 'options' => $weight),
+								'line_height' 		=> array('type' => 'size', 'range' => '0.7-2', 'increment' => 0.1, 'unit' => 'em',  'name'=> __("Line Height",'avia_framework')),
+								'font_family' 		=> array('type' => 'font', 'name'=> __("Font Family",'avia_framework'), 'options' => $google_fonts),
+								'text_decoration' 	=> array('type' => 'select', 'name'=> __("Text Decoration",'avia_framework'), 'options' => $decoration),
+								'display' 			=> array('type' => 'select', 'name'=> __("Display",'avia_framework'), 'options' => $display),
+							)
+);
+
+
 
 
 

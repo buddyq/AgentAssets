@@ -18,7 +18,7 @@ if ( !class_exists( 'AviaHelper' ) ) {
     	 */
     	static function get_url($link, $post_id = false) 
     	{
-    		$link = explode(',', $link);
+    		$link = explode(',', $link, 2);
     		
     		if($link[0] == 'lightbox')        
     		{

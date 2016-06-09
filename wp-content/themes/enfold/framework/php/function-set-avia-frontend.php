@@ -791,10 +791,20 @@ if(!function_exists('avia_pagination'))
 	* @param string $pages pass the number of pages instead of letting the script check the gobal paged var
 	* @return string $output returns the pagination html code
 	*/
-	function avia_pagination($pages = '', $wrapper = 'div')
+	function avia_pagination($pages = '', $wrapper = 'div') //pages is either the already calculated number of pages or the wp_query object
 	{
 		global $paged, $wp_query;
-
+		
+		if(is_object($pages))
+		{
+			$use_query = $pages;
+			$pages = "";
+		}
+		else
+		{
+			$use_query = $wp_query;
+		}
+		
 		if(get_query_var('paged')) {
 		     $paged = get_query_var('paged');
 		} elseif(get_query_var('page')) {
@@ -813,18 +823,18 @@ if(!function_exists('avia_pagination'))
 		if($pages == '') //if the default pages are used
 		{
 			//$pages = ceil(wp_count_posts($post_type)->publish / $per_page);
-			$pages = $wp_query->max_num_pages;
+			$pages = $use_query->max_num_pages;
 			if(!$pages)
 			{
 				$pages = 1;
 			}
 	
 			//factor in pagination
-			if( isset($wp_query->query) && !empty($wp_query->query['offset']) && $pages > 1 )
+			if( isset($use_query->query) && !empty($use_query->query['offset']) && $pages > 1 )
 			{
-				$offset_origin = $wp_query->query['offset'] - ($wp_query->query['posts_per_page'] * ( $paged - 1 ) );
-				$real_posts = $wp_query->found_posts - $offset_origin;
-				$pages = ceil( $real_posts / $wp_query->query['posts_per_page']);
+				$offset_origin = $use_query->query['offset'] - ($use_query->query['posts_per_page'] * ( $paged - 1 ) );
+				$real_posts = $use_query->found_posts - $offset_origin;
+				$pages = ceil( $real_posts / $use_query->query['posts_per_page']);
 			}
 		}
 		
@@ -1374,9 +1384,9 @@ if(!function_exists('kriesi_backlink'))
 
 
 
-if(!function_exists('avia_header_class'))
+if(!function_exists('avia_header_class_filter'))
 {
-	function avia_header_class( $default = "" )
+	function avia_header_class_filter( $default = "" )
 	{	
 		$default = apply_filters( "avia_header_class_filter", $default );
 		return $default;

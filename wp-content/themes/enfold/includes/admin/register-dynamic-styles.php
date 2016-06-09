@@ -8,7 +8,9 @@ function avia_prepare_dynamic_styles($options = false)
 	$color_set 	= $styles		= array();
 	$post_id 					= avia_get_the_ID();
 	$options 					= apply_filters('avia_pre_prepare_colors', $options);
-
+	
+	if($options === "") { $options = array(); }
+	
 	//boxed or stretched layout
 	$avia_config['box_class'] = empty($options['color-body_style']) ? "stretched" : $options['color-body_style'];
 	

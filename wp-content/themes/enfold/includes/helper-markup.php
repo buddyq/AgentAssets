@@ -288,6 +288,8 @@ if(!function_exists('av_blog_entry_markup_helper'))
 {
 	function av_blog_entry_markup_helper( $id , $exclude = array())
 	{
+		if('inactive' == avia_get_option('markup')) return;
+		
 		$logo = $logo_url = $logo_h = $logo_w = $url_string = $url_h = $url_w = "";
 		$post = get_post($id);
 		if($logo = avia_get_option('logo'))

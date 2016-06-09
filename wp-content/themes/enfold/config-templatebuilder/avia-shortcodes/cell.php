@@ -120,7 +120,19 @@ if ( !class_exists( 'avia_sc_cell' ) )
 			    global  $avia_config;
 
 				$this->elements = array(
-
+					
+					
+					array(
+							"type" 	=> "tab_container", 'nodescription' => true
+						),
+					
+					 array(
+						"type" 	=> "tab",
+						"name"  => __("Settings" , 'avia_framework'),
+						'nodescription' => true
+					),
+				
+					
 					array(	
 							"name" 	=> __("Vertical align", 'avia_framework' ),
 							"desc" 	=> __("Choose the vertical alignment of your cells content.", 'avia_framework' ),
@@ -211,6 +223,42 @@ if ( !class_exists( 'avia_sc_cell' ) )
 						                      __('Scale to fit (scales image so the whole image is always visible)','avia_framework' )     =>'contain'
 						                      )
 				  ),
+				  
+				 array(
+							"type" 	=> "close_div",
+							'nodescription' => true
+						), 
+				  
+				  array(
+						"type" 	=> "tab",
+						"name"  => __("Mobile" , 'avia_framework'),
+						'nodescription' => true
+					),
+				
+				
+				array(	
+						"name" 	=> __("Mobile display", 'avia_framework' ),
+						"desc" 	=> __("Display settings for this element when viewed on smaller screens", 'avia_framework' ),
+						"id" 	=> "mobile_display",
+						"type" 	=> "select",
+						"std" 	=> "",
+						"subtype" => array(	
+								__('Always display','avia_framework' ) =>'',
+								//__('Hide on tablet and smaller devices',  'avia_framework' ) =>'av-hide-on-tablet',
+								__('Hide on mobile devices',  'avia_framework' ) =>'av-hide-on-mobile',
+									)
+					),
+				
+				
+				array(
+							"type" 	=> "close_div",
+							'nodescription' => true
+						),
+				  
+				 array(
+							"type" 	=> "close_div",
+							'nodescription' => true
+						), 
 					
 					
 					
@@ -241,7 +289,8 @@ if ( !class_exists( 'avia_sc_cell' ) )
 					'background_attachment' => '',
 					'fetch_image'			=> '',
 					'attachment_size'		=> '',
-					'attachment'			=> ''
+					'attachment'			=> '',
+					'mobile_display'		=> ''
 				
 				), $atts, $this->config['shortcode']);
 				
@@ -316,6 +365,8 @@ if ( !class_exists( 'avia_sc_cell' ) )
 				
 				if(!empty($outer_style)) $outer_style = "style='".$outer_style."'";
 				if(!empty($inner_style)) $inner_style = "style='".$inner_style."'";
+				
+				$extraClass .= empty($atts['mobile_display']) ? "" : " ".$atts['mobile_display']." ";
 				
 				$output   = '<div class="flex_cell no_margin '.$shortcodename.' '.$meta['el_class'].' '.$extraClass.' '.avia_sc_cell::$extraClass.'" '.$outer_style.'>';
 				$output  .= "<div class='flex_cell_inner' {$inner_style}>";

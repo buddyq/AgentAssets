@@ -128,6 +128,7 @@ class avia_wp_import extends WP_Import
 				
 				
 				//create a config file
+				$font_uploader->font_name = $font_name;
 				$font_uploader->create_config();
 				
 			}

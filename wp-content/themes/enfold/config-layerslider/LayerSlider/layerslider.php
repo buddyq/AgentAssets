@@ -4,9 +4,9 @@
 Plugin Name: LayerSlider WP
 Plugin URI: http://codecanyon.net/user/kreatura/
 Description: LayerSlider is the most advanced responsive WordPress slider plugin with the famous Parallax Effect and over 200 2D & 3D transitions.
-Version: 5.6.5
+Version: 5.6.8
 Author: Kreatura Media
-Author URI: http://kreaturamedia.com/
+Author URI: https://kreaturamedia.com/
 Text Domain: LayerSlider
 */
 
@@ -31,7 +31,7 @@ if(!defined('ABSPATH')) {
 
 	// Basic configuration
 	define('LS_DB_TABLE', 'layerslider');
-	define('LS_PLUGIN_VERSION', '5.6.5');
+	define('LS_PLUGIN_VERSION', '5.6.8');
 
 	// Path info
 	define('LS_ROOT_FILE', __FILE__);
@@ -43,7 +43,7 @@ if(!defined('ABSPATH')) {
 	define('LS_PLUGIN_BASE', plugin_basename(__FILE__));
 	define('LS_MARKETPLACE_ID', '1362246');
 	define('LS_TEXTDOMAIN', 'LayerSlider');
-	define('LS_REPO_BASE_URL', 'http://repository.kreaturamedia.com/v3/');
+	define('LS_REPO_BASE_URL', 'https://repository.kreaturamedia.com/v3/');
 
 	if(!defined('NL')) { define("NL", "\r\n"); }
 	if(!defined('TAB')) { define("TAB", "\t"); }

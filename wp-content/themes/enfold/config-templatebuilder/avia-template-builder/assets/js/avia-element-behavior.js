@@ -52,7 +52,7 @@
 	
 	$.AviaElementBehavior.gmaps_fetcher =  function()
 	{	
-		var map_api 	= 'https://maps.googleapis.com/maps/api/js?v=3&callback=av_builder_maps_loaded', 
+		var map_api 	= 'https://maps.googleapis.com/maps/api/js?v=3.24&callback=av_builder_maps_loaded', 
 			loading 	= false,
 			clicked		= {};
 	

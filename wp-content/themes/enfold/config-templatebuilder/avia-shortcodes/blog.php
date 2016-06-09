@@ -358,7 +358,7 @@ if ( !class_exists( 'avia_sc_blog' ) )
 					//if the offset is set the paged param is ignored. therefore we need to factor in the page number
 					$params['offset'] = $params['offset'] + ( ($page -1 ) * $params['items']);
 				}
-				
+		
 				//if we find categories perform complex query, otherwise simple one
 				if(isset($terms[0]) && !empty($terms[0]) && !is_null($terms[0]) && $terms[0] != "null" && !empty($params['taxonomy']))
 				{

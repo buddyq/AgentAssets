@@ -415,7 +415,7 @@ if( ! class_exists( 'avia_form' ) )
 
             if(!empty($element['check']))
             {
-                $required = ' <abbr class="required" title="required">*</abbr>';
+                $required = ' <abbr class="required" title="'.__( 'required', 'avia_framework' ).'">*</abbr>';
                 $element_class = $element['check'];
                 $p_class = $this->check_element($id, $element);
             }
@@ -536,7 +536,7 @@ if( ! class_exists( 'avia_form' ) )
 			if(!empty($element['check']))
 			{
 				if(!empty($_POST[$id])) $checked = 'checked="checked"';
-				$required = ' <abbr class="required" title="required">*</abbr>';
+				$required = ' <abbr class="required" title="'.__( 'required', 'avia_framework' ).'">*</abbr>';
 				$element_class = $element['check'];
 				$p_class = $this->check_element($id, $element);
 			}
@@ -568,12 +568,12 @@ if( ! class_exists( 'avia_form' ) )
 				$element['options'] = explode(',',$element['options']);
 			}
 
-			$p_class = $required = $element_class = $prefilled_value = $select = "";
+			$p_class = $required = $element_class = $prefilled_value = $select = $extra  = "";
 
 			if(!empty($element['check']))
 			{
 				$extra = "*";
-				$required = ' <abbr class="required" title="required">*</abbr>';
+				$required = ' <abbr class="required" title="'.__( 'required', 'avia_framework' ).'">*</abbr>';
 				$element_class = $element['check'];
 				$p_class = $this->check_element($id, $element);
 			}
@@ -652,7 +652,7 @@ if( ! class_exists( 'avia_form' ) )
 			if(!empty($element['check']))
 			{
 				$extra = "*";
-				$required = ' <abbr class="required" title="required">*</abbr>';
+				$required = ' <abbr class="required" title="'.__( 'required', 'avia_framework' ).'">*</abbr>';
 				$element_class = $element['check'];
 				$p_class = $this->check_element($id, $element);
 			}
@@ -719,7 +719,7 @@ if( ! class_exists( 'avia_form' ) )
 
 			if(!empty($element['check']))
 			{
-				$required = ' <abbr class="required" title="required">*</abbr>';
+				$required = ' <abbr class="required" title="'.__( 'required', 'avia_framework' ).'">*</abbr>';
 				$element_class = $element['check'];
 				$p_class = $this->check_element($id, $element);
 			}
@@ -897,6 +897,16 @@ if( ! class_exists( 'avia_form' ) )
 			
 			foreach($copy as $send_to_mail)
 			{
+				//if a demo email is mistakenly used change it to the admin url
+				if( strpos( $send_to_mail, '@kriesi.at') !== false && isset($_SERVER['HTTP_HOST']) && $_SERVER['HTTP_HOST'] != "www.kriesi.at")
+				{
+					if(!defined('AV_TESTSERVER'))
+					{
+						$send_to_mail = get_admin_url();
+					}
+				}
+				
+				
 				if($use_wpmail)
 				{
 					$header .= 'From: '. $from . " <".$from."> \r\n";

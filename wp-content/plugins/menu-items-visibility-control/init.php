@@ -3,7 +3,7 @@
 Plugin Name:    Menu Items Visibility Control
 Description:    Control the display logic of individual menu items.
 Author:         Hassan Derakhshandeh
-Version:        0.3.2
+Version:        0.3.3
 Text Domain:    menu-items-visibility-control
 Domain Path:    /languages
 */
@@ -30,7 +30,6 @@ class Menu_Items_Visibility_Control {
 			add_action( 'delete_post', array( &$this, 'remove_visibility_meta' ), 1, 3);
 		} else {
 			add_filter( 'wp_get_nav_menu_items', array( &$this, 'visibility_check' ), 10, 3 );
-			add_action( 'init', array( &$this, 'clear_gantry_menu_cache' ) );
 		}
 	}
 
@@ -91,7 +90,7 @@ class Menu_Items_Visibility_Control {
 			else
 				$visible = true;
 			if( ! $visible
-				|| isset( $hidden_items[$item_parent] ) // also hide the children of unvisible items
+				|| isset( $hidden_items[$item_parent] ) // also hide the children of invisible items
 			) {
 				unset( $items[$key] );
 				$hidden_items[$item->ID] = '1';
@@ -109,21 +108,6 @@ class Menu_Items_Visibility_Control {
 	function remove_visibility_meta( $post_id ) {
 		if( is_nav_menu_item( $post_id ) ) {
 			delete_post_meta( $post_id, '_menu_item_visibility' );
-		}
-	}
-
-	/**
-	 * Compatibility fix for Gantry Framework
-	 *
-	 * Clear the menu cache on each request to make sure
-	 * visibility options are re-evaluated each time.
-	 *
-	 * @since 0.2.2
-	 * @return void
-	 */
-	function clear_gantry_menu_cache() {
-		if( class_exists( 'GantryWidgetMenu' ) ) {
-			GantryWidgetMenu::clearMenuCache();
 		}
 	}
 }

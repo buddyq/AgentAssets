@@ -1175,7 +1175,102 @@ $styles["Black-White"] = array(
 						
 
 	
-	
+$default_primary 	= "#d63e2d";
+$default_highlight 	= "#eb5c23";
+$default_background = "#191919";
+						
+$styles["White-Black"] = array(	
+						'style'=>'background-color:#222222;',
+						'default_font' => 'Lato:300,400,700',
+						'google_webfont' => 'Oswald',
+						'color_scheme'	=>'White-Black',
+						
+						// header
+						'colorset-header_color-bg'				=>"#ffffff",
+						'colorset-header_color-bg2'				=>'#f8f8f8',
+						'colorset-header_color-primary'			=>"$default_primary",
+						'colorset-header_color-secondary'		=>"$default_highlight",
+						'colorset-header_color-color'			=>'#000000',
+						'colorset-header_color-border'			=>'#e1e1e1',
+						'colorset-header_color-img'				=>'',
+						'colorset-header_color-customimage'		=>'',
+						'colorset-header_color-pos' 			=> 'center center',
+						'colorset-header_color-repeat' 			=> 'repeat',
+						'colorset-header_color-attach' 			=> 'scroll',
+						'colorset-header_color-heading' 		=> '#000000',
+						'colorset-header_color-meta' 			=> '#7d7d7d',
+						
+						// main
+						'colorset-main_color-bg'				=>"#ffffff",
+						'colorset-main_color-bg2'				=>'#f8f8f8',
+						'colorset-main_color-primary'			=>"$default_primary",
+						'colorset-main_color-secondary'			=>"$default_highlight",
+						'colorset-main_color-color'				=>'#696969',
+						'colorset-main_color-border'			=>'#e1e1e1',
+						'colorset-main_color-img'				=>'',
+						'colorset-main_color-customimage'		=>'',
+						'colorset-main_color-pos' 				=> 'center center',
+						'colorset-main_color-repeat' 			=> 'repeat',
+						'colorset-main_color-attach' 			=> 'scroll',
+						'colorset-main_color-heading' 			=> '#000000',
+						'colorset-main_color-meta' 				=> '#7d7d7d',
+						
+						// alternate
+						'colorset-alternate_color-bg'			=>'#191919',
+						'colorset-alternate_color-bg2'			=>"$default_background",
+						'colorset-alternate_color-primary'		=>"$default_primary",
+						'colorset-alternate_color-secondary'	=>"$default_highlight",
+						'colorset-alternate_color-color'		=>'#ffffff',
+						'colorset-alternate_color-border'		=>'#444444',
+						'colorset-alternate_color-img'			=>'',
+						'colorset-alternate_color-customimage'	=>'',
+						'colorset-alternate_color-pos' 			=> 'center center',
+						'colorset-alternate_color-repeat' 		=> 'repeat',
+						'colorset-alternate_color-attach' 		=> 'scroll',
+						'colorset-alternate_color-heading' 		=> '#ffffff',
+						'colorset-alternate_color-meta' 		=> '#8c8c8c',
+						
+												
+						// Footer
+						'colorset-footer_color-bg'				=>'#111111',
+						'colorset-footer_color-bg2'				=>"$default_background",
+						'colorset-footer_color-primary'			=>"#ffffff",
+						'colorset-footer_color-secondary'		=>"#eeeeee",
+						'colorset-footer_color-color'			=>'#aaaaaa',
+						'colorset-footer_color-border'			=>'#111111',
+						'colorset-footer_color-img'				=>'',
+						'colorset-footer_color-customimage'		=>'',
+						'colorset-footer_color-pos' 			=> 'center center',
+						'colorset-footer_color-repeat' 			=> 'repeat',
+						'colorset-footer_color-attach' 			=> 'scroll',
+						'colorset-footer_color-heading' 		=> '#ffffff',
+						'colorset-footer_color-meta' 			=> '#808080',
+						
+						// Socket
+						'colorset-socket_color-bg'				=>"#191919",
+						'colorset-socket_color-bg2'				=>'#000000',
+						'colorset-socket_color-primary'			=>'#ffffff',
+						'colorset-socket_color-secondary'		=>'#eeeeee',
+						'colorset-socket_color-color'			=>'#eeeeee',
+						'colorset-socket_color-border'			=>'#191919',
+						'colorset-socket_color-img'				=>'',
+						'colorset-socket_color-customimage'		=>'',
+						'colorset-socket_color-pos' 			=> 'center center',
+						'colorset-socket_color-repeat' 			=> 'repeat',
+						'colorset-socket_color-attach' 			=> 'scroll',
+						'colorset-socket_color-heading' 		=> '#ffffff',
+						'colorset-socket_color-meta' 			=> '#8c8c8c',
+						
+						//body bg
+						'color-body_style'						=>'stretched',
+						'color-body_color'						=>'#191919',
+						'color-body_attach'						=>'scroll',
+						'color-body_repeat'						=>'repeat',
+						'color-body_pos'						=>'center center',
+						'color-body_img'						=>'',
+						'color-body_customimage'				=>'',
+						
+						);	
 
 					
 						

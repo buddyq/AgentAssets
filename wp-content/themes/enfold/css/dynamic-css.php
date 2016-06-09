@@ -33,7 +33,7 @@ $output = "";
 $body_color = "";
 
 extract($color_set);
-extract($main_color);
+if ($main_color !== NULL) { extract($main_color); }
 extract($styles);
 
 unset($background_image);
@@ -478,12 +478,12 @@ $stripe = avia_backend_calculate_similar_color($primary, 'lighter', 2);
 $stripe2 = avia_backend_calculate_similar_color($primary, 'lighter', 1);
 
 $output.= "
-$key tr:nth-child(even), $key .avia-data-table .avia-heading-row .avia-desc-col, $key .avia-data-table .avia-highlight-col, $key .pricing-table>li:nth-child(even), body $key .pricing-table.avia-desc-col li{
+$key tr:nth-child(even), $key .avia-data-table .avia-heading-row .avia-desc-col, $key .avia-data-table .avia-highlight-col, $key .pricing-table>li:nth-child(even), body $key .pricing-table.avia-desc-col li, #top $key  .avia-data-table.avia_pricing_minimal th{
 background-color:$bg;
 color: $color;
 }
 
-$key table caption, $key tr:nth-child(even), $key .pricing-table>li:nth-child(even){
+$key table caption, $key tr:nth-child(even), $key .pricing-table>li:nth-child(even), #top $key  .avia-data-table.avia_pricing_minimal td{
 color: $meta;
 }
 
@@ -707,12 +707,12 @@ background-color:$bg2;
 			/*contact form picker*/
 
 			$output .= "
-			.avia-datepicker-div .ui-datepicker-month, .avia-datepicker-div .ui-datepicker-year{color:$heading;}
-			.avia-datepicker-div{ background: $bg; border:1px solid $border; }
-			.avia-datepicker-div a{ color:$meta; background-color: $bg2; }
-			.avia-datepicker-div a.ui-state-active, .avia-datepicker-div a.ui-state-highlight{ color:$primary; }
-			.avia-datepicker-div a.ui-state-hover{ color:$bg2; background-color: $meta; }
-			.avia-datepicker-div .ui-datepicker-buttonpane button{ background-color: $primary; color: $constant_font; border-color: $primary; }
+			#top .avia-datepicker-div .ui-datepicker-month, #top .avia-datepicker-div .ui-datepicker-year{color:$heading;}
+			#top .avia-datepicker-div{ background: $bg; border:1px solid $border; }
+			#top .avia-datepicker-div a{ color:$meta; background-color: $bg2; }
+			#top .avia-datepicker-div a.ui-state-active, #top .avia-datepicker-div a.ui-state-highlight{ color:$primary; }
+			#top .avia-datepicker-div a.ui-state-hover{ color:$bg2; background-color: $meta; }
+			#top .avia-datepicker-div .ui-datepicker-buttonpane button{ background-color: $primary; color: $constant_font; border-color: $primary; }
 
 			";
 			

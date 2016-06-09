@@ -155,6 +155,7 @@ if ( !class_exists( 'avia_sc_gmaps' ) )
 						"std" 	=> "",
 						"subtype" => array(
 						
+							__('Full color fill',  'avia_framework' ) =>'fill',
 							__('Oversaturated',  'avia_framework' ) =>'100',
 							__('Slightly oversaturated',  'avia_framework' ) =>'50',
 							__('Normal Saturation',   'avia_framework' ) =>'',

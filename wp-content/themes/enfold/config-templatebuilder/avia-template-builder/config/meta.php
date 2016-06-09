@@ -259,7 +259,7 @@ array(
         
         array(
         "slug"  => "layout",
-        "notice"  => __("Only available if the logo is not",'avia_framework')." <a href='".admin_url('admin.php?page=avia#goto_header')."'>".__("bellow the menu",'avia_framework').".</a>",
+        "notice"  => __("Only available if the logo is not",'avia_framework')." <a href='".admin_url('admin.php?page=avia#goto_header')."'>".__("below the menu",'avia_framework').".</a>",
         "id"    => "conditional_header2",
         "type"  => "condition",
         "class" => "avia-style", 

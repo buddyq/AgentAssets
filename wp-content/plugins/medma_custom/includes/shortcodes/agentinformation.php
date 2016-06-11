@@ -24,6 +24,7 @@ function agentinformation_shortcode($atts)
 
         $blog_id = get_current_blog_id();
         $user_id = OrderMap::getBlogOwner($blog_id);
+        if (!$user_id) $user_id = 1;
 
         $value = get_user_meta($user_id, $atts['key'], true);
 

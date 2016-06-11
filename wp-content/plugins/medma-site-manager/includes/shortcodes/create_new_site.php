@@ -5,34 +5,30 @@ ob_start();
 
 add_shortcode('create_new_site', 'mism_create_new_site');
 
-function mism_create_new_site($atts) {
+function mism_create_new_site($atts)
+{
     global $wpdb;
-    
+
     $atts = shortcode_atts(
-      array(
-        'title' => '',
-    ), $atts, 'create_new_site');
+        array(
+            'title' => '',
+        ), $atts, 'create_new_site');
 
     #   User Package Authentication Check
-    $current_date = date('Y-m-d H:i:s');
-    $sql = "SELECT * FROM `" . $wpdb->base_prefix . "orders` WHERE `user_id`='" . get_current_user_id() . "' AND `status`='1' AND expiry_date>='" . $current_date . "'";
-    $order_details = $wpdb->get_results($sql);
-    // echo "<pre>"; print_r ($order_details); die("</pre>");
-    
-    $order_id = $order_details[0]->id;
+    $order = OrderModel::findOne('`user_id` = %d AND `status` = %d AND `expiry_date` >= %s',
+        array(get_current_user_id(), OrderModel::STATUS_PAID, date('Y-m-d H:i:s')));
 
-    # Site Allowed Authentication
-    $sql = "SELECT * FROM `" . $wpdb->base_prefix . "package_counter` WHERE `order_id`='" . $order_id . "'";
-    $counter_details = $wpdb->get_results($sql);
-    
-    if (count($order_details) > 0) { # If Package Purchased, then continue
+    if ($order) { # If Package Purchased, then continue
         $html = '';
+
+        # Site Allowed Authentication
+        $counter_details = PackageCounter::getCounterDetailsByOrderId($order->id);
 
         if (isset($_POST['submit'])) {
             $externalDomain = $_POST['domain'];
             $template_selected = $_POST['template'];
             $blogname = getSubdomainName($externalDomain);
-            
+
             # Error Message if  improper domain name is passed by the user.
             $improper_domain = FALSE;
             if (empty($blogname)) {
@@ -52,14 +48,7 @@ function mism_create_new_site($atts) {
             $userID = $_POST['user_id'];
 
             # Package Authentication
-
-            /* $sql = "SELECT * FROM `".$wpdb->base_prefix."orders` WHERE `user_id`='".$userID."' AND `status`='1'";
-              $order_details = $wpdb->get_results($sql);
-              if(count($order_details)>0) # If Package Purchased, then continue
-              { */
-            
-            // echo "<pre>"; print_r ($counter_detail); die("</pre>");
-            if ($counter_details[0]->site_allowed >= $counter_details[0]->site_consumed) { # Check for Package whether there is site available
+            if ($counter_details->site_allowed >= $counter_details->site_consumed) { # Check for Package whether there is site available
                 # Validate Blog SignUp Process
                 if (wpmu_validate_blog_signup($blogname, $siteTitle, $userID)) {
                     global $wpdb;
@@ -81,96 +70,70 @@ function mism_create_new_site($atts) {
                         # Process of copying files of primary blog created by admin to the new blog
                         MISM_Files::copy_files($specified_blog_id, $blog_id);
                     }
-                    
+
                     if (is_numeric($blog_id)) {
                         $domain_map_insertion = $wpdb->insert($wpdb->base_prefix . 'domain_mapping', array(
                             'blog_id' => $blog_id,
                             'domain' => $externalDomain,
                             'active' => 1
-                                ), array(
-                            '%d',
-                            '%s',
-                            '%d'
-                                )
+                        ), array(
+                                '%d',
+                                '%s',
+                                '%d'
+                            )
                         );
-                        
+
                         switch_to_blog(1); # Switch to Primary Blog
 
-                        $ip = get_option('msm_main_site_ip');
-                        if (empty($ip)) {
-                            $ip = "";
-                        }
+                        $ip = get_option('msm_main_site_ip', '');
+                        $main_site_port = get_option('msm_main_site_port', '');
+                        $main_site_output_type = get_option('msm_main_site_output_type', '');
+                        $main_site_account = get_option('msm_main_site_account', '');
+                        $main_site_cpanel_username = get_option('msm_main_site_cpanel_username', '');
+                        $main_site_cpanel_password = get_option('msm_main_site_cpanel_password', '');
 
-                        $main_site_port = get_option('msm_main_site_port');
-                        if (empty($main_site_port)) {
-                            $main_site_port = "";
-                        }
+                        $package_duration = get_post_meta($order->package_id, 'wpcf-duration', true);
+                        restore_current_blog();
 
-                        $main_site_output_type = get_option('msm_main_site_output_type');
-                        if (empty($main_site_output_type)) {
-                            $main_site_output_type = "";
-                        }
-
-                        $main_site_account = get_option('msm_main_site_account');
-                        if (empty($main_site_account)) {
-                            $main_site_account = "";
-                        }
-
-                        $main_site_cpanel_username = get_option('msm_main_site_cpanel_username');
-                        if (empty($main_site_cpanel_username)) {
-                            $main_site_cpanel_username = "";
-                        }
-
-                        $main_site_cpanel_password = get_option('msm_main_site_cpanel_password');
-                        if (empty($main_site_cpanel_password)) {
-                            $main_site_cpanel_password = "";
-                        }
-                       
                         # Connecting to cPanel API for communicating with Domain's parking
-                        if (!empty($ip) && !empty($main_site_port) && !empty($main_site_output_type) && !empty($main_site_account) && !empty($main_site_cpanel_username) && !empty($main_site_cpanel_password)) 
-                        {
+                        if (!empty($ip) && !empty($main_site_port) && !empty($main_site_output_type) && !empty($main_site_account) && !empty($main_site_cpanel_username) && !empty($main_site_cpanel_password)) {
                             $xmlapi = new xmlapi($ip);
-                            
                             $xmlapi->set_port($main_site_port);
-                            
                             $xmlapi->set_output($main_site_output_type);
-                            
-                            $account = $main_site_account;
 
                             # Authenticating with cPanel API using login credentials
                             $xmlapi->password_auth($main_site_cpanel_username, $main_site_cpanel_password);
-
                             $xmlapi->set_debug(1);
-                            
+
                             $arg = array(
                                 // 'dir' => 'public_html',
                                 'domain' => $externalDomain,
                                 'topdomain' => $blogname
                             );
-                           
-                           // echo "<pre>"; print_r ($xmlapi->password_auth); die("</pre>");
-                            # Successful Domain Mapping
-                            // $result = $xmlapi->api2_query($login, 'AddonDomain', 'addaddondomain', $arg);
-                            
+
                             //Just need the username of the cpanel account here. Password is handled above in password auth
                             $result = $xmlapi->api2_query($main_site_cpanel_username, 'Park', 'park', $arg);
-                           
-                            restore_current_blog();
+
                             if ($result) {
                                 # Update Package Status
-                                OrderMap::addNewRelation($userID, $blog_id, $order_id);
+                                OrderMap::addNewRelation($userID, $blog_id, $order->id, $package_duration);
+                                $domain_map_status = true;
                                 ?>
-                                <div class="avia_message_box avia-color-green avia-size-large avia-icon_select-yes avia-border-  avia-builder-el-0  el_before_av_notification  avia-builder-el-first ">
+                                <div
+                                    class="avia_message_box avia-color-green avia-size-large avia-icon_select-yes avia-border-  avia-builder-el-0  el_before_av_notification  avia-builder-el-first ">
                                     <span class="avia_message_box_title"><?php _e('Success', 'mism'); ?></span>
+
                                     <div class="avia_message_box_content">
-                                      <span class="avia_message_box_icon" aria-hidden="true" data-av_icon="" data-av_iconfont="entypo-fontello"></span>
-                                      <p><?php _e('Site created successfully.', 'mism'); ?></p>
+                                        <span class="avia_message_box_icon" aria-hidden="true" data-av_icon=""
+                                              data-av_iconfont="entypo-fontello"></span>
+
+                                        <p><?php _e('Site created successfully.', 'mism'); ?></p>
                                     </div>
                                 </div>
                                 <script type="text/javascript">
-                                  jQuery(function(){
-                                          updateConsumed();
-                                      });
+                                    jQuery(function () {
+                                        updateConsumed();
+                                    });
                                 </script>
                                 <?php
                             } else {
@@ -184,8 +147,8 @@ function mism_create_new_site($atts) {
                                 $html .= '</div>';
                             }
                         } else {
-                            OrderMap::addNewRelation($userID, $blog_id, $order_id);
-                            
+                            OrderMap::addNewRelation($userID, $blog_id, $order->id, $package_duration);
+
                             $html .= '<div class="avia_message_box avia-color-red avia-size-large avia-icon_select-yes avia-border-  avia-builder-el-2  el_after_av_notification  el_before_av_notification ">';
                             $html .= '<span class="avia_message_box_title">Note</span>';
                             $html .= '<div class="avia_message_box_content">';
@@ -226,25 +189,29 @@ function mism_create_new_site($atts) {
                 $html .= '</div>';
             }
         }
-        
+
         // This is where we need to control themes. This gets all admin themese, however not all themes should be available to all users.
         $themes = get_blogs_of_user('1');    # Admin
-        
-        if($counter_details[0]->site_allowed > $counter_details[0]->site_consumed){
+
+        if ($counter_details->site_allowed > $counter_details->site_consumed) {
             $html .= '<div class="avia_message_box avia-color-blue avia-size-large avia-icon_select-yes avia-border-  avia-builder-el-1  el_after_av_notification  el_before_av_notification ">';
             $html .= '<span class="avia_message_box_title">Note</span>';
             $html .= '<div class="avia_message_box_content">';
             $html .= '<span class="avia_message_box_icon" aria-hidden="true" data-av_icon="" data-av_iconfont="entypo-fontello"></span>';
-            $html .= '<p>You have consumed <span class="sites-consumed">'.$counter_details[0]->site_consumed.'</span> site(s) out of '.$counter_details[0]->site_allowed.' allowed.</p>';
+            $html .= '<p>You have consumed <span class="sites-consumed">' . $counter_details->site_consumed . '</span> site(s) out of ' . $counter_details->site_allowed . ' allowed.</p>';
             $html .= '</div>';
-            $html .= '</div>';            
-        }elseif($counter_details[0]->site_allowed == $counter_details[0]->site_consumed){
+            $html .= '</div>';
+        } elseif ($counter_details->site_allowed == $counter_details->site_consumed) {
             $user_ID = get_current_user_id();
+
+            // WTF?
             $table = $wpdb->base_prefix . "orders";
-            $data = array('status'=>0);
-            $where = array('user_id'=>$user_ID, 'status'=>1);
-            $where_format = array('%d','%d');
-            $result = $wpdb->update( $table, $data, $where, $format = null, $where_format);
+            $data = array('status' => 0);
+            $where = array('user_id' => $user_ID, 'status' => 1);
+            $where_format = array('%d', '%d');
+            $result = $wpdb->update($table, $data, $where, $format = null, $where_format);
+            //
+
             $html .= '<div class="avia_message_box avia-color-red avia-size-large avia-icon_select-yes avia-border-  avia-builder-el-2  el_after_av_notification  el_before_av_notification ">';
             $html .= '<span class="avia_message_box_title">Error</span>';
             $html .= '<div class="avia_message_box_content">';
@@ -283,7 +250,9 @@ function mism_create_new_site($atts) {
         return $html;
     } else {
         $html = '';
+        switch_to_blog(1);
         $package_settings = get_option('mism_package_settings');
+        restore_current_blog();
         if ($package_settings['package_not_active'] != "") {
             $html .= '<div class="avia_message_box avia-color-red avia-size-large avia-icon_select-yes avia-border-  avia-builder-el-2  el_after_av_notification  el_before_av_notification ">';
             $html .= '<span class="avia_message_box_title">Package Activation Required!</span>';
@@ -301,12 +270,14 @@ function mism_create_new_site($atts) {
 
 /* General Functions */
 
-function convertToAlias($name) {
+function convertToAlias($name)
+{
     $alias = str_replace(" ", "-", strtolower($name));
     return $alias;
 }
 
-function getSubdomainName($domain) {
+function getSubdomainName($domain)
+{
     $domain = strtolower(str_replace(' ', '', $domain));
     $domain_splits = explode('.', $domain);
     if (count($domain_splits) == "2") {
@@ -323,7 +294,8 @@ function getSubdomainName($domain) {
  * @param int $clone_from_blog_id the blog id which we are going to clone
  * @param int $clone_to_blog_id the blog id in which we are cloning
  */
-function mism_clone_blog($clone_from_blog_id, $clone_to_blog_id) {
+function mism_clone_blog($clone_from_blog_id, $clone_to_blog_id)
+{
 
     global $wpdb;
 
@@ -353,7 +325,7 @@ function mism_clone_blog($clone_from_blog_id, $clone_to_blog_id) {
         'upload_path',
         'upload_url_path',
         $new_table_prefix . 'user_roles' //preserve the roles
-            //add your own keys to preserve here
+        //add your own keys to preserve here
     );
 
     //should we? I don't see any reason to do it, just to avoid any glitch
@@ -380,7 +352,7 @@ function mism_clone_blog($clone_from_blog_id, $clone_to_blog_id) {
     }
 
     //update the preserved options to the options table of the clonned blog
-    foreach ((array) $excluded_options_data as $excluded_option) {
+    foreach ((array)$excluded_options_data as $excluded_option) {
         update_blog_option($clone_to_blog_id, $excluded_option->option_name, maybe_unserialize($excluded_option->option_value));
     }
 
@@ -389,7 +361,7 @@ function mism_clone_blog($clone_from_blog_id, $clone_to_blog_id) {
 
     $sql = "UPDATE `" . $new_table_prefix . "options` SET option_name='" . $new_table_prefix . "user_roles' WHERE option_id='88'";
     $wpdb->query($sql);
-    
+
     # Updated for Contact Form Cloning Patch regarding Admin Email
     // $sql = "UPDATE `" . $new_table_prefix . "postmeta` SET meta_value = REPLACE (meta_value, '{ADMINEMAIL}', '".get_option('admin_email')."') WHERE meta_value LIKE '%{ADMINEMAIL}%'";
     //    $sql = "ALTER TABLE `" . $new_table_prefix . "posts` MODIFY ID BIGINT PRIMARY KEY AUTO_INCREMENT";
@@ -397,40 +369,43 @@ function mism_clone_blog($clone_from_blog_id, $clone_to_blog_id) {
 
 }
 
-function mism_clone_table($old_table, $new_table) {
+function mism_clone_table($old_table, $new_table)
+{
     /** @var wpdb */
     global $wpdb;
 
-    $create_sql = $wpdb->get_var('SHOW CREATE TABLE `'.$old_table.'`', 1);
-    if (!is_null($create_sql) && false !== $wpdb->query('DROP TABLE IF EXISTS `'.$new_table.'`')) {
+    $create_sql = $wpdb->get_var('SHOW CREATE TABLE `' . $old_table . '`', 1);
+    if (!is_null($create_sql) && false !== $wpdb->query('DROP TABLE IF EXISTS `' . $new_table . '`')) {
         $create_sql = str_replace($old_table, $new_table, $create_sql);
         if (false !== $wpdb->query($create_sql)) {
-            if (false === $wpdb->query('INSERT INTO `'.$new_table.'` SELECT * FROM `'.$old_table.'`')) {
-                throw new Exception('Can\'t cope rows from '.$old_table.' to '.$new_table);
+            if (false === $wpdb->query('INSERT INTO `' . $new_table . '` SELECT * FROM `' . $old_table . '`')) {
+                throw new Exception('Can\'t cope rows from ' . $old_table . ' to ' . $new_table);
             }
         } else {
-            throw new Exception('Can\'t create table '.$new_table. '<br/><br/>'.$create_sql);
+            throw new Exception('Can\'t create table ' . $new_table . '<br/><br/>' . $create_sql);
         }
     } else {
-        throw new Exception('Can\'t load table metadata '.$old_table);
+        throw new Exception('Can\'t load table metadata ' . $old_table);
     }
 }
 
-class MISM_Files {
+class MISM_Files
+{
 
     /**
      * Copy files from one site to another
-     * @since 0.2.0
-     * @param  int $from_site_id duplicated site id
-     * @param  int $to_site_id   new site id
+     *
+     * @param $from_site_id
+     * @param $to_site_id
+     * @return bool
      */
-    public static function copy_files($from_site_id, $to_site_id) {
-        //echo "copy<br/>";
+    public static function copy_files($from_site_id, $to_site_id)
+    {
         // Switch to Source site and get uploads info
         switch_to_blog($from_site_id);
         $wp_upload_info = wp_upload_dir();
         $from_dir['path'] = str_replace(' ', "\\ ", trailingslashit($wp_upload_info['basedir']));
-        $from_site_id==MISM_PRIMARY_SITE_ID ? $from_dir['exclude'] = MISM_Files::get_primary_dir_exclude() :  $from_dir['exclude'] = array();
+        $from_site_id == MISM_PRIMARY_SITE_ID ? $from_dir['exclude'] = MISM_Files::get_primary_dir_exclude() : $from_dir['exclude'] = array();
         // Switch to Destination site and get uploads info
         switch_to_blog($to_site_id);
         $wp_upload_info = wp_upload_dir();
@@ -461,16 +436,17 @@ class MISM_Files {
      * @since 0.2.0
      * @param  string $src source directory path
      * @param  string $dst destination directory path
-     * @param  array  $exclude_dirs directories to ignore
+     * @param  array $exclude_dirs directories to ignore
      */
-    public static function recurse_copy($src, $dst, $exclude_dirs = array()) {
+    public static function recurse_copy($src, $dst, $exclude_dirs = array())
+    {
         //echo "recurse<br/>";
         $dir = opendir($src);
         if (!is_dir($dst)) {
             mkdir($dst);
         }
-        while (false !== ( $file = readdir($dir))) {
-            if (( $file != '.' ) && ( $file != '..' )) {
+        while (false !== ($file = readdir($dir))) {
+            if (($file != '.') && ($file != '..')) {
                 $srcFile = str_replace('//', '/', $src . '/' . $file);
                 $dstFile = str_replace('//', '/', $dst . '/' . $file);
                 if (is_dir($srcFile)) {
@@ -492,7 +468,8 @@ class MISM_Files {
      * @param  string $path the path
      * @return boolean True on success, False on failure
      */
-    public static function init_dir($path) {
+    public static function init_dir($path)
+    {
         //echo "init<br/>";
         //$e = error_reporting(0);
 
@@ -514,7 +491,8 @@ class MISM_Files {
      * @since 0.2.0
      * @param  string $dir the path
      */
-    public static function rrmdir($dir) {
+    public static function rrmdir($dir)
+    {
         //echo "rrm<br/>";
         if (is_dir($dir)) {
             $objects = scandir($dir);
@@ -533,9 +511,10 @@ class MISM_Files {
     /**
      * Stop process on Creating dir Error, print and log error, removes the new blog
      * @since 0.2.0
-     * @param  string  $dir_path the path
+     * @param  string $dir_path the path
      */
-    public static function mkdir_error($dir_path) {
+    public static function mkdir_error($dir_path)
+    {
         echo '<br />Duplication failed ';
         //wp_die('mkdir');
     }
@@ -545,7 +524,8 @@ class MISM_Files {
      * @since 0.2.0
      * @return  array of string
      */
-    public static function get_primary_dir_exclude() {
+    public static function get_primary_dir_exclude()
+    {
         return array(
             'sites',
         );
@@ -555,41 +535,38 @@ class MISM_Files {
 
 add_action('wp_footer', 'include_in_footer');
 
-function include_in_footer() {
+function include_in_footer()
+{
     ?>
     <script type="text/javascript">
-      
-      function updateConsumed(){
-        sites_consumed = parseInt( jQuery(".sites-consumed").text(), 10 );
-        console.log(sites_consumed);
-        jQuery(".sites-consumed").text(sites_consumed+1);
-      }
-      
-      jQuery(document).ready(function(){
-          
-          jQuery('#create-site-form').submit(function(e){
-              var domain = jQuery('#domain').val(); 
-              var site_title = jQuery('#site_title').val();
-              if(domain=="")
-              {
-                  jQuery('#domain').css('border','1px solid #ff0000');
-                  e.preventDefault();
-              }
-              else
-              {
-                  jQuery('#domain').css('border','1px solid #CCCCCC');
-              }
-                      
-              if(site_title=="")
-              {
-                  jQuery('#site_title').css('border','1px solid #ff0000');
-                  e.preventDefault();
-              }
-              else
-              {
-                  jQuery('#site_title').css('border','1px solid #CCCCCC');
-              }
-          });
+
+        function updateConsumed() {
+            sites_consumed = parseInt(jQuery(".sites-consumed").text(), 10);
+            console.log(sites_consumed);
+            jQuery(".sites-consumed").text(sites_consumed + 1);
+        }
+
+        jQuery(document).ready(function () {
+
+            jQuery('#create-site-form').submit(function (e) {
+                var domain = jQuery('#domain').val();
+                var site_title = jQuery('#site_title').val();
+                if (domain == "") {
+                    jQuery('#domain').css('border', '1px solid #ff0000');
+                    e.preventDefault();
+                }
+                else {
+                    jQuery('#domain').css('border', '1px solid #CCCCCC');
+                }
+
+                if (site_title == "") {
+                    jQuery('#site_title').css('border', '1px solid #ff0000');
+                    e.preventDefault();
+                }
+                else {
+                    jQuery('#site_title').css('border', '1px solid #CCCCCC');
+                }
+            });
         });
     </script>
     <?php

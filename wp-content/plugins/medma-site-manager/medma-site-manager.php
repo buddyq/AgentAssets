@@ -15,6 +15,8 @@
 include 'XML-API/xmlapi.php';
 
 require_once 'includes/ordermap.class.php';
+require_once 'includes/ordermodel.class.php';
+require_once 'includes/packagecounter.class.php';
 
 require_once 'includes/post-types.php';
 
@@ -38,6 +40,9 @@ require_once 'includes/filters.php';
 function add_style_to_head()
 {
     wp_enqueue_style('medma-site-manager-general', plugins_url('medma-site-manager').'/css/general.css','','1.0');
+    wp_enqueue_style('medma-site-manager-alertify', plugins_url('medma-site-manager').'/css/alertify.min.css','','1.7.1');
+    wp_enqueue_style('medma-site-manager-alertify-theme', plugins_url('medma-site-manager').'/css/alertify-medma-theme.css','','1.7.1');
+    wp_enqueue_script('medma-site-manager-alertify', plugins_url('medma-site-manager').'/js/alertify.min.js','','1.7.1');
 }
 
 add_action('wp_head','add_style_to_head');
@@ -51,16 +56,59 @@ function add_scripts_to_footer()
     <script type="text/javascript">
         jQuery(document).ready(function($) {
             jQuery('.listblog_delete').click(function(){
-                var data = {
+                var msg = 'You are going to remove the <strong>%s</strong> site. You can restore it during 24 hours since deletion. Otherwise it will be deleted completely.';
+                msg = msg.replace('%s', jQuery(this).attr('data-site-name'));
+                var el = this;
+                alertify.confirm(msg, function() {
+                    var data = {
                         'action': 'delete_site',
-                        'blog_id': jQuery(this).attr('data-id')
-                };
-                // We can also pass the url value separately from ajaxurl for front end AJAX implementations
-                jQuery.post('<?php echo admin_url( 'admin-ajax.php' )?>', data, function(response) {
-                        alert('Site deleted successfully!');
-                        location.reload();
-                });
+                        'blog_id': jQuery(el).attr('data-id')
+                    };
+                    alertify.message('Processing request');
+                    // We can also pass the url value separately from ajaxurl for front end AJAX implementations
+                    jQuery.post('<?php echo admin_url( 'admin-ajax.php' )?>', data, function (response) {
+                        if (typeof(response.result) === 'undefined') {
+                            alertify.error('Bad response!');
+                        } else if ('error' == response.result) {
+                            alertify.error(response.message);
+                        } else {
+                            alertify.success('Site deleted successfully!');
+                            location.reload();
+                        }
+                    }, 'json');
+                }).set('title', 'Deleting site');
             });
+
+            jQuery('.listblog_extend').click(function(){
+                var msg = 'Validity of your site <strong>%s</strong> will be extended for <strong>%d</strong> months at cost of your one spare site.';
+                msg = msg.replace('%s', jQuery(this).attr('data-site-name')).replace('%d', jQuery(this).attr('data-duration'));
+                var el = this;
+                alertify.confirm(msg, function() {
+                    var data = {
+                        'action' : 'extend_site',
+                        'blog_id': jQuery(el).attr('data-id')
+                    };
+                    alertify.message('Processing request');
+                    jQuery.post('<?php echo admin_url('admin-ajax.php')?>', data, function( response) {
+                        if (typeof(response.result) === 'undefined') {
+                            alertify.error('Bad response!');
+                        } else if ('error' == response.result) {
+                            alertify.error(response.message);
+                        } else {
+                            alertify.success('Site extended successfully!');
+                            location.reload();
+                        }
+                    }, 'json');
+                }).set('title', 'Extending site');
+            });
+
+            jQuery('.listblog_pricing').click(function() {
+                //todo normal message
+                var msg = 'SOME PRICE MSG <strong>%s</strong> ___';
+                msg = msg.replace('%s', jQuery(this).attr('data-site-name'));
+                alertify.alert(msg);
+            });
+
         });
     </script>
     <?php

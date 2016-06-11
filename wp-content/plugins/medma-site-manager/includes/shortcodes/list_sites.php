@@ -9,18 +9,37 @@ function mism_list_sites($atts)
                 'type' => 'active',
                 'title' => '',
             ), $atts, 'list_sites' );
-    
+
+    $user_id = get_current_user_id();
     $html = '';
+    if (!$user_id) {
+        $html .= '<div class="avia_message_box avia-color-red avia-size-large avia-icon_select-yes avia-border-  avia-builder-el-2  el_after_av_notification  el_before_av_notification ">';
+        $html .= '<div class="avia_message_box_content">';
+        $html .= '<span class="avia_message_box_icon" aria-hidden="true" data-av_icon="" data-av_iconfont="entypo-fontello"></span>';
+        $html .= '<p>'.__('Please login to access your sites list.','mism').'</p>';
+        $html .= ' </div>';
+        $html .= '	</div>';;
+        return $html;
+    }
     
     if($atts['type']=="active")
     {
-        
+
         //$blogs = get_blogs_of_user(get_current_user_id(),false);
-        $blogs = OrderMap::getUserBlogsDetailed(get_current_user_id());
-       $html .= '<div class="tng-responsive-table">';
+        $blogs = OrderMap::getUserBlogsDetailed($user_id);
+        $html .= '<div class="tng-responsive-table">';
         
         if(count($blogs)>0)
         {
+            $duration = 0;
+            $order = OrderModel::findOne('`user_id` = %d AND `status` = %d AND `expiry_date` >= %s',
+                array(get_current_user_id(), OrderModel::STATUS_PAID, date('Y-m-d H:i:s')));
+            if ($order) {
+                switch_to_blog(1);
+                $duration = get_post_meta($order->package_id, 'wpcf-duration', true);
+                restore_current_blog();
+            }
+
 			$html .= '<table>';
             $html .= '<h3>'.$atts['title'].'</h3>';
             
@@ -28,6 +47,7 @@ function mism_list_sites($atts)
                 $html .= '<th class="numeric">'.__('Sr. No.','mism').'</th>';
                 $html .= '<th class="numeric">'.__('Site Name','mism').'</th>';
                 $html .= '<th class="numeric">'.__('Site URL','mism').'</th>';
+                $html .= '<th class="numeric">'.__('Days Left','mism').'</th>';
                 $html .= '<th class="numeric">'.__('Action','mism').'</th>';
             $html .= '</thead>';
             
@@ -47,13 +67,22 @@ function mism_list_sites($atts)
                         $html .= '<li><a href="http://'.$externalDomain.'" title="'.$blog->blogname.'" target="_blank">http://'.$externalDomain.'</a></li>';
                     }
                     $html .= '</td>';
+                    $html .= '<td data-title="Days Left">'.$blog->days_left.'</td>';
                     $html .= '<td data-title="Action">';
                     if (0 != $blog->deleted) {
                         $html .= 'This site is no longer available.<br/>After moderation it will be dropped.';
                     } else {
                         // $html .= '<input class="listblog_edit" type="submit" name="edit_site" value="Edit"/>';
-                        $html .= '<input data-id="' . $blog->userblog_id . '" class="listblog_delete button" data-sending-label="Deleting..." type="submit" name="delete_site" value="Delete"/>';
-                        $html .= '<input id="listblog_id" type="hidden" name="blog_id" value="' . $blog->userblog_id . '"/>';
+                        $html .= '<input data-site-name="' . $blog->blogname . '" data-id="' . $blog->userblog_id . '" class="listblog_delete button" data-sending-label="Deleting..." type="submit" name="delete_site" value="Delete"/>';
+
+                        if ($blog->days_left < 7) {
+                            if ($duration) {
+                                $html .= '&nbsp;<input data-duration="' . $duration . '" data-site-name="' . $blog->blogname . '" data-id="' . $blog->userblog_id . '" class="listblog_extend button" data-sending-label="Extending..." type="submit" name="extend_site" value="Extend"/>';
+                            } else {
+                                $html .= '&nbsp;<input data-site-name="' . $blog->blogname . '" class="listblog_pricing button" type="button" value="Extend"/>';
+                            }
+                        }
+                        //$html .= '<input id="listblog_id" type="hidden" name="blog_id" value="' . $blog->userblog_id . '"/>';
                     }
                     $html .= '</td>';
                     $html .= '</tr>';

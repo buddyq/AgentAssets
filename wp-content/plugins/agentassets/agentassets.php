@@ -20,8 +20,12 @@ class AgentassetsCommon {
     }
 
     public function plugins_loaded() {
-        add_action( 'login_afo_form', 'wr_no_captcha_render_login_captcha' );
-	add_action( 'register_cu_form', 'wr_no_captcha_render_login_captcha' );
+        //add_action( 'login_afo_form', 'wr_no_captcha_render_login_captcha' );
+        // disable login form recaptcha
+        remove_action( 'login_form', 'wr_no_captcha_render_login_captcha' );
+        remove_filter( 'wp_authenticate_user', 'wr_no_captcha_verify_login_captcha', 10);
+
+    	add_action( 'register_cu_form', 'wr_no_captcha_render_login_captcha' );
         add_filter( 'register_cu_form_captcha', array($this, 'recaptcha_verify'));
     }
 

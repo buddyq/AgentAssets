@@ -4,8 +4,8 @@ Donate link: http://wp-types.com/documentation/views-demos-downloader/
 Tags: CMS, Views, Demos, Download
 License: GPLv2
 Requires at least: 3.8.1
-Tested up to: 4.0
-Stable tag: 1.9.9
+Tested up to: 4.5.2
+Stable tag: 2.0
 
 Download complete reference sites for Types and Views.
 
@@ -325,3 +325,7 @@ Improved Layouts import calls.
   ==1.9.9==
  Fixed: Front-end theme issue of the import of Real Estate with Views ML in discover-wp dev site when debug is enabled.
  Compatibility with WPML 3.3.8 +
+ 
+  ==2.0==
+ Updated Installer code base to version 1.7.8.
+ Compatibility with WPML 3.4+ and Toolset 2.1+

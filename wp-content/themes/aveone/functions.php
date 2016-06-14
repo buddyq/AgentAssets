@@ -2,6 +2,8 @@
 
 $aveone_themename = "aveone";
 
+add_filter( 'jpeg_quality', create_function( '', 'return 100;' ) );
+
 function rebranding_wordpress_logo(){
         global $wp_admin_bar;
         //the following codes is to remove sub menu
@@ -10,8 +12,8 @@ function rebranding_wordpress_logo(){
         $wp_admin_bar->remove_menu('support-forums');
         $wp_admin_bar->remove_menu('feedback');
         $wp_admin_bar->remove_menu('wporg');
- 
- 
+
+
         //and this is to change wordpress logo
         $wp_admin_bar->add_menu( array(
             'id'    => 'wp-logo',
@@ -28,8 +30,8 @@ function rebranding_wordpress_logo(){
         //                 'title'  => __('Sub Menu 1'),
         //                 'href'  => __('url-for-link-in-sub-menu-1'),
         //         ) );
-         
- 
+
+
 }
 add_action('wp_before_admin_bar_render', 'rebranding_wordpress_logo' );
 

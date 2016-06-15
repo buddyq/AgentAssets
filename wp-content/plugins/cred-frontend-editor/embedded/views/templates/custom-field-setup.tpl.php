@@ -486,7 +486,7 @@ else echo esc_js(__('Not Set', 'wp-cred')); ?>';
                         return false;
                     });
 
-                    $('#container').on('submit', 'form', function (event) {
+                    $('#container').on('submit', 'form', function (event) {                        
                         //event.preventDefault();
                         // adjust default options
                         if (field.parameters.options)

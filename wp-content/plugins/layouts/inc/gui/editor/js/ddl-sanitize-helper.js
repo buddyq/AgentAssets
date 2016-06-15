@@ -308,7 +308,18 @@ DDL_Helper.SanitizeHelper = function( $ )
 
 		return null;
 	}
+    
+    self.sanitizeOutput = function ( content ) {
+        content = DDL_Helper.sanitizeHelper.stringToDom( content );
+        return content.innerHTML;
+    };
 
+    self.get_field_sanitised_value = function( content ){
+        var key = WPV_Toolset.Utils._strip_tags_and_preserve_text( content ),
+        field = content.hasOwnProperty( key ) ? content.key : '';
+        field = DDL_Helper.sanitizeHelper.strip_srcset_attr( field );
+        return field;
+    };
 	
 	self.init();
 };

@@ -3,6 +3,63 @@ Toolset CRED, by OnTheGoSystems
 
 Changelog:
 
+1.7
+
+- Added a new feature that enables submission of CRED forms via AJAX.
+  https://wp-types.com/forums/topic/autosaved-forms-on-the-go-with-cred/
+  https://wp-types.com/forums/topic/view-shortcode-to-publish-a-post/
+
+- Added an AJAX progress bar upload for the Featured Image field.
+  https://wp-types.com/forums/topic/featured-image-upload-preview-missing/
+
+- Added Google reCAPTCHA version 2 validation, making the submission of front-end forms not possible until the reCAPTCHA is checked.
+
+- Added the possibility to have CRED Forms inside a View used in a form submission success message.
+
+- Made the JavaScript and CSS sections accessible only for users with the unfiltered_html capability
+
+- Fixed an issue where it was possible to edit read-only User fields.
+
+- Fixed an issue where special characters were not rendered in CRED email notifications.
+
+- Fixed an issue with user permissions, where uploading files to the media library using a CRED form would result in an error.
+
+- Fixed an issue for User Forms, where the wrong shortcode was being inserted when trying to insert a Form Container one.
+
+- Fixed an issue where the $post_id value of the cred_data_saved_message function was returning the ID of the page where the CRED form is inserted and not the post itself.
+
+- Fixed an issue with the translation strings missing for the cloned CRED Post forms.
+
+- Fixed an issue with the translation of Radio buttons in email notifications.
+
+- Fixed issues where automatic email notifications were not working correctly in some cases. 
+  https://wp-types.com/forums/topic/cred-email-notification-stops-working-after-upgrade/
+
+- Fixed an issue with the translation of the “Not Set” value shown for the empty Select field.
+  https://wp-types.com/forums/topic/translation-of-text-not-set-in-a-select/
+
+- Fixed an issue with flat hierarchical values when using number values.
+
+- Fixed some issues with the preview of CRED Post and User Forms not working or displaying pagination links.
+
+- Fixed an issue where the CRED Form Notification main contents were not being saved, when creating Post and User forms.
+
+- Improved user interface for Post Expiration Date options by removing the Date Delete Icon that is not needed.
+
+- Improved CSS styling for the backend CRED form editor.
+
+- Removed and deprecated the option to save Generic Fields to the database.
+
+- Replaced the post attribute with the user one for the cred_user_form and cred_link_user_form shortcodes.
+
+- Fixed a compatibility issue of the jQuery tooltip with CRED jQuery upload libraries.
+  https://wp-types.com/forums/topic/cred-image-field-breaks-bootstrap-tooltip/
+
+- Fixed an issue with the user-defined CSS conditional that would not trigger any event.
+
+- Fixed an issue where CSS issue cause fullscreen mode not to work for TinyMCE editor on custom WYSIWYG fields.
+
+
 1.6
 
 - Added the integration of CRED with the common Toolset menu.

@@ -82,14 +82,25 @@
                     echo __('<p class="where-used-title-wrap">This layout is used for these loops:</p>', 'ddl-layouts' );
                     foreach ($lists->loops as $loop):
                         $loop = (object)$loop;
-
+                    
+                        if($loop->name ==='layouts_home-blog-page' && (get_option( 'page_for_posts' ) || get_option('page_on_front') )){
+                            $loop->title = $loop->title." <i>".__('(Please select "Your latest posts" from Reading option)')."</i>";
+                            $loop->href = "#"; 
+                        } else if($loop->name ==='layouts_home-static-blog-page' && !get_option( 'page_for_posts' )){
+                            $loop->title = $loop->title." <i>".__("(Please select page from Reading option)")."</i>";
+                            $loop->href = "#"; 
+                        } else if($loop->name ==='layouts_home-home-page' && !get_option('page_on_front') ){
+                            $loop->title = $loop->title." <i>".__("(Please select page from Reading option)")."</i>";
+                            $loop->href = "#";
+                        }
+                        
                         ?>
 
                         <?php if ($loop->href && $loop->href != '#'): ?>
-                        <li><a href="<?php echo $loop->href ?>" target="_blank"><?php echo $loop->title; ?></a></li>
-                    <?php else: ?>
-                        <li><?php echo $loop->title; ?> - <?php _e('(No previews available)', 'ddl-layouts'); ?></li>
-                    <?php endif; ?>
+                            <li><a href="<?php echo $loop->href ?>" target="_blank"><?php echo $loop->title; ?></a></li>
+                        <?php else: ?>
+                            <li><?php echo $loop->title; ?> - <?php _e('(No previews available)', 'ddl-layouts'); ?></li>
+                        <?php endif; ?>
 
                         <?php
                     endforeach;

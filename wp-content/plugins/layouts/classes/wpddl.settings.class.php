@@ -31,6 +31,10 @@ class WPDDL_Settings {
         $this->init_gui();
     }
 
+    public function get_default_parent(){
+        return $this->parent_default;
+    }
+
     /**
      * Layouts Settings page set up
      */
@@ -43,7 +47,7 @@ class WPDDL_Settings {
             'parent_settings_nonce' => wp_create_nonce( WPDDL_Options::PARENTS_OPTIONS.'_nonce', WPDDL_Options::PARENTS_OPTIONS.'nonce' )
         );
 
-        if ( is_admin() && isset( $_GET['page'] ) && $_GET['page'] === 'toolset-settings' ) {
+        if ( is_admin() && isset( $_GET['page'] ) && ($_GET['page'] === 'toolset-settings' || $_GET['page'] === 'dd_layouts_edit') ) {
             do_action( 'ddl-enqueue_styles', 'layouts-settings-admin-css' );
             do_action( 'ddl-enqueue_scripts', 'layouts-settings-admin-js' );
             do_action( 'ddl-localize_script', 'layouts-settings-admin-js', 'DDL_Settings_JS', $settings_script_texts );

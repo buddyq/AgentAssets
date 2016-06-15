@@ -36,10 +36,7 @@ WPViews.LayoutWizard = function( $ ) {
 	self.wizard_dialog_data = null;
 	
 	self.saved_fields_html = null;
-		
-	self.edit_screen = ( typeof WPViews.view_edit_screen != 'undefined' ) ? WPViews.view_edit_screen : WPViews.wpa_edit_screen;
-	self.edit_screen_type = ( typeof WPViews.view_edit_screen != 'undefined' ) ? 'view' : 'wpa';
-		
+	
 	self.doing_shortcode_gui = false;
 	self.doing_shortcode_gui_for = null;
 	self.doing_shortcode_gui_for_selected = null;
@@ -59,7 +56,7 @@ WPViews.LayoutWizard = function( $ ) {
 	// Render the dialog, and apply the existing settings
 	
 	self.render_dialog = function( response ) {
-		var layout_value = codemirror_views_layout.getValue(),
+		var layout_value = WPV_Toolset.CodeMirror_instance['wpv_layout_meta_html_content'].getValue(),
 		loop_start_tag = layout_value.indexOf( '<wpv-loop' ),// This tag can contain wrap and pad attributes
 		loop_start = 0,
 		loop_end = layout_value.indexOf( '</wpv-loop>' ),
@@ -386,7 +383,7 @@ WPViews.LayoutWizard = function( $ ) {
 					loop_output = response.data.loop_output_settings.layout_meta_html;
 					ct_content = response.data.ct_content;
 				} else {
-					self.edit_screen.manage_ajax_fail( response.data, messages_container );
+					Toolset.hooks.doAction( 'wpv-action-wpv-edit-screen-manage-ajax-fail', { data: response.data, container: messages_container} );
 					current_dialog.find('.wpv-spinner.ajax-loader' ).remove();
 					halt_execution = true;
 				}
@@ -401,7 +398,7 @@ WPViews.LayoutWizard = function( $ ) {
 		}
 
 		// Current Loop Output content
-		var c = codemirror_views_layout.getValue();
+		var c = WPV_Toolset.CodeMirror_instance['wpv_layout_meta_html_content'].getValue();
 		
 		codemirror_highlight_options = {
 			className: 'wpv-codemirror-highlight'
@@ -428,7 +425,7 @@ WPViews.LayoutWizard = function( $ ) {
 				// So we need to save the loop wizard data manually
 				self.force_save_loop_wizard_data();
 			} else {
-				codemirror_views_layout.setValue( c_new );
+				WPV_Toolset.CodeMirror_instance['wpv_layout_meta_html_content'].setValue( c_new );
 			}
 			
 			// Update the Loop Template content
@@ -446,12 +443,12 @@ WPViews.LayoutWizard = function( $ ) {
 			setTimeout( function() { content_template_marker.clear(); }, 2000);
 			
 			// Highlight replace existing loop and add pointer
-			var layout_loop_starts = codemirror_views_layout.getSearchCursor( '<!-- wpv-loop-start -->', false );
-			var layout_loop_ends = codemirror_views_layout.getSearchCursor( '<!-- wpv-loop-end -->', false );
+			var layout_loop_starts = WPV_Toolset.CodeMirror_instance['wpv_layout_meta_html_content'].getSearchCursor( '<!-- wpv-loop-start -->', false );
+			var layout_loop_ends = WPV_Toolset.CodeMirror_instance['wpv_layout_meta_html_content'].getSearchCursor( '<!-- wpv-loop-end -->', false );
 			
 			if ( layout_loop_starts.findNext() && layout_loop_ends.findNext() ) {
 				// We found the wpv-loop tag, now highlight it.
-				var layout_loop_marker = codemirror_views_layout.markText( 
+				var layout_loop_marker = WPV_Toolset.CodeMirror_instance['wpv_layout_meta_html_content'].markText( 
 						layout_loop_starts.from(), 
 						layout_loop_ends.to(), 
 						codemirror_highlight_options );
@@ -508,7 +505,7 @@ WPViews.LayoutWizard = function( $ ) {
 									$( document ).trigger( 'js_event_wpv_dismiss_pointer', [ pointer_name ] );
 								}
 								t.element.pointer('close');
-								codemirror_views_layout.focus();
+								WPV_Toolset.CodeMirror_instance['wpv_layout_meta_html_content'].focus();
 							});
 							return button_close;
 						}
@@ -523,14 +520,14 @@ WPViews.LayoutWizard = function( $ ) {
 			
 			// Update Loop Output
 			c = self.replace_layout_loop_content( c, loop_output );
-			codemirror_views_layout.setValue( c );
+			WPV_Toolset.CodeMirror_instance['wpv_layout_meta_html_content'].setValue( c );
 			
 			// Highlight and add pointer to the loop
 			var show_layout_loop_pointer_content = $( '.js-wpv-inserted-layout-loop-pointer' ),
-			layout_loop_starts = codemirror_views_layout.getSearchCursor( '<!-- wpv-loop-start -->', false );
-			layout_loop_ends = codemirror_views_layout.getSearchCursor( '<!-- wpv-loop-end -->', false );
+			layout_loop_starts = WPV_Toolset.CodeMirror_instance['wpv_layout_meta_html_content'].getSearchCursor( '<!-- wpv-loop-start -->', false );
+			layout_loop_ends = WPV_Toolset.CodeMirror_instance['wpv_layout_meta_html_content'].getSearchCursor( '<!-- wpv-loop-end -->', false );
 			if ( layout_loop_starts.findNext() && layout_loop_ends.findNext() ) {
-				var layout_loop_marker = codemirror_views_layout.markText( layout_loop_starts.from(), layout_loop_ends.to(), codemirror_highlight_options );
+				var layout_loop_marker = WPV_Toolset.CodeMirror_instance['wpv_layout_meta_html_content'].markText( layout_loop_starts.from(), layout_loop_ends.to(), codemirror_highlight_options );
 				if ( show_layout_loop_pointer_content.hasClass( 'js-wpv-pointer-dismissed' ) ) {
 					setTimeout( function() {
 						  layout_loop_marker.clear();
@@ -555,7 +552,7 @@ WPViews.LayoutWizard = function( $ ) {
 									$( document ).trigger( 'js_event_wpv_dismiss_pointer', [ pointer_name ] );
 								}
 								t.element.pointer('close');
-								codemirror_views_layout.focus();
+								WPV_Toolset.CodeMirror_instance['wpv_layout_meta_html_content'].focus();
 							});
 							return button_close;
 						}
@@ -708,7 +705,7 @@ WPViews.LayoutWizard = function( $ ) {
 		$( '.js-wpv-dialog-arrow-left' ).remove();
 		style_container.removeClass( 'wpv-layout-wizard-layout-style-has-settings' );
 		if (
-			self.edit_screen_type == 'wpa' 
+			'archive' == Toolset.hooks.applyFilters( 'wpv-filter-wpv-edit-screen-get-query-mode', '' )
 			&& style_selected == 'table_of_fields'
 		) {
 			$( '#js-layout-wizard-layout-style' ).find( '#include_field_names' ).prop( 'checked', false );
@@ -944,17 +941,15 @@ WPViews.LayoutWizard = function( $ ) {
 							self.process_layout_wizard_data( fields, function() {
 								spinnerContainer.remove();
 								$.colorbox.close();
-								codemirror_views_layout.refresh();
-								codemirror_views_layout.focus();
-								if ( $( '.js-wpv-section-unsaved' ).length <= 0 ) {
-									setConfirmUnload(false);
-								}
+								WPV_Toolset.CodeMirror_instance['wpv_layout_meta_html_content'].refresh();
+								WPV_Toolset.CodeMirror_instance['wpv_layout_meta_html_content'].focus();
+								$( document ).trigger( 'js_event_wpv_set_confirmation_unload_check' );
 							});
 						} else {
 							self.use_loop_template_id = '';
 							self.use_loop_template_title = '';
 							spinnerContainer.remove();
-							self.edit_screen.manage_ajax_fail( response.data, messages_container );
+							Toolset.hooks.doAction( 'wpv-action-wpv-edit-screen-manage-ajax-fail', { data: response.data, container: messages_container} );
 						}
                     },
                     error: function( ajaxContext ) {
@@ -968,18 +963,20 @@ WPViews.LayoutWizard = function( $ ) {
                 if ( $( '.js-wpv-ct-listing-' + self.use_loop_template_id ).html() !== '' ) {
                     if ( ! self.use_loop_template ) {
                         $( '.js-wpv-ct-listing-' + self.use_loop_template_id ).hide();
+						if ( $( "ul.js-wpv-inline-content-template-listing > li" ).length == 1 ) {
+							$( '.js-wpv-settings-inline-templates' ).hide();
+						}
                     } else {
+						$( '.js-wpv-settings-inline-templates' ).show();
                         $( '.js-wpv-ct-listing-' + self.use_loop_template_id ).show();
                     }
                  }
                 self.process_layout_wizard_data( fields, function() {
 					spinnerContainer.remove();
 					$.colorbox.close();
-					codemirror_views_layout.refresh();
-					codemirror_views_layout.focus();
-					if ( $( '.js-wpv-section-unsaved' ).length <= 0 ) {
-						setConfirmUnload(false);
-					}
+					WPV_Toolset.CodeMirror_instance['wpv_layout_meta_html_content'].refresh();
+					WPV_Toolset.CodeMirror_instance['wpv_layout_meta_html_content'].focus();
+					$( document ).trigger( 'js_event_wpv_set_confirmation_unload_check' );
 				});
             }
 		}

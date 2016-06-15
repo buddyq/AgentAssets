@@ -2,10 +2,10 @@
 /*
 Plugin Name: Toolset Layouts
 Plugin URI: http://wp-types.com/
-Description: Design entire WordPress sites using a drag-and-drop interface. Layouts 1.6 <a href="https://wp-types.com/documentation/user-guides/#layouts">release notes</a>
+Description: Design entire WordPress sites using a drag-and-drop interface.
 Author: OnTheGoSystems
 Author URI: http://www.onthegosystems.com
-Version: 1.6
+Version: 1.7
 */
 
 /**
@@ -33,7 +33,7 @@ if (
     (defined('WPDDL_DEVELOPMENT') || defined('WPDDL_PRODUCTION')) &&
     !function_exists('ddl_layouts_plugin_loader')
 ) {
-    add_action('plugins_loaded', 'ddl_layouts_plugin_loader', 2);
+    //add_action('plugins_loaded', 'ddl_layouts_plugin_loader', -3);
 
     function ddl_layouts_plugin_loader()
     {
@@ -41,6 +41,7 @@ if (
             require_once dirname(__FILE__) . '/ddl-loader.php';
         }
     }
+    ddl_layouts_plugin_loader();
 }
 
 if( !function_exists('wpddl_layout_deactivate_plugin') ){
@@ -62,3 +63,26 @@ if( !function_exists('ddl_cred_user_cell_disable_if_not_version') ){
     }
 }
 
+if( !function_exists('layouts_plugin_plugin_row_meta') ){
+    /* Plugin Meta */
+    add_filter( 'plugin_row_meta', 'layouts_plugin_plugin_row_meta', 10, 4 );
+
+    function layouts_plugin_plugin_row_meta( $plugin_meta, $plugin_file, $plugin_data, $status ) {
+        $this_plugin = basename( WPDDL_ABSPATH ) . '/dd-layouts.php';
+        if ( $plugin_file == $this_plugin ) {
+            $plugin_meta[] = '<a href="' . WPDDL_NOTES_URL . '" target="_blank">'
+                . sprintf( __( 'Layouts %s release notes', 'wpcf' ), WPDDL_VERSION ) . '</a>';
+        }
+        return $plugin_meta;
+    }
+}
+
+if( !function_exists('layouts_plugin_add_wpml_switcher_init') ){
+
+    add_filter( 'toolset_filter_disable_wpml_lang_switcher_in_admin', 'layouts_plugin_add_wpml_switcher_init', 10, 1 );
+
+    function layouts_plugin_add_wpml_switcher_init( $pages ) {
+        $pages[] = 'dd_layouts_edit';
+        return $pages;
+    }
+}

@@ -21,28 +21,33 @@ WPV_Users_Filter::on_load();
 class WPV_Users_Filter {
 
     static function on_load() {
-        add_action( 'init', array( 'WPV_Users_Filter', 'init' ) );
-		add_action( 'admin_init', array( 'WPV_Users_Filter', 'admin_init' ) );
+        add_action( 'init',			array( 'WPV_Users_Filter', 'init' ) );
+		add_action( 'admin_init',	array( 'WPV_Users_Filter', 'admin_init' ) );
     }
 
     static function init() {
-		
+		wp_register_script( 'views-filter-users-js', ( WPV_URL . "/res/js/filters/views_filter_users.js" ), array( 'suggest', 'views-filters-js', 'views-suggestion_script' ), WPV_VERSION, true );
+		$filter_users_translations = array(
+			'ajaxurl' => wpv_get_views_ajaxurl()
+		);
+		wp_localize_script( 'views-filter-users-js', 'wpv_filter_users_texts', $filter_users_translations );
     }
 	
 	static function admin_init() {
-		// Register filter in lists and dialogs
-		add_action( 'wpv_add_users_filter_list_item', array( 'WPV_Users_Filter', 'wpv_add_filter_users_list_item' ), 1, 1 );
-		add_filter( 'wpv_users_filters_add_filter', array( 'WPV_Users_Filter', 'wpv_filters_add_filter_users' ), 1, 1 );
-		// AJAX calbacks
-		add_action( 'wp_ajax_wpv_filter_users_update', array( 'WPV_Users_Filter', 'wpv_filter_users_update_callback' ) );
-			// TODO This might not be needed here, maybe for summary filter
-			add_action( 'wp_ajax_wpv_filter_users_sumary_update', array( 'WPV_Users_Filter', 'wpv_filter_users_sumary_update_callback' ) );
-		add_action( 'wp_ajax_wpv_filter_users_delete', array( 'WPV_Users_Filter', 'wpv_filter_users_delete_callback' ) );
-		add_filter( 'wpv-view-get-summary', array( 'WPV_Users_Filter', 'wpv_users_summary_filter' ), 5, 3 );
-		add_action( 'wp_ajax_wpv_suggest_users', array( 'WPV_Users_Filter', 'wpv_suggest_users' ) );
-		add_action( 'wp_ajax_nopriv_wpv_suggest_users', array( 'WPV_Users_Filter', 'wpv_suggest_users' ) );
+		// Register filters in dialogs
+		add_action( 'wpv_add_users_filter_list_item',	array( 'WPV_Users_Filter', 'wpv_add_filter_users_list_item' ), 1, 1 );
+		// Register filters in lists
+		add_filter( 'wpv_users_filters_add_filter',		array( 'WPV_Users_Filter', 'wpv_filters_add_filter_users' ), 1, 1 );
+		// Update and delete
+		add_action( 'wp_ajax_wpv_filter_users_update',	array( 'WPV_Users_Filter', 'wpv_filter_users_update_callback' ) );
+		add_action( 'wp_ajax_wpv_filter_users_delete',	array( 'WPV_Users_Filter', 'wpv_filter_users_delete_callback' ) );
+		// Helpers
+		add_action( 'wp_ajax_wpv_suggest_users',		array( 'WPV_Users_Filter', 'wpv_suggest_users' ) );
+		add_action( 'wp_ajax_nopriv_wpv_suggest_users',	array( 'WPV_Users_Filter', 'wpv_suggest_users' ) );
 		// Register scripts
-		add_action( 'admin_enqueue_scripts', array( 'WPV_Users_Filter','admin_enqueue_scripts' ), 20 );
+		add_action( 'admin_enqueue_scripts',			array( 'WPV_Users_Filter','admin_enqueue_scripts' ), 20 );
+		// TODO This might not be needed here, maybe for summary filter
+		//add_action( 'wp_ajax_wpv_filter_users_sumary_update', array( 'WPV_Users_Filter', 'wpv_filter_users_sumary_update_callback' ) );
 	}
 	
 	/**
@@ -54,14 +59,7 @@ class WPV_Users_Filter {
 	*/
 	
 	static function admin_enqueue_scripts( $hook ) {
-		wp_register_script( 'views-filter-users-js', ( WPV_URL . "/res/js/redesign/views_filter_users.js" ), array( 'suggest', 'views-filters-js'), WPV_VERSION, true );
-		$filter_users_translations = array(
-			'ajaxurl' => wpv_get_views_ajaxurl()
-		);
-		wp_localize_script( 'views-filter-users-js', 'wpv_filter_users_texts', $filter_users_translations );
-		if ( isset( $_GET['page'] ) && $_GET['page'] == 'views-editor' ) {
-			wp_enqueue_script( 'views-filter-users-js' );
-		}
+		wp_enqueue_script( 'views-filter-users-js' );
 	}
 	
 	/**
@@ -76,10 +74,10 @@ class WPV_Users_Filter {
 	
 	static function wpv_filters_add_filter_users( $filters ) {
 		$filters['users'] = array(
-			'name' => __( 'Specific users', 'wpv-views' ),
-			'present' => 'users_mode',
-			'callback' => array( 'WPV_Users_Filter', 'wpv_add_new_filter_users_list_item' ),
-			'group' => __( 'User filters', 'wpv-views' )
+			'name'		=> __( 'Specific users', 'wpv-views' ),
+			'present'	=> 'users_mode',
+			'callback'	=> array( 'WPV_Users_Filter', 'wpv_add_new_filter_users_list_item' ),
+			'group'		=> __( 'User filters', 'wpv-views' )
 		);
 		return $filters;
 	}
@@ -243,6 +241,7 @@ class WPV_Users_Filter {
 		wp_send_json_success( $data );
 	}
 
+	/*
 	static function wpv_filter_users_sumary_update_callback() {
 		$nonce = $_POST["wpnonce"];
 		if ( ! wp_verify_nonce( $nonce, 'wpv_view_filter_users_nonce' ) ) {
@@ -253,6 +252,7 @@ class WPV_Users_Filter {
 		echo wpv_get_filter_users_summary_txt( $filter_users );
 		die();
 	}
+	*/
 	
 	/**
 	* wpv_filter_users_delete_callback
@@ -311,26 +311,6 @@ class WPV_Users_Filter {
 			'message' => __( 'Specific users filter deleted', 'wpv-views' )
 		);
 		wp_send_json_success( $data );
-	}
-	
-	/**
-	* wpv_users_summary_filter
-	
-	* Show the users filter on the View summary
-	*
-	* @since unknown
-	*/
-
-	static function wpv_users_summary_filter( $summary, $post_id, $view_settings ) {
-		if( isset( $view_settings['query_type'] ) && $view_settings['query_type'][0] == 'users' && isset( $view_settings['users_mode'] ) ) {
-			$view_settings['users_mode'] = $view_settings['users_mode'][0];
-			$result = wpv_get_filter_users_summary_txt( $view_settings, true );
-			if ( $result != '' && $summary != '' ) {
-				$summary .= '<br />';
-			}
-			$summary .= $result;
-		}
-		return $summary;
 	}
 	
 	/**

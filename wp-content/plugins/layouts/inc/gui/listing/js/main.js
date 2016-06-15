@@ -16,11 +16,10 @@ DDLayout_settings.DDL_JS.listing_open = {1:true, 2:true, 3:true};
 
 
 DDLayout_settings.DDL_JS.ns.js(
-    DDLayout_settings.DDL_JS.lib_path + "he/he.min.js",
+    DDLayout_settings.DDL_JS.lib_path + "backbone_overrides.js"
+    ,DDLayout_settings.DDL_JS.lib_path + "he/he.min.js",
     DDLayout_settings.DDL_JS.common_rel_path + "/res/lib/jstorage.min.js"
 	, DDLayout_settings.DDL_JS.lib_path + "prototypes.js"
-    //, DDLayout_settings.DDL_JS.editor_lib_path + "backbone-overrides.js"
-
     , DDLayout_settings.DDL_JS.editor_lib_path + "models/abstract/Element.js"
     , DDLayout_settings.DDL_JS.editor_lib_path + "models/collections/Cells.js"
     , DDLayout_settings.DDL_JS.editor_lib_path + "models/collections/Rows.js"
@@ -50,7 +49,7 @@ DDLayout_settings.DDL_JS.ns.js(
 (function($){
     WPV_Toolset.Utils.loader = WPV_Toolset.Utils.loader || new WPV_Toolset.Utils.Loader;
 	DDLayout_settings.DDL_JS.ns.ready(function(){
-        wp.hooks.doAction('ddl-wpml-language-switcher-build', $);
+        Toolset.hooks.doAction('ddl-wpml-language-switcher-build', $);
 		DDLayout.listing_manager = new DDLayout.ListingMain($);
         WPV_Toolset.Utils.eventDispatcher.trigger('dd-layout-main-object-init');
 	});
@@ -115,7 +114,7 @@ DDLayout.ListingMain = function($)
                 onOpen:function()
                 {
                     DDLayout.changeLayoutUseHelper.eventDispatcher.trigger('ddl-dialog-ass-open', dialog_wrap, self._current_layout );
-                    wp.hooks.doAction('ddl-wpml-init', dialog_wrap, self._current_layout, []);
+                    Toolset.hooks.doAction('ddl-wpml-init', dialog_wrap, self._current_layout, []);
                 },
 				onComplete: function() {
                     DDLayout.changeLayoutUseHelper.eventDispatcher.trigger('ddl-dialog-ass-complete', dialog_wrap, self._current_layout);
@@ -159,7 +158,7 @@ DDLayout.ListingMain = function($)
                  action:action,
                 'layout-set-change-post-types-nonce':self._post_types_change_nonce,
                  layout_id:self._current_layout,
-                 ddl_lang:wp.hooks.applyFilters('ddl-js-apply-language', null),
+                 ddl_lang:Toolset.hooks.applyFilters('ddl-js-apply-language', null),
                  html: 'listing'
             };
 

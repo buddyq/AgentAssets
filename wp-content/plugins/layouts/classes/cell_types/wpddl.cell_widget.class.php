@@ -156,7 +156,7 @@ if (!class_exists('Layouts_cell_widget')) {
             //global $wp_widget_factory;
             foreach ($this->widget_factory->widgets as $widget) {
                 if ($widget->widget_options['classname'] == $cell_settings['widget_type']) {
-                    the_widget(get_class($widget), $cell_settings['widget'], array('before_title' => '<h3 class="widgettitle">', 'after_title' => '</h3>'));
+                    the_widget(get_class($widget), $cell_settings['widget'], array('before_title' => '<h3 class="widgettitle">', 'after_title' => '</h3>', 'widget_id' => $widget->id));
                     break;
                 }
             }

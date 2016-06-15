@@ -30,7 +30,7 @@ if (!interface_exists('CRED_Friendable')) {
 // TODO use WP Cache object to cache queries(in base model) and templates(in loader DONE)
 /* removed */
 // current version
-define('CRED_FE_VERSION', '1.6');
+define('CRED_FE_VERSION', '1.7');
 // configuration constants
 define('CRED_NAME', 'CRED');
 define('CRED_CAPABILITY', 'manage_options');
@@ -105,8 +105,16 @@ onthego_initialize(CRED_PLUGIN_PATH . '/toolset/onthego-resources/', CRED_PLUGIN
 require CRED_PLUGIN_PATH . '/toolset/toolset-common/loader.php';
 toolset_common_initialize(CRED_PLUGIN_PATH . '/toolset/toolset-common/', CRED_PLUGIN_URL . '/toolset/toolset-common/');
 
-define('CRED_LOCALE_PATH', CRED_PLUGIN_PATH . '/locale');
 
+if( !function_exists('cred_loaded_common_dependencies') ){
+    add_action('after_setup_theme', 'cred_loaded_common_dependencies', 11 );
+    function cred_loaded_common_dependencies(){
+        require_once dirname(__FILE__) . '/classes/CRED_help_videos.php';
+        require_once dirname(__FILE__) . '/classes/CRED_scripts_manager.php';
+    }
+}
+
+define('CRED_LOCALE_PATH', CRED_PLUGIN_PATH . '/locale');
 // whether to try to load assets in concatenated form, much faster
 // tested on single site/multisite subdomains/multisite subfolders
 if (!defined('CRED_CONCAT_ASSETS'))
@@ -155,7 +163,7 @@ CRED_Loader::add('assets', array(
             'loader_url' => CRED_FILE_URL,
             'loader_path' => CRED_FILE_PATH,
             'version' => CRED_FE_VERSION,
-            'dependencies' => array('jquery', 'jquery-effects-scale'),
+            'dependencies' => array('jquery', 'jquery-effects-scale', 'toolset-event-manager'),
             'path' => CRED_ASSETS_URL . '/common/js/extra.js',
             'src' => CRED_ASSETS_PATH . '/common/js/extra.js'
         ),
@@ -203,7 +211,7 @@ CRED_Loader::add('assets', array(
             'loader_url' => CRED_FILE_URL,
             'loader_path' => CRED_FILE_PATH,
             'version' => CRED_FE_VERSION,
-            'dependencies' => array('jquery', 'cred_console_polyfill', 'cred_extra', 'cred_utils', 'cred_gui'),
+            'dependencies' => array('jquery', 'cred_console_polyfill', 'cred_extra', 'cred_utils', 'cred_gui', 'toolset-event-manager'),
             'path' => CRED_ASSETS_URL . '/js/post.js',
             'src' => CRED_ASSETS_PATH . '/js/post.js'
         ),

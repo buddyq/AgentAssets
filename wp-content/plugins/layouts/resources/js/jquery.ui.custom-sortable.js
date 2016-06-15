@@ -63,8 +63,8 @@ $.widget("ui.customSortable", $.ui.cellSortable, {
 
         if( currentItem && currentItem.data('view') && currentItem.data('view') instanceof DDLayout.views.ContainerView )
         {
-               // if( jQuery(event.target).is('.js-move-row') === false ) return;
-                if( jQuery(event.target).is('.js-row-container') === false ) return;
+                if( jQuery(event.target).is('.js-move-row') === false ) return;
+                //if( jQuery(event.target).is('.js-row-container') === false ) return;
         }
 
         if(this.options.handle && !overrideHandle) {

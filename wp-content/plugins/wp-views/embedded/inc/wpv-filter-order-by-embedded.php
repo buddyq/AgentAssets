@@ -79,6 +79,12 @@ class WPV_Sorting_Embedded {
 		if ( ! isset( $view_settings['users_order'] ) ) {
 			$view_settings['users_order'] = 'DESC';
 		}
+		if( ! isset( $view_settings['orderby_as'] ) ) {
+			$view_settings['orderby_as'] = '';
+		}
+		if( ! isset( $view_settings['taxonomy_orderby_as'] ) ) {
+			$view_settings['taxonomy_orderby_as'] = '';
+		}
 		return $view_settings;
 	}
 	
@@ -86,7 +92,7 @@ class WPV_Sorting_Embedded {
 		
 		$is_view_posted = false;
 		if ( isset( $_GET['wpv_view_count'] ) ) {
-			$view_unique_hash = apply_filters( 'wpv_filter_wpv_get_view_unique_hash', '' );
+			$view_unique_hash = apply_filters( 'wpv_filter_wpv_get_object_unique_hash', '', $view_settings );
 			if ( esc_attr( $_GET['wpv_view_count'] ) == $view_unique_hash ) {
 				$is_view_posted = true;
 				// Map old URL parameters to new ones
@@ -94,12 +100,14 @@ class WPV_Sorting_Embedded {
 			}
 		}
 		
-		$orderby =	$view_settings['orderby'];
-		$order =	$view_settings['order'];
+		$orderby	= $view_settings['orderby'];
+		$order		= $view_settings['order'];
+		$orderby_as	= $view_settings['orderby_as'];
 		// Override with attributes
 		$override_allowed = array(
-			'orderby'	=> array(),
-			'order'		=> array( 'asc', 'ASC', 'desc', 'DESC' )
+			'orderby'		=> array(),
+			'order'			=> array( 'asc', 'ASC', 'desc', 'DESC' ),
+			'orderby_as'	=> array( '', 'string', 'STRING', 'numeric', 'NUMERIC' )
 		);
 		$override_values = wpv_override_view_orderby_order( $override_allowed );
 		if ( isset( $override_values['orderby'] ) ) {
@@ -107,6 +115,9 @@ class WPV_Sorting_Embedded {
 		}
 		if ( isset( $override_values['order'] ) ) {
 			$order = strtoupper( $override_values['order'] );
+		}
+		if ( isset( $override_values['orderby_as'] ) ) {
+			$orderby_as = strtoupper( $override_values['orderby_as'] );
 		}
 		
 		// Override with URL parameters
@@ -135,6 +146,13 @@ class WPV_Sorting_Embedded {
 			) {
 				$orderby = esc_attr( $_GET['wpv_sort_orderby'] );
 			}
+
+			if (
+				isset( $_GET['wpv_sort_orderby_as'] )
+				&& in_array( strtoupper( esc_attr( $_GET['wpv_sort_orderby_as'] ) ), array( 'STRING', 'NUMERIC' ) )
+			) {
+				$orderby_as = strtoupper( esc_attr( $_GET['wpv_sort_orderby_as'] ) );
+			}
 		}
 		
 		// Adjust values for custom field sorting
@@ -160,16 +178,31 @@ class WPV_Sorting_Embedded {
 			&& isset( $query['meta_key'] )
 		) {
 			$is_types_field_data = wpv_is_types_custom_field ( $query['meta_key'] );
-			if ( 
+
+			if (
 				$is_types_field_data 
 				&& isset( $is_types_field_data['meta_key'] ) 
 				&& isset( $is_types_field_data['type'] )
 			) {
 				$query['meta_key'] = $is_types_field_data['meta_key'];
-				if ( in_array( $is_types_field_data['type'], array( 'numeric', 'date' ) ) ) {
+
+				// User preference overrides the auto-discover
+				if (
+						isset( $orderby_as )
+						&& in_array( $orderby_as, array( 'STRING', 'NUMERIC' ) )
+				) {
+					switch ( $orderby_as ) {
+						case "STRING":
+							$orderby = 'meta_value';
+							break;
+						case "NUMERIC":
+							$orderby = 'meta_value_num';
+							break;
+					}
+				} elseif ( in_array( $is_types_field_data['type'], array( 'numeric', 'date' ) ) ) {	// Auto-Discover
 					$orderby = 'meta_value_num';
 				}
-			}		
+			}
 		}
 		
 		// Correct orderby options
@@ -194,8 +227,8 @@ class WPV_Sorting_Embedded {
 				break;
 		}
 		
-		$query['orderby'] =	$orderby;
-		$query['order'] =	$order;
+		$query['orderby']	= $orderby;
+		$query['order']		= $order;
 		
 		// See if filtering by custom fields and sorting by custom field too
 		if (
@@ -246,23 +279,24 @@ class WPV_Sorting_Embedded {
 	}
 	
 	function set_taxonomy_view_sorting( $tax_query_settings, $view_settings, $view_id ) {
-		
 		$is_view_posted = false;
 		if ( isset( $_GET['wpv_view_count'] ) ) {
-			$view_unique_hash = apply_filters( 'wpv_filter_wpv_get_view_unique_hash', '' );
+			$view_unique_hash = apply_filters( 'wpv_filter_wpv_get_object_unique_hash', '', $view_settings );
 			if ( esc_attr( $_GET['wpv_view_count'] ) == $view_unique_hash ) {
 				$is_view_posted = true;
 				// Map old URL parameters to new ones
 				do_action( 'wpv_action_wpv_pagination_map_legacy_order' );
 			}
 		}
-		
+
 		$orderby =	$view_settings['taxonomy_orderby'];
 		$order =	$view_settings['taxonomy_order'];
+		$orderby_as = $view_settings['taxonomy_orderby_as'];
 		// Override with attributes
 		$override_allowed = array(
-			'orderby'	=> array(),
-			'order'		=> array( 'asc', 'ASC', 'desc', 'DESC' )
+			'orderby'		=> array(),
+			'order'			=> array( 'asc', 'ASC', 'desc', 'DESC' ),
+			'orderby_as'	=> array( '', 'string', 'STRING', 'numeric', 'NUMERIC' )
 		);
 		$override_values = wpv_override_view_orderby_order( $override_allowed );
 		if ( 
@@ -273,6 +307,9 @@ class WPV_Sorting_Embedded {
 		}
 		if ( isset( $override_values['order'] ) ) {
 			$order = strtoupper( $override_values['order'] );
+		}
+		if ( isset( $override_values['orderby_as'] ) ) {
+			$orderby_as = strtoupper( $override_values['orderby_as'] );
 		}
 		
 		// Override with URL parameters
@@ -292,6 +329,13 @@ class WPV_Sorting_Embedded {
 				&& in_array( strtoupper( esc_attr( $_GET['wpv_sort_order'] ) ), array( 'ASC', 'DESC' ) )
 			) {
 				$order = strtoupper( esc_attr( $_GET['wpv_sort_order'] ) );
+			}
+
+			if (
+					isset( $_GET['wpv_sort_orderby_as'] )
+					&& in_array( strtoupper( esc_attr( $_GET['wpv_sort_orderby_as'] ) ), array( 'STRING', 'NUMERIC' ) )
+			) {
+				$orderby_as = strtoupper( esc_attr( $_GET['wpv_sort_orderby_as'] ) );
 			}
 			
 		}
@@ -314,7 +358,7 @@ class WPV_Sorting_Embedded {
 			default:
 				if ( strpos( $orderby, 'taxonomy-field-' ) === 0 ) {
 					global $wp_version;
-					if ( ! version_compare( $wp_version, '4.5', '<' ) ) {
+					if ( version_compare( $wp_version, '4.5', '<' ) ) {
 						$orderby = 'name';
 					} else {
 						$tax_query_settings['meta_key'] = substr( $orderby, 15 );
@@ -329,20 +373,36 @@ class WPV_Sorting_Embedded {
 			&& isset( $tax_query_settings['meta_key'] )
 		) {
 			$is_types_field_data = wpv_is_types_custom_field( $tax_query_settings['meta_key'], 'tf' );
-			if ( 
-				$is_types_field_data 
-				&& isset( $is_types_field_data['meta_key'] ) 
-				&& isset( $is_types_field_data['type'] )
+
+			if (
+					$is_types_field_data
+					&& isset( $is_types_field_data['meta_key'] )
+					&& isset( $is_types_field_data['type'] )
 			) {
 				$tax_query_settings['meta_key'] = $is_types_field_data['meta_key'];
-				if ( in_array( $is_types_field_data['type'], array( 'numeric', 'date' ) ) ) {
+
+				// User preference overrides the auto-discover
+				if (
+						isset( $orderby_as )
+						&& in_array( $orderby_as, array( 'STRING', 'NUMERIC' ) )
+				) {
+					switch ( $orderby_as ) {
+						case "STRING":
+							$orderby = 'meta_value';
+							break;
+						case "NUMERIC":
+							$orderby = 'meta_value_num';
+							break;
+					}
+				} elseif ( in_array( $is_types_field_data['type'], array( 'numeric', 'date' ) ) ) {	// Auto-Discover
 					$orderby = 'meta_value_num';
 				}
-			}		
+			}
 		}
 		
-		$tax_query_settings['orderby'] = $orderby;
-		$tax_query_settings['order'] = $order;
+		$tax_query_settings['orderby']	= $orderby;
+		$tax_query_settings['order']	= $order;
+
 		return $tax_query_settings;
 	}
 	
@@ -361,11 +421,10 @@ class WPV_Sorting_Embedded {
 	}
 	
 	function set_user_view_sorting( $args, $view_settings ) {
-		global $WP_Views;
 		
 		$is_view_posted = false;
 		if ( isset( $_GET['wpv_view_count'] ) ) {
-			$view_unique_hash = apply_filters( 'wpv_filter_wpv_get_view_unique_hash', '' );
+			$view_unique_hash = apply_filters( 'wpv_filter_wpv_get_object_unique_hash', '', $view_settings );
 			if ( esc_attr( $_GET['wpv_view_count'] ) == $view_unique_hash ) {
 				$is_view_posted = true;
 				// Map old URL parameters to new ones
@@ -384,7 +443,7 @@ class WPV_Sorting_Embedded {
 		}
 		// Override with attributes
 		$override_allowed = array(
-			'orderby'	=> array( 'user_email', 'user_login', 'display_name', 'user_url', 'user_registered' ),
+			'orderby'	=> array( 'user_email', 'user_login', 'display_name', 'user_url', 'user_registered', 'include' ),
 			'order'		=> array( 'asc', 'ASC', 'desc', 'DESC' )
 		);
 		$override_values = wpv_override_view_orderby_order( $override_allowed );
@@ -442,13 +501,13 @@ $WPV_Sorting_Embedded = new WPV_Sorting_Embedded();
  */
 function wpv_override_view_orderby_order( $allowed = array() ) {
 	$defaults = array(
-		'orderby'	=> array(),
-		'order'		=> array()
+		'orderby'		=> array(),
+		'order'			=> array(),
+		'orderby_as'	=> array()
 	);
 	$allowed = wp_parse_args( $allowed, $defaults );
-	global $WP_Views;
 	$return = array();
-	$view_attrs = $WP_Views->get_view_shortcodes_attributes();
+	$view_attrs = apply_filters( 'wpv_filter_wpv_get_view_shortcodes_attributes', false );;
 	if ( isset( $view_attrs['orderby'] ) ) {
 		if ( count( $allowed['orderby'] ) > 0 ) {
 			if ( in_array( $view_attrs['orderby'], $allowed['orderby'] ) ) {
@@ -465,6 +524,15 @@ function wpv_override_view_orderby_order( $allowed = array() ) {
 			}
 		} else {
 			$return['order'] = $view_attrs['order'];
+		}
+	}
+	if ( isset( $view_attrs['orderby_as'] ) ) {
+		if ( count( $allowed['orderby_as'] ) > 0 ) {
+			if ( in_array( $view_attrs['orderby_as'], $allowed['orderby_as'] ) ) {
+				$return['orderby_as'] = $view_attrs['orderby_as'];
+			}
+		} else {
+			$return['orderby_as'] = $view_attrs['orderby_as'];
 		}
 	}
 	return $return;

@@ -47,7 +47,7 @@ table.dd-layouts-list .column-bulk-actions {
 }
 table.dd-layouts-list .column-title {
     padding-left: 0;
-    width: 32%;
+    width: 27%;
 }
 table.dd-layouts-list .column-used-on {
     /* padding-left: 12px; */
@@ -56,6 +56,9 @@ table.dd-layouts-list .column-used-on {
 
 table.dd-layouts-list .column-date {
     width: 10%;
+}
+table.dd-layouts-list .column-id {
+    width: 5%;
 }
 
 /*headings*/

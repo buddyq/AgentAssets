@@ -20,6 +20,16 @@ WPViews.ShortcodesGUI = function( $ ) {
 	self.dialog_insert_shortcode				= null;
 	self.dialog_insert_views_conditional		= null;
 	self.shortcodes_wrapper_dialogs				= {};
+	
+	self.dialog_minWidth						= 870;
+	
+	self.calculate_dialog_maxWidth = function() {
+		return ( $( window ).width() - 100 );
+	};
+	
+	self.calculate_dialog_maxHeight = function() {
+		return ( $( window ).height() - 100 );
+	};
 
 	self.dialog_insert_view_locked				= false;
 
@@ -50,6 +60,8 @@ WPViews.ShortcodesGUI = function( $ ) {
 	self.dayofyear_pattern						= /^([1-9]|[1-9][0-9]|[12][0-9][0-9]|3[0-6][0-6])$/;
 	self.dayofweek_pattern						= /^[1-7]+$/;
 	self.url_patern								= /^(https?):\/\/(((([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(%[\da-f]{2})|[!\$&'\(\)\*\+,;=]|:)*@)?(((\d|[1-9]\d|1\d\d|2[0-4]\d|25[0-5])\.(\d|[1-9]\d|1\d\d|2[0-4]\d|25[0-5])\.(\d|[1-9]\d|1\d\d|2[0-4]\d|25[0-5])\.(\d|[1-9]\d|1\d\d|2[0-4]\d|25[0-5]))|((([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])*([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])))\.)+(([a-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(([a-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])*([a-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])))\.?)(:\d*)?)(\/((([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(%[\da-f]{2})|[!\$&'\(\)\*\+,;=]|:|@)+(\/(([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(%[\da-f]{2})|[!\$&'\(\)\*\+,;=]|:|@)*)*)?)?(\?((([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(%[\da-f]{2})|[!\$&'\(\)\*\+,;=]|:|@)|[\uE000-\uF8FF]|\/|\?)*)?(\#((([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(%[\da-f]{2})|[!\$&'\(\)\*\+,;=]|:|@)|\/|\?)*)?$/i;
+	self.orderby_postfield_pattern				= /^field-/;
+	self.orderby_termmeta_field_pattern			= /^taxonomy-field-/;
 
 	/**
 	 * Temporary dialog content to be displayed while the actual content is loading.
@@ -79,12 +91,14 @@ WPViews.ShortcodesGUI = function( $ ) {
 		if ( ! $('#js-wpv-shortcode-gui-dialog-container').length ) {
 			$( 'body' ).append( '<div id="js-wpv-shortcode-gui-dialog-container" class="toolset-shortcode-gui-dialog-container wpv-shortcode-gui-dialog-container js-wpv-shortcode-gui-dialog-container"></div>' );
 			self.dialog_insert_shortcode = $( "#js-wpv-shortcode-gui-dialog-container" ).dialog({
-				autoOpen: false,
-				modal: true,
-				minWidth: 450,
+				autoOpen:	false,
+				modal:		true,
+				width:		self.dialog_minWidth,
+				resizable:	false,
+				draggable:	false,
 				show: {
-					effect: "blind",
-					duration: 800
+					effect:		"blind",
+					duration:	800
 				},
 				create: function( event, ui ) {
 					$( event.target ).parent().css( 'position', 'fixed' );
@@ -121,12 +135,14 @@ WPViews.ShortcodesGUI = function( $ ) {
 
 			$( 'body' ).append( '<div id="js-wpv-view-shortcode-gui-dialog-container" class="toolset-shortcode-gui-dialog-container wpv-shortcode-gui-dialog-container js-wpv-shortcode-gui-dialog-container"></div>' );
 			self.dialog_insert_view = $( "#js-wpv-view-shortcode-gui-dialog-container" ).dialog({
-				autoOpen: false,
-				modal: true,
-				minWidth: 450,
+				autoOpen:	false,
+				modal:		true,
+				width:		self.dialog_minWidth,
+				resizable:	false,
+				draggable:	false,
 				show: {
-					effect: "blind",
-					duration: 800
+					effect:		"blind",
+					duration:	800
 				},
 				create: function( event, ui ) {
 					$( event.target ).parent().css( 'position', 'fixed' );
@@ -163,12 +179,14 @@ WPViews.ShortcodesGUI = function( $ ) {
 
 			$( 'body' ).append( '<div id="js-wpv-views-conditional-shortcode-gui-dialog-container" class="toolset-shortcode-gui-dialog-container wpv-shortcode-gui-dialog-container js-wpv-shortcode-gui-dialog-container"></div>' );
 			self.dialog_insert_views_conditional = $( "#js-wpv-views-conditional-shortcode-gui-dialog-container" ).dialog({
-				autoOpen: false,
-				modal: true,
-				minWidth: 450,
+				autoOpen:	false,
+				modal:		true,
+				width:		self.dialog_minWidth,
+				resizable:	false,
+				draggable:	false,
 				show: {
-					effect: "blind",
-					duration: 800
+					effect:		"blind",
+					duration:	800
 				},
 				create: function( event, ui ) {
 					$( event.target ).parent().css( 'position', 'fixed' );
@@ -228,18 +246,21 @@ WPViews.ShortcodesGUI = function( $ ) {
 			});
 		}
 
-		var dialog_posts = $( 'body' ).find('.js-wpv-fields-and-views-dialog-for-posts'),
-			dialog_taxonomy = $( 'body' ).find('.js-wpv-fields-and-views-dialog-for-taxonomy'),
-			dialog_users = $( 'body' ).find('.js-wpv-fields-and-views-dialog-for-users');
+		var dialog_posts		= $( 'body' ).find('.js-wpv-fields-and-views-dialog-for-posts'),
+		dialog_taxonomy			= $( 'body' ).find('.js-wpv-fields-and-views-dialog-for-taxonomy'),
+		dialog_users			= $( 'body' ).find('.js-wpv-fields-and-views-dialog-for-users');
 
 		if ( dialog_posts.length > 0 ) {
 			self.shortcodes_wrapper_dialogs[ 'posts' ] = $( '.js-wpv-fields-and-views-dialog-for-posts' ).dialog({
-				autoOpen: false,
-				modal: true,
-				title: wpv_shortcodes_gui_texts.wpv_fields_and_views_title,
+				autoOpen:	false,
+				modal:		true,
+				width:		self.dialog_minWidth,
+				title:		wpv_shortcodes_gui_texts.wpv_fields_and_views_title,
+				resizable:	false,
+				draggable:	false,
 				show: {
-					effect: "blind",
-					duration: 800
+					effect:		"blind",
+					duration:	800
 				},
 				create: function( event, ui ) {
 					$( event.target ).parent().css( 'position', 'fixed' );
@@ -265,12 +286,15 @@ WPViews.ShortcodesGUI = function( $ ) {
 
 		if ( dialog_taxonomy.length > 0 ) {
 			self.shortcodes_wrapper_dialogs[ 'taxonomy' ] = $( '.js-wpv-fields-and-views-dialog-for-taxonomy' ).dialog({
-				autoOpen: false,
-				modal: true,
-				title: wpv_shortcodes_gui_texts.wpv_fields_and_views_title,
+				autoOpen:	false,
+				modal:		true,
+				width:		self.dialog_minWidth,
+				title:		wpv_shortcodes_gui_texts.wpv_fields_and_views_title,
+				resizable:	false,
+				draggable:	false,
 				show: {
-					effect: "blind",
-					duration: 800
+					effect:		"blind",
+					duration:	800
 				},
 				create: function( event, ui ) {
 					$( event.target ).parent().css( 'position', 'fixed' );
@@ -296,12 +320,15 @@ WPViews.ShortcodesGUI = function( $ ) {
 
 		if ( dialog_users.length > 0 ) {
 			self.shortcodes_wrapper_dialogs[ 'users' ] = $( '.js-wpv-fields-and-views-dialog-for-users' ).dialog({
-				autoOpen: false,
-				modal: true,
-				title: wpv_shortcodes_gui_texts.wpv_fields_and_views_title,
+				autoOpen:	false,
+				modal:		true,
+				width:		self.dialog_minWidth,
+				title:		wpv_shortcodes_gui_texts.wpv_fields_and_views_title,
+				resizable:	false,
+				draggable:	false,
 				show: {
-					effect: "blind",
-					duration: 800
+					effect:		"blind",
+					duration:	800
 				},
 				create: function( event, ui ) {
 					$( event.target ).parent().css( 'position', 'fixed' );
@@ -325,21 +352,16 @@ WPViews.ShortcodesGUI = function( $ ) {
 			});
 		}
 
-		self.textarea_target_dialog = jQuery('#wpv-shortcode-generator-target-dialog').dialog({
-			autoOpen: false,
-			modal: true,
-			title: wpv_shortcodes_gui_texts.wpv_shortcode_generated,
-			width: 650,
-			height: "auto",
-			maxHeight: 1000,
-			maxWidth: 800,
-			minHeight: "auto",
-			minWidth: 450,
-			resizable: false,
-			draggable: false,
+		self.textarea_target_dialog = $('#wpv-shortcode-generator-target-dialog').dialog({
+			autoOpen:	false,
+			modal:		true,
+			width:		self.dialog_minWidth,
+			title:		wpv_shortcodes_gui_texts.wpv_shortcode_generated,
+			resizable:	false,
+			draggable:	false,
 			show: {
-				effect: "blind",
-				duration: 800
+				effect:		"blind",
+				duration:	800
 			},
 			create: function( event, ui ) {
 				$( event.target ).parent().css( 'position', 'fixed' );
@@ -426,19 +448,14 @@ WPViews.ShortcodesGUI = function( $ ) {
 
 	self.open_fields_and_views_dialog = function() {
 		if ( _.has( self.shortcodes_wrapper_dialogs, self.shortcodes_set ) ) {
-			var dialog_height = $( window ).height() - 100,
-				dialog_width = $( window ).width() - 100;
 			self.shortcodes_wrapper_dialogs[ self.shortcodes_set ].dialog( 'open' ).dialog({
-				minWidth: 870,
-				maxWidth: dialog_width,
-				maxHeight: dialog_height,
-				draggable: false,
-				resizable: false,
-				position: {
-					my: "center top+50",
-					at: "center top",
-					of: window,
-					collision: "none"
+				height:		self.calculate_dialog_maxHeight(),
+				maxWidth:	self.calculate_dialog_maxWidth(),
+				position: 	{
+					my:			"center top+50",
+					at:			"center top",
+					of:			window,
+					collision:	"none"
 				}
 			});
 		}
@@ -469,13 +486,13 @@ WPViews.ShortcodesGUI = function( $ ) {
 		if ( self.shortcode_gui_insert == 'create' ) {
 			self.shortcode_to_insert_on_target_dialog = shortcode_to_insert;
 			self.textarea_target_dialog.dialog("open").dialog({
-				draggable: false,
-				resizable: false,
-				position: {
-					my: "center top+50",
-					at: "center top",
-					of: window,
-					collision: "none"
+				maxHeight:	self.calculate_dialog_maxHeight(),
+				maxWidth:	self.calculate_dialog_maxWidth(),
+				position:	{
+					my:			"center top+50",
+					at:			"center top",
+					of:			window,
+					collision:	"none"
 				}
 			});
 			self.shortcode_gui_insert = 'insert';
@@ -486,13 +503,13 @@ WPViews.ShortcodesGUI = function( $ ) {
 		if ( self.shortcode_gui_insert == 'create' ) {
 			self.shortcode_to_insert_on_target_dialog = shortcode_to_insert;
 			self.textarea_target_dialog.dialog("open").dialog({
-				draggable: false,
-				resizable: false,
-				position: {
-					my: "center top+50",
-					at: "center top",
-					of: window,
-					collision: "none"
+				maxHeight:	self.calculate_dialog_maxHeight(),
+				maxWidth:	self.calculate_dialog_maxWidth(),
+				position:	{
+					my:			"center top+50",
+					at:			"center top",
+					of:			window,
+					collision:	"none"
 				}
 			});
 			self.shortcode_gui_insert = 'insert';
@@ -509,16 +526,14 @@ WPViews.ShortcodesGUI = function( $ ) {
 		self.ps_orig_id = orig_id;
 
 		var data_view = {
-				action:		'wpv_view_form_popup',
-				_wpnonce:	nonce,
-				view_id:	view_id,
-				orig_id:	orig_id,
-				view_title:	view_title,
-				view_name:	view_name
-			},
-			dialog_height = $( window ).height() - 100,
-			dialog_width = $( window ).width() - 100,
-			data_for_events = {};
+			action:		'wpv_view_form_popup',
+			_wpnonce:	nonce,
+			view_id:	view_id,
+			orig_id:	orig_id,
+			view_title:	view_title,
+			view_name:	view_name
+		},
+		data_for_events = {};
 
 		data_for_events.shortcode = 'wpv-view';
 		data_for_events.title = view_title;
@@ -529,17 +544,14 @@ WPViews.ShortcodesGUI = function( $ ) {
 		$( document ).trigger( 'js_event_wpv_shortcode_gui_dialog_triggered', [ data_for_events ] );
 
 		self.dialog_insert_view.dialog('open').dialog({
-			title: view_title,
-			minWidth: 870,
-			maxWidth: dialog_width,
-			maxHeight: dialog_height,
-			draggable: false,
-			resizable: false,
-			position: {
-				my: "center top+50",
-				at: "center top",
-				of: window,
-				collision: "none"
+			title:		view_title,
+			maxHeight:	self.calculate_dialog_maxHeight(),
+			maxWidth:	self.calculate_dialog_maxWidth(),
+			position:	{
+				my:			"center top+50",
+				at:			"center top",
+				of:			window,
+				collision:	"none"
 			}
 		});
 
@@ -586,10 +598,24 @@ WPViews.ShortcodesGUI = function( $ ) {
 			}
 		});
 	};
+	
+	$( document ).on( 'change input cut paste', '#js-wpv-insert-view-override-container .js-wpv-insert-view-shortcode-orderby', function() {
+		var orderby_value = $( this ).val();
+		
+		if (
+			self.orderby_postfield_pattern.test( orderby_value ) 
+			|| self.orderby_termmeta_field_pattern.test( orderby_value )
+		) {
+			$( '#js-wpv-insert-view-override-container .js-wpv-insert-view-shortcode-orderby_as-setting' ).fadeIn( 'fast' );
+		} else {
+			$( '#js-wpv-insert-view-override-container .js-wpv-insert-view-shortcode-orderby_as-setting' ).hide();
+		}
+	});
 
 	self.wpv_get_view_override_values = function() {
 		var override_container = $( '#js-wpv-insert-view-override-container' ),
 			override_values = {};
+			
 		if ( $( '.js-wpv-insert-view-shortcode-limit', override_container ).val() != '' ) {
 			override_values['limit'] = $( '.js-wpv-insert-view-shortcode-limit', override_container ).val();
 		}
@@ -598,6 +624,17 @@ WPViews.ShortcodesGUI = function( $ ) {
 		}
 		if ( $( '.js-wpv-insert-view-shortcode-orderby', override_container ).val() != '' ) {
 			override_values['orderby'] = $( '.js-wpv-insert-view-shortcode-orderby', override_container ).val();
+			if ( 
+				$( '.js-wpv-insert-view-shortcode-orderby_as', override_container ).length > 0
+				&& $( '.js-wpv-insert-view-shortcode-orderby_as', override_container ).val() != '' 
+			) {
+				if (
+					self.orderby_postfield_pattern.test( override_values['orderby'] ) 
+					|| self.orderby_termmeta_field_pattern.test( override_values['orderby'] )
+				) {
+					override_values['orderby_as'] = $( '.js-wpv-insert-view-shortcode-orderby_as', override_container ).val();
+				}
+			}
 		}
 		if ( $( '.js-wpv-insert-view-shortcode-order', override_container ).val() != '' ) {
 			override_values['order'] = $( '.js-wpv-insert-view-shortcode-order', override_container ).val();
@@ -726,7 +763,7 @@ WPViews.ShortcodesGUI = function( $ ) {
 					shortcode_to_insert = '[wpv-form-view name="' + form_name + '" target_id="self"]';
 					self.wpv_insert_view_shortcode_to_editor_helper( 'wpv-form-view', shortcode_attribute_values, shortcode_to_insert );
 					if ( results_helper_container.length > 0 ) {
-						var results_shortcode = '<code>[wpv-view name="' + form_name + '" view_display=layout"]</code>';
+						var results_shortcode = '<code>[wpv-view name="' + form_name + '" view_display="layout"]</code>';
 						results_helper_container.find( '.js-wpv-insert-view-form-results-helper-name' ).html( form_name );
 						results_helper_container.find( '.js-wpv-insert-view-form-results-helper-shortcode' ).html( results_shortcode );
 						results_helper_container.addClass( 'js-wpv-insert-form-workflow-help-box-for-' + self.ps_view_id ).fadeIn( 'fast' );
@@ -973,23 +1010,15 @@ WPViews.ShortcodesGUI = function( $ ) {
 		url += '&action=wpv_shortcode_gui_dialog_conditional_create';
 		url += '&post_id=' + parseInt( object.post_id );
 
-		/**
-		 * Calculate height
-		 */
-		var dialog_height = $( window ).height() - 100,
-			dialog_width = $( window ).width() - 50;
-
 		self.dialog_insert_views_conditional.dialog('open').dialog({
-			title: title,
-			width: dialog_width,
-			height: dialog_height,
-			draggable: false,
-			resizable: false,
-			position: {
-				my: "center top+50",
-				at: "center top",
-				of: window,
-				collision: "none"
+			title:		title,
+			height:		self.calculate_dialog_maxHeight(),
+			width:		self.calculate_dialog_maxWidth(),
+			position:	{
+				my:			"center top+50",
+				at:			"center top",
+				of:			window,
+				collision:	"none"
 			}
 		});
 
@@ -1385,7 +1414,7 @@ WPViews.ShortcodesGUI = function( $ ) {
 		url += '&_wpnonce=' + nonce;
 		url += '&action=wpv_shortcode_gui_dialog_create';
 		url += '&shortcode=' + shortcode;
-		url += '&post_id=' + parseInt($(object).data('post-id'));
+		url += '&post_id=' + parseInt( $( object ).data( 'post-id' ) );
 
 		url_extra_data = self.filter_dialog_ajax_data( shortcode );
 
@@ -1398,25 +1427,17 @@ WPViews.ShortcodesGUI = function( $ ) {
 		data_for_events.object = object;
         data_for_events.dialog = this;
 		$( document ).trigger( 'js_event_wpv_shortcode_gui_dialog_triggered', [ data_for_events ] );
-
-		//
-		// Calculate height
-		//
-		var dialog_height = $(window).height() - 100;
-
-
+		
 		// Show the "empty" dialog with a spinner while loading dialog content
 		self.dialog_insert_shortcode.dialog('open').dialog({
-			title: title,
-			width: 770,
-			maxHeight: dialog_height,
-			draggable: false,
-			resizable: false,
-			position: {
-				my: "center top+50",
-				at: "center top",
-				of: window,
-				collision: "none"
+			title:		title,
+			maxHeight:	self.calculate_dialog_maxHeight(),
+			maxWidth:	self.calculate_dialog_maxWidth(),
+			position:	{
+				my:			"center top+50",
+				at:			"center top",
+				of:			window,
+				collision:	"none"
 			}
 		});
 
@@ -1515,13 +1536,17 @@ WPViews.ShortcodesGUI = function( $ ) {
 		var ajax_extra_data = '';
 		switch( shortcode ) {
 			case 'wpv-post-body':
-				if (
-					typeof WPViews.ct_edit_screen != 'undefined'
-					&& typeof WPViews.ct_edit_screen.ct_data != 'undefined'
-					&& typeof WPViews.ct_edit_screen.ct_data.id != 'undefined'
-				) {
-					ajax_extra_data = '&wpv_suggest_wpv_post_body_view_template_exclude=' + WPViews.ct_edit_screen.ct_data.id;
+				// Check for excluded content templates list via the filter.
+				var excluded_cts = [];
+				excluded_cts = Toolset.hooks.applyFilters( 'wpv-filter-wpv-shortcodes-gui-wpv_post_body-exclude-content-template', excluded_cts );
+
+				// Prepare a form array of all excluded CT IDs, to transmit via URL
+				if( Array.isArray( excluded_cts ) && excluded_cts.length > 0 ) {
+					for( var i = 0; i < excluded_cts.length; i++ ) {
+						ajax_extra_data += '&wpv_suggest_wpv_post_body_view_template_exclude[]=' + excluded_cts[i];
+					}
 				}
+
 				break;
 		}
 		return ajax_extra_data;

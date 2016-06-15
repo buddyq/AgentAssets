@@ -117,7 +117,7 @@ DDLayout.ChangeLayoutUseHelper = function ($) {
 
         self.handle_html_reload( html, name );
 
-        wp.hooks.doAction( 'ddl-wpml-refresh', container, self._current_layout, [] );
+        Toolset.hooks.doAction( 'ddl-wpml-refresh', container, self._current_layout, [] );
 
         if( callback && callback instanceof Function ){
             callback.call(self, arguments);
@@ -206,6 +206,16 @@ DDLayout.ChangeLayoutUseHelper = function ($) {
 
         // this is hack fix to make sure buttons are disabled
         jQuery('.button-secondary', self.current_dialog).prop('disabled', true);
+
+        Toolset.hooks.removeFilter('ddl-is_current_layout_assigned');
+        Toolset.hooks.addFilter('ddl-is_current_layout_assigned', function(bool){
+                var remove_checkboxes = jQuery('.js-remove-individual-page-item', self.current_dialog).length,
+                    assigned = _.filter(checked, function(item){
+                        return item.checked === true && item.name !== 'post_types_apply_all';
+                    }).length + remove_checkboxes;
+
+            return assigned > 0;
+        });
     };
 
     self.get_post_types_to_batch = function()
@@ -583,7 +593,7 @@ DDLayout.ChangeLayoutUseHelper = function ($) {
         jQuery(document).off('click', archives_change_button.selector, false);
         jQuery(document).off('change', $bulk_types_checkboxes.selector, false);
         self._checkboxes = [];
-        wp.hooks.doAction('ddl-wpml-cleanup');
+        Toolset.hooks.doAction('ddl-wpml-cleanup');
     };
 
     // clear all checkboxes related data

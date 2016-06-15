@@ -3,7 +3,7 @@
   Plugin Name: Toolset CRED Embedded
   Plugin URI: https://wp-types.com/home/toolset-components/#cred
   Description: Create Edit Delete Wordpress content (ie. posts, pages, custom posts) from the front end using fully customizable forms
-  Version: 1.6
+  Version: 1.7
   Author: OnTheGoSystems
   Author URI: http://www.onthegosystems.com/
   License: GPLv2

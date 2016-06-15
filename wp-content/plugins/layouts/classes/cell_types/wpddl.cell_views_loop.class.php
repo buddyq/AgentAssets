@@ -16,10 +16,12 @@ class WPDD_layout_loop_views_cell extends WPDD_layout_cell {
 		
         if( function_exists('render_view') )
         {
+            $wpa_id = get_ddl_field('ddl_layout_view_id');
+			do_action( 'wpv_action_wpv_initialize_wordpress_archive_for_archive_loop', $wpa_id );
             global $WPV_view_archive_loop, $wp_query;
 			$WPV_view_archive_loop->query = clone $wp_query;
 			$WPV_view_archive_loop->in_the_loop = true;
-			$target->cell_content_callback( render_view( array( 'id' => get_ddl_field('ddl_layout_view_id') ) ), $this );
+			$target->cell_content_callback( render_view( array( 'id' => $wpa_id ) ), $this );
 			$WPV_view_archive_loop->in_the_loop = false;
         }
         else

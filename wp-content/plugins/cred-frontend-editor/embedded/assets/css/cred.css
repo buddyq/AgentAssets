@@ -1086,7 +1086,7 @@ border:1px solid #ddd;
     width: 36px;
 }
 
-.wp-editor-container {
+#wp-content-wrap .wp-editor-container {
     opacity: .9 !important;
 }
 
@@ -1094,7 +1094,7 @@ border:1px solid #ddd;
 
 /* UI DIALOG OVERLAY*/
 body.post-type-cred-form .ui-widget-overlay{position:fixed;z-index:1000;}
-body.post-type-cred-form #wp-content-editor-tools{background-color: transparent}
+/*body.post-type-cred-form #wp-content-editor-tools{background-color: transparent}*/
 body.post-type-cred-form .ui-dialog{z-index:99999;}
 
 
@@ -1135,9 +1135,9 @@ body.post-type-cred-form .ui-dialog{z-index:99999;}
 }
 
 /*Fix fullscreen*/
-div.mce-fullscreen {
+/*div.mce-fullscreen {
     left: 160px !important;
-}
+}*/
 
 .cred-widefat {
     background: none;

@@ -11,7 +11,12 @@
  * @author Franko
  */
 class StaticClass {
-
+    
+    public static $_current_post_title;
+    public static $_current_prefix;
+    public static $_current_form_id;
+    
+    public static $_reset_file_values = false;
     public static $_cred_container_id;
     public static $_____friendsStatic_____ = array(/* Friend Class Hashes as keys Here.. */);
 
@@ -42,6 +47,29 @@ class StaticClass {
     public static $_username_generated = null;
     public static $_password_generated = null;
     public static $_nickname_generated = null;
+
+    /**
+     * fix single quote in value in order to be replace in cred_field shortcode
+     * @param type $content
+     */
+    public static function fix_cred_field_shortcode_value_attribute_by_single_quote(&$content) {
+        $what = array();
+        $to = array();
+        preg_match_all("/\[cred_field(.*?)\]/is", $content, $matches, PREG_PATTERN_ORDER);
+        for ($i = 0; $i < count($matches[1]); $i++) {
+            preg_match("/value\=[\'|\"](.*?)[\'|\"][ a-z]{1,}\=| \]/is", $matches[1][$i], $submatches);
+            if (isset($submatches[1]) && !empty($submatches[1])) {
+                $tmp = str_replace("'", "@_cred_rsq_@", $submatches[1]);
+                $what[] = "value='" . $submatches[1] . "'";
+                $to[] = "value='" . $tmp . "'";
+            }
+        }
+        $content = str_replace($what, $to, $content);
+    }
+    
+    public static function cred_empty_array() {
+        return array();
+    }
 
     public static function getIP() {
         if (!empty($_SERVER['HTTP_CLIENT_IP'])) { //check ip from share internet

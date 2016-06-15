@@ -17,7 +17,7 @@
 
 		<p class="toolset-alert toolset-alert-info js-wpv-layout-wizard-overwrite-notice" style="display:none">
 			<?php
-			_e( 'The View loop will be overwritten by this wizard.', 'wpv-views' );
+			_e( 'The Loop Output will be overwritten by this wizard.', 'wpv-views' );
 			echo WPV_MESSAGE_SPACE_CHAR;
 			_e( 'If you want to add fields and keep your HTML edits, use the <strong>Fields and Views</strong> button.', 'wpv-views' );
 			?>
@@ -28,7 +28,7 @@
         <div class="wpv-dialog-content-tabs">
 			
             <div class="wpv-dialog-content-tab js-layout-wizard-tab" id="js-layout-wizard-layout-style" style="position:relative">
-                <h2><?php _e('How do you want the View to display?','wpv-views'); ?></h2>
+                <h2><?php _e('How do you want to display de loop?','wpv-views'); ?></h2>
                 <ul class="wpv-layout-wizard-layout-style js-wpv-layout-wizard-layout-style">
                     <li>
                         <input type="radio" name="layout-wizard-style" id="layout-wizard-style-unformatted" class="js-wpv-layout-wizard-style" value="unformatted" />
@@ -161,7 +161,7 @@
 				
 				<div style="margin: 10px 0 0;padding: 10px 0 0; border-top: solid 1px #ededed;">
 					<input type="checkbox" value="1" id="js-wpv-use-view-loop-ct" />
-					<label for="js-wpv-use-view-loop-ct"><?php _e('Use a Content Template to group the fields in this View loop','wpv-views'); ?></label>
+					<label for="js-wpv-use-view-loop-ct"><?php _e('Use a Content Template to group the fields in this loop','wpv-views'); ?></label>
 					<span class="wpv-helper-text" style="margin-left: 25px;">
 						<?php _e( 'Wrap all the fields into a Content Template, so you can edit the content of the loop easily', 'wpv-views' ); ?>
 					</span>

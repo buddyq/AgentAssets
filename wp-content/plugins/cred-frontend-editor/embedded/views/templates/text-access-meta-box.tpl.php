@@ -8,7 +8,7 @@
             if ($is_access_active) {
                 ?>
                 <p>
-                    <i class="icon-warning-sign"></i> <?php printf(__('To control who can see and use this form, go to %s.', 'wp-cred'), '<a target="_parent" href="' . admin_url() . '?page=types_access#' . $txt_anchor . '">Access settings</a>'); ?>
+                    <i class="icon-warning-sign"></i> <?php printf(__('To control who can see and use this form, go to %s.', 'wp-cred'), '<a target="_parent" href="' . admin_url( 'admin.php?page=types_access' ) . '">Access settings</a>'); ?>
                 </p>    
                 <?php
             } else {

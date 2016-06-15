@@ -20,7 +20,6 @@ WPViews.CTListingScreen = function( $ ) {
 	
 	self.bulk_trashing_target = [];
 	
-	self.bulktrashdel_action = '';
 	self.bulktrashdel_target = [];
 	self.bulktrashdel_nonce = '';
 	
@@ -110,31 +109,32 @@ WPViews.CTListingScreen = function( $ ) {
 		var thiz = $( this );
 		showSpinnerAfter( thiz );
 		
-		var dialog_height = $( window ).height() - 100;
+		var dialog_height = $( window ).height() - 100,
+		dialog_width = $( window ).width() - 100;
+		
 		self.dialog_create_ct.dialog( 'open' ).dialog({
-            width: 770,
-            maxHeight: dialog_height,
-            draggable: false,
-            resizable: false,
-			position: { my: "center top+50", at: "center top", of: window }
+            width:		850,
+            maxHeight:	dialog_height,
+			maxWidth:	dialog_width,
+            draggable:	false,
+            resizable:	false,
+			position:	{ my: "center top+50", at: "center top", of: window }
         });
 		
 		self.dialog_create_ct.html( self.shortcodeDialogSpinnerContent );
 		
 		// Do AJAX call to generate popup code
 		var data = {
-			action: 'wpv_ct_create_new_render_popup',
-			wpnonce : $( '#work_view_template' ).val(),
-			view_action: self.bulktrashdel_action
+			action:			'wpv_ct_create_new_render_popup',
+			wpnonce:	 	$( '#work_view_template' ).val(),
 		};
 		
 		$.ajax({
-			async: false,
-			type: "GET",
-			dataType: "json",
-			url: ajaxurl,
-			data: data,
-			success: function( response ) {
+			type:		"GET",
+			dataType:	"json",
+			url:		ajaxurl,
+			data:		data,
+			success:	function( response ) {
 				if ( response.success ) {
 					self.dialog_create_ct.html( response.data.dialog_content );
 					$( '.js-wpv-new-content-template-name' ).focus();
@@ -142,24 +142,47 @@ WPViews.CTListingScreen = function( $ ) {
 				// We're waiting on user input - hide the spinner shown at the start of bulk action
 				hideSpinner();
 			},
-			error: function( ajaxContext ) {
+			error:		function( ajaxContext ) {
 				//console.log( "Error: ", ajaxContext.responseText );
 			},
-			complete: function() { }
+			complete:	function() { }
 		});
 		
 		return false;
 	});
 	
-	$( document ).on('change','.js-wpv-dialog-add-new-content-template input[type=checkbox]',function( e ) {
-		var $dontAssignInput = $('.js-dont-assign'),
-		$allCheckboxes = $('.js-wpv-dialog-add-new-content-template input[type=checkbox]');
-		if ( $(this).is(':checked') ) {
-			if ( $(e.target).is($dontAssignInput) ) {
-				$allCheckboxes.not(this).prop('checked',false)
+	$( document ).on( 'change','.js-wpv-dialog-add-new-content-template .js-wpv-ct-assign-to-post-type-single', function( e ) {
+		var checked = $( '.js-wpv-dialog-add-new-content-template .js-wpv-ct-assign-to-post-type-single:checked' ),
+		checked_length = checked.length,
+		checked_item = $( this );
+		if ( checked_item.hasClass( 'js-wpv-ct-dont-assign' ) ) {
+			if ( $( '.js-wpv-ct-dont-assign' ).prop( 'checked' ) ) {
+				$( '.js-wpv-dialog-add-new-content-template .js-wpv-ct-assign-to-post-type-single:not(.js-wpv-ct-dont-assign)' )
+					.prop( 'checked', false )
+					.trigger( 'change' );
+			} else {
+				$( '.js-wpv-ct-dont-assign' ).prop( 'checked', true );
 			}
-			else {
-				$dontAssignInput.prop('checked',false)
+		} else {
+			if ( checked_length == 0 ) {
+				$( '.js-wpv-ct-dont-assign' ).prop( 'checked', true );
+			} else if ( checked_length == 1 ) {
+				if ( ! $( '.js-wpv-ct-dont-assign' ).prop( 'checked' ) ) {
+					$( '.js-wpv-ct-dont-assign' ).prop( 'checked', false );
+				}
+			} else {
+				$( '.js-wpv-ct-dont-assign' ).prop( 'checked', false );
+			}
+			if ( checked_item.prop( 'checked' ) ) {
+				checked_item
+					.closest( '.js-wpv-ct-assign-to-object-container' )
+						.find( '.js-wpv-ct-assign-to-all-existing' )
+							.show();
+			} else {
+				checked_item
+					.closest( '.js-wpv-ct-assign-to-object-container' )
+						.find( '.js-wpv-ct-assign-to-all-existing' )
+							.hide();
 			}
 		}
 	});
@@ -167,28 +190,39 @@ WPViews.CTListingScreen = function( $ ) {
 	$( document ).on( 'click','.js-wpv-create-new-template', function( e ) {
 		e.preventDefault();
 
-		var thiz = $( this );
-		var thiz_container = $( '.js-wpv-dialog-add-new-content-template' );
-		var thiz_message_container = thiz_container.find( '.js-wpv-error-container' );
-		var title = thiz_container.find( '.js-wpv-new-content-template-name' ).val();
-		var type = [];
+		var thiz		= $( this ),
+		thiz_container	= $( '.js-wpv-dialog-add-new-content-template' ),
+		thiz_message_container = thiz_container.find( '.js-wpv-error-container' ),
+		title			= thiz_container.find( '.js-wpv-new-content-template-name' ).val(),
+		type			= [],
+		apply			= [];
 
 		showSpinnerAfter( thiz );
 
-		$( ".js-wpv-dialog-add-new-content-template input[name='wpv-new-content-template-post-type[]']:checked").each( function() {
+		$( ".js-wpv-dialog-add-new-content-template .js-wpv-ct-assign-to-object:checked").each( function() {
 			type.push( $( this ).val() );
+			if ( $( this ).hasClass( 'js-wpv-ct-assign-to-post-type-single' ) ) {
+				var need_apply = $( this ).closest( '.js-wpv-ct-assign-to-object-container' ).find( '.js-wpv-ct-assign-to-object-apply' );
+				if (
+					need_apply.length > 0 
+					&& need_apply.prop( 'checked' )
+				) {
+					apply.push( need_apply.val() );
+				}
+			}
 		});
 		
 		title = title.replace( /\'/gi, '' );
 		title = WPV_Toolset.Utils._strip_tags_and_preserve_text( _.unescape( title ) );
 		
 		var data = {
-			action : 'wpv_ct_create_new_save',
-			wpnonce : $( '#work_view_template' ).attr( 'value' ),
-			type : type,
-			title: title
+			action:		'wpv_ct_create_new_save',
+			wpnonce:	$( '#work_view_template' ).attr( 'value' ),
+			type:		type,
+			title:		title,
+			apply:		apply
 		};
-
+		
 		thiz.prop( 'disabled', true );
 
 		$.ajax({
@@ -323,6 +357,7 @@ WPViews.CTListingScreen = function( $ ) {
 		
 		var thiz = $( this ),
 		dialog_height = $( window ).height() - 100,
+		dialog_width = $( window ).width() - 100,
 		data = {
 			action: 'wpv_change_ct_usage_popup',
 			wpnonce: $('#work_view_template').val(),
@@ -332,11 +367,12 @@ WPViews.CTListingScreen = function( $ ) {
 		self.change_usage_id = thiz.data( 'ct-id' );
 		
 		self.dialog_change_ct_usage.dialog( 'open' ).dialog({
-            width: 770,
-            maxHeight: dialog_height,
-            draggable: false,
-            resizable: false,
-			position: { my: "center top+50", at: "center top", of: window }
+            width:		850,
+            maxHeight:	dialog_height,
+			maxWidth:	dialog_width,
+            draggable:	false,
+            resizable:	false,
+			position:	{ my: "center top+50", at: "center top", of: window }
         });
 		
 		self.dialog_change_ct_usage.html( self.shortcodeDialogSpinnerContent );
@@ -363,8 +399,9 @@ WPViews.CTListingScreen = function( $ ) {
 	$( document ).on( 'click', '.js-wpv-change-ct-usage', function( e ) {
 		e.preventDefault();
 		
-		var thiz = $( this ),
-		type = [];
+		var thiz	= $( this ),
+		type		= [],
+		apply		= [];
 		
 		showSpinnerAfter( thiz );
 		disablePrimaryButton( thiz );
@@ -373,29 +410,42 @@ WPViews.CTListingScreen = function( $ ) {
 			type.push( $(this).val() );
 		});
 		
+		$( ".js-wpv-dialog-add-new-content-template .js-wpv-ct-assign-to-object:checked").each( function() {
+			type.push( $( this ).val() );
+			if ( $( this ).hasClass( 'js-wpv-ct-assign-to-post-type-single' ) ) {
+				var need_apply = $( this ).closest( '.js-wpv-ct-assign-to-object-container' ).find( '.js-wpv-ct-assign-to-object-apply' );
+				if (
+					need_apply.length > 0 
+					&& need_apply.prop( 'checked' )
+				) {
+					apply.push( need_apply.val() );
+				}
+			}
+		});
+		
         var data = {
-            action: 'wpv_change_ct_usage',
-            view_template_id: self.change_usage_id,
-            wpnonce: $('#work_view_template').attr('value'),
-            type: type
+            action:				'wpv_change_ct_usage',
+            view_template_id:	self.change_usage_id,
+            wpnonce:			$('#work_view_template').attr('value'),
+            type:				type,
+			apply:				apply
         };
 		
 		$.ajax({
-			async: false,
-			type: "POST",
-			dataType: "json",
-			url: ajaxurl,
-			data: data,
-			success: function( response ) {
+			type:		"POST",
+			dataType:	"json",
+			url:		ajaxurl,
+			data:		data,
+			success:	function( response ) {
 				if ( response.success ) {
 					navigateWithURIParams(decodeURIParams());
 				}
 
 			},
-			error: function (ajaxContext) {
+			error:		function( ajaxContext ) {
 				
 			},
-			complete: function() {
+			complete:	function() {
 
 			}
 		});
@@ -587,7 +637,6 @@ WPViews.CTListingScreen = function( $ ) {
 		};
 
 		$.ajax({
-			async: false,
 			type: "GET",
 			dataType: "json",
 			url: ajaxurl,
@@ -1002,10 +1051,10 @@ WPViews.CTListingScreen = function( $ ) {
 		$( 'body' ).append( '<div id="js-wpv-create-ct-form-dialog" class="toolset-shortcode-gui-dialog-container wpv-shortcode-gui-dialog-container js-wpv-shortcode-gui-dialog-container"></div>' );
 		
 		self.dialog_create_ct = $( "#js-wpv-create-ct-form-dialog" ).dialog({
-			autoOpen: false,
-			modal: true,
-			title: ct_listing_texts.dialog_create_dialog_title,
-			minWidth: 600,
+			autoOpen:	false,
+			modal:		true,
+			title:		ct_listing_texts.dialog_create_dialog_title,
+			minWidth:	600,
 			show: { 
 				effect: "blind", 
 				duration: 800 

@@ -10,7 +10,7 @@
 function the_ddlayout($layout = '', $args = array() ) {
     echo get_the_ddlayout($layout, $args);
 }
-
+add_action('the_ddlayout', 'the_ddlayout');
 /**
  * get_the_ddlayout
  *
@@ -46,6 +46,7 @@ function get_the_ddlayout($layout = '', $args = array()) {
 
     return $content;
 }
+add_filter('get_the_ddlayout', 'get_the_ddlayout', 10, 2);
 
 /**
  * @return bool
@@ -78,6 +79,7 @@ function is_ddlayout_assigned()
 {
     return apply_filters( 'ddl-is_ddlayout_assigned', WPDD_Layouts_RenderManager::getInstance()->item_has_ddlayout_assigned() );
 }
+add_filter('is_ddlayout_assigned', 'is_ddlayout_assigned');
 
 function ddlayout_set_framework ( $framework ) {
     $framework_manager = WPDD_Layouts_CSSFrameworkOptions::getInstance();

@@ -15,38 +15,40 @@ WPV_Search_Filter::on_load();
 *
 * Views Search Filter Class
 *
-* @since 1.7.0
+* @since 1.7
+* @since 2.1	Added to WordPress Archives
+* @since 2.1	Include this file only when editing a View or WordPress Archive, or when doing AJAX
 */
 
 class WPV_Search_Filter {
 
     static function on_load() {
-        add_action( 'init', array( 'WPV_Search_Filter', 'init' ) );
-		add_action( 'admin_init', array( 'WPV_Search_Filter', 'admin_init' ) );
+        add_action( 'init',			array( 'WPV_Search_Filter', 'init' ) );
+		add_action( 'admin_init',	array( 'WPV_Search_Filter', 'admin_init' ) );
     }
 
     static function init() {
-		
+		wp_register_script( 'views-filter-search-js', ( WPV_URL . "/res/js/filters/views_filter_search.js" ), array( 'views-filters-js' ), WPV_VERSION, true );
     }
 	
 	static function admin_init() {
-		// Register filters in lists and dialogs
-		add_filter( 'wpv_filters_add_filter', array( 'WPV_Search_Filter', 'wpv_filters_add_filter_post_search' ), 1, 1 );
-		add_action( 'wpv_add_filter_list_item', array( 'WPV_Search_Filter', 'wpv_add_filter_post_search_list_item' ), 1, 1 );
-		add_filter( 'wpv_taxonomy_filters_add_filter', array( 'WPV_Search_Filter', 'wpv_filters_add_filter_taxonomy_search' ), 1, 1 );
-		add_action( 'wpv_add_taxonomy_filter_list_item', array( 'WPV_Search_Filter', 'wpv_add_filter_taxonomy_search_list_item' ), 1, 1 );
-		// AJAX calbacks
-		add_action( 'wp_ajax_wpv_filter_post_search_update', array( 'WPV_Search_Filter', 'wpv_filter_post_search_update_callback' ) );
-			// TODO This might not be needed here, maybe for summary filter
-			add_action( 'wp_ajax_wpv_filter_post_search_sumary_update', array( 'WPV_Search_Filter', 'wpv_filter_post_search_sumary_update_callback' ) );
-		add_action( 'wp_ajax_wpv_filter_post_search_delete', array( 'WPV_Search_Filter', 'wpv_filter_post_search_delete_callback' ) );
-		add_filter( 'wpv-view-get-summary', array( 'WPV_Search_Filter', 'wpv_post_search_summary_filter' ), 5, 3 );
-		add_action( 'wp_ajax_wpv_filter_taxonomy_search_update', array( 'WPV_Search_Filter', 'wpv_filter_taxonomy_search_update_callback' ) );
-			// TODO This might not be needed here, maybe for summary filter
-			add_action( 'wp_ajax_wpv_filter_taxonomy_search_sumary_update', array( 'WPV_Search_Filter', 'wpv_filter_taxonomy_search_sumary_update_callback' ) );
-		add_action( 'wp_ajax_wpv_filter_taxonomy_search_delete', array( 'WPV_Search_Filter', 'wpv_filter_taxonomy_search_delete_callback' ) );
-		// Register scripts
-		add_action( 'admin_enqueue_scripts', array( 'WPV_Search_Filter','admin_enqueue_scripts' ), 20 );
+		// Register filters in dialogs
+		add_filter( 'wpv_filters_add_filter',						array( 'WPV_Search_Filter', 'wpv_filters_add_filter_post_search' ), 1, 1 );
+		add_filter( 'wpv_filters_add_archive_filter',				array( 'WPV_Search_Filter', 'wpv_filters_add_archive_filter_post_search' ), 1, 1 );
+		add_filter( 'wpv_taxonomy_filters_add_filter',				array( 'WPV_Search_Filter', 'wpv_filters_add_filter_taxonomy_search' ), 1, 1 );
+		// Register filters in lists
+		add_action( 'wpv_add_filter_list_item',						array( 'WPV_Search_Filter', 'wpv_add_filter_post_search_list_item' ), 1, 1 );
+		add_action( 'wpv_add_taxonomy_filter_list_item',			array( 'WPV_Search_Filter', 'wpv_add_filter_taxonomy_search_list_item' ), 1, 1 );
+		// Update and delete
+		add_action( 'wp_ajax_wpv_filter_post_search_update',		array( 'WPV_Search_Filter', 'wpv_filter_post_search_update_callback' ) );
+		add_action( 'wp_ajax_wpv_filter_post_search_delete',		array( 'WPV_Search_Filter', 'wpv_filter_post_search_delete_callback' ) );
+		add_action( 'wp_ajax_wpv_filter_taxonomy_search_update',	array( 'WPV_Search_Filter', 'wpv_filter_taxonomy_search_update_callback' ) );
+		add_action( 'wp_ajax_wpv_filter_taxonomy_search_delete',	array( 'WPV_Search_Filter', 'wpv_filter_taxonomy_search_delete_callback' ) );
+		// Scripts
+		add_action( 'admin_enqueue_scripts',						array( 'WPV_Search_Filter','admin_enqueue_scripts' ), 20 );
+		// TODO This might not be needed here, maybe for summary filter
+		//add_action( 'wp_ajax_wpv_filter_post_search_sumary_update', 	array( 'WPV_Search_Filter', 'wpv_filter_post_search_sumary_update_callback' ) );
+		//add_action( 'wp_ajax_wpv_filter_taxonomy_search_sumary_update', array( 'WPV_Search_Filter', 'wpv_filter_taxonomy_search_sumary_update_callback' ) );
 	}
 	
 	/**
@@ -58,10 +60,7 @@ class WPV_Search_Filter {
 	*/
 	
 	static function admin_enqueue_scripts( $hook ) {
-		wp_register_script( 'views-filter-search-js', ( WPV_URL . "/res/js/redesign/views_filter_search.js" ), array( 'views-filters-js'), WPV_VERSION, true );
-		if ( isset( $_GET['page'] ) && $_GET['page'] == 'views-editor' ) {
-			wp_enqueue_script( 'views-filter-search-js' );
-		}
+		wp_enqueue_script( 'views-filter-search-js' );
 	}
 	
 	//-----------------------
@@ -80,10 +79,30 @@ class WPV_Search_Filter {
 
 	static function wpv_filters_add_filter_post_search( $filters ) {
 		$filters['post_search'] = array(
-			'name' => __( 'Post search', 'wpv-views' ),
-			'present' => 'search_mode',
-			'callback' => array( 'WPV_Search_Filter', 'wpv_add_new_filter_post_search_list_item' ),
-			'group' => __( 'Post filters', 'wpv-views' )
+			'name'		=> __( 'Post search', 'wpv-views' ),
+			'present'	=> 'search_mode',
+			'callback'	=> array( 'WPV_Search_Filter', 'wpv_add_new_filter_post_search_list_item' ),
+			'group'		=> __( 'Post filters', 'wpv-views' )
+		);
+		return $filters;
+	}
+	
+	/**
+	* wpv_filters_add_archive_filter_post_search
+	*
+	* Register the search filter in the popup dialog on WPAs.
+	*
+	* @param $filters
+	*
+	* @since 2.1
+	*/
+
+	static function wpv_filters_add_archive_filter_post_search( $filters ) {
+		$filters['post_search'] = array(
+			'name'		=> __( 'Post search', 'wpv-views' ),
+			'present'	=> 'search_mode',
+			'callback'	=> array( 'WPV_Search_Filter', 'wpv_add_new_archive_filter_post_search_list_item' ),
+			'group'		=> __( 'Post filters', 'wpv-views' )
 		);
 		return $filters;
 	}
@@ -98,7 +117,24 @@ class WPV_Search_Filter {
 
 	static function wpv_add_new_filter_post_search_list_item() {
 		$args = array(
-			'search_mode' => array( 'specific' )
+			'view-query-mode'	=> 'normal',
+			'search_mode'		=> array( 'specific' )
+		);
+		WPV_Search_Filter::wpv_add_filter_post_search_list_item( $args );
+	}
+	
+	/**
+	* wpv_add_new_archive_filter_post_search_list_item
+	*
+	* Register the search filter in the filters list for WPAs.
+	*
+	* @since 2.1
+	*/
+
+	static function wpv_add_new_archive_filter_post_search_list_item() {
+		$args = array(
+			'view-query-mode'	=> 'archive',
+			'search_mode'		=> array( 'specific' )
 		);
 		WPV_Search_Filter::wpv_add_filter_post_search_list_item( $args );
 	}
@@ -223,7 +259,7 @@ class WPV_Search_Filter {
 				isset( $filter_search[$set] ) 
 				&& (
 					! isset( $view_array[$set] ) 
-					|| $filter_search[$set] != $filter_search[$set] 
+					|| $view_array[$set] != $filter_search[$set] 
 				)
 			) {
 				if ( is_array( $filter_search[$set] ) ) {
@@ -240,10 +276,14 @@ class WPV_Search_Filter {
 			do_action( 'wpv_action_wpv_save_item', $view_id );
 		}
 		$filter_search['search_mode'] = $filter_search['search_mode'][0];
+		
+		$parametric_search_hints = wpv_get_parametric_search_hints_data( $view_id );
+		
 		$data = array(
-			'id' => $view_id,
-			'message' => __( 'Post search filter saved', 'wpv-views' ),
-			'summary' => wpv_get_filter_post_search_summary_txt( $filter_search )
+			'id'			=> $view_id,
+			'message'		=> __( 'Post search filter saved', 'wpv-views' ),
+			'summary'		=> wpv_get_filter_post_search_summary_txt( $filter_search ),
+			'parametric'	=> $parametric_search_hints
 		);
 		wp_send_json_success( $data );
 	}
@@ -251,7 +291,7 @@ class WPV_Search_Filter {
 	/**
 	* Update search filter summary callback
 	*/
-
+	/*
 	static function wpv_filter_post_search_sumary_update_callback() {
 		$nonce = $_POST["wpnonce"];
 		if ( ! wp_verify_nonce( $nonce, 'wpv_view_filter_post_search_nonce' ) ) {// Not sure about this nonce...
@@ -265,6 +305,7 @@ class WPV_Search_Filter {
 		echo wpv_get_filter_post_search_summary_txt( $filter_search );
 		die();
 	}
+	*/
 	
 	/**
 	* wpv_filter_post_search_delete_callback
@@ -320,28 +361,6 @@ class WPV_Search_Filter {
 			'message' => __( 'Post search filter deleted', 'wpv-views' )
 		);
 		wp_send_json_success( $data );;
-	}
-	
-	/**
-	* wpv_post_search_summary_filter
-	
-	* Show the search filter on the View summary
-	*
-	* @since unknown
-	*
-	* @todo we may need something like that for taxonomy search
-	*/
-
-	static function wpv_post_search_summary_filter( $summary, $post_id, $view_settings ) {
-		if ( isset( $view_settings['query_type']) && $view_settings['query_type'][0] == 'posts' && isset( $view_settings['search_mode'] ) ) {
-			$view_settings['search_mode'] = $view_settings['search_mode'][0];
-			$result = wpv_get_filter_post_search_summary_txt( $view_settings, true );
-			if ( $result != '' && $summary != '' ) {
-				$summary .= '<br />';
-			}
-			$summary .= $result;
-		}
-		return $summary;
 	}
 
 	//-----------------------
@@ -524,7 +543,7 @@ class WPV_Search_Filter {
 	/**
 	* Update taxonomy search filter summary callback
 	*/
-
+	/*
 	static function wpv_filter_taxonomy_search_sumary_update_callback() {
 		$nonce = $_POST["wpnonce"];
 		if ( ! wp_verify_nonce( $nonce, 'wpv_view_filter_taxonomy_search_nonce' ) ) {
@@ -538,6 +557,7 @@ class WPV_Search_Filter {
 		echo wpv_get_filter_taxonomy_search_summary_txt( $filter_search );
 		die();
 	}
+	*/
 	
 	/**
 	* wpv_filter_taxonomy_search_delete_callback
@@ -604,9 +624,10 @@ class WPV_Search_Filter {
 
 	static function wpv_render_post_search_options( $view_settings = array() ) {
 		$defaults = array(
-			'search_mode' => 'specific',
-			'post_search_value' => '',
-			'post_search_content' => 'full_content'
+			'view-query-mode'		=> 'normal',
+			'search_mode'			=> 'specific',
+			'post_search_value'		=> '',
+			'post_search_content'	=> 'full_content'
 		);
 		$view_settings = wp_parse_args( $view_settings, $defaults );
 		?>

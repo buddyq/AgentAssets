@@ -236,7 +236,7 @@ final class CRED_Mail_Handler {
     // new name
     public function onMailFromNameFilter($name) {
         if (isset($this->_from['name']))
-            $name = esc_attr($this->_from['name']);
+            $name = sanitize_text_field($this->_from['name']);
         return $name;
     }
 

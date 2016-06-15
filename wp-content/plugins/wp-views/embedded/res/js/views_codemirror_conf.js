@@ -2,7 +2,12 @@
  * Codemirror configuration.
  */
 
-var WPViews = WPViews || {};
+var WPViews			= WPViews || {},
+	WPV_Toolset		= WPV_Toolset  || {};
+
+if ( typeof WPV_Toolset.CodeMirror_instance === "undefined" ) {
+	WPV_Toolset.CodeMirror_instance = [];
+}
 
 /*
  * 
@@ -236,6 +241,26 @@ WPViews.ViewCodeMirrorUtils = function( $ ) {
 	// CodeMirror panels
 	// ---------------------------------
 	
+	self.add_codemirror_panel = function( args ) {
+		var codemirror_panel_defaults = { 
+			editor:		'',
+			content:	'',
+			keep:		'temporal',
+			type:		''
+		},
+		codemirror_panel_settings = $.extend( {}, codemirror_panel_defaults, args );
+		if ( 
+			codemirror_panel_settings.editor != ''
+			&& codemirror_panel_settings.content != ''
+			&& typeof WPV_Toolset.CodeMirror_instance[ codemirror_panel_settings.editor ] !== 'undefined' 
+		) {
+			codemirror_panel_settings.instance = WPV_Toolset.CodeMirror_instance[ codemirror_panel_settings.editor ];
+		} else {
+			return;
+		}
+		self.codemirror_panel( codemirror_panel_settings.instance, codemirror_panel_settings.content, codemirror_panel_settings.keep, codemirror_panel_settings.type );
+	};
+	
 	self.codemirror_panel = function( instance, content, keep, type ) {
 		
 		var filter_editor_panel = document.createElement( "div" ),
@@ -252,7 +277,7 @@ WPViews.ViewCodeMirrorUtils = function( $ ) {
 		
 		if ( keep == 'dismissable' ) {
 			filter_editor_panel_close = filter_editor_panel.appendChild( document.createElement( "i" ) );
-			filter_editor_panel_close.className = "icon-remove-sign fa fa-times-circle js-wpv-codemirror-panel-close";
+			filter_editor_panel_close.className = "fa fa-times-circle icon-remove-sign js-wpv-codemirror-panel-close";
 		} else if ( keep == 'permanent' ) {
 			
 		} else if ( keep == 'temporal' ) {
@@ -263,7 +288,9 @@ WPViews.ViewCodeMirrorUtils = function( $ ) {
 		filter_editor_panel_instance = instance.addPanel( filter_editor_panel );
 		
 		if ( keep == 'dismissable' ) {
-			CodeMirror.on(filter_editor_panel_close, "click", function() { filter_editor_panel_instance.clear(); });
+			CodeMirror.on( filter_editor_panel_close, "click", function() { 
+				filter_editor_panel_instance.clear(); 
+			});
 		} else if ( keep == 'temporal' ) {
 			setTimeout( function() {
 				filter_editor_panel_instance.clear();
@@ -273,11 +300,20 @@ WPViews.ViewCodeMirrorUtils = function( $ ) {
 	};
 	
 	// ---------------------------------
+	// Init hooks
+	// ---------------------------------
+	
+	self.init_hooks = function() {
+		// Action to add a CodeMirror panel
+		Toolset.hooks.addAction( 'wpv-action-wpv-add-codemirror-panel', self.add_codemirror_panel );
+	};
+	
+	// ---------------------------------
 	// Init
 	// ---------------------------------
 	
 	self.init = function() {
-		
+		self.init_hooks();
 	};
 	
 	self.init();

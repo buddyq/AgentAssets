@@ -439,7 +439,12 @@
 }
 
 .listing-page-table-list .column-used-on li {
-	margin: 0 5px 0 0;
+	margin: 3px 2px 0px 0px;
+        height: 20px;
+}
+.column-used-on .apply-for-all{
+    height: 20px !important;
+    line-height: 19px !important;
 }
 
 .ddl-frameworks {
@@ -587,3 +592,7 @@ a.toolset-disabled-link, a.toolset-disabled-link:hover{color:lightgrey!important
 /* ///// OVERRIDES ///////// */
 div[data-option="wpddl_layouts_integration_notice_shown"]{margin-left:2px!important;max-width:1024px;min-width:750px;margin-top:10px;}
 .ddl-integration-default-layouts{}
+.padding-right-4{padding-right:4px;}
+.ont-color-red{color:#aa0000;}
+.semi-bold{font-weight:600;}
+.ddl-dialog-content.ddl-create-layout-for-post-types p{padding-top:4px;}

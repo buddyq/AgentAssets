@@ -374,7 +374,7 @@ DDLayout.DefaultDialog = function($)
 
                 DDLayout.ddl_admin_page.save_undo();
 
-                wp.hooks.applyFilters('ddl-layouts-before-cell-model-set', target_cell, self.cached_element, this);
+                Toolset.hooks.applyFilters('ddl-layouts-before-cell-model-set', target_cell, self.cached_element, this);
 
                 target_cell.set('cell_type', cell_type);
                 target_cell.set('editorVisualTemplateID', cell_type + '-template');
@@ -416,7 +416,7 @@ DDLayout.DefaultDialog = function($)
 
             }
 
-			wp.hooks.applyFilters('ddl-layouts-before-cell-save', target_cell, self.cached_element, this);
+			Toolset.hooks.applyFilters('ddl-layouts-before-cell-save', target_cell, self.cached_element, this);
 
             DDLayout.ddl_admin_page.save_layout_from_dialog( caller, target_cell_view, self.cached_element, false, self );
         }
@@ -597,7 +597,7 @@ DDLayout.DefaultDialog = function($)
 			container_columns = container_width,
 			$grid = null;
 
-        wp.hooks.applyFilters('ddl-layouts-before-container-model-set', container, container_columns, container_columns, this);
+        Toolset.hooks.applyFilters('ddl-layouts-before-container-model-set', container, container_columns, container_columns, this);
 
 		if (layout_type === 'fluid') {
 			$grid = jQuery('#js-fluid-grid-designer');
@@ -620,7 +620,7 @@ DDLayout.DefaultDialog = function($)
 		var target_cell = target_cell_view.model;
 		target_cell.selected_cell = true;
 
-        wp.hooks.applyFilters('ddl-layouts-before-cell-save', target_cell, container, this);
+        Toolset.hooks.applyFilters('ddl-layouts-before-cell-save', target_cell, container, this);
 
 		DDLayout.ddl_admin_page.replace_selected_cell(container, container_width);
 	};

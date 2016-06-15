@@ -207,7 +207,7 @@ function wpv_filter_tax_requires_current_page( $state, $view_settings ) {
 	}
     if (
 		isset( $view_settings['taxonomy_terms_mode'] ) 
-		&& in_array( $view_settings['taxonomy_terms_mode'], array( 'CURRENT_PAGE', 'top_current_post' ) )
+		&& in_array( $view_settings['taxonomy_terms_mode'], array( 'top_current_post' ) )
 	) {
         $state = true;
     }
@@ -232,7 +232,7 @@ function wpv_filter_tax_requires_parent_post( $state, $view_settings ) {
 	}
     if (
 		isset( $view_settings['taxonomy_terms_mode'] ) 
-		&& in_array( $view_settings['taxonomy_terms_mode'], array( 'current_post_or_parent_post_view' ) )
+		&& in_array( $view_settings['taxonomy_terms_mode'], array( 'CURRENT_PAGE', 'current_post_or_parent_post_view' ) )
 	) {
         $state = true;
     }
@@ -344,7 +344,6 @@ function wpv_filter_taxonomy_term( $tax_query_settings, $view_settings, $view_id
 		$terms_to_include = array();
 		$force_empty_query = false;
 		switch ( $view_settings['taxonomy_terms_mode'] ) {
-			case 'CURRENT_PAGE': // @deprecated on 1.12.1
 			case 'top_current_post':
 				$force_empty_query = true;
 				if ( isset( $taxonomies[$view_settings['taxonomy_type'][0]] ) ) {
@@ -363,6 +362,7 @@ function wpv_filter_taxonomy_term( $tax_query_settings, $view_settings, $view_id
 					$terms_to_include = array();
 				}
 				break;
+			case 'CURRENT_PAGE': // @deprecated on 1.12.1
 			case 'current_post_or_parent_post_view':
 				$force_empty_query = true;
 				if ( isset( $taxonomies[$view_settings['taxonomy_type'][0]] ) ) {

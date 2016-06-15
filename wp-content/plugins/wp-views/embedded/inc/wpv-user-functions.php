@@ -566,6 +566,17 @@ function wpv_resolve_variable_view_settings( $view_settings = array() ) {
 					$view_settings[$vs_key] = 10;
 				}
 				break;
+			case 'pagination':
+				// New pagination model, returning 'default' for no value, used now on WPAs
+				if ( isset( $view_settings[$vs_key]['posts_per_page'] ) ) {
+					$candidate = apply_filters( 'wpv_resolve_variable_values', $view_settings[$vs_key]['posts_per_page'], array( 'filters' => array( 'framework_value' ), 'default' => 'default' ) );
+					if ( is_numeric( $candidate ) ) {
+						$view_settings[$vs_key]['posts_per_page'] = intval( $candidate );
+					} else {
+						$view_settings[$vs_key]['posts_per_page'] = 'default';
+					}
+				}
+				break;
 			case 'rollover':
 				if ( isset( $view_settings[$vs_key]['posts_per_page'] ) ) {
 					$candidate = apply_filters( 'wpv_resolve_variable_values', $view_settings[$vs_key]['posts_per_page'], array( 'filters' => array( 'framework_value' ), 'default' => 10 ) );

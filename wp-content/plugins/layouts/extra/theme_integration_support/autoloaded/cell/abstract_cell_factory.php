@@ -116,26 +116,21 @@ abstract class WPDDL_Cell_Abstract_Cell_Factory  extends WPDD_layout_cell_factor
 		 */
 		ob_start();
 		?>
-			if (typeof themeIntegrationSanitizeOutput != 'function' ) {
-	           function themeIntegrationSanitizeOutput( content ) {
-	           		content = DDL_Helper.sanitizeHelper.stringToDom( content );
-					print( content.innerHTML );
-	           }
-			}
+
 		<?php
 			// if whitespaces in $content we skip the "check for variable"
 			if( strpos( $content, ' ' ) !== false ) {
 		?>
-				themeIntegrationSanitizeOutput( '<?php echo $content; ?>' );
+                print( DDL_Helper.sanitizeHelper.sanitizeOutput( '<?php echo $content; ?>' ) );
 		<?php
 			} else {
 		?>
 				try {
-					var field = content.<?php echo $content; ?>;
-					field = DDL_Helper.sanitizeHelper.strip_srcset_attr( field );
-					themeIntegrationSanitizeOutput( field );
+                    
+                    var field = DL_Helper.sanitizeHelper.get_field_sanitised_value( '<?php echo $content; ?>' );
+                    print( DDL_Helper.sanitizeHelper.sanitizeOutput( field ) );
 				} catch( error ) {
-					themeIntegrationSanitizeOutput( '<?php echo $content; ?>' );
+                    print( DDL_Helper.sanitizeHelper.sanitizeOutput( '<?php echo $content; ?>' ) );
 				}
 		<?php
 			}

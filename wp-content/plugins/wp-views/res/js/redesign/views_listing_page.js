@@ -20,6 +20,14 @@ WPViews.ViewsListingScreen = function( $ ) {
 	self.bulkcombined_target = [];
 	self.bulkcombined_nonce = '';
 	
+	self.calculate_dialog_maxWidth = function() {
+		return ( $( window ).width() - 100 );
+	};
+	
+	self.calculate_dialog_maxHeight = function() {
+		return ( $( window ).height() - 100 );
+	};
+	
 	/**
 	* -----------------
 	* Scan button
@@ -124,20 +132,24 @@ WPViews.ViewsListingScreen = function( $ ) {
 	    e.preventDefault();
 		var dialog_height = $( window ).height() - 100;
 		self.dialog_create_view.dialog( "open" ).dialog({
-			maxHeight: dialog_height,
-			draggable: false,
-			resizable: false,
-			position: { my: "center top+50", at: "center top", of: window }
+			maxHeight:	self.calculate_dialog_maxHeight(),
+			maxWidth:	self.calculate_dialog_maxWidth(),
+			position:	{ 
+				my:			"center top+50", 
+				at:			"center top", 
+				of:			window, 
+				collision:	"none"
+			}
 		});
     });
 	
-	$( document ).on( 'change input cut paste', '.js-view-purpose, .js-new-post_title', function() {
+	$( document ).on( 'change input cut paste', '.js-wpv-purpose, .js-new-post_title', function() {
 	    $( '#js-wpv-create-view-form-dialog' ).find( '.toolset-alert' ).remove();
 		$( '.js-new-post_title' ).removeClass( 'toolset-shortcode-gui-invalid-attr js-toolset-shortcode-gui-invalid-attr' );
 		var thiz_message_container = $( this ).closest( '#js-wpv-create-view-form-dialog' ).find( '.js-wpv-error-container' );
 	    if ( 
 			'' != $('input.js-new-post_title').val() 
-			&& 0 < $( 'input.js-view-purpose:checked' ).length
+			&& 0 < $( 'input.js-wpv-purpose:checked' ).length
 		) {
 		    $( '.js-wpv-create-new-view' )
 				.prop( 'disabled', false )
@@ -167,7 +179,7 @@ WPViews.ViewsListingScreen = function( $ ) {
 		thiz_message_container = $( '#js-wpv-create-view-form-dialog .js-wpv-error-container' ),
 		spinnerContainer = $('<div class="wpv-spinner ajax-loader">').insertAfter( thiz ).show(),
 		title = $('.js-new-post_title').val(),
-		purpose = $('input.js-view-purpose:checked').val(),
+		purpose = $('input.js-wpv-purpose:checked').val(),
 		data = {
 			action: 'wpv_create_view',
 			purpose: purpose,
@@ -229,10 +241,14 @@ WPViews.ViewsListingScreen = function( $ ) {
 		self.duplicating_title = thiz.data( 'view-title' );
 		
 		self.dialog_duplicate_view.dialog( "open" ).dialog({
-			maxHeight: dialog_height,
-			draggable: false,
-			resizable: false,
-			position: { my: "center top+50", at: "center top", of: window }
+			maxHeight:	self.calculate_dialog_maxHeight(),
+			maxWidth:	self.calculate_dialog_maxWidth(),
+			position:	{ 
+				my:			"center top+50", 
+				at:			"center top", 
+				of:			window, 
+				collision:	"none"
+			}
 		});
 		
 	});
@@ -451,12 +467,16 @@ WPViews.ViewsListingScreen = function( $ ) {
 		
 		var dialog_height = $( window ).height() - 100;
 		self.dialog_bulkcombined_view.dialog( 'open' ).dialog({
-            title: ( self.bulkcombined_action == 'trash' ) ? views_listing_texts.dialog_bulktrash_dialog_title : views_listing_texts.dialog_bulkdel_dialog_title,
-            width: 770,
-            maxHeight: dialog_height,
-            draggable: false,
-            resizable: false,
-			position: { my: "center top+50", at: "center top", of: window }
+            title:		( self.bulkcombined_action == 'trash' ) ? views_listing_texts.dialog_bulktrash_dialog_title : views_listing_texts.dialog_bulkdel_dialog_title,
+            width:		770,
+			maxHeight:	self.calculate_dialog_maxHeight(),
+			maxWidth:	self.calculate_dialog_maxWidth(),
+			position:	{ 
+				my:			"center top+50", 
+				at:			"center top", 
+				of:			window, 
+				collision:	"none"
+			}
         });
 		
 		self.manage_dialog_bulkcombined_view_button_labels();
@@ -552,10 +572,12 @@ WPViews.ViewsListingScreen = function( $ ) {
 	self.init_dialogs = function() {
 		
 		self.dialog_create_view = $( "#js-wpv-create-view-form-dialog" ).dialog({
-			autoOpen: false,
-			modal: true,
-			title: views_listing_texts.dialog_create_dialog_title,
-			minWidth: 600,
+			autoOpen:	false,
+			modal:		true,
+			title:		views_listing_texts.dialog_create_dialog_title,
+			minWidth:	600,
+			draggable:	false,
+			resizable:	false,
 			show: { 
 				effect: "blind", 
 				duration: 800 
@@ -563,8 +585,8 @@ WPViews.ViewsListingScreen = function( $ ) {
 			open: function( event, ui ) {
 				$( 'body' ).addClass( 'modal-open' );
 				$( '.js-new-post_title' ).focus().val( '' );
-				if ( 0 < $('input.js-view-purpose:checked').length)  {
-					$( 'input.js-view-purpose:checked' ).prop('checked', false);
+				if ( 0 < $('input.js-wpv-purpose:checked').length)  {
+					$( 'input.js-wpv-purpose:checked' ).prop('checked', false);
 				}
 				disablePrimaryButton( $( '.js-wpv-create-new-view' ) );
 				$( '#js-wpv-create-view-form-dialog .toolset-alert' ).remove();
@@ -593,10 +615,12 @@ WPViews.ViewsListingScreen = function( $ ) {
 		});
 		
 		self.dialog_duplicate_view = $( "#js-wpv-duplicate-view-dialog" ).dialog({
-			autoOpen: false,
-			modal: true,
-			title: views_listing_texts.dialog_duplicate_dialog_title,
-			minWidth: 600,
+			autoOpen:	false,
+			modal:		true,
+			title:		views_listing_texts.dialog_duplicate_dialog_title,
+			minWidth:	600,
+			draggable:	false,
+			resizable:	false,
 			show: { 
 				effect: "blind", 
 				duration: 800 
@@ -634,10 +658,12 @@ WPViews.ViewsListingScreen = function( $ ) {
 		$( 'body' ).append( '<div id="js-wpv-dialog-bulkcombined-view" class="toolset-shortcode-gui-dialog-container wpv-shortcode-gui-dialog-container js-wpv-shortcode-gui-dialog-container"></div>' );
 		
 		self.dialog_bulkcombined_view = $( "#js-wpv-dialog-bulkcombined-view" ).dialog({
-			autoOpen: false,
-			modal: true,
-			title: views_listing_texts.dialog_bulktrash_dialog_title,
-			minWidth: 600,
+			autoOpen:	false,
+			modal:		true,
+			title:		views_listing_texts.dialog_bulktrash_dialog_title,
+			minWidth:	600,
+			draggable:	false,
+			resizable:	false,
 			show: { 
 				effect: "blind", 
 				duration: 800 

@@ -10,15 +10,17 @@
 */
 
 /**
- * Views-Shortcode: wpv-filter-start
- *
- * Description: The [wpv-filter-start] shortcode specifies the start point
- * for any controls that the views filter generates. Example controls are
- * pagination controls and search boxes. This shortcode is usually added
- * automatically to the Views Meta HTML.
- *
- * @param	hide	"true"	Optional, will add a display:none style to the form HTML element
- */
+* Views-Shortcode: wpv-filter-start
+*
+* Description: The [wpv-filter-start] shortcode specifies the start point
+* for any controls that the views filter generates. Example controls are
+* pagination controls and search boxes. This shortcode is usually added
+* automatically to the Views Meta HTML.
+*
+* @param	hide	"true"	Optional, will add a display:none style to the form HTML element
+*
+* @todo Switch .js-wpv-filter-data-for-this-form into a form data attribute that we can init on document.ready and refresh when neeeded
+*/
 add_shortcode( 'wpv-filter-start', 'wpv_filter_shortcode_start' );
 
 function wpv_filter_shortcode_start( $atts ) {
@@ -26,7 +28,7 @@ function wpv_filter_shortcode_start( $atts ) {
 	$view_settings			= apply_filters( 'wpv_filter_wpv_get_view_settings', array() );
 	$view_layout_settings	= apply_filters( 'wpv_filter_wpv_get_view_layout_settings', array() );
 	$view_attrs				= apply_filters( 'wpv_filter_wpv_get_view_shortcodes_attributes', array() );
-	$view_count				= apply_filters( 'wpv_filter_wpv_get_view_unique_hash', '' );
+	$view_count				= apply_filters( 'wpv_filter_wpv_get_object_unique_hash', '', $view_settings );
 	$widget_view_id			= apply_filters( 'wpv_filter_wpv_get_widget_view_id', 0 );
 	$view_max_pages			= apply_filters( 'wpv_filter_wpv_get_max_pages', 1 );
 	$is_required			= _wpv_filter_is_form_required();
@@ -150,39 +152,214 @@ function wpv_filter_shortcode_start( $atts ) {
 			$ajax_after = esc_attr( $view_settings['dps']['ajax_results_after'] );
         }
         
-        $url = get_permalink();
+        //$url = get_permalink();
 		
-		$sort_id = '';
-		$sort_dir = '';
-		if ( $view_settings['query_type'][0] == 'posts' ) {
-			$sort_id = $view_settings['orderby'];
-			$sort_dir = strtolower( $view_settings['order'] );
+		$pagination_permalinks = apply_filters( 'wpv_filter_wpv_get_pagination_permalinks', array(), $view_settings, $view_id );
+		$url = $pagination_permalinks['first'];
+		
+		$view_url_data			= get_view_allowed_url_parameters( $view_id );
+		$query_args_remove		= wp_list_pluck( $view_url_data, 'attribute' );
+		$query_args_remove[]	= 'lang';
+		$query_args_remove[]	= 'wpv_sort_orderby';
+		$query_args_remove[]	= 'wpv_sort_order';
+		$query_args_remove[]	= 'wpv_aux_current_post_id';
+		$query_args_remove[]	= 'wpv_aux_parent_post_id';
+		$query_args_remove[]	= 'wpv_aux_parent_term_id';
+		$query_args_remove[]	= 'wpv_aux_parent_user_id';
+		
+		$url = remove_query_arg(
+			$query_args_remove,
+			$url
+		);
+		
+		$sort_orderby		= '';
+		$sort_order			= '';
+		$sort_orderby_as	= '';
+		
+		if ( 
+			! isset( $view_settings['view-query-mode'] )
+			|| ( 'normal' == $view_settings['view-query-mode'] ) 
+		) {
+			$query_mode = 'normal';
+		} else {
+			// we assume 'archive' or 'layouts-loop'
+			$query_mode = 'archive';
 		}
-		if ( $view_settings['query_type'][0] == 'taxonomy' ) {
-			$sort_id = $view_settings['taxonomy_orderby'];
-			$sort_dir = strtolower( $view_settings['taxonomy_order'] );
+		
+		switch ( $query_mode ) {
+			case 'archive':
+				$sort_orderby = $view_settings['orderby'];
+				$sort_order = strtolower( $view_settings['order'] );
+				$sort_orderby_as = strtolower( $view_settings['orderby_as'] );
+				break;
+			default:
+				$query_type = $view_settings['query_type'][0];
+				switch ( $query_type ) {
+					case 'posts':
+						$sort_orderby = $view_settings['orderby'];
+						$sort_order = strtolower( $view_settings['order'] );
+						$sort_orderby_as = strtolower( $view_settings['orderby_as'] );
+						break;
+					case 'taxonomy':
+						$sort_orderby = $view_settings['taxonomy_orderby'];
+						$sort_order = strtolower( $view_settings['taxonomy_order'] );
+						$sort_orderby_as = strtolower( $view_settings['taxonomy_orderby_as'] );
+						break;
+					case 'users':
+						$sort_orderby = $view_settings['users_orderby'];
+						$sort_order = strtolower( $view_settings['users_order'] );
+						$sort_orderby_as = '';
+						break;
+				}
+				break;
 		}
-		if ( $view_settings['query_type'][0] == 'users' ) {
-			$sort_id = $view_settings['users_orderby'];
-			$sort_dir = strtolower( $view_settings['users_order'] );
-		}
-
+		
 		if (
-			isset( $_GET['wpv_sort_orderby'] ) 
-			&& esc_attr( $_GET['wpv_sort_orderby'] ) != '' 
-			&& isset( $_GET['wpv_view_count'] ) 
+			isset( $_GET['wpv_view_count'] ) 
 			&& esc_attr( $_GET['wpv_view_count'] ) == $view_count
 		) {
-			$sort_id = esc_attr( $_GET['wpv_sort_orderby'] );
+			if (
+				isset( $_GET['wpv_sort_orderby'] ) 
+				&& esc_attr( $_GET['wpv_sort_orderby'] ) != '' 
+			) {
+				$sort_orderby = esc_attr( $_GET['wpv_sort_orderby'] );
+			}
+			if (
+				isset( $_GET['wpv_sort_order'] ) 
+				&& esc_attr( $_GET['wpv_sort_order'] ) != '' 
+			) {
+				$sort_order = esc_attr( $_GET['wpv_sort_order'] );
+			}
+			if (
+				isset( $_GET['wpv_sort_orderby_as'] ) 
+				&& esc_attr( $_GET['wpv_sort_orderby_as'] ) != '' 
+			) {
+				$sort_orderby_as = esc_attr( $_GET['wpv_sort_orderby_as'] );
+			}
 		}
-		if (
-			isset( $_GET['wpv_sort_order'] ) 
-			&& esc_attr( $_GET['wpv_sort_order'] ) != '' 
-			&& isset( $_GET['wpv_view_count'] ) 
-			&& esc_attr( $_GET['wpv_view_count'] ) == $view_count
-		) {
-			$sort_dir = esc_attr( $_GET['wpv_sort_order'] );
+		
+		// @todo Switch .js-wpv-filter-data-for-this-form into a form data attribute that we can init on document.ready and refresh when neeeded
+		// @note Mind that this could be served from cache, so we better have a caching cleaering mechanism that runs only once...
+		
+		$parametric_data = array(
+			'query'				=> $query_mode,
+			'id'				=> $view_id,
+			'view_id'			=> $view_id,
+			'widget_id'			=> $widget_view_id,
+			'view_hash'			=> $view_count,
+			'action'			=> $url,
+			'sort'				=> array(
+									'orderby'		=> $sort_orderby,
+									'order'			=> $sort_order,
+									'orderby_as'	=> $sort_orderby_as,
+									),
+			'orderby'			=> $sort_orderby,
+			'order'				=> $sort_order,
+			'orderby_as'		=> $sort_orderby_as,
+			'ajax_form'			=> '',// 'disabled'|'enabled'
+			'ajax_results'		=> '',// 'disabled'|'onsubmit'|'enabled'
+			'effect'			=> 'fade',
+			'prebefore'			=> $ajax_pre_before,
+			'before'			=> $ajax_before,
+			'after'				=> $ajax_after
+		);
+		
+		$view_attrs_to_keep = $view_attrs;
+		if ( isset( $view_attrs_to_keep['name'] ) ) {
+			unset( $view_attrs_to_keep['name'] );
 		}
+		
+		$parametric_data['attributes'] = $view_attrs_to_keep;
+		
+		$view_auxiliar_requires = array(
+			'current_post_id'	=> 0,
+			'parent_post_id'	=> 0,
+			'parent_term_id'	=> 0,
+			'parent_user_id'	=> 0
+		);
+		
+		/**
+		* wpv_filter_requires_current_page
+		*
+		* Whether the current View requires the current page for any filter
+		*
+		* @param $requires_current_page boolean
+		* @param $view_settings
+		*
+		* @since unknown
+		* @todo move to a data attribute, or use directly from there
+		*/
+        $requires_current_page = apply_filters('wpv_filter_requires_current_page', false, $view_settings);
+        if ( $requires_current_page ) {
+            $current_post = apply_filters( 'wpv_filter_wpv_get_top_current_post', null );
+            if (
+				$current_post 
+				&& isset( $current_post->ID ) 
+			) {
+				$view_auxiliar_requires['current_post_id'] = $current_post->ID;
+            }
+        }
+		
+		/**
+		* wpv_filter_requires_parent_post
+		*
+		* Whether the current View is nested and requires the parent term for any filter
+		*
+		* @param $requires_parent_term boolean
+		* @param $view_settings
+		*
+		* @since unknown
+		*/
+		$requires_parent_post = apply_filters( 'wpv_filter_requires_parent_post', false, $view_settings );
+		if ( $requires_parent_post ) {
+            $current_post = apply_filters( 'wpv_filter_wpv_get_current_post', null );
+            if (
+				$current_post 
+				&& isset( $current_post->ID ) 
+			) {
+				$view_auxiliar_requires['parent_post_id'] = $current_post->ID;
+            }
+        }
+		
+		/**
+		* wpv_filter_requires_parent_term
+		*
+		* Whether the current View is nested and requires the parent term for any filter
+		*
+		* @param $requires_parent_term boolean
+		* @param $view_settings
+		*
+		* @since unknown
+		*/
+		$requires_parent_term = apply_filters( 'wpv_filter_requires_parent_term', false, $view_settings );
+		if ( $requires_parent_term ) {
+            $parent_term_id = apply_filters( 'wpv_filter_wpv_get_parent_view_taxonomy', null );
+            if ( $parent_term_id ) {
+				$view_auxiliar_requires['parent_term_id'] = $parent_term_id;
+            }
+        }
+		
+		/**
+		* wpv_filter_requires_parent_user
+		*
+		* Whether the current View is nested and requires the parent user for any filter
+		*
+		* @param $requires_parent_user boolean
+		* @param $view_settings
+		*
+		* @since unknown
+		*/
+		$requires_parent_user = apply_filters( 'wpv_filter_requires_parent_user', false, $view_settings );
+		if ( $requires_parent_user ) {
+            $parent_user_id = apply_filters( 'wpv_filter_wpv_get_parent_view_user', null );
+            if ( $parent_user_id ) {
+				$view_auxiliar_requires['parent_user_id'] = $parent_user_id;
+            }
+        }
+		
+		$parametric_data['environment'] = $view_auxiliar_requires;
+		
+		$parametric_data = apply_filters( 'wpv_filter_wpv_get_parametric_settings', $parametric_data, $view_settings );
 		
         $out = '<form' 
 			. $hide 
@@ -195,8 +372,12 @@ function wpv_filter_shortcode_start( $atts ) {
 			. ' data-viewid="' . $view_id . '"'
 			. ' data-viewhash="' . base64_encode( json_encode( $view_attrs ) ) . '"'
 			. ' data-viewwidgetid="' . intval( $widget_view_id ) . '"'
-			. ' data-orderby="' . $sort_id . '"'
-			. ' data-order="' . $sort_dir . '"'
+			. ' data-orderby="' . $sort_orderby . '"'
+			. ' data-order="' . $sort_order . '"'
+			. ' data-orderbyas="' . $sort_orderby_as . '"'
+			. ' data-parametric="' . esc_js( wp_json_encode( $parametric_data ) ) . '"'
+			. ' data-attributes="' . esc_js( wp_json_encode( $view_attrs_to_keep ) ) . '"'
+			. ' data-environment="' . esc_js( wp_json_encode( $view_auxiliar_requires ) ) . '"'
 			. '>';
         
         $out .= '<input'
@@ -211,31 +392,24 @@ function wpv_filter_shortcode_start( $atts ) {
 			. ' data-ajaxbefore="' . $ajax_before . '"'
 			. ' data-ajaxafter="' . $ajax_after . '"'
 			. ' />';
-        
-		// Set a hidden input for the View attributes, so we can pass them if needed
-		if ( isset( $view_attrs['name'] ) ) {
-			unset( $view_attrs['name'] );
-		}
-		if ( !empty( $view_attrs ) ) {
-			$att_data = '';
-			foreach ( $view_attrs as $att_key => $att_val ) {
-				$att_data .= ' data-' . $att_key . '="' . esc_attr( $att_val ) . '"';
-			}
-			$out .= '<input type="hidden" class="js-wpv-view-attributes"' . $att_data . ' />';
-		}
 		
         // add hidden inputs for any url parameters.
         // We need these for when the form is submitted.
 		// @todo this is soooo wrong.... what happens with arrays?
         $url_query = parse_url( $url, PHP_URL_QUERY );
         if ( $url_query != '' ) {
-            $query_parts = explode( '&', $url_query );
-            foreach($query_parts as $param) {
-                $item = explode( '=', $param );
-                if ( strpos( $item[0], 'wpv_' ) !== 0 ) {
-                    $out .= '<input id="wpv_param_' . $item[0] . '" type="hidden" name="' . $item[0] . '" value="' . $item[1] . '" />';
-                }
-            }
+			$url_query_args = wp_parse_args( $url_query );
+			foreach ( $url_query_args as $url_key => $url_value ) {
+				if ( strpos( $url_key, 'wpv_' ) !== 0 ) {
+					if ( is_array( $url_value ) ) {
+						foreach ( $url_value as $url_value_counter => $url_value_item ) {
+							$out .= '<input id="wpv_param_' . esc_attr( $url_key . '_' . $url_value_counter ) . '" type="hidden" name="' . esc_attr( $url_key ) . '[]" value="' . esc_attr( $url_value_item ) . '" />';
+						}
+					} else if ( is_string( $url_value ) ) {
+						$out .= '<input id="wpv_param_' . esc_attr( $url_key ) . '" type="hidden" name="' . esc_attr( $url_key ) . '" value="' . esc_attr( $url_value ) . '" />';
+					}
+				}
+			}
         }
         
         /**
@@ -248,89 +422,7 @@ function wpv_filter_shortcode_start( $atts ) {
         */
         
         $out .= '<input class="wpv_view_count wpv_view_count-' . $view_count . '" type="hidden" name="wpv_view_count" value="' . $view_count . '" />';
-    
-        $requires_current_page = false;
-		/**
-		* wpv_filter_requires_current_page
-		*
-		* Whether the current View requires the current page for any filter
-		*
-		* @param $requires_current_page boolean
-		* @param $view_settings
-		*
-		* @since unknown
-		* @todo move to a data attribute, or use directly from there
-		*/
-        $requires_current_page = apply_filters('wpv_filter_requires_current_page', $requires_current_page, $view_settings);
-        if ( $requires_current_page ) {
-            $current_post = apply_filters( 'wpv_filter_wpv_get_top_current_post', null );
-            if (
-				$current_post 
-				&& isset( $current_post->ID ) 
-			) {
-                $out .= '<input class="wpv_aux_current_post_id wpv_aux_current_post_id-' . esc_attr( $view_count) . '" type="hidden" name="wpv_aux_current_post_id" value="' . esc_attr( $current_post->ID ) . '" class="js-wpv-keep-on-clear" />';
-            }
-        }
 		
-		$requires_parent_post = false;
-		/**
-		* wpv_filter_requires_parent_post
-		*
-		* Whether the current View is nested and requires the parent term for any filter
-		*
-		* @param $requires_parent_term boolean
-		* @param $view_settings
-		*
-		* @since unknown
-		*/
-		$requires_parent_post = apply_filters( 'wpv_filter_requires_parent_post', $requires_parent_post, $view_settings );
-		if ( $requires_parent_post ) {
-            $current_post = apply_filters( 'wpv_filter_wpv_get_current_post', null );
-            if (
-				$current_post 
-				&& isset( $current_post->ID ) 
-			) {
-                $out .= '<input class="wpv_aux_parent_post_id wpv_aux_parent_post_id-' . esc_attr( $view_count) . '" type="hidden" name="wpv_aux_parent_post_id" value="' . esc_attr( $current_post->ID ) . '" class="js-wpv-keep-on-clear" />';
-            }
-        }
-		$requires_parent_term = false;
-		/**
-		* wpv_filter_requires_parent_term
-		*
-		* Whether the current View is nested and requires the parent term for any filter
-		*
-		* @param $requires_parent_term boolean
-		* @param $view_settings
-		*
-		* @since unknown
-		*/
-		$requires_parent_term = apply_filters( 'wpv_filter_requires_parent_term', $requires_parent_term, $view_settings );
-		if ( $requires_parent_term ) {
-            $parent_term_id = apply_filters( 'wpv_filter_wpv_get_parent_view_taxonomy', null );
-            if ( $parent_term_id ) {
-                $out .= '<input class="wpv_aux_parent_term_id wpv_aux_parent_term_id-' . esc_attr( $view_count ) . '" type="hidden" name="wpv_aux_parent_term_id" value="' . esc_attr( $parent_term_id ) . '" class="js-wpv-keep-on-clear" />';
-            }
-        }
-		
-		$requires_parent_user = false;
-		/**
-		* wpv_filter_requires_parent_user
-		*
-		* Whether the current View is nested and requires the parent user for any filter
-		*
-		* @param $requires_parent_user boolean
-		* @param $view_settings
-		*
-		* @since unknown
-		*/
-		$requires_parent_user = apply_filters( 'wpv_filter_requires_parent_user', $requires_parent_user, $view_settings );
-		if ( $requires_parent_user ) {
-            $parent_user_id = apply_filters( 'wpv_filter_wpv_get_parent_view_user', null );
-            if ( $parent_user_id ) {
-                $out .= '<input class="wpv_aux_parent_user_id wpv_aux_parent_user_id-' . esc_attr( $view_count ) . '" type="hidden" name="wpv_aux_parent_user_id" value="' . esc_attr( $parent_user_id ) . '" class="js-wpv-keep-on-clear" />';
-            }
-        }
-		        
         // Rollover
         if (isset($view_settings['pagination']['mode']) && $view_settings['pagination']['mode'] == 'rollover') {
             wpv_pagination_rollover_shortcode();
@@ -380,9 +472,8 @@ function wpv_filter_shortcode_start( $atts ) {
 add_shortcode('wpv-filter-end', 'wpv_filter_shortcode_end');
 function wpv_filter_shortcode_end($atts){
 	
-	global $WP_Views;
-	$view_id = $WP_Views->get_current_view();
-	$view_settings = $WP_Views->get_view_settings();
+	$view_id			= apply_filters( 'wpv_filter_wpv_get_current_view', null );
+	$view_settings		= apply_filters( 'wpv_filter_wpv_get_object_settings', array() );
 	$is_required = false;
 	$out = '';
 	
@@ -412,38 +503,60 @@ function wpv_filter_shortcode_end($atts){
 	*/
 	
 	$out = apply_filters( 'wpv_filter_end_filter_form', $out, $view_settings, $view_id, $is_required );
-    $WP_Views->set_force_disable_dependant_parametric_search( false );
+	do_action( 'wpv_action_wpv_force_disable_dps', false );
     return $out;
 }
     
 function _wpv_filter_is_form_required() {
-    global $WP_Views;
 
-    if ($WP_Views->rendering_views_form()) {
+    if ( apply_filters( 'wpv_filter_wpv_is_rendering_form_view', false ) ) {
         return true;
     }
     
-    $view_layout_settings = $WP_Views->get_view_layout_settings();
-
-    if (isset($view_layout_settings['style']) && $view_layout_settings['style'] == 'table_of_fields') {
-        // required for table sorting
+	$view_settings			= apply_filters( 'wpv_filter_wpv_get_object_settings', array() );
+    $view_layout_settings	= apply_filters( 'wpv_filter_wpv_get_object_layout_settings', array() );
+	
+	// Tabe sorting
+    if (
+		isset( $view_layout_settings['style'] ) 
+		&& $view_layout_settings['style'] == 'table_of_fields' 
+	) {
         return true;
     }
 
-    $view_settings = $WP_Views->get_view_settings();
-    if ($view_settings['pagination'][0] == 'enable' || $view_settings['pagination']['mode'] == 'rollover') {
+    // Its a View with pagination
+    if (
+		(
+			isset ( $view_settings['pagination'][0] )
+			&& $view_settings['pagination'][0] == 'enable' 
+		) || (
+			isset( $view_settings['pagination']['mode'] ) 
+			&& $view_settings['pagination']['mode'] == 'rollover'
+		)
+	) {
         return true;
     }
-
+	// Its a WordPress Archive with pagination
+	if (
+		isset( $view_settings['pagination']['type'] ) 
+		&& ( ! in_array( $view_settings['pagination']['type'], array( 'disabled', 'paged' ) ) )
+	) {
+		return true;
+	}
+	
+	// Contains a parametric search with filters
     $meta_html = isset( $view_settings['filter_meta_html'] ) ? $view_settings['filter_meta_html'] : '';
-	if(preg_match('#\\[wpv-control.*?\\]#is', $meta_html, $matches)) {
-	    if ($matches[0] != '') {
+	if ( preg_match('#\\[wpv-control.*?\\]#is', $meta_html, $matches ) ) {
+	    if ( $matches[0] != '' ) {
 	        return true;
 	    }
 	}
 
-
-    if (isset($view_settings['post_search_value']) || isset($view_settings['taxonomy_search_value'])) {
+	// Has a search query filter
+    if (
+		isset( $view_settings['post_search_value'] ) 
+		|| isset( $view_settings['taxonomy_search_value'] ) 
+	) {
         return true;
     }
     
@@ -485,8 +598,7 @@ function wpv_filter_shortcode_submit( $atts ){
 				$atts 
 			)
         );
-        global $WP_Views;
-        $view_settings = $WP_Views->get_view_settings();
+        $view_settings = apply_filters( 'wpv_filter_wpv_get_object_settings', array() );
 		$classnames = array();
 		$class_to_add = '';
         $hide_to_add = '';
@@ -524,7 +636,7 @@ function wpv_filter_shortcode_submit( $atts ){
 			$class_to_add = ' class="' . implode( ' ', $classnames ) . '"';
 		}        
         
-		$aux_array = $WP_Views->view_used_ids;
+		$aux_array = apply_filters( 'wpv_filter_wpv_get_rendered_views_ids', array() );
 		$view_name = get_post_field( 'post_name', end($aux_array));
         $name = wpv_translate( 'submit_name', $name, false, 'View ' . $view_name );
 		
@@ -565,13 +677,11 @@ function wpv_post_count($atts){
     extract(
         shortcode_atts( array(), $atts )
     );
-
-    global $WP_Views;
     
-    $query = $WP_Views->get_query();
+    $post_query = apply_filters( 'wpv_filter_wpv_get_post_query', null );
     
-    if ($query) {
-        return $query->post_count;
+    if ( $post_query ) {
+        return $post_query->post_count;
     } else {
         return '';
     }
@@ -602,28 +712,36 @@ function wpv_items_count($atts){
      extract(
         shortcode_atts( array(), $atts )
     );
-
-    global $WP_Views;
-
-	if ( isset( $WP_Views->current_view ) ) {
-		$view_settings = $WP_Views->get_view_settings( $WP_Views->current_view );
+	
+	$current_view = apply_filters( 'wpv_filter_wpv_get_current_view', null );
+	$view_settings = array();
+	if ( isset( $current_view ) ) {
+		$view_settings = apply_filters( 'wpv_filter_wpv_get_object_settings', array(), $current_view );
     }
 	$out = '';
 	
-	if ( !isset($view_settings['query_type'][0]) || ( isset($view_settings['query_type'][0]) && $view_settings['query_type'][0]=='posts' )){
-    	$query = $WP_Views->get_query();
-		if ( isset($query->post_count) ){
-			$out = $query->post_count;
-		}
-	}elseif( isset($view_settings['query_type'][0]) && $view_settings['query_type'][0]=='users' ){
-		if ( isset($WP_Views->users_data['item_count_this_page']) ){
-			$out = $WP_Views->users_data['item_count_this_page']; 
-		}
-	}
-	elseif( isset($view_settings['query_type'][0]) && $view_settings['query_type'][0]=='taxonomy' ){
-		if ( isset($WP_Views->taxonomy_data['item_count_this_page']) ){
-			$out = $WP_Views->taxonomy_data['item_count_this_page']; 
-		}
+	$query_type = ( isset( $view_settings['query_type'][0] ) ) ? $view_settings['query_type'][0] : 'posts';
+	
+	switch ( $query_type ) {
+		case 'taxonomy':
+			$taxonomy_query = apply_filters( 'wpv_filter_wpv_get_taxonomy_query', array() );
+			if ( isset( $taxonomy_query['item_count_this_page'] ) ) {
+				$out = $taxonomy_query['item_count_this_page']; 
+			}
+			break;
+		case 'users':
+			$user_query = apply_filters( 'wpv_filter_wpv_get_user_query', array() );
+			if ( isset( $user_query['item_count_this_page'] ) ) {
+				$out = $user_query['item_count_this_page']; 
+			}
+			break;
+		case 'posts':
+		default:
+			$post_query = apply_filters( 'wpv_filter_wpv_get_post_query', null );
+			if ( isset( $post_query->post_count ) ) {
+				$out = $post_query->post_count;
+			}
+			break;
 	}
     
 	return $out;
@@ -657,28 +775,36 @@ function wpv_found_count($atts){
     extract(
         shortcode_atts( array(), $atts )
     );
-
-    global $WP_Views;
-
-	if ( isset( $WP_Views->current_view ) ) {
-		$view_settings = $WP_Views->get_view_settings( $WP_Views->current_view );
+	
+	$current_view = apply_filters( 'wpv_filter_wpv_get_current_view', null );
+	$view_settings = array();
+	if ( isset( $current_view ) ) {
+		$view_settings = apply_filters( 'wpv_filter_wpv_get_object_settings', array(), $current_view );
     }
 	$out = '';
 	
-	if ( !isset($view_settings['query_type'][0]) || ( isset($view_settings['query_type'][0]) && $view_settings['query_type'][0]=='posts' )){
-    	$query = $WP_Views->get_query();
-		if ( isset($query->found_posts) ){
-			$out = $query->found_posts;
-		}
-	}elseif( isset($view_settings['query_type'][0]) && $view_settings['query_type'][0]=='users' ){
-		if ( isset($WP_Views->users_data['item_count']) ){
-			$out = $WP_Views->users_data['item_count']; 
-		}
-	}
-	elseif( isset($view_settings['query_type'][0]) && $view_settings['query_type'][0]=='taxonomy' ){
-		if ( isset($WP_Views->taxonomy_data['item_count']) ){
-			$out = $WP_Views->taxonomy_data['item_count']; 
-		}
+	$query_type = ( isset( $view_settings['query_type'][0] ) ) ? $view_settings['query_type'][0] : 'posts';
+	
+	switch ( $query_type ) {
+		case 'taxonomy':
+			$taxonomy_query = apply_filters( 'wpv_filter_wpv_get_taxonomy_query', array() );
+			if ( isset( $taxonomy_query['item_count'] ) ) {
+				$out = $taxonomy_query['item_count']; 
+			}
+			break;
+		case 'users':
+			$user_query = apply_filters( 'wpv_filter_wpv_get_user_query', array() );
+			if ( isset( $user_query['item_count'] ) ) {
+				$out = $user_query['item_count']; 
+			}
+			break;
+		case 'posts':
+		default:
+			$post_query = apply_filters( 'wpv_filter_wpv_get_post_query', null );
+			if ( isset( $post_query->found_posts ) ) {
+				$out = $post_query->found_posts;
+			}
+			break;
 	}
     
 	return $out;
@@ -708,12 +834,16 @@ function wpv_posts_found($atts, $value){
     extract(
         shortcode_atts( array(), $atts )
     );
-
-    global $WP_Views;
     
-    $query = $WP_Views->get_query();
-
-    if ($query && ($query->found_posts != 0 || $query->post_count != 0)) {
+	$post_query = apply_filters( 'wpv_filter_wpv_get_post_query', null );
+	
+    if (
+		$post_query 
+		&& (
+			$post_query->found_posts != 0 
+			|| $post_query->post_count != 0
+		)
+	) {
         // display the message when posts are found.
         return wpv_do_shortcode($value);
     } else {
@@ -746,12 +876,14 @@ function wpv_no_posts_found($atts, $value){
     extract(
         shortcode_atts( array(), $atts )
     );
-
-    global $WP_Views;
     
-    $query = $WP_Views->get_query();
+    $post_query = apply_filters( 'wpv_filter_wpv_get_post_query', null );
 
-    if ($query && $query->found_posts == 0 && $query->post_count == 0) {
+    if (
+		$post_query 
+		&& $post_query->found_posts == 0 
+		&& $post_query->post_count == 0
+	) {
         // display the message when no posts are found.
         return wpv_do_shortcode($value);
     } else {
@@ -783,38 +915,49 @@ function wpv_items_found($atts, $value){
     extract(
         shortcode_atts( array(), $atts )
     );
-
-    global $WP_Views;
-    
-    $view_settings = $WP_Views->get_view_settings();
-
-    if ( isset( $view_settings['query_type'] ) && isset( $view_settings['query_type'][0] ) && 
-        ( $view_settings['query_type'][0] == 'taxonomy' || $view_settings['query_type'][0] == 'users') ) {
-
-    if ( $view_settings['query_type'][0] == 'users' ){
-	   $number = $WP_Views->get_users_found_count();
-    }else{
-       $number = $WP_Views->get_taxonomy_found_count();
-    }
-
-	if ($number && $number != 0) {
-		// display the message when posts are found.
-		return wpv_do_shortcode($value);
-	} else {
-		return '';
+	
+    $view_settings = apply_filters( 'wpv_filter_wpv_get_object_settings', array() );
+	$out = '';
+	
+	$query_type = ( isset( $view_settings['query_type'][0] ) ) ? $view_settings['query_type'][0] : 'posts';
+	
+	switch ( $query_type ) {
+		case 'taxonomy':
+			$number = apply_filters( 'wpv_filter_wpv_get_taxonomy_found_count', 0 );
+			if (
+				$number 
+				&& $number != 0
+			) {
+				// display the message when posts are found.
+				$out = wpv_do_shortcode( $value );
+			}
+			break;
+		case 'users':
+			$number = apply_filters( 'wpv_filter_wpv_get_users_found_count', 0 );
+			if (
+				$number 
+				&& $number != 0
+			) {
+				// display the message when posts are found.
+				$out = wpv_do_shortcode( $value );
+			}
+			break;
+		case 'posts':
+		default:
+			$post_query = apply_filters( 'wpv_filter_wpv_get_post_query', null );
+			if (
+				$post_query 
+				&& (
+					$post_query->found_posts != 0 
+					|| $post_query->post_count != 0
+				)
+			) {
+				$out = wpv_do_shortcode( $value );
+			}
+			break;
 	}
 	
-    } else {
-    
-	$query = $WP_Views->get_query();
-
-	if ($query && ($query->found_posts != 0 || $query->post_count != 0)) {
-		// display the message when posts are found.
-		return wpv_do_shortcode($value);
-	} else {
-		return '';
-	}
-    }
+	return $out;
     
 }
 
@@ -841,44 +984,48 @@ function wpv_no_items_found($atts, $value){
     extract(
         shortcode_atts( array(), $atts )
     );
+	
+	$view_settings = apply_filters( 'wpv_filter_wpv_get_object_settings', array() );
+	$out = '';
+	
+	$query_type = ( isset( $view_settings['query_type'][0] ) ) ? $view_settings['query_type'][0] : 'posts';
+	
+	switch ( $query_type ) {
+		case 'taxonomy':
+			$number = apply_filters( 'wpv_filter_wpv_get_taxonomy_found_count', 0 );
+			if (
+				isset( $number ) 
+				&& $number === 0
+			) {
+				// display the message when posts are found.
+				$out = wpv_do_shortcode( $value );
+			}
+			break;
+		case 'users':
+			$number = apply_filters( 'wpv_filter_wpv_get_users_found_count', 0 );
+			if (
+				isset( $number ) 
+				&& $number === 0
+			) {
+				// display the message when posts are found.
+				$out = wpv_do_shortcode( $value );
+			}
+			break;
+		case 'posts':
+		default:
+			$post_query = apply_filters( 'wpv_filter_wpv_get_post_query', null );
+			if (
+				$post_query 
+				&& $post_query->found_posts == 0 
+				&& $post_query->post_count == 0
+			) {
+				$out = wpv_do_shortcode( $value );
+			}
+			break;
+	}
+	
+	return $out;
 
-    global $WP_Views;
-    
-    $view_settings = $WP_Views->get_view_settings();
-    
-    if ( isset( $view_settings['query_type'] ) && isset( $view_settings['query_type'][0] ) && $view_settings['query_type'][0] == 'taxonomy' ) {
-    
-	$number = $WP_Views->get_taxonomy_found_count();
-	
-	if ( isset($number) && $number === 0) {
-		// display the message when posts are found.
-		return wpv_do_shortcode($value);
-	} else {
-		return '';
-	}
-	
-    } else if ( $view_settings['query_type'][0] == 'users' ){
-    
-        $number = $WP_Views->get_users_found_count();
-        
-        if ( isset($number) && $number === 0) {
-		// display the message when posts are found.
-		return wpv_do_shortcode($value);
-	} else {
-		return '';
-	}
-	
-    } else {
-    
-	$query = $WP_Views->get_query();
-
-	if ($query && $query->found_posts == 0 && $query->post_count == 0) {
-		// display the message when no posts are found.
-		return wpv_do_shortcode($value);
-	} else {
-		return '';
-	}
-    }
 }
     
 /*
@@ -978,8 +1125,8 @@ function wpv_shortcode_wpv_control( $atts ) {
 	}
 	
 	//Start the shortcode management
-	global $WP_Views, $no_parameter_found;
-	$aux_array = $WP_Views->view_used_ids;
+	global $no_parameter_found;
+	$aux_array = apply_filters( 'wpv_filter_wpv_get_rendered_views_ids', array() );
 	$view_name = get_post_field( 'post_name', end( $aux_array ) );
 	
 	extract(
@@ -1030,7 +1177,7 @@ function wpv_shortcode_wpv_control( $atts ) {
 		// Textfield field
 		$default_value = '';
 		if ( isset( $_GET[ $url_param ] ) ) {
-			$default_value = stripslashes( urldecode( sanitize_text_field( $_GET[ $url_param ] ) ) );
+			$default_value = esc_attr( urldecode( wp_unslash( $_GET[ $url_param ] ) ) );
 		}
 		
 		// Render the form content
@@ -1046,7 +1193,7 @@ function wpv_shortcode_wpv_control( $atts ) {
 	}
     
 	// Check if the View has dependency enabled
-    $view_settings = $WP_Views->get_view_settings();
+    $view_settings = apply_filters( 'wpv_filter_wpv_get_object_settings', array() );
 	$dependant = false;
 	$counters = ( $format && strpos( $format, '%%COUNT%%' ) !== false ) ? true : false;
 	$empty_action = array();
@@ -1056,7 +1203,7 @@ function wpv_shortcode_wpv_control( $atts ) {
 		&& $view_settings['dps']['enable_dependency'] == 'enable' )
 	{
 		$dependant = true;
-		$force_disable_dependant = $WP_Views->get_force_disable_dependant_parametric_search();
+		$force_disable_dependant = apply_filters( 'wpv_filter_wpv_get_force_disable_dps', false );
 		if ( $force_disable_dependant ) {
 			$dependant = false;
 		}
@@ -1102,9 +1249,9 @@ function wpv_shortcode_wpv_control( $atts ) {
 			$empty_action['multi-select'] = $empty_default;
 		}
 		$wpv_data_cache = array();
-		$original_value = $view_settings[ 'custom-field-' . $field_real_name . '_value' ];
+		$original_value = isset( $view_settings[ 'custom-field-' . $field_real_name . '_value' ] ) ? $view_settings[ 'custom-field-' . $field_real_name . '_value' ] : '';
 		$processed_value = wpv_apply_user_functions( $original_value );
-		$compare_function = $view_settings[ 'custom-field-' . $field_real_name . '_compare' ];
+		$compare_function = isset( $view_settings[ 'custom-field-' . $field_real_name . '_compare' ] ) ? $view_settings[ 'custom-field-' . $field_real_name . '_compare' ] : '=';
 		$current_value_key = false;
 		// @todo check IN, NOT IN and != compare functions
 		$comparator = 'equal';
@@ -1136,7 +1283,7 @@ function wpv_shortcode_wpv_control( $atts ) {
 		} else {
 			// When there is a selected value, create a pseudo-cache based on all the other filters
 			// Note that checkboxes filters can generate nested meta_query entries
-			$query = wpv_get_dependant_view_query_args();
+			$query = apply_filters( 'wpv_filter_wpv_get_dependant_extended_query_args', array(), $view_settings, array( 'postmeta' => $field_real_name ) );//wpv_get_dependant_view_query_args();
 			$aux_cache_query = null;
 			if ( isset( $query['meta_query'] ) && is_array( $query['meta_query'] ) ) {
 				foreach ( $query['meta_query'] as $qt_index => $qt_val ) {
@@ -1545,7 +1692,7 @@ function wpv_shortcode_wpv_control( $atts ) {
 							$options[ $value ]['#title'] = $display_value_formatted_name;
 						}
 						$meta_criteria_to_filter = array( $field_real_name => array( $value ) );
-						$this_query = $WP_Views->get_query();
+						$this_query = apply_filters( 'wpv_filter_wpv_get_post_query', null );
 						if ( empty( $value ) && !is_numeric( $value ) && is_object( $this_query ) ) {
 							if ( isset( $aux_query_count ) ) {
 								$this_checker = $aux_query_count;
@@ -1634,7 +1781,7 @@ function wpv_shortcode_wpv_control( $atts ) {
 							$display_value_formatted_name = str_replace( '%%NAME%%', $options_array[ $display_value ]['#title'], $format );
 							$options_array[ $display_value ]['#title'] = $display_value_formatted_name;
 						}
-						$this_query = $WP_Views->get_query();
+						$this_query = apply_filters( 'wpv_filter_wpv_get_post_query', null );
 						if ( empty( $value ) && !is_numeric( $value ) && is_object( $this_query ) ) {
 							if ( isset( $aux_query_count ) ) {
 								$this_checker = $aux_query_count;
@@ -1743,7 +1890,7 @@ function wpv_shortcode_wpv_control( $atts ) {
 									'#value' => $default_value,
 									'#inline' => true,
 									'#after' => '<br />' );
-							$options_array[ $aux_dv ]['#attributes']['class'] = 'js-wpv-filter-trigger';
+							$options_array[ $aux_dv ]['#attributes']['class'] = 'js-wpv-filter-trigger ';
 						}
 					}
 				}
@@ -1753,7 +1900,7 @@ function wpv_shortcode_wpv_control( $atts ) {
 								'#type' => $type,
 								'#id' => 'wpv_control_' . $type . '_' . $url_param,
 								'#name' => $name_aux,
-								'#attributes' => array('style' => $style, 'class' => 'js-wpv-filter-trigger' . $class ),
+								'#attributes' => array('style' => $style, 'class' => 'js-wpv-filter-trigger ' . $class ),
 								'#inline' => true,
 								'#options' => $options_array, // NOTE this was originally $options but as it's not an array I can not set a "disabled" option
 								'#default_value' => $default_value,
@@ -1836,7 +1983,7 @@ function wpv_shortcode_wpv_control( $atts ) {
 							$display_value_formatted_name = str_replace( '%%NAME%%', $options[ $display_value ]['#title'], $format );
 							$options[ $display_value ]['#title'] = $display_value_formatted_name;
 						}
-						$this_query = $WP_Views->get_query();
+						$this_query = apply_filters( 'wpv_filter_wpv_get_post_query', null );
 						if ( empty( $value ) && !is_numeric( $value ) && is_object( $this_query ) ) {
 							if ( isset( $aux_query_count ) ) {
 								$this_checker = $aux_query_count;
@@ -1907,7 +2054,7 @@ function wpv_shortcode_wpv_control( $atts ) {
 			} else if ( empty( $_GET[ $url_param ] ) ) {
 				unset( $_GET[ $url_param ] );
 			}
-			$attributes = array( 'style' => '', 'class' => 'js-wpv-filter-trigger' );
+			$attributes = array( 'style' => '', 'class' => 'js-wpv-filter-trigger ' );
             $labelclass = '';
             $show_checkbox = true;
             // Dependant stuff
@@ -2016,7 +2163,7 @@ function wpv_shortcode_wpv_control( $atts ) {
 						$options[ $value ]['#title'] = $display_value_formatted_name;
 					}
 					$meta_criteria_to_filter = array( $field_real_name => array( $value ) ); // TODO DONE IMPORTANT check what is coming here as value, maybe $opts['title'] sometimes
-					$this_query = $WP_Views->get_query();
+					$this_query = apply_filters( 'wpv_filter_wpv_get_post_query', null );
 					if ( empty( $value ) && !is_numeric( $value ) && is_object( $this_query ) ) {
 						if ( isset( $aux_query_count ) ) {
 							$this_checker = $aux_query_count;
@@ -2082,14 +2229,14 @@ function wpv_shortcode_wpv_control( $atts ) {
 						'#after' => '<br />'
                     );
                     $opt_aux[ $display_value ] = $value;
-					$options[ $display_value ]['#attributes']['class'] = 'js-wpv-filter-trigger';
+					$options[ $display_value ]['#attributes']['class'] = 'js-wpv-filter-trigger ';
 					// Dependant stuff
 					if ( $dependant || $counters ) {
 						if ( $format ) {
 							$display_value_formatted_name = str_replace( '%%NAME%%', $options[ $display_value ]['#title'], $format );
 							$options[ $display_value ]['#title'] = $display_value_formatted_name;
 						}
-						$this_query = $WP_Views->get_query();
+						$this_query = apply_filters( 'wpv_filter_wpv_get_post_query', null );
 						if ( empty( $value ) && !is_numeric( $value ) && is_object( $this_query ) ) {
 							if ( isset( $aux_query_count ) ) {
 								$this_checker = $aux_query_count;
@@ -2157,7 +2304,7 @@ function wpv_shortcode_wpv_control( $atts ) {
 								'#inline' => true,
 								'#after' => '<br />'
 							);
-							$options[ $aux_dv ]['#attributes']['class'] = 'js-wpv-filter-trigger';
+							$options[ $aux_dv ]['#attributes']['class'] = 'js-wpv-filter-trigger ';
 						}
 					}
 				}
@@ -2176,7 +2323,7 @@ function wpv_shortcode_wpv_control( $atts ) {
 							'#inline' => true,
 							'#after' => '<br />'
 						);
-						$options[ $aux_dv ]['#attributes']['class'] = 'js-wpv-filter-trigger';
+						$options[ $aux_dv ]['#attributes']['class'] = 'js-wpv-filter-trigger ';
 					}
 				}
 			}
@@ -2199,7 +2346,7 @@ function wpv_shortcode_wpv_control( $atts ) {
 			// Textfield field
 			$default_value = '';
 			if ( isset( $_GET[ $url_param ] ) ) {
-				$default_value = stripslashes( urldecode( sanitize_text_field( $_GET[ $url_param ] ) ) );
+				$default_value = esc_attr( urldecode( wp_unslash( $_GET[ $url_param ] ) ) );
 			}
 			
 			// Render the form content
@@ -2428,17 +2575,16 @@ class Walker_Category_select extends Walker {
 	var $db_fields = array ('parent' => 'parent', 'id' => 'term_id'); //TODO: decouple this
 
     function __construct($selected_id, $slug_mode = false, $format = false, $taxonomy = 'category', $type = 'select' ){
-		global $WP_Views;
 		$this->selected = $selected_id;
         $this->slug_mode = $slug_mode;
         $this->format = $format;
 		$this->counters = ( $this->format && strpos( $this->format, '%%COUNT%%' ) !== false ) ? true : false;
-        $view_settings = $WP_Views->get_view_settings();
+        $view_settings = apply_filters( 'wpv_filter_wpv_get_object_settings', array() );
         $this->dependant = false;
         $this->empty_action = 'none';
         if ( isset( $view_settings['dps'] ) && is_array( $view_settings['dps'] ) && isset( $view_settings['dps']['enable_dependency'] ) && $view_settings['dps']['enable_dependency'] == 'enable' ) {
 			$this->dependant = true;
-			$force_disable_dependant = $WP_Views->get_force_disable_dependant_parametric_search();
+			$force_disable_dependant = apply_filters( 'wpv_filter_wpv_get_force_disable_dps', false );
 			if ( $force_disable_dependant ) {
 				$this->dependant = false;
 			} else {
@@ -2484,7 +2630,7 @@ class Walker_Category_select extends Walker {
 				}
 			} else {
 				// When there is a selected value, create a pseudo-cache based on all the other filters
-				$query = wpv_get_dependant_view_query_args();
+				$query = apply_filters( 'wpv_filter_wpv_get_dependant_extended_query_args', array(), $view_settings, array( 'taxonomy' => $taxonomy ) );//wpv_get_dependant_view_query_args();
 				$aux_cache_query = null;
 				if ( isset( $query['tax_query'] ) && is_array( $query['tax_query'] ) ) {
 					foreach ( $query['tax_query'] as $qt_index => $qt_val ) {
@@ -2587,7 +2733,6 @@ class Walker_Category_radios extends Walker {
 	var $db_fields = array ('parent' => 'parent', 'id' => 'term_id'); //TODO: decouple this
 
     function __construct($selected_id, $slug_mode = false, $format = false, $taxonomy = 'category', $style = '', $class = '', $label_style = '', $label_class = ''){
-		global $WP_Views;
 		$this->selected = $selected_id;
         $this->slug_mode = $slug_mode;
         $this->format = $format;
@@ -2596,12 +2741,12 @@ class Walker_Category_radios extends Walker {
         $this->label_style = $label_style;
         $this->label_class = $label_class;
 		$this->counters = ( $this->format && strpos( $this->format, '%%COUNT%%' ) !== false ) ? true : false;
-        $view_settings = $WP_Views->get_view_settings();
+        $view_settings = apply_filters( 'wpv_filter_wpv_get_object_settings', array() );
         $this->dependant = false;
         $this->empty_action = 'none';
         if ( isset( $view_settings['dps'] ) && is_array( $view_settings['dps'] ) && isset( $view_settings['dps']['enable_dependency'] ) && $view_settings['dps']['enable_dependency'] == 'enable' ) {
 			$this->dependant = true;
-			$force_disable_dependant = $WP_Views->get_force_disable_dependant_parametric_search();
+			$force_disable_dependant = apply_filters( 'wpv_filter_wpv_get_force_disable_dps', false );
 			if ( $force_disable_dependant ) {
 				$this->dependant = false;
 			} else {
@@ -2641,7 +2786,7 @@ class Walker_Category_radios extends Walker {
 				}
 			} else {
 				// When there is a selected value, create a pseudo-cache based on all the other filters
-				$query = wpv_get_dependant_view_query_args();
+				$query = apply_filters( 'wpv_filter_wpv_get_dependant_extended_query_args', array(), $view_settings, array( 'taxonomy' => $taxonomy ) );//wpv_get_dependant_view_query_args();
 				$aux_cache_query = null;
 				if ( isset( $query['tax_query'] ) && is_array( $query['tax_query'] ) ) {
 					foreach ( $query['tax_query'] as $qt_index => $qt_val ) {
@@ -2795,11 +2940,10 @@ if ( !class_exists( 'WPV_Walker_Category_Checklist' ) ) {
 		var $db_fields = array ('parent' => 'parent', 'id' => 'term_id'); //TODO: decouple this
 							
 		function __construct($slug_mode = false, $format = false, $taxonomy = 'category', $selected_cats = array(), $style = '', $class = '', $label_style = '', $label_class = '' ) {
-			global $WP_Views;
 			$this->slug_mode = $slug_mode;
 			$this->format = $format;
 			$this->counters = ( $this->format && strpos( $this->format, '%%COUNT%%' ) !== false ) ? true : false;
-			$view_settings = $WP_Views->get_view_settings();
+			$view_settings = apply_filters( 'wpv_filter_wpv_get_object_settings', array() );
 			$this->dependant = false;
 			$this->empty_action = 'none';
             $this->style = $style;
@@ -2808,7 +2952,7 @@ if ( !class_exists( 'WPV_Walker_Category_Checklist' ) ) {
             $this->label_class = $label_class;
 			if ( isset( $view_settings['dps'] ) && is_array( $view_settings['dps'] ) && isset( $view_settings['dps']['enable_dependency'] ) && $view_settings['dps']['enable_dependency'] == 'enable' ) {
 				$this->dependant = true;
-				$force_disable_dependant = $WP_Views->get_force_disable_dependant_parametric_search();
+				$force_disable_dependant = apply_filters( 'wpv_filter_wpv_get_force_disable_dps', false );
 				if ( $force_disable_dependant ) {
 					$this->dependant = false;
 				} else {
@@ -2839,7 +2983,7 @@ if ( !class_exists( 'WPV_Walker_Category_Checklist' ) ) {
 					}
 				} else {
 					// When there is a selected value, create a pseudo-cache based on all the other filters
-					$query = wpv_get_dependant_view_query_args();
+					$query = apply_filters( 'wpv_filter_wpv_get_dependant_extended_query_args', array(), $view_settings, array( 'taxonomy' => $taxonomy ) );//wpv_get_dependant_view_query_args();
 					$aux_cache_query = null;
 					if ( isset( $query['tax_query'] ) && is_array( $query['tax_query'] ) ) {
 						foreach ( $query['tax_query'] as $qt_index => $qt_val ) {
@@ -2943,9 +3087,7 @@ function wpv_render_taxonomy_control( $atts ) {
     // We need to know what attribute url format are we using
     // to make the control filter use values of names or slugs for values.
     // If using names, $url_format=false and if using slugs, $url_format=true
-	//printf('$taxonomy %s, $type %s, $url_param %s, $default_label %s, $taxonomy_orderby %s, $taxonomy_order %s, $format %s', $taxonomy, $type, $url_param, $default_label, $taxonomy_orderby, $taxonomy_order, $format);
-    global $WP_Views;
-    
+	//printf('$taxonomy %s, $type %s, $url_param %s, $default_label %s, $taxonomy_orderby %s, $taxonomy_order %s, $format %s', $taxonomy, $type, $url_param, $default_label, $taxonomy_orderby, $taxonomy_order, $format);    
     extract(
 		shortcode_atts(array(
 				'taxonomy' => '',
@@ -2969,7 +3111,7 @@ function wpv_render_taxonomy_control( $atts ) {
     
 	$url_format = true;
     
-    $view_settings = $WP_Views->get_view_settings();
+	$view_settings = apply_filters( 'wpv_filter_wpv_get_object_settings', array() );
     
     if (isset($view_settings['taxonomy-'. $taxonomy .'-attribute-url-format']) && 'slug' != $view_settings['taxonomy-'.$taxonomy . '-attribute-url-format'][0]) $url_format = false;
     
@@ -3214,7 +3356,7 @@ function wpv_get_post_type_ancestors( $post_types = array(), $level = 0 ) {
 *        [mother] => Array()
 *    )
 *
-* @since 1.6.0
+* @since 1.6
 */
 
 function wpv_recursive_post_hierarchy( $post_types = array(), $level = 0 ) {
@@ -3267,7 +3409,7 @@ function wpv_recursive_post_hierarchy( $post_types = array(), $level = 0 ) {
 * @note the returning string has the format
 *    bisa>grandpa-one>father,grandma-one>father,mother
 *
-* @since 1.6.0
+* @since 1.6
 */
 
 function wpv_recursive_flatten_post_relationships( $relations_array, $low_level = '', $parent_sep = '>', $adjacent_sep = ',' ) {
@@ -3300,7 +3442,7 @@ function wpv_recursive_flatten_post_relationships( $relations_array, $low_level 
 * @note $relations_string must have the format
 *    bisa>grandpa-one>father,grandma-one>father,mother
 *
-* @since 1.6.0
+* @since 1.6
 */
 
 function wpv_get_all_post_relationship_options( $relations_string, $parent_sep = '>', $adjacent_sep = ',' ) {
@@ -3315,6 +3457,37 @@ function wpv_get_all_post_relationship_options( $relations_string, $parent_sep =
 		}
 	}
 	return array_unique( $relations_trees );
+}
+
+add_action( 'wpv_action_view_editor_after_sections', 'wpv_render_post_relationship_tree_reference', 10, 4 );
+add_action( 'wpv_action_wpa_editor_after_sections', 'wpv_render_post_relationship_tree_reference', 10, 4 );
+
+function wpv_render_post_relationship_tree_reference( $view_settings, $view_layout_settings, $view_id, $user_id ) {
+	$relationships			= get_option( 'wpcf_post_relationship', array() );
+	$types_children			= array();
+	$types_trees			= array();
+	
+	if ( is_array( $relationships ) ) {
+		foreach ( $relationships as $has => $belongs ) {
+			$types_children = array_merge( $types_children, array_keys( $belongs ) );
+		}
+	}
+	
+	if ( count( $types_children ) > 0 ) {
+		foreach ( $types_children as $child ) {
+			$multi_post_relations = wpv_recursive_post_hierarchy( array( $child ) );
+			$flatten_post_relations = wpv_recursive_flatten_post_relationships( $multi_post_relations );
+			$relations_tree = wpv_get_all_post_relationship_options( $flatten_post_relations );
+			$types_trees[ $child ] = implode( ',', $relations_tree );
+		}
+	}
+	
+	?>
+	<script type="text/javascript">
+		var WPViews = WPViews || {};
+		WPViews.wpv_post_relationship_tree_reference = <?php echo json_encode( $types_trees ); ?>;
+	</script>
+	<?php
 }
 
 // TODO
@@ -3367,9 +3540,22 @@ function wpv_shortcode_wpv_control_set( $atts, $value ) {
 		)
 	);
 	
-	global $WP_Views;
-	$view_settings = $WP_Views->get_view_settings();
-	$returned_post_types = $view_settings['post_type'];
+	$view_settings = apply_filters( 'wpv_filter_wpv_get_object_settings', array() );
+	
+	if ( 
+		! isset( $view_settings['view-query-mode'] )
+		|| ( 'normal' == $view_settings['view-query-mode'] ) 
+	) {
+		$returned_post_types = $view_settings['post_type'];
+	} else {
+		// we assume 'archive' or 'layouts-loop'
+		global $wp_query;
+		$returned_post_types = $wp_query->get( 'post_type' );
+		if ( ! is_array( $returned_post_types ) ) {
+			$returned_post_types = array( $returned_post_types );
+		}
+	}
+	
 	$returned_post_type_parents = array();
 	if ( empty( $returned_post_types ) ) {
 		$returned_post_types = array( 'any' );
@@ -3485,7 +3671,7 @@ function wpv_shortcode_wpv_control_item( $atts, $value ) {
 	if ( ! in_array( $ancestor_type, $ancestor_tree_array ) ) {
 		return __( 'The ancestor_type argument refers to a post type that is not included in the ancestors tree.', 'wpv-views' );
 	}
-	global $wpdb, $WP_Views;
+	global $wpdb;
 	$return = '';
 	$this_type_parent_classes = array();
 	$returned_post_types = explode( ',', $returned_pt );
@@ -3498,7 +3684,7 @@ function wpv_shortcode_wpv_control_item( $atts, $value ) {
 	}
 	
 	if ( ! empty( $default_label ) ) {
-		$aux_array = $WP_Views->view_used_ids;
+		$aux_array = apply_filters( 'wpv_filter_wpv_get_rendered_views_ids', array() );
 		$view_name = get_post_field( 'post_name', end($aux_array));
 		$default_label = wpv_translate( $ancestor_type . '_default_label', $default_label, false, 'View ' . $view_name );
 	}
@@ -3528,7 +3714,7 @@ function wpv_shortcode_wpv_control_item( $atts, $value ) {
 		$current_url_param = $url_param . '-' . $ancestor_type;
 	}
 	
-	$view_settings = $WP_Views->get_view_settings();
+	$view_settings = apply_filters( 'wpv_filter_wpv_get_object_settings', array() );
 	$dependant = false;
 	$counters = false;
 	
@@ -3539,7 +3725,7 @@ function wpv_shortcode_wpv_control_item( $atts, $value ) {
 		&& $view_settings['dps']['enable_dependency'] == 'enable' 
 	) {
 		$dependant = true;
-		$force_disable_dependant = $WP_Views->get_force_disable_dependant_parametric_search();
+		$force_disable_dependant = apply_filters( 'wpv_filter_wpv_get_force_disable_dps', false );
 		if ( $force_disable_dependant ) {
 			$dependant = false;
 		}
@@ -3570,7 +3756,7 @@ function wpv_shortcode_wpv_control_item( $atts, $value ) {
 			// Note that as this is a hierarquical filter, disabling the current means leaving the ancestors ones
 			$current_filter = $_GET[ $current_url_param ];
 			unset( $_GET[ $current_url_param ] );
-			$query = wpv_get_dependant_view_query_args();
+			$query = apply_filters( 'wpv_filter_wpv_get_dependant_extended_query_args', array(), $view_settings, array( 'relationship' => 'pr_filter_post__in' ) );//wpv_get_dependant_view_query_args();
 			$aux_cache_query = null;
 			if ( 
 				isset( $query['post__in'] ) 
@@ -4107,111 +4293,6 @@ function wpv_shortcode_wpv_filter_controls($atts, $value) {
     
 }
 
-add_action( 'wp_ajax_wpv_update_parametric_search', 'wpv_update_parametric_search' );
-add_action( 'wp_ajax_nopriv_wpv_update_parametric_search', 'wpv_update_parametric_search' );
-
-function wpv_update_parametric_search() {
-	$view_id = $_POST['viewid'];
-	$view_num = $_POST['view_num'];
-	$getthis = $_POST['getthis'];
-	$args = array(
-		'id' => $view_id
-	);
-	$get_override = array();
-	if ( isset( $_POST['valz'] ) && is_array( $_POST['valz'] ) ) {
-		global $WP_Views;
-		foreach ( $_POST['valz'] as $getter ) {
-			if ( isset( $getter['name'] ) && isset( $getter['value'] ) ) {
-				if ( strlen( $getter['name'] ) > 2 && substr( $getter['name'], -2 ) == '[]' ) {
-					$real_name = substr( $getter['name'], 0, -2 );
-					if ( isset( $get_override[$real_name] ) && is_array( $get_override[$real_name] ) ) {
-						$get_override[$real_name][] = $getter['value'];
-					} else {
-						$get_override[$real_name] = array( $getter['value'] );
-					}
-				} else if ( $getter['name'] == 'wpv_aux_current_post_id' ) {
-					//global $post, $authordata, $id;
-					$top_post_id = esc_attr( $getter['value'] );
-					$top_post = get_post($top_post_id);
-					$WP_Views->top_current_page = $top_post;
-					$get_override[$getter['name']] = $getter['value'];
-				} else if ( $getter['name'] == 'wpv_aux_parent_post_id' ) {
-					global $post, $authordata, $id;
-					$post_id = esc_attr( $getter['value'] );
-					$post = get_post($post_id);
-					$authordata = new WP_User($post->post_author);
-					$id = $post->ID;
-					$WP_Views->current_page = array( $post );
-					$get_override[$getter['name']] = $getter['value'];
-				} else if ( $getter['name'] == 'wpv_aux_parent_term_id' ) {
-					$WP_Views->parent_taxonomy = esc_attr( $getter['value'] );
-					$get_override[$getter['name']] = $getter['value'];
-				} else if ( $getter['name'] == 'wpv_aux_parent_user_id' ) {
-					$WP_Views->parent_user = esc_attr( $getter['value'] );
-					$get_override[$getter['name']] = $getter['value'];
-				} else if ( in_array( $getter['name'], array( 'wpv_sort_orderby', 'wpv_sort_order' ) ) ) {
-					// @todo temporary workaround
-					if ( 
-						$getter['value'] != ''
-					) {
-						$get_override[$getter['name']] = $getter['value'];
-					}
-				} else {
-					$get_override[$getter['name']] = $getter['value'];
-				}
-			}
-		}
-	}
-	if ( isset( $_POST['targetid'] ) ) {
-		$args['target_id'] = $_POST['targetid'];
-	}
-	if ( isset( $_POST['attributes'] ) && is_array( $_POST['attributes'] ) ) {
-		$args = array_merge( $args, $_POST['attributes'] );
-	}
-	
-	// Switch WPML to the correct language.
-    if ( isset( $get_override['lang'] ) ) {
-		do_action( 'wpml_switch_language', $get_override['lang'] );
-    }
-	if ( isset( $_POST['lang'] ) ) {
-		do_action( 'wpml_switch_language', sanitize_text_field( $_POST['lang'] ) );
-	}
-	
-	$response = array();
-	
-	if ( $getthis == 'form' ) {
-		if ( isset( $args['target_id'] ) ) {
-			$response['form'] = render_view( $args, $get_override );
-			unset( $args['target_id'] );
-		}
-		$response['full'] = '';
-	} else if ( $getthis == 'full' ) {
-		$response['form'] = '';
-		if ( isset( $args['target_id'] ) ) {
-			unset( $args['target_id'] );
-		}
-		$response['full'] = render_view( $args, $get_override );
-	} else if ( $getthis == 'both' ) {
-		if ( isset( $args['target_id'] ) ) {
-			$response['form'] = render_view( $args, $get_override );
-			unset( $args['target_id'] );
-		}
-		$response['full'] = render_view( $args, $get_override );
-	} else {
-		$response['form'] = '';
-		$response['full'] = '';
-	}
-
-	if ( wpv_parametric_search_triggers_history() ) {
-		$response['pagepermalink'] = wpv_get_pagination_page_permalink( 1, $view_num, $get_override );
-	} else {
-		$response['pagepermalink'] = wpv_get_pagination_page_permalink( 1 );
-	}
-
-	echo json_encode( $response );
-	die();
-}
-
 add_filter( 'wpv_filter_wpv_global_parametric_search_manage_history_status', 'wpv_global_parametric_search_manage_history_status' );
 
 function wpv_global_parametric_search_manage_history_status( $status ) {
@@ -4276,7 +4357,7 @@ function wpv_list_filter_checker( $data ) {
 	}
 	$types_opt = get_option( 'wpcf-fields' );	
 
-	global $WP_Views;
+	//global $WP_Views;
 	
 	// Iterate through all posts' meta
 	foreach ( $list as $key => $obj ) {
@@ -4477,8 +4558,7 @@ function wpv_shortcode_wpv_filter_spinner( $atts, $value ) {
 		&& $position != 'none'
 	) {
 		// Keep the spinner coming from the View settings for backward compatibility
-		global $WP_Views;
-		$view_settings = $WP_Views->get_view_settings();
+		$view_settings = apply_filters( 'wpv_filter_wpv_get_object_settings', array() );
 		if (
 			isset( $view_settings['dps'] ) 
 			&& isset( $view_settings['dps']['spinner'] ) 
@@ -4556,8 +4636,7 @@ function wpv_shortcode_wpv_filter_reset( $atts ) {
 		if ( count( $classnames ) > 0 ) {
 			$class_to_add = ' class="' . implode( ' ', $classnames ) . '"';
 		}
-        global $WP_Views;
-		$aux_array = $WP_Views->view_used_ids;
+		$aux_array = apply_filters( 'wpv_filter_wpv_get_rendered_views_ids', array() );
 		$view_name = get_post_field( 'post_name', end($aux_array));
         $reset_label = wpv_translate( 'button_reset_label', $reset_label, false, 'View ' . $view_name );
 		if ( $type == 'button' ) {

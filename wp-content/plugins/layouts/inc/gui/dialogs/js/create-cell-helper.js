@@ -52,6 +52,12 @@ DDLayout.CreateCellHelper = function ($) {
 
         });
 
+        jQuery(document).on('cbox_load', function(event){
+            Toolset.hooks.addFilter('ddl-creation-dialog-opened', function(){
+                return DDLayout.ddl_admin_page.is_creation_dialog_box;
+            });
+        });
+
         jQuery(document).on('cbox_complete', function(event){
             layout_instance = DDLayout.ddl_admin_page.instance_layout_view.model;
             if( layout_instance.creating_cell === true ){
@@ -63,11 +69,14 @@ DDLayout.CreateCellHelper = function ($) {
 
                 return false;
             }
-
         });
 
         jQuery(document).on('cbox_closed', function(event){
             self.reset_vars(event);
+        });
+
+        jQuery(document).on('cbox_cleanup', function(event){
+            DDLayout.ddl_admin_page.is_creation_dialog_box = false;
         });
     };
 

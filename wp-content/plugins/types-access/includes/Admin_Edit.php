@@ -17,17 +17,33 @@ public static function wpcf_access_admin_edit_access( $enabled = true ) {
 	$tabs = array(
 		'post-type'		=> __( 'Post Types', 'wpcf-access' ),
 		'taxonomy'		=> __( 'Taxonomies', 'wpcf-access' ),
-		'third-party'	=> __( 'Custom Fields', 'wpcf-access' ),
 		'custom-group'	=> __( 'Posts Groups', 'wpcf-access' ),
 	);
 	
+	$extra_tabs = apply_filters( 'types-access-tab', array() );
+	
+	foreach ( $extra_tabs as $tab_slug => $tab_name ) {
+		$tabs[ $tab_slug ] = $tab_name;
+	}
+	
+	$custom_areas = apply_filters( 'types-access-area', array() );
+	if ( count( $custom_areas ) > 0 ) {
+		$tabs['third-party'] = __( 'Custom Areas', 'wpcf-access' );
+	}
+		
 	if ( apply_filters( 'otg_access_filter_is_wpml_installed', false ) ) {
 		$tabs['wpml-group'] = __( 'WPML Groups', 'wpcf-access' );
 	}
 	
 	$tabs['custom-roles'] = __( 'Custom Roles', 'wpcf-access' );
 	
-	$current_tab = ( isset( $_GET['tab'] ) ) ? sanitize_text_field( $_GET['tab'] ) : 'post-type';
+	$current_tab = 'post-type';
+	if ( isset( $_GET['tab'] ) ) {
+		$current_tab_candidate = sanitize_text_field( $_GET['tab'] );
+		if ( isset( $tabs[ $current_tab_candidate ] ) ) {
+			$current_tab = $current_tab_candidate;
+		}
+	}
 	
 	$output .= wp_nonce_field( 'otg-access-edit-sections', 'otg-access-edit-sections', true, false );
 
@@ -73,7 +89,9 @@ public static function wpcf_access_admin_edit_access( $enabled = true ) {
 			$output .= self::otg_access_get_permission_table_for_custom_roles();
 			break;
 		default;
-			
+			if ( isset( $extra_tabs[ $current_tab ] ) ) {
+				$output .= self::otg_access_get_permission_table_for_third_party( $current_tab );
+			}
 			break;
 	}
 		
@@ -97,7 +115,7 @@ public static function wpcf_access_admin_edit_access( $enabled = true ) {
 public static function otg_access_get_permission_table_for_posts() {
 	$output = '';
 	
-	$output .= '<div class="js-otg-access-settings-section-for-post-type">';
+	$output .= '<div class="js-otg-access-settings-tab-section js-otg-access-settings-section-for-post-type" data-tab="post-type">';
 	
 	$model					= TAccess_Loader::get('MODEL/Access');
 	$post_types_settings	= $model->getAccessTypes();
@@ -258,7 +276,7 @@ public static function otg_access_get_permission_table_for_posts() {
 public static function otg_access_get_permission_table_for_taxonomies() {
 	$output = '';
 	
-	$output .= '<div class="js-otg-access-settings-section-for-taxonomy">';
+	$output .= '<div class="js-otg-access-settings-tab-section js-otg-access-settings-section-for-taxonomy" data-tab="taxonomy">';
 	
 	$model					= TAccess_Loader::get('MODEL/Access');
 	$roles					= Access_Helper::wpcf_get_editable_roles();
@@ -496,27 +514,34 @@ public static function otg_access_get_permission_table_for_taxonomies() {
 	return $output;
 }
 
-public static function otg_access_get_permission_table_for_third_party() {
+public static function otg_access_get_permission_table_for_third_party( $current_tab = 'third-party' ) {
 	$output = '';
 	
 	$model				= TAccess_Loader::get('MODEL/Access');
 	$roles				= Access_Helper::wpcf_get_editable_roles();
 	$settings_access	= $model->getAccessTypes();
 	$third_party		= $model->getAccessThirdParty();
-	$areas				= apply_filters( 'types-access-area', array() );
 	
 	$enabled = true;
+	$current_tab = esc_attr( $current_tab );
 	
-	$output .= '<div class="js-otg-access-settings-section-for-third-party">';
+	if ( $current_tab == 'third-party' ) {
+		$areas			= apply_filters( 'types-access-area', array() );
+	} else {
+		$areas			= apply_filters( 'types-access-area-for-' . $current_tab, array() );
+	}
+	
+	$output .= '<div class="js-otg-access-settings-tab-section js-otg-access-settings-section-for-' . $current_tab . '" data-tab="' . $current_tab . '">';
 	$has_output = false;
 	
 	foreach ( $areas as $area ) {
-		// Do not allow 'types' ID
+		// Do not allow Types IDs for post types or taxonomies
 		if ( in_array( $area['id'], array( 'types', 'tax' ) ) )
 			continue;
 
 		// make all groups of same area appear on same line in shortcuts
-		$groups = apply_filters('types-access-group', array(), $area['id']);
+		$groups = apply_filters( 'types-access-group', array(), $area['id'] );
+
 		if ( 
 			! is_array( $groups ) 
 			|| empty( $groups ) 
@@ -585,7 +610,7 @@ public static function otg_access_get_permission_table_for_third_party() {
 	
 	if ( ! $has_output ) {
 		$output .= '<p>'
-			. __( 'There are no custom fields registered.', 'wpcf-access' )
+			. __( 'There are no third party areas registered.', 'wpcf-access' )
 			. '</p>';
 	}
 	
@@ -597,7 +622,7 @@ public static function otg_access_get_permission_table_for_third_party() {
 public static function otg_access_get_permission_table_for_custom_groups() {
 	$output = '';
 	
-	$output .= '<div class="js-otg-access-settings-section-for-custom-group">';
+	$output .= '<div class="js-otg-access-settings-tab-section js-otg-access-settings-section-for-custom-group" data-tab="custom-group">';
 	
 	$model = TAccess_Loader::get('MODEL/Access');
 	$roles = Access_Helper::wpcf_get_editable_roles();
@@ -688,7 +713,7 @@ public static function otg_access_get_permission_table_for_custom_groups() {
 public static function otg_access_get_permission_table_for_wpml() {
 	$output = '';
 	
-	$output .= '<div class="js-otg-access-settings-section-for-wpml-group">';
+	$output .= '<div class="js-otg-access-settings-tab-section js-otg-access-settings-section-for-wpml-group" data-tab="wpml-group">';
 	
 	$model = TAccess_Loader::get('MODEL/Access');
 	if ( apply_filters( 'otg_access_filter_is_wpml_installed', false ) ) {
@@ -847,7 +872,7 @@ public static function otg_access_get_permission_table_for_custom_roles() {
 	$enabled = true; // WTF
 	$output = '';
 	
-	$output .= '<div class="js-otg-access-settings-section-for-custom-roles">';
+	$output .= '<div class="js-otg-access-settings-tab-section js-otg-access-settings-section-for-custom-roles" data-tab="custom-roles">';
 	
     $output .= self::wpcf_access_admin_set_custom_roles_level_form( $roles, $enabled );
     $output .= wp_nonce_field('wpcf-access-edit', '_wpnonce', true, false);
@@ -1812,7 +1837,7 @@ public static function wpcf_access_new_role_form( $enabled ) {
 			$output .= '<button class="button-secondary js-otg-access-new-role-cancel">' . __('Cancel', 'wpcf-access') . '</button> ';
 			$output .= '<button class="button-secondary js-otg-access-new-role-apply" disabled="disabled">' . __('Create role', 'wpcf-access') . '</button> ';
 			$output .= '<p>'
-				. __( 'Give the new role a name (4 characters minimum)', 'wpcf-access' )
+				. __( 'Give the new role a name (5 characters minimum)', 'wpcf-access' )
 				. '</p>';
 		$output .= '</div>';
 		$output .= '<div class="ajax-response js-otg-access-message-container"></div>';

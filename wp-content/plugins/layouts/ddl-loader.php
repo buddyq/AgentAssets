@@ -1,11 +1,11 @@
 <?php
 if (defined('WPDDL_VERSION')) return;
 
-define('WPDDL_VERSION', '1.6');
+define('WPDDL_VERSION', '1.7');
 
 define('LAYOUTS_PLUGIN_NAME', 'Toolset Layouts');
 
-define('WPDDL_NOTES_URL', 'https://wp-types.com/version/layouts-1-5/');
+define('WPDDL_NOTES_URL', 'https://wp-types.com/version/layouts-1-6/');
 
 define('WPDDL_RELPATH', plugins_url() . '/' . basename(dirname(__FILE__)));
 define('WPDDL_ABSPATH', dirname(__FILE__));
@@ -83,9 +83,6 @@ if ( !function_exists('wpddl_plugin_setup') ){
 
 
         require_once WPDDL_TOOLSET_COMMON_ABSPATH . '/utility/dialogs/toolset.dialog-boxes.class.php';
-        require_once WPDDL_INC_ABSPATH . '/help_links.php';
-        require_once WPDDL_INC_ABSPATH . '/api/ddl-features-api.php';
-
 
         require_once WPDDL_CLASSES_ABSPATH . '/wpddl.user-profiles.class.php';
         require_once WPDDL_CLASSES_ABSPATH . '/wpddl.utils.class.php';
@@ -103,6 +100,7 @@ if ( !function_exists('wpddl_plugin_setup') ){
         require_once WPDDL_CLASSES_ABSPATH . '/wpddl.cssmanager.class.php';
         require_once WPDDL_CLASSES_ABSPATH . '/wpddl.optionsmanager.class.php';
         require_once WPDDL_CLASSES_ABSPATH . '/wpddl.scripts.class.php';
+        require_once WPDDL_CLASSES_ABSPATH . '/wpddl.help-video.class.php';
         require_once WPDDL_CLASSES_ABSPATH . '/wpddl.archives.manager.class.php';
         require_once WPDDL_CLASSES_ABSPATH . '/wpddl.post-types-manager.class.php';
         require_once WPDDL_CLASSES_ABSPATH . '/wpddl.individual-assignment-manager.class.php';
@@ -128,6 +126,7 @@ if ( !function_exists('wpddl_plugin_setup') ){
         require_once WPDDL_INC_ABSPATH . '/api/ddl-fields-api.php';
 
         require_once WPDDL_INC_ABSPATH . '/api/ddl-theme-api.php';
+        require_once WPDDL_INC_ABSPATH . '/api/ddl-shortcodes.php';
 
 //include_once WPDDL_RES_ABSPATH. '/log_console.php';
 
@@ -143,10 +142,11 @@ if (file_exists(dirname(__FILE__) . DIRECTORY_SEPARATOR . 'classes/wpddl.layouts
 }
 
 
-add_action('init', 'init_layouts_plugin', 9);
-
-function init_layouts_plugin()
-{
-    global $wpddlayout;
-    $wpddlayout = WPDD_Layouts::getInstance();
+if( !function_exists('init_layouts_plugin') ){
+    add_action('init', 'init_layouts_plugin', 9);
+    function init_layouts_plugin()
+    {
+        global $wpddlayout;
+        $wpddlayout = WPDD_Layouts::getInstance();
+    }
 }

@@ -14,25 +14,6 @@
  */
 
 
-/*
- * Include additional Content Template Editor-related files.
- *
- * All files within inc/ct-editor should be included here.
- */
-
-$wpv_ct_editor_required_files = array(
-    'section-content.php',
-    'section-module-manager.php',
-    'section-settings.php',
-    'section-title.php',
-	'section-usage.php'
-);
-
-foreach( $wpv_ct_editor_required_files as $required_file ) {
-    require_once plugin_dir_path( __FILE__ ) . $required_file;
-}
-
-
 /**
  * CT editor page name.
  *
@@ -42,8 +23,57 @@ foreach( $wpv_ct_editor_required_files as $required_file ) {
  */
 define( 'WPV_CT_EDITOR_PAGE_NAME', 'ct-editor' );
 
-
+add_action( 'init', 'wpv_ct_editor_register' );
+add_action( 'admin_init', 'wpv_ct_editor_load_sections' );
 add_action( 'admin_init', 'wpv_ct_editor_init' );
+
+
+/**
+ * Register Editors
+ * runs on hook 'init'. Must be init because we also need it on frontend for some editors.
+ *
+ * @since 2.1
+ */
+function wpv_ct_editor_register() {
+    if( ! class_exists( 'WPV_Content_Template_Editor_Abstract' ) ) {
+        require_once( WPV_PATH . '/inc/classes/editor/interface.php' );
+        require_once( WPV_PATH . '/inc/classes/editor/abstract.php' );
+        require_once( WPV_PATH . '/inc/classes/editor/controller.php' );
+        require_once( WPV_PATH . '/inc/classes/editor/basic.php' );
+        require_once( WPV_PATH . '/inc/classes/editor/visual-composer.php' );
+    }
+
+    $editor_control = new WPV_Content_Template_Editor_Controller();
+
+    // Visual Composer
+    $editor_control->add_editor( new WPV_Content_Template_Editor_Visual_Composer() );
+    // Our default codemirror editor, IMPORTANT to add it last
+    $editor_control->add_editor( new WPV_Content_Template_Editor_Basic() );
+
+    add_filter( 'wpv_editor_active_editor', array( $editor_control, 'get_instance' ) );
+}
+
+/**
+ * Load Editor sections
+ * runs on hook 'admin_init'
+ *
+ * @since 2.1
+ */
+function wpv_ct_editor_load_sections() {
+    // Include additional Content Template Editor-related files.
+    // All files within inc/ct-editor should be included here.
+    $wpv_ct_editor_required_files = array(
+        'section-content.php',
+        'section-module-manager.php',
+        'section-settings.php',
+        'section-title.php',
+        'section-usage.php'
+    );
+
+    foreach( $wpv_ct_editor_required_files as $required_file ) {
+        require_once plugin_dir_path( __FILE__ ) . $required_file;
+    }
+}
 
 /**
  * Main init hook for the CT edit screen.
@@ -76,7 +106,8 @@ function wpv_ct_editor_init() {
                 'wplink',
                 'toolset-utils',
                 'views-ct-dialogs-js',
-                'toolset-uri-js'
+                'toolset-uri-js',
+                'toolset-event-manager'
             ),
             WPV_VERSION,
             true

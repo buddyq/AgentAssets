@@ -27,6 +27,7 @@
  * @property mixed	$wpv_saved_auto_detected_framework
  * @property int	$wpv_show_edit_view_link
  * @property mixed	$wpv_show_hidden_fields
+ * @property array	$wpv_post_types_for_archive_loop
  */
 class WPV_Settings implements ArrayAccess {
 
@@ -185,6 +186,11 @@ class WPV_Settings implements ArrayAccess {
 	 * Should be(!) a string.
 	 */
 	const SAVED_AUTODETECTED_FRAMEWORK = 'wpv_saved_auto_detected_framework';
+	
+	/**
+	 * Array of assignments for post types in each archive loop.
+	 */
+	const POST_TYPES_FOR_ARCHIVE_LOOP = 'wpv_post_types_for_archive_loop';
 
 
 
@@ -667,6 +673,21 @@ class WPV_Settings implements ArrayAccess {
 		$value = (int) $value;
 		if( in_array( $value, array( 0, 1 ) ) ) {
 			$this->settings[ WPV_Settings::IS_LEGACY_MAP_ADDON_ENABLED ] = $value;
+		}
+	}
+	
+	protected function _get_wpv_post_types_for_archive_loop() {
+		$value = $this->get_raw_value( WPV_Settings::POST_TYPES_FOR_ARCHIVE_LOOP );
+		if( !is_array( $value ) ) {
+			return array();
+		}
+		return $value;
+	}
+
+
+	protected function _set_wpv_post_types_for_archive_loop( $value ) {
+		if( is_array( $value ) ) {
+			$this->settings[ WPV_Settings::POST_TYPES_FOR_ARCHIVE_LOOP ] = $value;
 		}
 	}
 

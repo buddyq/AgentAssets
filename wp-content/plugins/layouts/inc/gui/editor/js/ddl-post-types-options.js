@@ -20,7 +20,7 @@ DDLayout.PostTypes_Options = function(adm)
 	self.init = function( )
 	{
         // opens dialog in editor only
-        wp.hooks.doAction('ddl-wpml-language-switcher-build', jQuery);
+        Toolset.hooks.doAction('ddl-wpml-language-switcher-build', jQuery);
         self.openDialog();
         self.handle_re_render();
         self.handle_layout_post_types_change();
@@ -130,7 +130,7 @@ DDLayout.PostTypes_Options = function(adm)
             action:action,
             'layout-set-change-post-types-nonce': jQuery('#layout-set-change-post-types-nonce').val(),
             layout_id:layout_model.get('id'),
-            ddl_lang:wp.hooks.applyFilters('ddl-js-apply-language', null),
+            ddl_lang:Toolset.hooks.applyFilters('ddl-js-apply-language', null),
             html:'editor'
         };
 
@@ -215,7 +215,7 @@ DDLayout.PostTypes_Options = function(adm)
                                 },
                                 onOpen: function () {
                                     DDLayout.changeLayoutUseHelper.eventDispatcher.trigger('ddl-dialog-ass-open', dialog_content, layout_model.get('id'), args);
-                                    wp.hooks.doAction('ddl-wpml-init', dialog_content, layout_model.get('id'), args);
+                                    Toolset.hooks.doAction('ddl-wpml-init', dialog_content, layout_model.get('id'), args);
                                 },
                                 onComplete: function () {
                                     DDLayout.changeLayoutUseHelper.eventDispatcher.trigger('ddl-dialog-ass-complete', dialog_content, layout_model.get('id'), args);
@@ -240,7 +240,7 @@ DDLayout.PostTypes_Options = function(adm)
     self.no_permission = function(){
         this.errors_div.wpvToolsetMessage({
             text: DDLayout_settings.DDL_JS.strings.user_no_caps,
-            type: 'warning',
+            type: 'error',
             stay: false,
             stay_for:15000,
             close: false,

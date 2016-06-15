@@ -84,9 +84,12 @@ if (!class_exists('Layouts_cell_video')) {
             return ob_get_clean();
 	}
 
-
+    
 	// Callback function for display the cell in the front end.
 	function video_cell_content_callback() {
+        
+            global $wpddlayout;
+            $wpddlayout->enqueue_scripts('ddl-video-cell-front-end');
 
             $video_url = get_ddl_field('video_url');
             $filter    = '#^(?:https?://)?(?:www\.)?(?:youtu\.be/|youtube\.com(?:/embed/|/v/|/watch\?v=|/watch\?.+&v=))([\w-]{11})(?:.+)?$#x';
@@ -118,7 +121,7 @@ if (!class_exists('Layouts_cell_video')) {
 
             <?php else: ?>
                 <div class="video-container">
-                    <iframe height="<?php the_ddl_field('video_height') ?>" src="//www.youtube.com/embed/<?php echo $video_id ?>" frameborder="0" ></iframe>
+                    <iframe height="<?php the_ddl_field('video_height') ?>" src="//www.youtube.com/embed/<?php echo $video_id ?>" frameborder="0" allowfullscreen></iframe>
                 </div>
             <?php endif; ?>
 

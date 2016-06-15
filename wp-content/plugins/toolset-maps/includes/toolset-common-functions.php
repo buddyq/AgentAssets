@@ -229,14 +229,14 @@ class Toolset_Addon_Maps_Common {
 					'utm_source'	=> 'mapsplugin',
 					'utm_campaign'	=> 'maps',
 					'utm_medium'	=> 'release-notes-plugin-row',
-					'utm_term'		=> 'Toolset Maps 1.1 release notes'
+					'utm_term'		=> 'Toolset Maps 1.1.1 release notes'
 				)
 			);
-			$plugin_link = self::get_documentation_promotional_link( $promo_args, 'https://wp-types.com/version/maps-1-1/' );
+			$plugin_link = self::get_documentation_promotional_link( $promo_args, 'https://wp-types.com/version/maps-1-1-1/' );
 			$plugin_meta[] = sprintf(
 					'<a href="%1$s" target="_blank">%2$s</a>',
 					$plugin_link,
-					__( 'Toolset Maps 1.1 release notes', 'wpv-views' ) 
+					__( 'Toolset Maps 1.1.1 release notes', 'wpv-views' ) 
 				);
 		}
 		return $plugin_meta;
@@ -253,25 +253,23 @@ class Toolset_Addon_Maps_Common {
 		$maps_api_js_url = self::$maps_api_url_js;
 		$maps_api_js_url = apply_filters( 'toolset_filter_toolset_maps_api_js_url', $maps_api_js_url );
 		
+		$args = array(
+			'sensor'	=> false,
+            'libraries'	=> 'places',
+		);
+		
+		$api_key = apply_filters( 'toolset_filter_toolset_maps_get_api_key', '' );
+		if ( ! empty( $api_key ) ) {
+			$args['key'] = esc_attr( $api_key );
+		}
+		
+		$maps_api_js_url = add_query_arg( $args, $maps_api_js_url );
+		
 		/**
 		* Google Maps script
 		* @version 3.5.2
 		*/
-        wp_register_script(
-            'google-maps',
-            esc_url(
-                add_query_arg(
-                    array(
-                        'sensor' => false,
-                        'libraries' => 'places',
-                    ),
-                    $maps_api_js_url
-                )
-            ),
-            array(),
-            '3.5.2',
-            true
-        );
+        wp_register_script( 'google-maps', $maps_api_js_url, array(), '3.5.2', true );
 		
 		/**
 		* jQuery geocomplete
@@ -303,7 +301,7 @@ class Toolset_Addon_Maps_Common {
 			'marker-clusterer-script',
 			'views_addon_maps_clusterer_i10n',
 			array(
-				
+				'cluster_default_imagePath'	=> TOOLSET_ADDON_MAPS_FRONTEND_URL . '/resources/images/clusterer/m'
 			)
 		);
 		
@@ -316,8 +314,8 @@ class Toolset_Addon_Maps_Common {
             'toolset_google_address_i10n',
             array(
 				'showhidecoords'	=> __( 'Show/Hide coordinates', 'toolset-maps' ),
-                'latitude'			=> __('Latitude', 'toolset-maps'),
-                'longitude'			=> __('Longitude', 'toolset-maps'),
+                'latitude'			=> __( 'Latitude', 'toolset-maps' ),
+                'longitude'			=> __( 'Longitude', 'toolset-maps' ),
 				'usethisaddress'	=> __( 'Use this address', 'toolset-maps' ),
 				'closestaddress'	=> __( 'Closest address: ', 'toolset-maps' ),
             )
@@ -402,7 +400,7 @@ class Toolset_Addon_Maps_Common {
 				$maps_api_url_geocode = apply_filters( 'toolset_filter_toolset_maps_api_geocode_url', $maps_api_url_geocode );
 				
 				$url        = add_query_arg( $args, $maps_api_url_geocode );
-				$response 	= wp_remote_get( $url, array( 'decompress' => false ) );
+				$response 	= wp_remote_get( $url );
 
 				if ( is_wp_error( $response ) ) {
 					return __( 'wp_remote_get could not communicate with the Gogle Maps API.', 'toolset-maps' );

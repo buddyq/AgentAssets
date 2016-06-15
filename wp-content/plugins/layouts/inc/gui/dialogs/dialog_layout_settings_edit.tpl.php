@@ -56,6 +56,24 @@ function display_breadcrumb_tree ( $parent_id, $available_parents ) {
 	}
 }
 
+function get_all_available_parent_layouts(){
+    global $wpddlayout;
+    
+    $parent_ID = apply_filters('ddl-get-default-'.WPDDL_Options::PARENTS_OPTIONS, WPDDL_Options::PARENTS_OPTIONS ); 
+    $parents = WPDD_Layouts::get_available_parents();
+    ?>
+    <option value=""><?php _e("None", 'ddl-layouts'); ?></option>
+    <?php
+    for ( $i=0,$total_parents=count($parents); $i<$total_parents; $i++){
+        $selected = '';
+        if ( $parents[$i]->ID == $parent_ID ){
+            $selected = ' selected';
+        }
+        echo '<option value="'.$parents[$i]->ID.'"'.$selected.'>'.$parents[$i]->post_title.'</option>';
+    }
+}
+$wpddl_settings = WPDDL_Settings::getInstance();
+$wpddl_settings->init();
 ?>
 
 <div class="ddl-dialogs-container">
@@ -151,7 +169,17 @@ function display_breadcrumb_tree ( $parent_id, $available_parents ) {
 						</fieldset>
 					</li>
 				<?php endif; ?>
-
+                                        <li>
+                                            <fieldset>
+                                                <legend for="breadcrumbs-tree-search"><?php _e('Default parent layout', 'ddl-layouts'); ?></legend>
+                                                <div class="fields-group">
+                                                    <label for="set_as_default_layout">
+                                                        <input type="checkbox" name="set_as_default_layout" class="js-ddl-set_as_default_layout" value="1" id="set_as_default_layout">
+                                                        <?php _e('Set selected layout as default parent layout	', 'ddl-layouts'); ?>
+                                                    </label>
+                                                </div>
+                                            </fieldset>
+                                        </li>
 			</ul>
 
 		</div>

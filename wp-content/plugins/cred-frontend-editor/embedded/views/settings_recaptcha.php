@@ -8,13 +8,13 @@ $settings = $settings_model->getSettings();
 	</p>
 	<p>
 		<label>
-			<?php _e('Private Key', 'wp-cred'); ?>
+			<?php _e('Secret Key', 'wp-cred'); ?>
 			<input type="text" autocomplete="off" class="js-cred-recaptcha-setting" size='50' name="cred_recaptcha_private_key" value="<?php if (isset($settings['recaptcha']['private_key'])) echo $settings['recaptcha']['private_key']; ?>"  />
 		</label>
 	</p>
 	<p>
 		<label>
-			<?php _e('Public Key', 'wp-cred'); ?>
+			<?php _e('Site Key', 'wp-cred'); ?>
 			<input type="text" autocomplete="off" class="js-cred-recaptcha-setting" size='50' name="cred_recaptcha_public_key" value="<?php if (isset($settings['recaptcha']['public_key'])) echo $settings['recaptcha']['public_key']; ?>"  />
 		</label>
 	</p>

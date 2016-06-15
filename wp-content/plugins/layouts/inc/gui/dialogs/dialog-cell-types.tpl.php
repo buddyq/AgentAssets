@@ -17,9 +17,7 @@
         </div>
 
         <div class="ddl-dialog-content ddl-dialog-element-select js-ddl-dialog-element-select">
-
-
-
+            
     		<p class="js-element-box-message-container message-container"></p>
 
             <ul class="grid js-cells-grid cells-list-grid-wrap" id="js-cells-tree">

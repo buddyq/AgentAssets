@@ -16,34 +16,34 @@ WPV_Taxonomy_Term_Filter::on_load();
 * Views Taxonomy Term Filter Class
 *
 * @since 1.7.0
-* @since 1.12.1	Changes in the filter modes for the posts filter and the taxonomy filter
-* 		CURRENT_PAGE becomes top_current_post and tracks $WP_Views->get_top_current_page()
-* 		current_post_or_parent_post_view tracks $WP_Views->get_current_page()
+* @since 2.1	Changes in the filter modes for the posts filter and the taxonomy filter
+* 		CURRENT_PAGE becomes current_post_or_parent_post_view tracks $WP_Views->get_current_page()
+* 		top_current_post tracks $WP_Views->get_top_current_page()
 */
 
 class WPV_Taxonomy_Term_Filter {
 
     static function on_load() {
-        add_action( 'init', array( 'WPV_Taxonomy_Term_Filter', 'init' ) );
-		add_action( 'admin_init', array( 'WPV_Taxonomy_Term_Filter', 'admin_init' ) );
+        add_action( 'init',			array( 'WPV_Taxonomy_Term_Filter', 'init' ) );
+		add_action( 'admin_init',	array( 'WPV_Taxonomy_Term_Filter', 'admin_init' ) );
     }
 
     static function init() {
-		
+		wp_register_script( 'views-filter-taxonomy-term-js', ( WPV_URL . "/res/js/filters/views_filter_taxonomy_term.js" ), array( 'views-filters-js'), WPV_VERSION, true );
     }
 	
 	static function admin_init() {
-		// Register filter in lists and dialogs
-		add_filter( 'wpv_taxonomy_filters_add_filter', array( 'WPV_Taxonomy_Term_Filter', 'wpv_filters_add_filter_taxonomy_term' ), 1, 2 );
-		add_action( 'wpv_add_taxonomy_filter_list_item', array( 'WPV_Taxonomy_Term_Filter', 'wpv_add_filter_taxonomy_term_list_item' ), 1, 1 );
-		// AJAX calbacks
-		add_action( 'wp_ajax_wpv_filter_taxonomy_term_update', array( 'WPV_Taxonomy_Term_Filter', 'wpv_filter_taxonomy_term_update_callback' ) );
-			// TODO This might not be needed here, maybe for summary filter
-			add_action( 'wp_ajax_wpv_filter_taxonomy_term_sumary_update', array( 'WPV_Taxonomy_Term_Filter', 'wpv_filter_taxonomy_term_sumary_update_callback' ) );
-		add_action( 'wp_ajax_wpv_filter_taxonomy_term_delete', array( 'WPV_Taxonomy_Term_Filter', 'wpv_filter_taxonomy_term_delete_callback' ) );
-		add_filter( 'wpv-view-get-summary', array( 'WPV_Taxonomy_Term_Filter', 'wpv_taxonomy_term_summary_filter' ), 5, 3 );
-		// Register scripts
-		add_action( 'admin_enqueue_scripts', array( 'WPV_Taxonomy_Term_Filter','admin_enqueue_scripts' ), 20 );
+		// Register filters in dialogs
+		add_filter( 'wpv_taxonomy_filters_add_filter',			array( 'WPV_Taxonomy_Term_Filter', 'wpv_filters_add_filter_taxonomy_term' ), 1, 2 );
+		// Register filters in lists
+		add_action( 'wpv_add_taxonomy_filter_list_item',		array( 'WPV_Taxonomy_Term_Filter', 'wpv_add_filter_taxonomy_term_list_item' ), 1, 1 );
+		// Update and delete
+		add_action( 'wp_ajax_wpv_filter_taxonomy_term_update',	array( 'WPV_Taxonomy_Term_Filter', 'wpv_filter_taxonomy_term_update_callback' ) );
+		add_action( 'wp_ajax_wpv_filter_taxonomy_term_delete',	array( 'WPV_Taxonomy_Term_Filter', 'wpv_filter_taxonomy_term_delete_callback' ) );
+		// Scripts
+		add_action( 'admin_enqueue_scripts',					array( 'WPV_Taxonomy_Term_Filter','admin_enqueue_scripts' ), 20 );
+		// TODO This might not be needed here, maybe for summary filter
+		//add_action( 'wp_ajax_wpv_filter_taxonomy_term_sumary_update', array( 'WPV_Taxonomy_Term_Filter', 'wpv_filter_taxonomy_term_sumary_update_callback' ) );
 	}
 	
 	/**
@@ -55,10 +55,7 @@ class WPV_Taxonomy_Term_Filter {
 	*/
 	
 	static function admin_enqueue_scripts( $hook ) {
-		wp_register_script( 'views-filter-taxonomy-term-js', ( WPV_URL . "/res/js/redesign/views_filter_taxonomy_term.js" ), array( 'views-filters-js'), WPV_VERSION, true );
-		if ( isset( $_GET['page'] ) && $_GET['page'] == 'views-editor' ) {
-			wp_enqueue_script( 'views-filter-taxonomy-term-js' );
-		}
+		wp_enqueue_script( 'views-filter-taxonomy-term-js' );
 	}
 	
 	/**
@@ -73,11 +70,11 @@ class WPV_Taxonomy_Term_Filter {
 
 	static function wpv_filters_add_filter_taxonomy_term( $filters, $taxonomy_type ) {
 		$filters['taxonomy_term'] = array(
-			'name' => __( 'Taxonomy term', 'wpv-views' ),
-			'present' => 'taxonomy_terms_mode',
-			'callback' => array( 'WPV_Taxonomy_Term_Filter', 'wpv_add_new_filter_taxonomy_term_list_item' ),
-			'args' => $taxonomy_type,
-			'group' => __( 'Taxonomy filters', 'wpv-views' )
+			'name'		=> __( 'Taxonomy term', 'wpv-views' ),
+			'present'	=> 'taxonomy_terms_mode',
+			'callback'	=> array( 'WPV_Taxonomy_Term_Filter', 'wpv_add_new_filter_taxonomy_term_list_item' ),
+			'args'		=> $taxonomy_type,
+			'group'		=> __( 'Taxonomy filters', 'wpv-views' )
 		);
 		return $filters;
 	}
@@ -94,8 +91,8 @@ class WPV_Taxonomy_Term_Filter {
 
 	static function wpv_add_new_filter_taxonomy_term_list_item( $taxonomy_type ) {
 		$args = array(
-			'taxonomy_terms_mode' => 'THESE',
-			'taxonomy_type' => $taxonomy_type
+			'taxonomy_terms_mode'	=> 'THESE',
+			'taxonomy_type'			=> $taxonomy_type
 		);
 		WPV_Taxonomy_Term_Filter::wpv_add_filter_taxonomy_term_list_item( $args );
 	}
@@ -257,6 +254,7 @@ class WPV_Taxonomy_Term_Filter {
 		wp_send_json_success( $data );
 	}
 
+	/*
 	static function wpv_filter_taxonomy_term_sumary_update_callback() {
 		$nonce = $_POST["wpnonce"];
 		if ( ! wp_verify_nonce( $nonce, 'wpv_view_filter_taxonomy_term_nonce' ) ) {
@@ -274,6 +272,7 @@ class WPV_Taxonomy_Term_Filter {
 		echo wpv_get_filter_taxonomy_term_summary_txt( $filter_data );
 		die();
 	}
+	*/
 	
 	/**
 	* wpv_filter_taxonomy_term_delete_callback
@@ -335,21 +334,6 @@ class WPV_Taxonomy_Term_Filter {
 	}
 	
 	/**
-	* wpv_taxonomy_term_summary_filter
-	
-	* Show the taxonomy term filter on the View summary
-	*
-	* @since unknown
-	*/
-
-	static function wpv_taxonomy_term_summary_filter( $summary, $post_id, $view_settings ) {
-		if ( isset( $view_settings['query_type'] ) && $view_settings['query_type'][0] == 'taxomomy' && isset( $view_settings['taxonomy_terms_mode'] ) ) {
-			$summary .= wpv_get_filter_taxonomy_term_summary_txt( $view_settings );
-		}
-		return $summary;
-	}
-	
-	/**
 	* wpv_render_taxonomy_term_options
 	*
 	* Render taxonomy term filter options
@@ -377,11 +361,11 @@ class WPV_Taxonomy_Term_Filter {
 		<h4><?php  _e( 'List the following terms', 'wpv-views' ); ?></h4>
 		<ul class="wpv-filter-options-set">
 			<li>
-				<input type="radio" id="taxonomy-terms-mode-top-current-post" name="taxonomy_terms_mode" <?php checked( in_array( $view_settings['taxonomy_terms_mode'], array( 'CURRENT_PAGE', 'top_current_post' ) ) ); ?> class="taxonomy-terms-mode js-wpv-taxonomy-term-mode" value="top_current_post" autocomplete="off" />
+				<input type="radio" id="taxonomy-terms-mode-top-current-post" name="taxonomy_terms_mode" <?php checked( in_array( $view_settings['taxonomy_terms_mode'], array( 'top_current_post' ) ) ); ?> class="taxonomy-terms-mode js-wpv-taxonomy-term-mode" value="top_current_post" autocomplete="off" />
 				<label for="taxonomy-terms-mode-top-current-post"><?php _e('Set by the page where this View is inserted', 'wpv-views'); ?></label>
 			</li>
 			<li>
-				<input type="radio" id="taxonomy-terms-mode-current-post" name="taxonomy_terms_mode" <?php checked( in_array( $view_settings['taxonomy_terms_mode'], array( 'current_post_or_parent_post_view' ) ) ); ?> class="taxonomy-terms-mode js-wpv-taxonomy-term-mode" value="current_post_or_parent_post_view" autocomplete="off" />
+				<input type="radio" id="taxonomy-terms-mode-current-post" name="taxonomy_terms_mode" <?php checked( in_array( $view_settings['taxonomy_terms_mode'], array( 'CURRENT_PAGE', 'current_post_or_parent_post_view' ) ) ); ?> class="taxonomy-terms-mode js-wpv-taxonomy-term-mode" value="current_post_or_parent_post_view" autocomplete="off" />
 				<label for="taxonomy-terms-mode-current-post"><?php _e('Set by the current post', 'wpv-views'); ?></label>
 			</li>
 			<li>

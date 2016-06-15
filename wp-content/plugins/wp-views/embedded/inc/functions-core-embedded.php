@@ -46,7 +46,7 @@ function wpv_check_views_exists( $query_mode, $args = array() ) {
  * @since unknown
  */
 function _wpv_get_all_view_ids( $view_query_mode, $args = array() ) {
-	global $wpdb, $WP_Views;
+	global $wpdb;
 	$view_status_string = "";
 	$order_by_string = "";
 	$post_type = 'view';
@@ -83,7 +83,7 @@ function _wpv_get_all_view_ids( $view_query_mode, $args = array() ) {
 	$view_ids = array();
 	$view_query_mode = is_array( $view_query_mode ) ? $view_query_mode : array( $view_query_mode );
 	foreach ( $all_views as $key => $view ) {
-		$settings = $WP_Views->get_view_settings( $view->ID );
+		$settings = apply_filters( 'wpv_filter_wpv_get_object_settings', array(), $view->ID );
 		if ( ! in_array( $settings['view-query-mode'], $view_query_mode ) ) {
 			unset( $all_views[$key] );
 		} else {
@@ -208,18 +208,18 @@ function wpv_update_dissident_posts_from_template( $template_id, $content_type, 
 function wpv_count_filter_controls( $view_settings ) {
 	
 	$return = array();
+	$return['pr'] = 0;
+	$return['cf'] = 0;
+	$return['tax']= 0;
+	$return['search'] = 0;
 	
 	if (
 		! isset( $view_settings['filter_meta_html'] )
 		|| empty( $view_settings['filter_meta_html'] )
 	) {
 		$return['error'] = __('Filter MetaHTML is empty', 'wpv-views');
+		return $return;
 	}
-	
-	$return['pr'] = 0;
-	$return['cf'] = 0;
-	$return['tax']= 0;
-	$return['search'] = 0;
 	
 	$filter_controls_by_tag = substr_count( $view_settings['filter_meta_html'], '[wpv-control ' );
 	$filter_controls_by_tag += substr_count( $view_settings['filter_meta_html'], '[wpv-control-set ' );
@@ -846,3 +846,15 @@ function wpv_get_views_ajaxurl() {
 	) );
 	return $url;
 }
+
+/**
+* wpv_return_installed_version
+*
+* Return the currently installed Views version number.
+*
+* @since 2.1
+*/
+
+function wpv_return_installed_version( $version ) {
+	return WPV_VERSION;
+};

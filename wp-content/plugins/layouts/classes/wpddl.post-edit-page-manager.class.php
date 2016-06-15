@@ -349,7 +349,7 @@ class WPDD_PostEditPageManager
 
             } elseif ( count( $cell_content_template ) > 0  )
             {
-               if(  $this->content_template_cell_has_body_tag( $cell_content_template ) ){
+               if(  WPDD_Utils::content_template_cell_has_body_tag( $cell_content_template ) ){
                    $opts->cell_post_content_type = 'cell-content-template';
                    $opts->has_post_content_cell = true;
                } else {
@@ -363,7 +363,7 @@ class WPDD_PostEditPageManager
         
             if( count($cell_visual_editor) > 0 )
             {
-                $opts->cell_post_content_type = $this->visual_editor_cell_has_wpvbody_tag( $cell_visual_editor );
+                $opts->cell_post_content_type = WPDD_Utils::visual_editor_cell_has_wpvbody_tag( $cell_visual_editor );
                 if( $opts->cell_post_content_type !== '' ){
                     $opts->has_post_content_cell = true;
                 }
@@ -377,67 +377,7 @@ class WPDD_PostEditPageManager
         return $opts;
     }
 
-    private function content_template_cell_has_body_tag( $cells ){
-
-        if( !is_array($cells) || count($cells) === 0 ) return '';
-
-        $ret = '';
-
-        foreach( $cells as $cell ){
-                if( method_exists($cell, 'check_if_cell_renders_post_content') && $cell->check_if_cell_renders_post_content( ) ){
-                    $ret = 'cell-content-template';
-                    break;
-                } else {
-                    $ret = '';
-                }
-
-        }
-
-        return $ret;
-    }
-
-    public function visual_editor_cell_has_wpvbody_tag( $cells ){
-        if( !is_array($cells) || count($cells) === 0 ) return '';
-
-        $ret = '';
-
-        foreach( $cells as $cell ){
-            $content = $cell->get_content();
-
-            if( !$content ) {
-                $ret = '';
-            } else {
-                $content = (object) $content;
-                if( $this->content_content_has_views_tag( $content ) ){
-                    $ret = 'cell-content-template';
-                    break;
-                } else {
-                    $ret = '';
-                }
-            }
-        }
-
-        return $ret;
-
-    }
-
-    private function content_content_has_views_tag( $content ){
-
-        if(  property_exists(  $content, 'content' ) === false ) return false;
-
-        $checks = apply_filters('ddl-do-not-apply-overlay-for-post-editor', array('wpv-post-body') );
-
-        $bool = false;
-
-        foreach( $checks as $check ){
-            if( strpos(  $content->content, $check ) !== false ){
-                $bool = true;
-                break;
-            }
-        }
-
-        return apply_filters( 'ddl-show_post_edit_page_editor_overlay', $bool, $this );
-    }
+    
 
     public static function _filter_fields_to_keep($obj)
     {
@@ -617,7 +557,8 @@ class WPDD_PostEditPageManager
                 ?>
 
                 <input type="hidden" name="ddl-namespace-post-type-tpl" value="<?php echo $post_type_theme == 'default' ? 'default' : $theme_template;?>" class="js-ddl-namespace-post-type-tpl" />
-                <select name="layouts_template" id="js-layout-template-name" <?php disabled( $post->post_type == 'attachment' ); /* cannot assign layouts to attachment post type posts individually */ ?> >
+
+                <select name="layouts_template" id="js-layout-template-name" <?php disabled( $post->post_type == 'attachment' || user_can_assign_layouts() === false );?> >
                     <?php
                     if (isset($template_option[$theme_template])) {
                         $theme_default_layout = $template_option[$theme_template];
@@ -689,14 +630,16 @@ class WPDD_PostEditPageManager
 
                 <input type="hidden" class="js-wpddl-default-template-message" value="<?php echo $this->main_template;?>" data-message="<?php _e('Show all templates', 'ddl-layouts')?>" />
                 <?php if($post->post_type == 'page'): ?>
-                    <select name="combined_layouts_template" id="js-combined-layout-template-name">
+                    <select name="combined_layouts_template" id="js-combined-layout-template-name" <?php disabled( $post->post_type == 'attachment' || user_can_assign_layouts() === false );?> >
 
                     </select>
 
 
                 <?php endif; ?>
             <p>
-                <a data-href="<?php echo admin_url() . 'admin.php?page=dd_layouts_edit&amp;action=edit&layout_id='; ?>" class="edit-layout-template js-edit-layout-template"><?php _e('Edit this layout', 'ddl-layouts'); ?></a>
+                <?php if( user_can_edit_layouts() ) :?>
+                    <a data-href="<?php echo admin_url() . 'admin.php?page=dd_layouts_edit&amp;action=edit&layout_id='; ?>" class="edit-layout-template js-edit-layout-template"><?php _e('Edit this layout', 'ddl-layouts'); ?></a>
+                <?php endif; ?>
             </p>
             </p>
 
@@ -782,7 +725,6 @@ class WPDD_PostEditPageManager
         if ($_POST && isset($_POST['action']) && $_POST['action'] != 'inline-save') { // Don't save in quick edit mode.
 
             $layout_data = $wpddlayout->post_types_manager->get_layout_to_type_object( get_post_type( $pidd ) );
-
             $layout_template = isset($_POST['layouts_template']) && $_POST['layouts_template'] ? $_POST['layouts_template'] : null;
 
             if( $layout_template ){
@@ -813,9 +755,9 @@ class WPDD_PostEditPageManager
             else
             {
                 // when we set a non-layout template after a layout has been set
+                // Also check is combined_layouts_template = default, if true, only then remove layout assignment 
                 $meta = get_post_meta($pidd, WPDDL_LAYOUTS_META_KEY, true);
-
-                if( $meta )
+                if( $meta && isset($_POST['combined_layouts_template']) && $_POST['combined_layouts_template'] === 'default' )
                 {
                     if( isset($_POST['action']) && $_POST['action'] === 'wcml_update_product' ){
                         return;
@@ -836,6 +778,11 @@ class WPDD_CreateLayoutForSinglePage{
 
         public function __construct( &$post )
         {
+
+            if( null === $post || !is_object($post) || property_exists($post, 'ID') === false ){
+                return;
+            }
+
             $this->post = &$post;
             $this->post_id = $post->ID;
             $this->post_type = $post->post_type;
@@ -918,7 +865,9 @@ class WPDD_CreateLayoutForSinglePage{
                             'post_id' => $this->post_id,
                             'post_type' => $this->post_type,
                             'post_name' => $this->post->post_name,
-                            'post_type_label' => $post_type_obj->label
+                            'post_type_label' => $post_type_obj->label,
+                            'count' => wp_count_posts( $this->post_type ),
+                            'assigned_count' => apply_filters( 'ddl-get_post_type_items_assigned_count', $this->post_type )
                         ),
                         'new_layout_title_text' => sprintf(__('Layout for %s'), $this->post->post_title)
                     )

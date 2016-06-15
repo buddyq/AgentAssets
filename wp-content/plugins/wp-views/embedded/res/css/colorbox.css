@@ -14,6 +14,11 @@ body.disable-scrollbar {
 	/*    overflow:hidden;*/
 }
 
+/* todo move to Types */
+#colorbox.js-wpcf-colorbox-with-iframe {
+	z-index:100000;
+}
+
 #cboxOverlay {
 	position:fixed;
 	width:100%;

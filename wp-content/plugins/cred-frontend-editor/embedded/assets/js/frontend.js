@@ -1,4 +1,4 @@
-jQuery(document).ready(function () {
+function check_current_cred_post_id() {
     if (jQuery("input[name='_cred_cred_prefix_post_id']") &&
             jQuery("input[name='_cred_cred_prefix_form_id']")) {
         var _form_id = jQuery("input[name='_cred_cred_prefix_form_id']").val();
@@ -25,4 +25,6 @@ jQuery(document).ready(function () {
             });
         }
     }
-});
+}
+
+jQuery(document).ready(check_current_cred_post_id);

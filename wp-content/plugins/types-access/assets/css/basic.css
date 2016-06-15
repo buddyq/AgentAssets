@@ -724,7 +724,6 @@ html[dir='rtl'] button i {
 }
 .wpcf-access-capability-tabs a{
     display: block;
-    width:100%;
     color: #444;
     font-family: "Open Sans",sans-serif;
     font-size: 13px;
@@ -808,6 +807,10 @@ a{
 /**
 * First seed of dialogs styling
 */
+
+.wpcf-access-dialog-container.ui-dialog-content {
+	padding: 5px 10px;
+}
 
 	.otg-access-change-role-caps-tabs .ui-tabs-panel {
 		display: block;

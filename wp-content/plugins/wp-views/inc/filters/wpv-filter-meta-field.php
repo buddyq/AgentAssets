@@ -8,6 +8,8 @@
 * @package Views
 *
 * @since 1.12
+* @since 2.1	Added to WordPress Archives
+* @since 2.1	Include this file only when editing a View or WordPress Archive, or when doing AJAX
 */
 
 // Register common methods
@@ -25,12 +27,7 @@ class WPV_Meta_Field_Filter {
     }
 
     static function init() {
-		
-    }
-	
-	static function admin_init() {
-		// Register scripts
-		wp_register_script( 'views-filter-meta-field-js', ( WPV_URL . "/res/js/redesign/views_filter_meta_field.js" ), array( 'views-filters-js'), WPV_VERSION, true );
+		wp_register_script( 'views-filter-meta-field-js', ( WPV_URL . "/res/js/filters/views_filter_meta_field.js" ), array( 'views-filters-js'), WPV_VERSION, true );
 		$filter_texts = array(
 			'custom'			=> array(
 									'dialog_title'		=> __( 'Delete custom field filters', 'wpv-views' ),
@@ -52,6 +49,9 @@ class WPV_Meta_Field_Filter {
 								),
 		);
 		wp_localize_script( 'views-filter-meta-field-js', 'wpv_meta_field_filter_texts', $filter_texts );
+    }
+	
+	static function admin_init() {
 		add_action( 'admin_enqueue_scripts', array( 'WPV_Meta_Field_Filter','admin_enqueue_scripts' ), 20 );
 	}
 	
@@ -64,12 +64,7 @@ class WPV_Meta_Field_Filter {
 	*/
 	
 	static function admin_enqueue_scripts( $hook ) {
-		if ( 
-			isset( $_GET['page'] ) 
-			&& $_GET['page'] == 'views-editor' 
-		) {
-			wp_enqueue_script( 'views-filter-meta-field-js' );
-		}
+		wp_enqueue_script( 'views-filter-meta-field-js' );
 	}
 	
 	/**
@@ -171,16 +166,25 @@ class WPV_Meta_Field_Filter {
 			'YEARS_FROM_NOW'							=> 'years_from_now',
 			'DATE'										=> 'date'
 		);
+		if ( ! isset( $view_settings['view-query-mode'] ) ) {
+			$view_settings['view-query-mode'] = 'normal';
+		}
 		$fw_key_options = array();
 		$fw_key_options = apply_filters( 'wpv_filter_extend_framework_options_for_' . $meta_type . '_field', $fw_key_options );
 		$name_sanitized = $args['name'];
 		if (
-			$meta_type != 'termmeta'
+			$view_settings['view-query-mode'] == 'normal' 
+			&& $meta_type != 'termmeta'
 		) {
 			// LEGACY
 			// For some reason, postmeta and usermeta store a meta field data in a trimmed key
-			// Termmeta does not do it and at some point we will revert this for all
+			// Termmeta and postmeta on WPAs do not do it and at some point we will revert this for all
 			$name_sanitized = str_replace( ' ', '_', $name_sanitized );
+		} else if ( $view_settings['view-query-mode'] != 'normal' ) {
+			// Remove shortcode attribute options on WPAs.
+			unset( $options[ __( 'Shortcode attribute', 'wpv-views' ) ] );
+			unset( $options_with_framework[ __( 'Shortcode attribute', 'wpv-views' ) ] );
+			unset( $options_with_framework_broken[ __( 'Shortcode attribute', 'wpv-views' ) ] );
 		}
 		// Defaults
 		$value = '';
@@ -378,6 +382,9 @@ class WPV_Meta_Field_Filter {
 	static function wpv_get_list_item_ui_meta_field( $type, $view_settings = array(), $meta_type ) {
 		$field_name = substr( $type, strlen( $meta_type . '-field-' ) );
 		$args = array( 'name' => $field_name );
+		if ( ! isset( $view_settings['view-query-mode'] ) ) {
+			$view_settings['view-query-mode'] = 'normal';
+		}
 		if ( ! isset( $view_settings[ $type . '_compare' ] ) ) {
 			$view_settings[ $type . '_compare' ] = '=';
 		}
@@ -420,6 +427,9 @@ class WPV_Meta_Field_Filter {
 	*/
 	
 	static function wpv_add_filter_meta_field_list_item( $view_settings, $meta_type, $target, $label ) {
+		if ( ! isset( $view_settings['view-query-mode'] ) ) {
+			$view_settings['view-query-mode'] = 'normal';
+		}
 		if ( ! isset( $view_settings[ $meta_type . '_fields_relationship' ] ) ) {
 			$view_settings[ $meta_type . '_fields_relationship' ] = 'AND';
 		}
@@ -578,10 +588,21 @@ class WPV_Meta_Field_Filter {
 			}
 		}
 		$summary .= $result;
+		
+		$parametric_search_hints = array(
+			'existence'		=> '',
+			'intersection'	=> '',
+			'missing'		=> ''
+		);
+		if ( $meta_type == 'custom' ) {
+			$parametric_search_hints = wpv_get_parametric_search_hints_data( $view_id );
+		}
+		
 		$data = array(
-			'id' => $view_id,
-			'message' => __( 'Field filter saved', 'wpv-views' ),
-			'summary' => $summary
+			'id'			=> $view_id,
+			'message'		=> __( 'Field filter saved', 'wpv-views' ),
+			'summary'		=> $summary,
+			'parametric'	=> $parametric_search_hints
 		);
 		wp_send_json_success( $data );
 	}
@@ -641,9 +662,20 @@ class WPV_Meta_Field_Filter {
 		}
 		update_post_meta( $_POST["id"], '_wpv_settings', $view_array );
 		do_action( 'wpv_action_wpv_save_item', $_POST["id"] );
+		
+		$parametric_search_hints = array(
+			'existence'		=> '',
+			'intersection'	=> '',
+			'missing'		=> ''
+		);
+		if ( $meta_type == 'custom' ) {
+			$parametric_search_hints = wpv_get_parametric_search_hints_data( $_POST["id"] );
+		}
+		
 		$data = array(
-			'id' => $_POST["id"],
-			'message' => __( 'Field filter deleted', 'wpv-views' )
+			'id'			=> $_POST["id"],
+			'parametric'	=> $parametric_search_hints,
+			'message'		=> __( 'Field filter deleted', 'wpv-views' )
 		);
 		wp_send_json_success( $data );
 	}
@@ -677,7 +709,9 @@ class WPV_Meta_Field_Filter {
 *
 * Views Custom Field Filter Class
 *
-* @since 1.7.0
+* @since 1.7
+* @since 2.1	Added to WordPress Archives
+* @since 2.1	Include this file only when editing a View or WordPress Archive, or when doing AJAX
 */
 
 class WPV_Custom_Field_Filter {
@@ -692,13 +726,14 @@ class WPV_Custom_Field_Filter {
     }
 	
 	static function admin_init() {
-		// Register filters in lists and dialogs
+		// Register filters in dialogs
 		add_filter( 'wpv_filters_add_filter',								array( 'WPV_Custom_Field_Filter', 'wpv_filters_add_filter_custom_field' ), 20, 2 );
+		add_filter( 'wpv_filters_add_archive_filter',						array( 'WPV_Custom_Field_Filter', 'wpv_filters_add_archive_filter_post_field' ), 1, 1 );
+		// Register filters in lists
 		add_action( 'wpv_add_filter_list_item',								array( 'WPV_Custom_Field_Filter', 'wpv_add_filter_custom_field_list_item' ), 1, 1 );
-		//AJAX callbakcks
+		// Update and delete
 		add_action( 'wp_ajax_wpv_filter_custom_field_update',				array( 'WPV_Custom_Field_Filter', 'wpv_filter_custom_field_update_callback' ) );
 		add_action( 'wp_ajax_wpv_filter_custom_field_delete',				array( 'WPV_Custom_Field_Filter', 'wpv_filter_custom_field_delete_callback' ) );
-		add_filter( 'wpv-view-get-summary',									array( 'WPV_Custom_Field_Filter', 'wpv_custom_field_summary_filter' ), 7, 3 );
 		// Doc link
 		add_filter( 'wpv_filter_wpv_meta_field_filter_documentaton_link',	array( 'WPV_Custom_Field_Filter', 'wpv_custom_field_documentation_link' ), 10, 2 );
 	}
@@ -725,8 +760,43 @@ class WPV_Custom_Field_Filter {
 		return $filters;
 	}
 	
+	/**
+	* wpv_filters_add_archive_filter_post_field
+	*
+	* @since 2.1
+	*/
+	
+	static function wpv_filters_add_archive_filter_post_field( $filters ) {
+		global $WP_Views;
+		$meta_keys = $WP_Views->get_meta_keys();
+		$all_types_fields = get_option( 'wpcf-fields', array() );
+		foreach ( $meta_keys as $key ) {
+			$key_nicename = wpv_types_get_field_name( $key );
+			$filters[ 'custom-field-' . $key ] = array(
+				'name'		=> sprintf( __( 'Custom field - %s', 'wpv-views' ), $key_nicename ),
+				'present'	=> 'custom-field-' . $key . '_compare',
+				'callback'	=> array( 'WPV_Custom_Field_Filter', 'wpv_add_new_archive_filter_custom_field_list_item' ),
+				'args'		=> array( 
+								'name' =>'custom-field-' . $key 
+							)
+			);
+		}
+		return $filters;
+	}
+	
 	static function wpv_add_new_filter_custom_field_list_item( $args ) {
 		$new_filter_settings = array(
+			'view-query-mode'			=> 'normal',
+			$args['name'] . '_compare'	=> '=',
+			$args['name'] . '_type'		=> 'CHAR',
+			$args['name'] . '_value'	=> '',
+		);
+		WPV_Custom_Field_Filter::wpv_add_filter_custom_field_list_item( $new_filter_settings );
+	}
+	
+	static function wpv_add_new_archive_filter_custom_field_list_item( $args ) {
+		$new_filter_settings = array(
+			'view-query-mode'			=> 'archive',
 			$args['name'] . '_compare'	=> '=',
 			$args['name'] . '_type'		=> 'CHAR',
 			$args['name'] . '_value'	=> '',
@@ -744,24 +814,6 @@ class WPV_Custom_Field_Filter {
 
 	static function wpv_filter_custom_field_delete_callback() {
 		WPV_Meta_Field_Filter::wpv_filter_meta_field_delete_callback( 'custom' );
-	}
-	
-	static function wpv_custom_field_summary_filter( $summary, $post_id, $view_settings ) {
-		if ( 
-			isset( $view_settings['query_type'] ) 
-			&& $view_settings['query_type'][0] == 'posts' 
-		) {
-			$result = '';
-			$result = wpv_get_filter_meta_field_summary_txt( $view_settings, 'custom' );
-			if ( 
-				$result != '' 
-				&& $summary != '' 
-			) {
-				$summary .= '<br />';
-			}
-			$summary .= $result;
-		}
-		return $summary;
 	}
 	
 	static function wpv_custom_field_documentation_link( $link, $meta_type ) {
@@ -783,6 +835,8 @@ class WPV_Custom_Field_Filter {
 * Views Termmeta Field Filter Class
 *
 * @since 1.12
+* @since 2.1	Added to WordPress Archives
+* @since 2.1	Include this file only when editing a View or WordPress Archive, or when doing AJAX
 */
 
 class WPV_Termmeta_Field_Filter {
@@ -804,14 +858,13 @@ class WPV_Termmeta_Field_Filter {
 		if ( version_compare( $wp_version, '4.4' ) < 0 ) {
 			return;
 		}
-		// Register filters in lists and dialogs
+		// Register filters in dialogs
 		add_filter( 'wpv_taxonomy_filters_add_filter',						array( 'WPV_Termmeta_Field_Filter', 'wpv_filters_add_filter_termmeta_field' ), 20, 2 );
+		// Register filters in lists
 		add_action( 'wpv_add_taxonomy_filter_list_item',					array( 'WPV_Termmeta_Field_Filter', 'wpv_add_filter_termmeta_field_list_item' ), 1, 1 );
-		// AJAX callbakcks for adding and deleting
+		// Update and delete
 		add_action( 'wp_ajax_wpv_filter_termmeta_field_update',				array( 'WPV_Termmeta_Field_Filter', 'wpv_filter_termmeta_field_update_callback' ) );
 		add_action( 'wp_ajax_wpv_filter_termmeta_field_delete',				array( 'WPV_Termmeta_Field_Filter', 'wpv_filter_termmeta_field_delete_callback' ) );
-		// Summary
-		add_filter( 'wpv-view-get-summary',									array( 'WPV_Termmeta_Field_Filter', 'wpv_termmeta_field_summary_filter' ), 7, 3 );
 		// Doc link
 		add_filter( 'wpv_filter_wpv_meta_field_filter_documentaton_link',	array( 'WPV_Termmeta_Field_Filter', 'wpv_termmeta_field_documentation_link' ), 10, 2 );
 	}
@@ -851,6 +904,7 @@ class WPV_Termmeta_Field_Filter {
 	
 	static function wpv_add_new_filter_termmeta_field_list_item( $args ) {
 		$new_filter_settings = array(
+			'view-query-mode'			=> 'normal',
 			$args['name'] . '_compare'	=> '=',
 			$args['name'] . '_type'		=> 'CHAR',
 			$args['name'] . '_value'	=> '',
@@ -868,25 +922,6 @@ class WPV_Termmeta_Field_Filter {
 
 	static function wpv_filter_termmeta_field_delete_callback() {
 		WPV_Meta_Field_Filter::wpv_filter_meta_field_delete_callback( 'termmeta' );
-	}
-	
-
-	static function wpv_termmeta_field_summary_filter( $summary, $post_id, $view_settings ) {
-		if ( 
-			isset( $view_settings['query_type'] ) 
-			&& $view_settings['query_type'][0] == 'taxonomy' 
-		) {
-			$result = '';
-			$result = wpv_get_filter_meta_field_summary_txt( $view_settings, 'termmeta' );
-			if ( 
-				$result != '' 
-				&& $summary != '' 
-			) {
-				$summary .= '<br />';
-			}
-			$summary .= $result;
-		}
-		return $summary;
 	}
 	
 	static function wpv_termmeta_field_documentation_link( $link, $meta_type ) {
@@ -910,6 +945,8 @@ class WPV_Termmeta_Field_Filter {
 * Views Usermeta Field Filter Class
 *
 * @since 1.7
+* @since 2.1	Added to WordPress Archives
+* @since 2.1	Include this file only when editing a View or WordPress Archive, or when doing AJAX
 */
 
 class WPV_Usermeta_Field_Filter {
@@ -924,14 +961,13 @@ class WPV_Usermeta_Field_Filter {
     }
 	
 	static function admin_init() {
-		// Register filters in lists and dialogs
+		// Register filters in dialogs
 		add_filter( 'wpv_users_filters_add_filter',							array( 'WPV_Usermeta_Field_Filter', 'wpv_filters_add_filter_usermeta_field' ), 20, 2 );
+		// Register filters in lists
 		add_action( 'wpv_add_users_filter_list_item',						array( 'WPV_Usermeta_Field_Filter', 'wpv_add_filter_usermeta_field_list_item' ), 1, 1 );
-		// AJAX callbakcks for adding and deleting
+		// Update and delete
 		add_action( 'wp_ajax_wpv_filter_usermeta_field_update',				array( 'WPV_Usermeta_Field_Filter', 'wpv_filter_usermeta_field_update_callback' ) );
 		add_action( 'wp_ajax_wpv_filter_usermeta_field_delete',				array( 'WPV_Usermeta_Field_Filter', 'wpv_filter_usermeta_field_delete_callback' ) );
-		// Summary
-		add_filter( 'wpv-view-get-summary',									array( 'WPV_Usermeta_Field_Filter', 'wpv_usermeta_field_summary_filter' ), 7, 3 );
 		// Doc link
 		add_filter( 'wpv_filter_wpv_meta_field_filter_documentaton_link',	array( 'WPV_Usermeta_Field_Filter', 'wpv_usermeta_field_documentation_link' ), 10, 2 );
 	}
@@ -1027,6 +1063,7 @@ class WPV_Usermeta_Field_Filter {
 	
 	static function wpv_add_new_filter_usermeta_field_list_item( $args ) {
 		$new_filter_settings = array(
+			'view-query-mode'			=> 'normal',
 			$args['name'] . '_compare'	=> '=',
 			$args['name'] . '_type'		=> 'CHAR',
 			$args['name'] . '_value'	=> '',
@@ -1044,21 +1081,6 @@ class WPV_Usermeta_Field_Filter {
 	
 	static function wpv_filter_usermeta_field_delete_callback() {
 		WPV_Meta_Field_Filter::wpv_filter_meta_field_delete_callback( 'usermeta' );
-	}
-	
-	static function wpv_usermeta_field_summary_filter( $summary, $post_id, $view_settings ) {
-		if ( 
-			isset( $view_settings['query_type'] ) 
-			&& $view_settings['query_type'][0] == 'users' 
-		) {
-			$result = '';
-			$result = wpv_get_filter_meta_field_summary_txt( $view_settings, 'usermeta' );
-			if ( $result != '' && $summary != '' ) {
-				$summary .= '<br />';
-			}
-			$summary .= $result;
-			return $summary;
-		}
 	}
 	
 	static function wpv_usermeta_field_documentation_link( $link, $meta_type ) {

@@ -141,7 +141,7 @@ final class TAccess_Loader
                     ),
                     'wpcf-access-dev'=>array(
                         'version'=>WPCF_ACCESS_VERSION,
-                        'dependencies'=>array('jquery', 'suggest', 'jquery-ui-dialog', 'jquery-ui-tabs', 'wp-pointer', 'toolset-utils', 'toolset-colorbox'),
+                        'dependencies'=>array('jquery', 'suggest', 'underscore', 'jquery-ui-dialog', 'jquery-ui-tabs', 'wp-pointer', 'toolset-utils', 'toolset-colorbox'),
                         'path'=>TACCESS_ASSETS_URL.'/js/basic.js',
 						'localization_name'=>'wpcf_access_dialog_texts',
 						'localization_data'=>array(
@@ -169,6 +169,7 @@ final class TAccess_Loader
                             'wpcf_delete_role'			=> __("Delete role", 'wpcf-access'),
                             'wpcf_save'					=> __("Save", 'wpcf-access'),
                             'wpcf_ok'					=> __("OK", 'wpcf-access'),
+							'wpcf_apply'				=> __("Apply", 'wpcf-access'),
                             'wpcf_advanced_mode1'		=> __("Enabling the Advanced mode gives you the possibility to change permissions for user roles created by other plugins. By proceeding, you acknowledge that you know what you are doing and understand all possible risks.", 'wpcf-access'),
                             'wpcf_advanced_mode2'		=> __("After clicking OK, any unsaved data will be lost.", 'wpcf-access'),
                             'wpcf_advanced_mode3'		=> __("You are about to disable the Advanced mode.", 'wpcf-access'),

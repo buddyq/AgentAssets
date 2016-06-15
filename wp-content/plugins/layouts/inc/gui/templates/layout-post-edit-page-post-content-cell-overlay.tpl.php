@@ -7,8 +7,9 @@
 
         <p class="ddl-post-content-editor-layout-info-buttons-wrap">
             <?php $href = sprintf('%sadmin.php?page=dd_layouts_edit&layout_id=%s&action=edit', admin_url(), '{{{ layout.id }}}'); ?>
-            <a class="button button-primary-toolset" href="<?php echo $href; ?>" title="Edit {{{ _.escape(layout.name) }}}">Edit
-                layout</a> <button href="#"
+            <a class="<?php printf('%s %s', 'button', user_can_edit_layouts() ? 'button-primary-toolset' : 'disabled' );?>" href="<?php echo user_can_edit_layouts() ? $href : '#'; ?>" title="Edit {{{ _.escape(layout.name) }}}">Edit
+                layout</a> <button <?php disabled( user_can_assign_layouts() === false );?>
+                                   href="#"
                                    title="Switch layout"
                                    class="js-ddl-switch-layout-button button button-secondary">Switch
                 layout</button></p>

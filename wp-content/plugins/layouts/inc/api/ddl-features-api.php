@@ -5,6 +5,7 @@
 
 class WPDDL_features
 {
+	private $_support_features = array();
 
 	function __construct()
 	{
@@ -76,7 +77,11 @@ class WPDDL_features
 	public function add_supported_featured_cells( $features ){
 		$cells = self::ddl_featured_cells();
 
-		return array_merge( $features, $cells);
+        $features = array_merge($features, $cells);
+
+        $this->_support_features = array_unique( array_merge( $this->_support_features, $features) );
+
+		return  $this->_support_features;
 	}
 }
 

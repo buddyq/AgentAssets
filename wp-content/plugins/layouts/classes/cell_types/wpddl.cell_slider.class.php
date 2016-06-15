@@ -80,13 +80,13 @@ if (!class_exists('Layouts_cell_slider')) {
                 <fieldset class="from-top-6">
                     <legend><?php _e( 'Image size', 'ddl-layouts' ) ?></legend>
                     <div class="fields-group">
-                        <label class="checkbox checkbox-smaller" for="<?php the_ddl_name_attr('image_size'); ?>">
+                        <label class="checkbox checkbox-smaller float-none" for="<?php the_ddl_name_attr('image_size'); ?>">
                             <input type="radio" name="<?php the_ddl_name_attr('image_size'); ?>" id="<?php the_ddl_name_attr('image_size'); ?>" checheked="checked" value="">
                             <?php _e( 'Contain (crop)', 'ddl-layouts' ) ?>
                         </label>
                         <span><i class="fa fa-question-circle question-mark-and-the-mysterians js-ddl-question-mark" data-tooltip-text="<?php _e( 'The background image will be scaled so that each side is as large as possible while not exceeding the length of the corresponding side of the container.', 'ddl-layouts' ) ?>"></i></span>
                         <div class="clear from-bot-4"></div>
-                        <label class="checkbox checkbox-smaller" for="<?php the_ddl_name_attr('image_size'); ?>_cover">
+                        <label class="checkbox checkbox-smaller float-none" for="<?php the_ddl_name_attr('image_size'); ?>_cover">
                             <input type="radio" name="<?php the_ddl_name_attr('image_size'); ?>" id="<?php the_ddl_name_attr('image_size'); ?>_cover" value="cover">
                             <?php _e( 'Cover (add padding)', 'ddl-layouts' ) ?>
                         </label>

@@ -145,7 +145,7 @@ class CRED_PostExpiration {
     /**
      * enqueue scripts and styles
      */
-    function cred_pe_scripts() {
+    function cred_pe_scripts() {        
         if ($this->_post_expiration_enabled) {
             $screen_ids = array();
             $settings = $this->getCredPESettings();
@@ -246,6 +246,9 @@ class CRED_PostExpiration {
             if (isset($_POST['_cred_post_expiration'])) {
                 $form_expiration_settings = self::array_merge_distinct($this->_settings_defaults, $_POST['_cred_post_expiration']);
             }
+            /*else {                
+                 $form_expiration_settings = $this->_settings_defaults;
+            }*/
             $this->updateForm($post_id, $form_expiration_settings);
 
             if ($form_expiration_settings['enable']) {
@@ -568,6 +571,7 @@ class CRED_PostExpiration {
      * notifications for the CRED post expiration scheduled task
      */
     function cred_pe_schedule_event_notifications() {
+        cred_log("cred_pe_schedule_event_notifications");
         if ($this->_post_expiration_enabled) {
             global $wpdb;
             /*
@@ -593,9 +597,12 @@ class CRED_PostExpiration {
             $now = time();
             $posts_ids_for_notifications = array();
             foreach ($posts_for_notifications as $post_meta) {
+                cred_log($post_meta);
                 $post_meta->notifications = $remaining_notifications = maybe_unserialize($post_meta->notifications);
                 // check wicth notification is to be activated
                 foreach ($post_meta->notifications as $key => $notification) {
+                    cred_log($key);
+                    cred_log($notification);
                     $notification_time = $post_meta->expiration_time - $notification['event']['expiration_date'] * DAY_IN_SECONDS;
                     if ($notification_time <= $now) {
                         // notify

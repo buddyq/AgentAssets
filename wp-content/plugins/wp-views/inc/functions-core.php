@@ -66,67 +66,70 @@ function wpv_view_default_settings( $purpose = 'full' ) {
 			'posts_per_page' => 10,
 			// TODO this needs carefull review
 			'pagination' => array(
-					'disable',
-					'mode' => 'none',
-					'preload_images' => true,
-					'cache_pages' => true,
-					'preload_pages'	=> true,
-					'pre_reach'	=> 1,
-					'page_selector_control_type' => 'drop_down',
-					'spinner' => 'default',
-					'spinner_image'	=> WPV_URL . '/res/img/ajax-loader.gif',
-					'spinner_image_uploaded' => '',
-					'callback_next'	=> '' ),
+				'disable',
+				'mode'							=> 'none',
+				'type'							=> 'disabled',
+				'preload_images'				=> true,
+				'cache_pages'					=> true,
+				'preload_pages'					=> true,
+				'pre_reach'						=> 1,
+				'page_selector_control_type'	=> 'drop_down',
+				'spinner'						=> 'default',
+				'spinner_image'					=> WPV_URL . '/res/img/ajax-loader.gif',
+				'spinner_image_uploaded'		=> '',
+				'callback_next'	=>				'' 
+			),
 			'ajax_pagination' => array(
-					'disable',
-					'style'	=> 'fade',
-					'duration' => 500 ),
+				'disable',
+				'style'							=> 'fade',
+				'duration'						=> 500 
+			),
 			'rollover' => array(
-					'preload_images' => true,
-					'posts_per_page' => 1,
-					'speed'	=> 5,
-					'effect' => 'fade',
-					'duration' => 500 ),
+				'preload_images'				=> true,
+				'posts_per_page'				=> 1,
+				'speed'							=> 5,
+				'effect'						=> 'fade',
+				'duration'						=> 500 
+			),
 			'filter_meta_html_state' => array(
-					'html' => 'on',
-					'css' => 'off',
-					'js' => 'off',
-					'img' => 'off' ),
+				'html'							=> 'on',
+				'css'							=> 'off',
+				'js'							=> 'off',
+				'img'							=> 'off' 
+			),
 			'filter_meta_html' => "[wpv-filter-start hide=\"false\"]\n[wpv-filter-controls][/wpv-filter-controls]\n[wpv-filter-end]",
 			'filter_meta_html_css' => '',
 			'filter_meta_html_js' => '',
 			'layout_meta_html_state' => array(
-					'html' => 'on',
-					'css' => 'off',
-					'js' => 'off',
-					'img' => 'off' ),
+				'html'							=> 'on',
+				'css'							=> 'off',
+				'js'							=> 'off',
+				'img'							=> 'off' 
+			),
 			'layout_meta_html_css' => '',
-			'layout_meta_html_js' => '' );
+			'layout_meta_html_js' => '' 
+	);
 
 	// purpose-specific modifications
 	$defaults['view_purpose'] = $purpose;
 
-	switch( $purpose ) {
-
+	switch ( $purpose ) {
 		case 'all':
 			$defaults['sections-show-hide'] = array(
 				'pagination' => 'off',
 				'filter-extra-parametric' => 'off',
 				'filter-extra' => 'off'	);
 			break;
-
 		case 'pagination':
 			$defaults['pagination'][0] = 'enable'; // disable --> enable
 			$defaults['pagination']['mode'] = 'paged';
 			$defaults['sections-show-hide'] = array( 'limit-offset' => 'off' );
 			break;
-
 		case 'slider':
 			$defaults['pagination'][0] = 'enable'; // disable --> enable
 			$defaults['pagination']['mode'] = 'rollover';
 			$defaults['sections-show-hide'] = array( 'limit-offset' => 'off' );
 			break;
-
 		case 'parametric':
 			$defaults['sections-show-hide'] = array(
 					'query-options'	=> 'off',
@@ -134,7 +137,6 @@ function wpv_view_default_settings( $purpose = 'full' ) {
 					'pagination' => 'off',
 					'content-filter' => 'off' );
 			break;
-
 		case 'full':
 		default:
 			$defaults['sections-show-hide'] = array( );
@@ -169,19 +171,16 @@ function wpv_view_default_layout_settings( $purpose ) {
     );
 
 	// Purpose-specific modifications
-	switch( $purpose ) {
-
+	switch ( $purpose ) {
 		case 'all':
 		case 'pagination':
 			// nothing to do here... yet
 			break;
-
 		case 'slider':
 			// Generate full loop output settings
 			$result = WPV_View_Base::generate_loop_output( 'unformatted', array(), array() );
 			$defaults = $result['loop_output_settings'];
 			break;
-
 		case 'parametric':
 		case 'full':
 		default:
@@ -199,23 +198,78 @@ function wpv_view_default_layout_settings( $purpose ) {
  * @return array with desired values
  * @since unknown
  */
-function wpv_wordpress_archives_defaults( $settings = 'view_settings' ) {
+function wpv_wordpress_archives_defaults( $settings = 'view_settings', $purpose = 'all' ) {
 
     $empty_loop_output = WPV_View_Base::generate_loop_output();
 
 	$defaults = array(
 		'view_settings' => array(
-			'view-query-mode' => 'archive',
-			'sections-show-hide' => array(
-                'content' => 'off',
-            )
+			'view-query-mode'			=> 'archive',
+			'view_description'			=> '',
+			'view_purpose'				=> 'all',
+			'sections-show-hide'		=> array(
+                'content'	=> 'off',
+            ),
+			'orderby'					=> 'post_date',
+			'order'						=> 'DESC',
+			'pagination'				=> array(
+												'type'						=> 'paged',
+												'posts_per_page'			=> 'default',
+												'effect'					=> 'fade',
+												'duration'					=> 500,
+												'manage_history'			=> 'on',
+												'tolerance'					=> '',
+												'preload_images'			=> true,
+												'cache_pages'				=> true,
+												'preload_pages'				=> true,
+												'pre_reach'					=> 1,
+												'spinner'					=> 'builtin',
+												'spinner_image'				=> WPV_URL . '/res/img/ajax-loader.gif',
+												'spinner_image_uploaded'	=> '',
+												'callback_next'				=> '',
+											),
+			'filter_meta_html_state'	=> array(
+												'html'				=> 'on',
+												'css'				=> 'off',
+												'js'				=> 'off',
+												'img'				=> 'off' 
+											),
+			'filter_meta_html'			=> "[wpv-filter-start hide=\"false\"]\n[wpv-filter-controls][/wpv-filter-controls]\n[wpv-filter-end]",
+			'filter_meta_html_css'		=> '',
+			'filter_meta_html_js'		=> '',
+			'layout_meta_html_state' => array(
+												'html'				=> 'on',
+												'css'				=> 'off',
+												'js'				=> 'off',
+												'img'				=> 'off' 
+											),
+			'layout_meta_html_css'		=> '',
+			'layout_meta_html_js'		=> '',
 		),
 		'view_layout_settings' => array(
 		    // almost all of this settings are only needed to create the layout on the fly, so they are not needed here
-			'additional_js' => '',
-			'layout_meta_html' => $empty_loop_output['loop_output_settings']['layout_meta_html'],
+			'additional_js'				=> '',
+			'layout_meta_html'			=> $empty_loop_output['loop_output_settings']['layout_meta_html'],
 		),
 	);
+	
+	// purpose-specific modifications
+	$defaults['view_settings']['view_purpose'] = $purpose;
+	
+	switch ( $purpose ) {
+		case 'all':
+			$defaults['view_settings']['sections-show-hide'] = array(
+				'filter-extra-parametric'	=> 'off',
+				'filter-extra'				=> 'off'	
+			);
+			break;
+		case 'parametric':
+			$defaults['view_settings']['sections-show-hide'] = array(
+				
+			);
+			break;
+	}
+	
 	return $defaults[ $settings ];
 }
 

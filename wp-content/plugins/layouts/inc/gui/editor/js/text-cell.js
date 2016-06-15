@@ -9,7 +9,7 @@ DDLayout.TextCell = function($)
         jQuery(document).on('cell-text.dialog-open', self._dialog_open);
         jQuery(document).on('cell-text.dialog-close', self._dialog_close);
         jQuery(document).on('cell-text.get-content-from-dialog', self._get_content_from_dialog);
-        wp.hooks.addFilter('ddl-preferred-editor', self.get_preferred_editor);
+        Toolset.hooks.addFilter('ddl-preferred-editor', self.get_preferred_editor);
     };
 
     self._get_content_from_dialog = function (event, content, dialog) {
@@ -20,7 +20,15 @@ DDLayout.TextCell = function($)
         return DDLayout.text_cell.editor.get_preferred();
     };
 
+    self.cred_button_fixes = function(){
+        var $icon = jQuery('i.icon-cred.ont-icon-22');
+
+        $icon.removeClass('icon-cred').removeClass('ont-icon-22').addClass('icon-cred-logo ont-icon-18');
+    };
+
     self._dialog_open = function (event, content, dialog) {
+
+        self.cred_button_fixes();
         
         // disable full screen save.
         jQuery('#wp-fullscreen-save').hide();
@@ -307,7 +315,12 @@ DDLayout.TextCell = function($)
             jQuery('#js-visual-editor-codemirror').hide();
             self.editor.current = 'tinymce';
             window.wpcfActiveEditor = 'celltexteditor';
-            jQuery('#js-visual-editor-tinymce').show();
+            jQuery('#js-visual-editor-tinymce').show(400, function(event){
+                Toolset.hooks.removeFilter( 'toolset_get_icl_target' );
+                Toolset.hooks.addFilter('toolset_get_icl_target', function(){
+                    return jQuery( '#celltexteditor' );
+                });
+            });
             // WordPress editor.js adds 14px each time TinyMCE visual editor is shown
             // @see wpddl.cell_text.class.php for 300px height
             jQuery( '#celltexteditor_ifr' ).css( 'height', '300px' );
@@ -330,7 +343,12 @@ DDLayout.TextCell = function($)
             jQuery('#js-visual-editor-tinymce').hide();
             self.editor.current = 'codemirror';
             window.wpcfActiveEditor = 'visual-editor-html-editor';
-            jQuery('#js-visual-editor-codemirror').show();
+            jQuery('#js-visual-editor-codemirror').show(400, function(event){
+                Toolset.hooks.removeFilter( 'toolset_get_icl_target' );
+                Toolset.hooks.addFilter('toolset_get_icl_target', function(){
+                    return jQuery("#"+window.wpcfActiveEditor);
+                });
+            });
             self.editor.codemirror.getDoc().setValue( editor_content );
         },
 
@@ -421,4 +439,3 @@ DDLayout.TextCell = function($)
 jQuery(document).on('DLLayout.admin.ready', function($){
     DDLayout.text_cell = new DDLayout.TextCell($);
 });
-

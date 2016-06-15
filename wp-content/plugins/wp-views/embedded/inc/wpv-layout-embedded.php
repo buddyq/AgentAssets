@@ -28,13 +28,14 @@ function wpv_header_shortcode( $atts, $value ) {
         $class = ' ' . esc_attr( $class );
     }
         
-    global $wp_version, $WP_Views;
-    $view_settings = $WP_Views->get_view_settings();
+    global $wp_version;
+    $view_settings = apply_filters( 'wpv_filter_wpv_get_view_settings', array() );
     
-    $order_class = 'wpv-header-no-sort';
-	$dir = "asc";
-	$can_order = true;
-	$default_order = $view_settings['order'];
+    $order_class	= 'wpv-header-no-sort';
+	$dir			= "asc";
+	$orderby_as		= '';
+	$can_order		= true;
+	$default_order	= $view_settings['order'];
 	
 	if ( 
 		$view_settings['view-query-mode'] == 'normal' 
@@ -52,6 +53,8 @@ function wpv_header_shortcode( $atts, $value ) {
 					$field_type = wpv_types_get_field_type( $field_name );
 					if ( in_array( $field_type, array( 'checkboxes', 'skype' ) ) ) {
 						$can_order = false;
+					} else if ( in_array( $field_type, array( 'numeric', 'date' ) ) ) {
+						$orderby_as = 'numeric';
 					}
 				}
 				break;
@@ -62,8 +65,10 @@ function wpv_header_shortcode( $atts, $value ) {
 					$field_type = wpv_types_get_field_type( $field_name, 'tf' );
 					if ( in_array( $field_type, array( 'checkboxes', 'skype' ) ) ) {
 						$can_order = false;
+					} else if ( in_array( $field_type, array( 'numeric', 'date' ) ) ) {
+						$orderby_as = 'numeric';
 					}
-					if ( ! version_compare( $wp_version, '4.5', '<' ) ) {
+					if ( version_compare( $wp_version, '4.5', '<' ) ) {
 						$can_order = false;
 					}
 				}
@@ -80,7 +85,7 @@ function wpv_header_shortcode( $atts, $value ) {
 	}
 	
 	if ( $can_order ) {
-		$view_number = $WP_Views->get_view_count();
+		$view_number = apply_filters( 'wpv_filter_wpv_get_object_unique_hash', '', $view_settings );
 		if (
 			isset( $_GET['wpv_sort_orderby'] ) 
 			&& esc_attr( $_GET['wpv_sort_orderby'] ) == $atts['name'] 
@@ -113,9 +118,10 @@ function wpv_header_shortcode( $atts, $value ) {
         $link = '<a href="#"'
 			. ' class="' . $order_class . ' js-wpv-column-header-click'. $class .'"'
 			. $style 
-			. ' data-viewnumber="' . $view_number . '"'
-			. ' data-name="' . $atts['name'] . '"'
-			. ' data-direction="' . $dir . '"'
+			. ' data-viewnumber="' 	. $view_number . '"'
+			. ' data-name="' 		. $atts['name'] . '"'
+			. ' data-direction="' 	. $dir . '"'
+			. ' data-orderbyas="' 	. $orderby_as . '"'
 			. '>' 
 			. wpv_do_shortcode( $value ) 
 			. '<span class="wpv-sorting-indicator"></span>'
@@ -129,90 +135,62 @@ function wpv_header_shortcode( $atts, $value ) {
 add_shortcode('wpv-layout-start', 'wpv_layout_start_shortcode');
 function wpv_layout_start_shortcode($atts){
     
-    global $WP_Views;
-    
-    $view_settings = $WP_Views->get_view_settings();
-	$view_number = $WP_Views->get_view_count();
-	$pagination_data = wpv_get_view_pagination_data( $view_settings );
+	$view_id				= apply_filters( 'wpv_filter_wpv_get_current_view', null );
+    $view_settings			= apply_filters( 'wpv_filter_wpv_get_view_settings', array() );
+	$view_number			= apply_filters( 'wpv_filter_wpv_get_object_unique_hash', '', $view_settings );
+	$pagination_data		= apply_filters( 'wpv_filter_wpv_get_pagination_settings', array(), $view_settings );
+	$pagination_permalinks	= apply_filters( 'wpv_filter_wpv_get_pagination_permalinks', array(), $view_settings, $view_id );
+	if ( $pagination_data['page'] == 1 ) {
+		$pagination_permalink = $pagination_permalinks['first'];
+	} else {
+		$pagination_permalink = str_replace( 'WPV_PAGE_NUM', $pagination_data['page'], $pagination_permalinks['other'] );
+	}
+	
+	
     $class = array( 
 		'js-wpv-view-layout', 
-		'js-wpv-layout-responsive' 
+		'js-wpv-layout-responsive',
+		'js-wpv-view-layout-' . esc_attr( $view_number )
 	);
     $style = array();
 	$add = '';
 	
-    if (
-		(
-			$view_settings['pagination'][0] == 'enable' 
-			&& $view_settings['ajax_pagination'][0] == 'enable'
-		)
-		|| $view_settings['pagination']['mode'] == 'rollover'
-	) {
-        $class[] = 'wpv-pagination';
+	if ( $pagination_data['type'] == 'ajaxed' ) {
+		
+		$class[] = 'wpv-pagination';
 		$class[] = 'js-wpv-layout-has-pagination';
 		
 		if ( $pagination_data['effect'] == 'infinite' ) {
 			$class[] = 'js-wpv-layout-infinite-scrolling';
 		}
 		
-        if ( ! isset( $view_settings['pagination']['preload_images'] ) ) {
-            $view_settings['pagination']['preload_images'] = false;
-        }
-        if ( ! isset( $view_settings['rollover']['preload_images'] ) ) {
-            $view_settings['rollover']['preload_images'] = false;
-        }
-        if (
-			(
-				$view_settings['pagination']['mode'] == 'paged' 
-				&& $view_settings['pagination']['preload_images']
-			) || (
-				$view_settings['pagination']['mode'] == 'rollover' 
-				&& $view_settings['rollover']['preload_images']
-			)
-		) {
+		if ( $pagination_data['preload_images'] == 'enabled'  ) {
             $class[] = 'wpv-pagination-preload-images';
 			$class[] = 'js-wpv-layout-preload-images';
             $style[] = 'visibility:hidden;';
         }
-        if (
-			(
-				$view_settings['pagination']['mode'] == 'paged' 
-				&& $view_settings['pagination']['preload_pages']
-			) || (
-				$view_settings['pagination']['mode'] == 'rollover' 
-				&& $view_settings['pagination']['preload_pages']
-			)
-		) {
-            $class[] = 'wpv-pagination-preload-pages';
+		
+		if ( $pagination_data['preload_pages'] == 'enabled'  ) {
+			$class[] = 'wpv-pagination-preload-pages';
 			$class[] = 'js-wpv-layout-preload-pages';
-        }
+		}
+		
 	}
-        
+    
 	if ( ! empty( $class ) ) {
-		$add .= ' class="' . implode(' ', $class) . '"';
+		$add .= ' class="' . implode( ' ', $class ) . '"';
 	}
 	if ( ! empty( $style ) ) {
-		$add .= ' style="' . implode(' ', $style) . '"';
+		$add .= ' style="' . implode( ' ', $style ) . '"';
 	}
 		
 	$add .= ' data-viewnumber="' . esc_attr( $view_number ) . '"';
-	
-	$pagination_data['max_pages'] = intval( $WP_Views->get_max_pages() );
-	$pagination_data['page'] = $WP_Views->get_current_page_number();
-	
-	if ( $pagination_data['effect'] == 'fadeslow' ) {
-		$pagination_data['effect'] = 'fade';
-		$pagination_data['duration'] = '1500';
-	} else if ( $pagination_data['effect'] == 'fadefast' ) {
-		$pagination_data['effect'] = 'fade';
-		$pagination_data['duration'] = '1';
-	}
 	
 	$return = '<div'
 		. ' id="wpv-view-layout-' . esc_attr( $view_number ) . '"'
 		. $add
 		. ' data-pagination="' . esc_js( wp_json_encode( $pagination_data ) ) . '"'
-		. ' data-pagepermalink="' . esc_url( wpv_get_pagination_page_permalink( $pagination_data['page'], $view_number ) ) . '"'
+		. ' data-permalink="' . esc_url( $pagination_permalink ) . '"'
 		. ">\n";
 		
 	return $return;
@@ -270,13 +248,10 @@ function wpv_layout_meta_html($atts) {
         shortcode_atts( array(), $atts )
     );
 
-    global $WP_Views;
-    $view_layout_settings = $WP_Views->get_view_layout_settings();
+    $view_layout_settings = apply_filters( 'wpv_filter_wpv_get_view_layout_settings', array() );
     
-    if (isset($view_layout_settings['layout_meta_html'])) {
-        
+    if ( isset( $view_layout_settings['layout_meta_html'] ) ) {
         $content = wpml_content_fix_links_to_translated_content($view_layout_settings['layout_meta_html']);
-        
         return wpv_do_shortcode($content);
     } else {
         return '';

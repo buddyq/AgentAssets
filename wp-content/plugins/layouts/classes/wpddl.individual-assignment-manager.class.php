@@ -153,6 +153,7 @@ class WPDD_Layouts_IndividualAssignmentManager
         $this->_check_nonce();
 
         $search = '';
+
         if (isset($_POST['search'])) {
             $search = $_POST['search'];
         }
@@ -166,6 +167,7 @@ class WPDD_Layouts_IndividualAssignmentManager
         $this->current_layout = $_POST['layout_id'];
 
         echo $this->get_posts_checkboxes($_POST['post_type'], $_POST['count'], $search, $sort);
+
         die();
     }
 
@@ -223,8 +225,6 @@ class WPDD_Layouts_IndividualAssignmentManager
 
         $layout = get_post($this->current_layout);
 
-       
-
         $recent_args = array(
             'post_type' => $post_type,
             'posts_per_page' => $count,
@@ -258,10 +258,15 @@ class WPDD_Layouts_IndividualAssignmentManager
             }
         }
 
-        if ($search) {
+        if( $search && filter_var( $search, FILTER_VALIDATE_URL) ){
+            $post_id = url_to_postid( $search );
+            if( $post_id ){
+                $recent_args['post__in'] = array( $post_id );
+            }
+        }
+        elseif ( $search && filter_var( $search, FILTER_VALIDATE_URL) === false ) {
             $recent_args['s'] = $search;
         }
-
 
         //add_filter('posts_fields_request', array($this, 'filter_query_fields'));
         $get_posts = new WP_Query($recent_args);
@@ -285,8 +290,6 @@ class WPDD_Layouts_IndividualAssignmentManager
 
     public function get_posts_checkboxes($post_type, $count = DDL_MAX_NUM_POSTS, $search = '', $sort = true)
     {
-
-
         $all_posts = json_decode($this->get_posts_checkboxes_json($post_type, $count, $search, $sort));
         //remove_filter('posts_fields_request', array($this, 'filter_query_fields'));
 
@@ -309,7 +312,6 @@ class WPDD_Layouts_IndividualAssignmentManager
         endif;
 
         return ob_get_clean();
-
     }
 
     public function encode_title($title)

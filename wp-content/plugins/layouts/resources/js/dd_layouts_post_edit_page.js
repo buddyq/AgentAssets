@@ -115,7 +115,7 @@ DDLayout.templateSelector = function($)
         var default_template = $('.js-wpddl-default-template-message').val();
         var is_default_selected = '';
 
-        default_template = wp.hooks.applyFilters( 'ddl-default_template-template', default_template );
+        default_template = Toolset.hooks.applyFilters( 'ddl-default_template-template', default_template );
 
         if( is_really_selected && selected_template === 'default'  ){
             //selected_template = 'page.php';
@@ -126,7 +126,7 @@ DDLayout.templateSelector = function($)
             is_default_selected = 'selected="selected"';
         }
 
-        selected_template = wp.hooks.applyFilters( 'ddl-selected-template', selected_template, is_really_selected, force_layout );
+        selected_template = Toolset.hooks.applyFilters( 'ddl-selected-template', selected_template, is_really_selected, force_layout );
         $combinedLayoutTemplate.append('<option '+is_default_selected+' value="default" id="ddl-option-default">Default Template</option>');
 
         jQuery('#page_template option').each( function () {
@@ -152,7 +152,7 @@ DDLayout.templateSelector = function($)
                     if (force_layout && template == default_template ) {
                         // The layout is one that's been assigned to this post type.
                         // Select the first template that supports layouts
-                        selected_template = wp.hooks.applyFilters( 'ddl-selected-template', template, is_really_selected, force_layout );
+                        selected_template = Toolset.hooks.applyFilters( 'ddl-selected-template', template, is_really_selected, force_layout );
                         force_layout = false
                     }
                     var selected = selected_template;
@@ -360,7 +360,7 @@ DDLayout.templateSelector = function($)
 
 jQuery(document).ready(function($) {
     _.defer(function(){
-        if( wp.hooks.applyFilters('ddl-init-template-selector-on-ready', true) ){
+        if( Toolset.hooks.applyFilters('ddl-init-template-selector-on-ready', true) ){
             DDLayout.template_selector = new DDLayout.templateSelector($);
         }
     });

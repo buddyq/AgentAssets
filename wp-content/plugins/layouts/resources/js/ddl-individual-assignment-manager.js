@@ -10,7 +10,7 @@ DDLayout.IndividualAssignmentManager = function($)
     self.init = function() {
         DDLayout.changeLayoutUseHelper.eventDispatcher.listenTo(DDLayout.changeLayoutUseHelper.eventDispatcher, 'ddl-dialog-ass-open', self.dialog_open_complete );
         DDLayout.changeLayoutUseHelper.eventDispatcher.listenTo(DDLayout.changeLayoutUseHelper.eventDispatcher, 'change-layout-use-reload', self.dialog_open_complete );
-        wp.hooks.addAction('ddl-reload-post-list-by-language', self.handle_language_reload);
+        Toolset.hooks.addAction('ddl-reload-post-list-by-language', self.handle_language_reload);
 	
     };
 
@@ -38,7 +38,7 @@ DDLayout.IndividualAssignmentManager = function($)
 	    action: 'ddl_return_assigned_layout_list_json',
 	    layout_id: layout_id,
 	    wpnonce: self._nonce,
-	    ddl_lang: wp.hooks.applyFilters('ddl-js-apply-language', null),
+	    ddl_lang: Toolset.hooks.applyFilters('ddl-js-apply-language', null),
 	};
 
 	$.post(ajaxurl, data, function (results) {
@@ -243,7 +243,7 @@ DDLayout.IndividualAssignmentManager = function($)
 	    wpnonce: self._nonce,
 	    layout_id: self._current_layout,
 	    posts: posts,
-	    ddl_lang: wp.hooks.applyFilters('ddl-js-apply-language', null)
+	    ddl_lang: Toolset.hooks.applyFilters('ddl-js-apply-language', null)
 	};
 
 	var spinner = $(self._get_spinner_code());
@@ -295,7 +295,7 @@ DDLayout.IndividualAssignmentManager = function($)
 		wpnonce : self._nonce,
 		post_ids : JSON.stringify(self.single_posts_remove_array),
 		layout_id:self.get_current_layout(),
-		ddl_lang:wp.hooks.applyFilters('ddl-js-apply-language', null)
+		ddl_lang:Toolset.hooks.applyFilters('ddl-js-apply-language', null)
 	    };
 
 	    data['single_amount_to_show_in_dialog'] = DDLayout.changeLayoutUseHelper.get_current_post_list_handler().get_amount();
@@ -355,7 +355,7 @@ DDLayout.IndividualAssignmentManager = function($)
 	    layout_id: self.get_current_layout(),
 	    wpnonce: self._nonce,
 	    post_type: post_type,
-	    ddl_lang: wp.hooks.applyFilters('ddl-js-apply-language', null),
+	    ddl_lang: Toolset.hooks.applyFilters('ddl-js-apply-language', null),
 	    sort: false,
 	    page: page,
 	    count: per_page
@@ -389,7 +389,7 @@ DDLayout.IndividualAssignmentManager = function($)
 	    layout_id: self.get_current_layout(),
 	    wpnonce: self._nonce,
 	    post_type: post_type,
-	    ddl_lang: wp.hooks.applyFilters('ddl-js-apply-language', null),
+	    ddl_lang: Toolset.hooks.applyFilters('ddl-js-apply-language', null),
 	    count: 12
 	};
 
@@ -449,7 +449,7 @@ DDLayout.IndividualAssignmentManager = function($)
 		wpnonce: self._nonce,
 		post_type: post_type,
 		search: text,
-		ddl_lang: wp.hooks.applyFilters('ddl-js-apply-language', null),
+		ddl_lang: Toolset.hooks.applyFilters('ddl-js-apply-language', null),
 		page: page_search,
 		count: per_page
 	    };

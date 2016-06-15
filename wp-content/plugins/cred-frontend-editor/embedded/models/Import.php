@@ -53,6 +53,9 @@ final class CRED_Import_Model extends CRED_Abstract_Model implements CRED_Single
 
     public function updateSettings($settings)
     {
+//        StaticClass::_pre("updateSettings");
+//        StaticClass::_pre($this->option_name);
+//        StaticClass::_pre($settings);
         return update_option($this->option_name,$settings);
     }
 

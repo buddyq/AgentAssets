@@ -465,7 +465,11 @@ class WPDD_LayoutsListing
                 $message[] = wp_update_post($data);
             }
 
-            $send = $this->get_send($current_page_status, false, $http_id, $message, $_POST);
+            if( isset( $_POST['do_not_reload'] ) && $_POST['do_not_reload'] === 'yes' ){
+                $send = wp_json_encode( array('Data' => array( 'message' => $message ) ) );
+            } else {
+                $send = $this->get_send($current_page_status, false, $http_id, $message, $_POST);
+            }
 
         } else {
             $send = wp_json_encode(array('error' => __(sprintf('Nonce problem: apparently we do not know where the request comes from. %s', __METHOD__), 'ddl-layouts')));
@@ -653,7 +657,7 @@ class DDL_GroupedLayouts
         return self::$instance;
     }
 
-    public static function _filter_post($post, $black = false)
+    public static function _filter_post($post, $black = false, $do_edit_link = true)
     {
 
         $blacklist = $black ? $black : array('post_parent',
@@ -678,13 +682,16 @@ class DDL_GroupedLayouts
         foreach ($blacklist as $remove) {
             unset($post->{$remove});
         }
-        $edit_link = get_edit_post_link($post->ID);
-        if ($edit_link) {
-            if( !$post->post_title || $post->post_title === '' ){
-                $post->post_title = sprintf( __('%sno title%s', 'ddl-layouts'), '&lpar;', '&rpar;' );
+        if( $do_edit_link ){
+            $edit_link = get_edit_post_link($post->ID);
+            if ($edit_link) {
+                if( !$post->post_title || $post->post_title === '' ){
+                    $post->post_title = sprintf( __('%sno title%s', 'ddl-layouts'), '&lpar;', '&rpar;' );
+                }
+                $post->post_title = '<a href="' . $edit_link . '">' . $post->post_title . '</a>';
             }
-            $post->post_title = '<a href="' . $edit_link . '">' . $post->post_title . '</a>';
         }
+
 
         return $post;
     }
@@ -806,7 +813,7 @@ class DDL_GroupedLayouts
 
                 $item = $this->process_item_is_parent( $item, $layout );
 
-                $types = apply_filters( 'ddl-get_layout_post_types_object', $item->ID, false );
+                $types = apply_filters( 'ddl-get_layout_post_types_object', $item->ID, true );
 
                 $item = $this->process_item_post_types( $item, $types );
 
@@ -840,6 +847,7 @@ class DDL_GroupedLayouts
             $types = apply_filters( 'ddl-get_layout_post_types_object', $item->ID, false );
 
             if( is_array($types) ){
+                $this->current = $item->ID;
                 $types = array_map( array(&$this, 'get_archive_link'), $types);
             }
 
@@ -853,6 +861,7 @@ class DDL_GroupedLayouts
 
             $item = $this->process_item_loops( $item, $loops );
 
+            $args['do_edit_link'] = false;
             $item = $this->process_item_single_assignments( $item, $types, $loops, $args );
         }
 
@@ -860,7 +869,14 @@ class DDL_GroupedLayouts
     }
 
     public function get_archive_link( $type ){
-        $type['link'] = get_post_type_archive_link( $type['post_type'] );
+        $link = '';
+        if( apply_filters('ddl-get_post_type_was_batched', $this->current, $type['post_type'])){
+            $post = apply_filters( 'ddl-get_x_posts_of_type', $type['post_type'], $this->current, 1);
+            if( isset($post[0]) && is_object($post[0]) ){
+                $link = apply_filters( 'ddl-ddl_get_post_type_batched_preview_permalink', $type['post_type'], $post[0]->ID );
+            }
+        }
+        $type['link'] = $link;
         return $type;
     }
 
@@ -938,7 +954,7 @@ class DDL_GroupedLayouts
     private function show_in_single($types, $posts_ids, $args = array() )
     {
         if (!$types) return $posts_ids;
-        $post_types = array_map(array(&$this, 'map_layout_post_types_name'), $types);
+        $post_types = is_array( $types ) ? array_map(array(&$this, 'map_layout_post_types_name'), $types) : array();
         $ret = array();
         foreach ($posts_ids as $post) {
             if (in_array($post->post_type, $post_types) === false) {
@@ -1032,7 +1048,8 @@ class DDL_GroupedLayouts
         $posts = array();
         foreach ($posts_ids as $post_id) {
             $post = get_post($post_id);
-            $post = self::_filter_post( $post, self::$blacklist);
+            $do_edit = isset($args['do_edit_link']) && $args['do_edit_link'];
+            $post = self::_filter_post( $post, self::$blacklist, $do_edit);
             if( isset( $args['link'] ) && $args['link'] === true ){
                 $post->link = get_permalink( $post->ID );
             }
@@ -1043,6 +1060,8 @@ class DDL_GroupedLayouts
 
     private function get_batched_post_types_array($layout_id, $post_type_object)
     {
+        if( is_array($post_type_object) === false ) return array();
+
         global $wpddlayout;
 
         $ret = array();

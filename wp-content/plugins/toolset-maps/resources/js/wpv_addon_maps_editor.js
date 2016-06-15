@@ -12,7 +12,9 @@ var WPViews = WPViews || {};
 WPViews.AddonMapsEditor = function( $ ) {
 
     var self = this;
-	
+
+    //Last created random ID
+    self.previous_random_id = null;
 	// Google Maps geocoder, for getting addresses given locations
 	self.geocoder = new google.maps.Geocoder();
 	// Selector that holds address fields
@@ -22,11 +24,12 @@ WPViews.AddonMapsEditor = function( $ ) {
 	self.validate_lon = /^-?([1]?[1-7][1-9]|[1]?[1-8][0]|[1-9]?[0-9])(\.{1}\d{1,20})?$/;
 	// Extra inputs structure for latitude and longitude
 	self.inputs_structure = '<a class="toolset-google-map-toggle-latlon js-toolset-google-map-toggle-latlon">' + toolset_google_address_i10n.showhidecoords + '</a>';
-	self.inputs_structure += '<div class="js-toolset-google-map-toggling-latlon toolset-google-map-toggling-latlon" style="display:none"><p><label for="toolset-google-map-lat" class="toolset-google-map-label">' + toolset_google_address_i10n.latitude + '</label><input id="toolset-google-map-lat" class="js-toolset-google-map-latlon js-toolset-google-map-lat toolset-google-map-lat" type="text" value="" /></p>';
-	self.inputs_structure += '<p><label for="toolset-google-map-lon" class="toolset-google-map-label">' + toolset_google_address_i10n.longitude + '</label><input id="toolset-google-map-lon" class="js-toolset-google-map-latlon js-toolset-google-map-lon toolset-google-map-lon" type="text" value="" /></p></div>';
+	self.inputs_structure += '<div class="js-toolset-google-map-toggling-latlon toolset-google-map-toggling-latlon" style="display:none"><p><label for="toolset-google-map-lat" class="toolset-google-map-label js-wpt-auxiliar-label">' + toolset_google_address_i10n.latitude + '</label><input id="toolset-google-map-lat" class="js-toolset-google-map-latlon js-toolset-google-map-lat toolset-google-map-lat" type="text" value="" /></p>';
+	self.inputs_structure += '<p><label for="toolset-google-map-lon" class="toolset-google-map-label js-wpt-auxiliar-label">' + toolset_google_address_i10n.longitude + '</label><input id="toolset-google-map-lon" class="js-toolset-google-map-latlon js-toolset-google-map-lon toolset-google-map-lon" type="text" value="" /></p></div>';
 	// Extra structure for preview and closest address
 	self.preview_structure = '<div class="toolset-google-map-preview js-toolset-google-map-preview"></div>';
 	self.preview_structure += '<div style="display:none;" class="toolset-google-map-preview-closest-address js-toolset-google-map-preview-closest-address"><div style="padding:5px 10px 10px;">' + toolset_google_address_i10n.closestaddress + '<span class="toolset-google-map-preview-closest-address-value js-toolset-google-map-preview-closest-address-value"></span><br /><button class="button buton-secondary button-small js-toolset-google-map-preview-closest-address-apply">' + toolset_google_address_i10n.usethisaddress + '</button></div></div>';
+	
 	
 	/**
 	* ###########################################
@@ -51,7 +54,50 @@ WPViews.AddonMapsEditor = function( $ ) {
 			$( selectors ).removeClass( reason );
 		}, 500 );
 	};
-	
+
+	/**
+	* create_random_id
+	*
+	* Creates a randomized ID to be used with repetitive fields.
+	*
+	* @param prefix	            string		The original id that will be placed before the randomized stirng.
+	* @param use_previous		bool		Use true to use the same previous generated id.
+	*
+	* @since 1.1.1
+	*/
+
+	self.create_random_id = function(prefix, use_previous){
+		if(!use_previous){
+			function s4() {
+			    return Math.floor((1 + Math.random()) * 0x10000)
+			      .toString(16)
+			      .substring(1);
+			}
+			self.previous_random_id = prefix + s4() + s4() + '' + s4();			
+			return self.previous_random_id;
+		}else{
+			if(self.previous_random_id != null){
+				return self.previous_random_id;
+			}else{
+				self.create_random_id(prefix, false);
+			}
+		}
+	};
+
+	/**
+	* recreate_input_structure
+	*
+	* Recreates the input structure for the latitdue/longitude fields.
+	* @since 1.1.1
+	*/
+	self.recreate_input_structure = function(){
+		// Recreate input structure with new IDs
+		self.inputs_structure = '<a class="toolset-google-map-toggle-latlon js-toolset-google-map-toggle-latlon">' + toolset_google_address_i10n.showhidecoords + '</a>';
+		self.inputs_structure += '<div class="js-toolset-google-map-toggling-latlon toolset-google-map-toggling-latlon" style="display:none"><p><label for="'+self.create_random_id("toolset-google-map-lat")+'" class="toolset-google-map-label js-wpt-auxiliar-label">' + toolset_google_address_i10n.latitude + '</label><input id="'+self.create_random_id("toolset-google-map-lat", true)+'" class="js-toolset-google-map-latlon js-toolset-google-map-lat toolset-google-map-lat" type="text" value="" /></p>';
+		self.inputs_structure += '<p><label for="'+self.create_random_id("toolset-google-map-lon")+'" class="toolset-google-map-label js-wpt-auxiliar-label">' + toolset_google_address_i10n.longitude + '</label><input id="'+self.create_random_id("toolset-google-map-lon", true)+'" class="js-toolset-google-map-latlon js-toolset-google-map-lon toolset-google-map-lon" type="text" value="" /></p></div>';
+	};
+
+		
 	/**
 	* ###########################################
 	* Validation methods
@@ -170,9 +216,12 @@ WPViews.AddonMapsEditor = function( $ ) {
 				draggable: true
 			};
 		}
-
+		
+		self.recreate_input_structure();
+		
 		$( self.preview_structure )
 			.appendTo( thiz_container );
+		
 		$( self.inputs_structure )
 			.appendTo( thiz_inputs_container );
 		
@@ -513,6 +562,16 @@ WPViews.AddonMapsEditor = function( $ ) {
 		) {
 			self.init_address_fields_in_group( data.container );
 		}
+	});
+	
+	/**
+	* Re-init ddress fields on CRED forms after they get submitted using AJAX.
+	*
+	* @since 1.1.1
+	*/
+	
+	$( document ).on( 'js_event_cred_ajax_form_response_completed', function( event ) {
+		self.init_address_fields();
 	});
 	
 	/**

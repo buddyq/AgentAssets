@@ -184,6 +184,21 @@ final class Access_Model implements TAccess_Singleton
             
         return get_post_types($args, 'objects');
     }
+	
+	/**
+	* getPostTypesNames
+	*
+	* @since 2.1
+	*/
+	
+	public function getPostTypesNames( $args = false ) {
+        if ( false === $args ) {
+            $args = array(
+				'show_ui' => true
+			);
+		}
+        return get_post_types($args, 'names');
+    }
     
     public function getTaxonomies($args=false)
     {
@@ -191,5 +206,20 @@ final class Access_Model implements TAccess_Singleton
             $args=array('show_ui' => true);
             
         return get_taxonomies($args, 'objects');
+    }
+	
+	/**
+	* getTaxonomiesNames
+	*
+	* @since 2.1
+	*/
+	
+	public function getTaxonomiesNames( $args = false ) {
+        if ( false === $args ) {
+            $args = array(
+				'show_ui' => true
+			);
+		}
+        return get_taxonomies($args, 'names');
     }
 }

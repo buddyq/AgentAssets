@@ -45,13 +45,15 @@ class WPDDL_Templates_Settings{
 
     public function template_include( $template ){
 
+        add_filter( 'ddl-template_include_force_render', array(&$this, '_true'), 10, 1 );
+
         if( is_ddlayout_assigned() ) return $template;
 
         if( (int) $this->get_default_user() === 1 && user_can_assign_layouts() === false ){
             return $template;
         }
 
-        $option = (int) $this->get_default_value();
+        $option = apply_filters( 'ddl-template_include_force_option', (int) $this->get_default_value() );
 
         if( $option === 1 ){
             return self::$TEMPLATE_MESSAGE_PATH;
@@ -62,6 +64,10 @@ class WPDDL_Templates_Settings{
         }
 
         return $template;
+    }
+
+    public function _true($bool){
+        return true;
     }
 
     private function handle_layout_case( $template ){

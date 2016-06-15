@@ -125,7 +125,7 @@ DDLayout.NewLayoutDialog = function ($) {
             wpnonce: $('#wp_nonce_create_layout').attr('value')
         };
         
-        single_data = create_from_single_data;
+        var single_data = create_from_single_data;
         
         if (null !== single_data) {
             data.single_data = single_data;

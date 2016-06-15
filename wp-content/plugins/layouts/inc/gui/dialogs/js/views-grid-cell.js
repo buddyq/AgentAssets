@@ -605,7 +605,7 @@ DDLayout.ViewsGridCellPreview = function () {
 		var view_id = content_copy.ddl_layout_view_id;
 		
 		var hash_key = view_id + '-' + content_copy.parametric_mode + view_id;
-		
+
         self.error_text = error_text;
         self.loading_text = loading_text;
         self.preview_image = preview_image;
@@ -654,6 +654,9 @@ DDLayout.ViewsGridCellPreview = function () {
 						data: data,
 						cache: false,
 						success: function (data) {
+                                                        if(!data){
+                                                            var data = '<div class="ddl-center-align">'+DDLayout_settings.DDL_JS.strings.views_plugin_missing+'</div>';
+                                                        }
 							//cache view id data
 							if (self.preview_image && data.trim().indexOf('<div class="ddl-parametric-search') != 0) {
 								data = '<i class="icon-views-logo ont-color-gray ont-icon-24"></i>' + data;

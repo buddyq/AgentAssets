@@ -180,7 +180,9 @@ final class CRED_Notification_Manager {
 
     public static function evaluate($params) {
         cred_log($params);
+        cred_log(self::$event);
         extract($params);
+
         $is_user_form = self::get_form_type($params['form_id']) == CRED_USER_FORMS_CUSTOM_POST_NAME;
         switch (apply_filters('cred_notification_event_type', $notification['event']['type'], $notification, $form_id, $post->ID)) {
             case 'form_submit':
@@ -203,7 +205,7 @@ final class CRED_Notification_Manager {
 //                ) {
 //                    return self::evaluateConditions($notification, $fields, $snapshot);
 //                }
-                if (apply_filters('cred_custom_notification_event_type_condition', false, $notification, $form_id, $post->ID))
+                if (apply_filters('cred_custom_notification_event_type_condition', (self::$event && self::$event == $notification['event']['type']), $notification, $form_id, $post->ID))
                     return self::evaluateConditions($notification, $fields, $snapshot);
                 break;
         }
@@ -561,96 +563,10 @@ final class CRED_Notification_Manager {
         $recipients = array();
 
         // parse Notification Fields
-
         if (!isset($notification['to']['type']))
             $notification['to']['type'] = array();
         if (!is_array($notification['to']['type']))
             $notification['to']['type'] = (array) $notification['to']['type'];
-
-        // notification to a mail field (which is saved as post meta)
-        // bypass since no actual post type
-        /* if (
-          in_array('mail_field', $notification['to']['type']) &&
-          isset($notification['to']['mail_field']['address_field']) &&
-          !empty($notification['to']['mail_field']['address_field'])
-          )
-          {
-          $_to_type='to';
-          $_addr=false;
-          $_addr_name=false;
-          $_addr_lastname=false;
-
-          $_addr=$model->getPostMeta($post_id, $notification['to']['mail_field']['address_field']);
-
-          if (
-          isset($notification['to']['mail_field']['to_type']) &&
-          in_array($notification['to']['mail_field']['to_type'], array('to', 'cc', 'bcc'))
-          )
-          {
-          $_to_type=$notification['to']['mail_field']['to_type'];
-          }
-
-          if (
-          isset($notification['to']['mail_field']['name_field']) &&
-          !empty($notification['to']['mail_field']['name_field']) &&
-          '###none###'!=$notification['to']['mail_field']['name_field']
-          )
-          {
-          $_addr_name=$model->getPostMeta($post_id, $notification['to']['mail_field']['name_field']);
-          }
-
-          if (
-          isset($notification['to']['mail_field']['lastname_field']) &&
-          !empty($notification['to']['mail_field']['lastname_field']) &&
-          '###none###'!=$notification['to']['mail_field']['lastname_field']
-          )
-          {
-          $_addr_lastname=$model->getPostMeta($post_id, $notification['to']['mail_field']['lastname_field']);
-          }
-
-          // add to recipients
-          $recipients[]=array(
-          'to'=>$_to_type,
-          'address'=>$_addr,
-          'name'=>$_addr_name,
-          'lastname'=>$_addr_lastname
-          );
-          } */
-
-        // notification to an exisiting wp user
-        // bypass 
-        /* if (in_array('wp_user', $notification['to']['type']))
-          {
-          $_to_type='to';
-          $_addr=false;
-          $_addr_name=false;
-          $_addr_lastname=false;
-
-          if (
-          isset($notification['to']['wp_user']['to_type']) &&
-          in_array($notification['to']['wp_user']['to_type'], array('to', 'cc', 'bcc'))
-          )
-          {
-          $_to_type=$notification['to']['wp_user']['to_type'];
-          }
-
-          $_addr=$notification['to']['wp_user']['user'];
-          $user_id = email_exists($_addr);
-          if ($user_id)
-          {
-          $user_info = get_userdata($user_id);
-          $_addr_name = (isset($user_info->user_firstname)&&!empty($user_info->user_firstname))?$user_info->user_firstname:false;
-          $_addr_lastname = (isset($user_info->user_lasttname)&&!empty($user_info->user_lasttname))?$user_info->user_lastname:false;
-
-          // add to recipients
-          $recipients[]=array(
-          'to'=>$_to_type,
-          'address'=>$_addr,
-          'name'=>$_addr_name,
-          'lastname'=>$_addr_lastname
-          );
-          }
-          } */
 
         // notification to specific recipients
         if (in_array('specific_mail', $notification['to']['type']) && isset($notification['to']['specific_mail']['address'])) {
@@ -772,6 +688,14 @@ final class CRED_Notification_Manager {
         return array('success' => __('Mail sent succesfully', 'wp-cred'));
     }
 
+    /**
+     * sendNotifications
+     * @global type $post
+     * @global type $current_user_id
+     * @param type $post_id
+     * @param type $form_id
+     * @param type $notificationsToSent
+     */
     public static function sendNotifications($post_id, $form_id, $notificationsToSent) {
         cred_log("sendNotifications to $post_id");
         // custom action hooks here, for 3rd-party integration
@@ -893,10 +817,15 @@ final class CRED_Notification_Manager {
                         $author_id = $mypost->post_author;
                     }
                 }
+                
+                cred_log("author: ".$author_id);
 
                 if ($author_id) {
                     $_to_type = 'to';
                     $user_info = get_userdata($author_id);
+                    
+                    cred_log($user_info);
+                    
                     $_addr_name = (isset($user_info) && isset($user_info->user_firstname) && !empty($user_info->user_firstname)) ? $user_info->user_firstname : false;
                     $_addr_lastname = (isset($user_info) && isset($user_info->user_lasttname) && !empty($user_info->user_lasttname)) ? $user_info->user_lastname : false;
                     $_addr = $user_info->user_email;
@@ -908,6 +837,8 @@ final class CRED_Notification_Manager {
                             'name' => $_addr_name,
                             'lastname' => $_addr_lastname
                         );
+                        
+                        cred_log($recipients);
                     }
                 }
             }
@@ -965,6 +896,7 @@ final class CRED_Notification_Manager {
                     'name' => $_addr_name,
                     'lastname' => $_addr_lastname
                 );
+                cred_log($recipients);
             }
 
             // notification to an exisiting wp user
@@ -1099,6 +1031,8 @@ final class CRED_Notification_Manager {
                 continue;
             }
 
+            cred_log($recipients);
+            
             // build recipients
             foreach ($recipients as $ii => $recipient) {
                 // nowhere to send, bypass
@@ -1129,7 +1063,7 @@ final class CRED_Notification_Manager {
             }
 
 
-            //cred_log($recipients);
+            cred_log($recipients);
             $mailer->addRecipients($recipients);
 
             if (isset($_POST[StaticClass::PREFIX . 'cred_container_id']))

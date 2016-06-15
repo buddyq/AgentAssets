@@ -4,7 +4,7 @@
   Plugin Name: Toolset CRED
   Plugin URI: https://wp-types.com/home/toolset-components/#cred
   Description: Create Edit Delete Wordpress content (ie. posts, pages, custom posts) from the front end using fully customizable forms
-  Version: 1.6
+  Version: 1.7
   Author: OnTheGoSystems
   Author URI: http://www.onthegosystems.com/
   License: GPLv2
@@ -33,7 +33,7 @@ if (defined('CRED_FE_VERSION'))
 // TODO use WP Cache object to cache queries(in base model) and templates(in loader DONE)
 /* removed */
 // current version
-define('CRED_FE_VERSION', '1.6');
+define('CRED_FE_VERSION', '1.7');
 // configuration constants
 define('CRED_NAME', 'CRED');
 define('CRED_CAPABILITY', 'manage_options');
@@ -55,7 +55,7 @@ date_default_timezone_set(@date_default_timezone_get());
 
 define('CRED_NOTIFICATION_4_AUTOGENERATION', true);
 
-//if ( function_exists('realpath') ) {    
+//if ( function_exists('realpath') ) {
 //    define('CRED_FILE_PATH', realpath(__FILE__));
 //} else {
 //    define('CRED_FILE_PATH', __FILE__);
@@ -149,12 +149,38 @@ onthego_initialize(CRED_PLUGIN_PATH . '/toolset/onthego-resources/', CRED_PLUGIN
 require CRED_PLUGIN_PATH . '/toolset/toolset-common/loader.php';
 toolset_common_initialize(CRED_PLUGIN_PATH . '/toolset/toolset-common/', CRED_PLUGIN_URL . '/toolset/toolset-common/');
 
+if( !function_exists('cred_loaded_common_dependencies') ){
+    add_action('after_setup_theme', 'cred_loaded_common_dependencies', 11 );
+    function cred_loaded_common_dependencies(){
+        require_once dirname(__FILE__) . '/embedded/classes/CRED_help_videos.php';
+        require_once dirname(__FILE__) . '/embedded/classes/CRED_scripts_manager.php';
+    }
+}
+
+add_filter( 'plugin_row_meta', 'toolset_cred_plugin_plugin_row_meta', 10, 4 );
+
+function toolset_cred_plugin_plugin_row_meta( $plugin_meta, $plugin_file, $plugin_data, $status ) {
+	$this_plugin = basename( CRED_FILE_PATH ) . '/plugin.php';
+	if ( $plugin_file == $this_plugin ) {
+		$plugin_meta[] = sprintf(
+				'<a href="%s" target="_blank">%s</a>',
+				'https://wp-types.com/version/cred-1-6/?utm_source=credplugin&utm_campaign=cred&utm_medium=release-notes-plugin-row&utm_term=CRED 1.6 release notes',
+				__( 'CRED 1.6 release notes', 'wpv-views' ) 
+			);
+	}
+	return $plugin_meta;
+}
+
 define('CRED_LOCALE_PATH', CRED_PLUGIN_PATH . '/locale');
 
 // whether to try to load assets in concatenated form, much faster
 // tested on single site/multisite subdomains/multisite subfolders
 if (!defined('CRED_CONCAT_ASSETS'))
     define('CRED_CONCAT_ASSETS', false); // I've disabled this as it was causing compatibility issues with font-awesome in Views 1.3
+
+
+
+
 
 
     
@@ -195,7 +221,7 @@ CRED_Loader::add('assets', array(
             'loader_url' => CRED_FILE_URL,
             'loader_path' => CRED_FILE_PATH,
             'version' => CRED_FE_VERSION,
-            'dependencies' => array('jquery', 'jquery-effects-scale'),
+            'dependencies' => array('jquery', 'jquery-effects-scale', 'toolset-event-manager'),
             'path' => CRED_ASSETS_URL . '/common/js/extra.js',
             'src' => CRED_ASSETS_PATH . '/common/js/extra.js'
         ),
@@ -243,7 +269,7 @@ CRED_Loader::add('assets', array(
             'loader_url' => CRED_FILE_URL,
             'loader_path' => CRED_FILE_PATH,
             'version' => CRED_FE_VERSION,
-            'dependencies' => array('jquery', 'cred_console_polyfill', 'cred_extra', 'cred_utils', 'cred_gui'),
+            'dependencies' => array('jquery', 'cred_console_polyfill', 'cred_extra', 'cred_utils', 'cred_gui', 'toolset-event-manager'),
             'path' => CRED_ASSETS_URL . '/js/post.js',
             'src' => CRED_ASSETS_PATH . '/js/post.js'
         ),
@@ -263,7 +289,7 @@ CRED_Loader::add('assets', array(
             'path' => CRED_ASSETS_URL . '/js/wizard.js',
             'src' => CRED_ASSETS_PATH . '/js/wizard.js'
         ),
-		'cred_settings' => array(
+        'cred_settings' => array(
             'loader_url' => CRED_FILE_URL,
             'loader_path' => CRED_FILE_PATH,
             'version' => CRED_FE_VERSION,
@@ -582,52 +608,52 @@ if (defined('ABSPATH')) {
                     'path' => CRED_VIEWS_PATH . '/embedded-user-forms.php'
                 )
             ),
-			'settings-wizard' => array(
+            'settings-wizard' => array(
                 array(
                     'path' => CRED_VIEWS_PATH . '/settings_wizard.php'
                 )
             ),
-			'settings-export' => array(
+            'settings-export' => array(
                 array(
                     'path' => CRED_VIEWS_PATH . '/settings_export.php'
                 )
             ),
-			'settings-styling' => array(
+            'settings-styling' => array(
                 array(
                     'path' => CRED_VIEWS_PATH . '/settings_styling.php'
                 )
             ),
-			'settings-other' => array(
+            'settings-other' => array(
                 array(
                     'path' => CRED_VIEWS_PATH . '/settings_other.php'
                 )
             ),
-			'settings-recaptcha' => array(
+            'settings-recaptcha' => array(
                 array(
                     'path' => CRED_VIEWS_PATH . '/settings_recaptcha.php'
                 )
             ),
-			'settings-filter' => array(
+            'settings-filter' => array(
                 array(
                     'path' => CRED_VIEWS_PATH . '/settings_filter.php'
                 )
             ),
-			'settings-user-forms' => array(
-				array(
+            'settings-user-forms' => array(
+                array(
                     'path' => CRED_VIEWS_PATH . '/settings_user_forms.php'
                 )
             ),
-			'export' => array(
+            'export' => array(
                 array(
                     'path' => CRED_VIEWS_PATH . '/export.php'
                 )
             ),
-			'import-post-forms' => array(
+            'import-post-forms' => array(
                 array(
                     'path' => CRED_VIEWS_PATH . '/import_post_forms.php'
                 )
             ),
-			'import-user-forms' => array(
+            'import-user-forms' => array(
                 array(
                     'path' => CRED_VIEWS_PATH . '/import_user_forms.php'
                 )
@@ -743,7 +769,19 @@ require_once "embedded/common/functions.php";
 //}
 //
 //add_action('cred_loader_auto_load', 'cred_auto_load', 1);
-// load basic classes
-CRED_Loader::load('CLASS/CRED');
-// init them
-CRED_CRED::init();
+function cred_is_ajax_call() {
+    return ((defined('DOING_AJAX') && DOING_AJAX) || !empty($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) == 'xmlhttprequest');
+}
+
+function cred_start() {
+    // load basic classes
+    CRED_Loader::load('CLASS/CRED');
+    CRED_CRED::init();
+}
+
+if (cred_is_ajax_call() && !is_admin()) {    
+    add_action('wp_ajax_cred_ajax_form', 'cred_start');
+    add_action('wp_ajax_nopriv_cred_ajax_form', 'cred_start');
+}
+
+cred_start();

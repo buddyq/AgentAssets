@@ -169,6 +169,8 @@ class WPDD_Layouts {
 			add_action('wpml_register_string_packages', array($this, 'register_all_strings_for_translation'), 10, 0);
             
             add_action( 'admin_enqueue_scripts', array( $this, 'enqueue_toolset_common_styles' ) );
+
+            add_filter('ddl-does_layout_with_this_name_exist', array(&$this, 'does_layout_with_this_name_exist'), 10, 1 );
             
 		} else {
 		   // add_action('wp_head', array(&$this,'handle_layout_css_fe'));
@@ -389,6 +391,7 @@ class WPDD_Layouts {
 	function cred_in_iframe_scripts () {
 		
 		$this->enqueue_scripts(array(
+            'select2',
 			'ddl-layouts-cred-support'
 		));
 		
@@ -404,6 +407,8 @@ class WPDD_Layouts {
         $this->localize_script('ddl-layouts-cred-support', 'DDLayout_cred_settings', $data);
 		
 		$this->enqueue_styles(array(
+            'toolset-select2-css',
+            'layouts-select2-overrides-css',
 			'ddl-dialogs-forms-css'
 		));
 	}
@@ -411,6 +416,7 @@ class WPDD_Layouts {
     function cred_user_in_iframe_scripts () {
 
         $this->enqueue_scripts(array(
+            'select2',
             'ddl-layouts-cred-user-support'
         ));
 
@@ -426,6 +432,8 @@ class WPDD_Layouts {
         $this->localize_script('ddl-layouts-cred-user-support', 'DDLayout_cred_settings', $data);
 
         $this->enqueue_styles(array(
+            'toolset-select2-css',
+            'layouts-select2-overrides-css',
             'ddl-dialogs-forms-css'
         ));
     }
@@ -520,10 +528,7 @@ class WPDD_Layouts {
 	}
 
 	function wpddl_init(){
-
-		//check if css options are already set and set defaults if necessary
-		// $this->css_settings_init();
-
+        
 		// Check for editor page.
 		$this->layouts_editor_page = false;
 		if (isset($_GET['page']) and $_GET['page']=='dd_layouts_edit') {
@@ -708,8 +713,12 @@ class WPDD_Layouts {
 	}
 
 	function does_layout_with_this_name_exist($layout_name) {
+
+		if( $layout_name === 'New Layout') return false;
+
 		$post_id = WPDD_Layouts_Cache_Singleton::get_id_by_name($layout_name);
 		return $post_id > 0;
+
 	}
 
 
@@ -722,6 +731,7 @@ class WPDD_Layouts {
         } else {
 
             if (isset($_POST['single_data'])) {
+
                 $extras = $_POST['single_data'];
                 $extras_action = $extras['who'];
 
@@ -729,6 +739,7 @@ class WPDD_Layouts {
                     $assign_post = $extras['post_id'];
                 } elseif ($extras_action === 'all' && isset($extras['post_type'])) {
                     $types_to_batch = $extras['post_type'];
+                    $extras_who = isset( $extras['for_whom'] ) ? $extras['for_whom'] : false;
                 }
             }
 
@@ -745,7 +756,7 @@ class WPDD_Layouts {
             $layout_name = str_replace('\\\\', '##DDL-SLASH##', $layout_name_raw);
             $layout_name = stripslashes_deep($layout_name);
             $layout_name = str_replace('##DDL-SLASH##', '\\\\', $layout_name);
-            if ($this->does_layout_with_this_name_exist($layout_name)) {
+            if ( apply_filters('ddl-layouts-unique-name', false) && apply_filters('ddl-does_layout_with_this_name_exist', $layout_name) ) {
                 $result = array('error' => 'error',
                     'error_message' => __('A layout with this name already exists. Please use a different name.', 'ddl-layouts'));
             } else {
@@ -790,7 +801,14 @@ class WPDD_Layouts {
 
                 if (isset($extras_action) && $extras_action === 'all' && isset($types_to_batch)) {
                     $post_types = array($types_to_batch);
-                    $this->post_types_manager->handle_post_type_data_save($post_id, $post_types);
+                    if( !$extras_who || $extras_who === 'new' ){
+                        $this->post_types_manager->handle_post_type_data_save($post_id, $post_types);
+                    } else if( $extras_who && $extras_who === 'all' ){
+                        $this->post_types_manager->handle_set_option_and_bulk_at_once($post_id, $post_types, null, true);
+                    } else {
+                        $this->post_types_manager->handle_post_type_data_save($post_id, $post_types);
+                    }
+
                 } else if (isset($extras_action) && $extras_action === 'one' && isset($assign_post)) {
                     $this->post_types_manager->update_post_meta_for_post_type(array($assign_post), $post_id);
                 }

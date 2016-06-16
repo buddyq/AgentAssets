@@ -10,6 +10,15 @@ WPViews.ViewEditScreenPaginationUX = function( $ ) {
 	};
 	
 	self.pagination_dialog = null;
+	self.dialog_minWidth = 720;
+	
+	self.calculate_dialog_maxWidth = function() {
+		return ( $( window ).width() - 100 );
+	};
+	
+	self.calculate_dialog_maxHeight = function() {
+		return ( $( window ).height() - 100 );
+	};
 	
 	// ---------------------------------
 	// Dialogs
@@ -17,18 +26,16 @@ WPViews.ViewEditScreenPaginationUX = function( $ ) {
 	
 	self.init_dialogs = function() {
 		var dialog_height = $( window ).height() - 100;
-		self.pagination_dialog = $( "#js-hidden-messages-boxes-pointers-container .js-wpv-pagination-form-dialog" ).dialog({
-			autoOpen: false,
-			modal: true,
-			title: wpv_pagination_texts.add_pagination_dialog_title,
-			minWidth: 720,
-			maxHeight: dialog_height,
-			draggable: false,
-			resizable: false,
-			position: { my: "center top+50", at: "center top", of: window },
+		self.pagination_dialog = $( "#js-wpv-view-hidden-dialogs-container .js-wpv-pagination-form-dialog" ).dialog({
+			autoOpen:	false,
+			modal:		true,
+			title:		wpv_pagination_texts.add_pagination_dialog_title,
+			width:		self.dialog_minWidth,
+			draggable:	false,
+			resizable:	false,
 			show: { 
-				effect: "blind", 
-				duration: 800 
+				effect:		"blind", 
+				duration:	800 
 			},
 			open: function( event, ui ) {
 				$( 'body' ).addClass( 'modal-open' );
@@ -61,7 +68,7 @@ WPViews.ViewEditScreenPaginationUX = function( $ ) {
 				}
 			]
 		});
-		self.pagination_infinite_dialog = $( "#js-hidden-messages-boxes-pointers-container .js-wpv-pagination-infinite-form-dialog" ).dialog({
+		self.pagination_infinite_dialog = $( "#js-wpv-view-hidden-dialogs-container .js-wpv-pagination-infinite-form-dialog" ).dialog({
 			autoOpen: false,
 			modal: true,
 			title: wpv_pagination_texts.add_pagination_dialog_title,
@@ -112,7 +119,7 @@ WPViews.ViewEditScreenPaginationUX = function( $ ) {
 	self.pagination_insert_pointer = function() {
 		self.pagination_pointer.pointer('close');
 		if ( ! $( '.js-wpv-enabled-view-pagination-pointer' ).hasClass( 'js-wpv-pointer-dismissed' ) ) {
-			var filter_html = codemirror_views_query.getValue();
+			var filter_html = WPV_Toolset.CodeMirror_instance['wpv_filter_meta_html_content'].getValue();
 			if (
 				$( '.js-wpv-pagination-mode:checked' ).val() != 'none'
 				&& filter_html.search('wpv-pager-current-page') == -1
@@ -202,32 +209,32 @@ WPViews.ViewEditScreenPaginationUX = function( $ ) {
 		window.wpcfActiveEditor = active_textarea;
 		self.pagination_pointer.pointer('close');
 		if ( active_textarea == 'wpv_filter_meta_html_content' ) {
-			current_cursor = codemirror_views_query.getCursor(true);
-			text_before = codemirror_views_query.getRange({line:0,ch:0}, current_cursor);
-			text_after = codemirror_views_query.getRange(current_cursor, {line:codemirror_views_query.lastLine(),ch:null});
+			current_cursor = WPV_Toolset.CodeMirror_instance['wpv_filter_meta_html_content'].getCursor(true);
+			text_before = WPV_Toolset.CodeMirror_instance['wpv_filter_meta_html_content'].getRange({line:0,ch:0}, current_cursor);
+			text_after = WPV_Toolset.CodeMirror_instance['wpv_filter_meta_html_content'].getRange(current_cursor, {line:WPV_Toolset.CodeMirror_instance['wpv_filter_meta_html_content'].lastLine(),ch:null});
 			if ( 
 				text_before.search(/\[wpv-filter-start.*?\]/g) == -1 
 				|| text_after.search(/\[wpv-filter-end.*?\]/g) == -1 
 			) {
 				// Set the cursor at the end and open popup
-				insert_position = codemirror_views_query.getSearchCursor( '[wpv-filter-end]', false );
+				insert_position = WPV_Toolset.CodeMirror_instance['wpv_filter_meta_html_content'].getSearchCursor( '[wpv-filter-end]', false );
 				insert_position.findNext();
-				codemirror_views_query.setSelection( insert_position.from(), insert_position.from() );
+				WPV_Toolset.CodeMirror_instance['wpv_filter_meta_html_content'].setSelection( insert_position.from(), insert_position.from() );
 				self.pagination_insert_newline = true;
 			}
 		}
 		if ( active_textarea == 'wpv_layout_meta_html_content' ) {
-			current_cursor = codemirror_views_layout.getCursor(true);
-			text_before = codemirror_views_layout.getRange({line:0,ch:0}, current_cursor);
-			text_after = codemirror_views_layout.getRange(current_cursor, {line:codemirror_views_layout.lastLine(),ch:null});
+			current_cursor = WPV_Toolset.CodeMirror_instance['wpv_layout_meta_html_content'].getCursor(true);
+			text_before = WPV_Toolset.CodeMirror_instance['wpv_layout_meta_html_content'].getRange({line:0,ch:0}, current_cursor);
+			text_after = WPV_Toolset.CodeMirror_instance['wpv_layout_meta_html_content'].getRange(current_cursor, {line:WPV_Toolset.CodeMirror_instance['wpv_layout_meta_html_content'].lastLine(),ch:null});
 			if ( 
 				text_before.search(/\[wpv-layout-start.*?\]/g) == -1 
 				|| text_after.search(/\[wpv-layout-end.*?\]/g) == -1 
 			) {
 				// Set the cursor at the end and open popup
-				insert_position = codemirror_views_layout.getSearchCursor( '[wpv-layout-end]', false );
+				insert_position = WPV_Toolset.CodeMirror_instance['wpv_layout_meta_html_content'].getSearchCursor( '[wpv-layout-end]', false );
 				insert_position.findNext();
-				codemirror_views_layout.setSelection( insert_position.from(), insert_position.from() );
+				WPV_Toolset.CodeMirror_instance['wpv_layout_meta_html_content'].setSelection( insert_position.from(), insert_position.from() );
 				self.pagination_insert_newline = true;
 			}
 		}
@@ -238,7 +245,15 @@ WPViews.ViewEditScreenPaginationUX = function( $ ) {
 		) {
 			self.pagination_infinite_dialog.dialog( 'open' );
 		} else {
-			self.pagination_dialog.dialog( 'open' );
+			self.pagination_dialog.dialog( 'open' ).dialog({
+				maxHeight:	self.calculate_dialog_maxHeight(),
+				position: 	{
+					my:			"center top+50",
+					at:			"center top",
+					of:			window,
+					collision:	"none"
+				}
+			});
 		}
 	});
 	
@@ -302,25 +317,25 @@ WPViews.ViewEditScreenPaginationUX = function( $ ) {
 			self.pagination_insert_newline = false;
 		}
 		if ( window.wpcfActiveEditor == 'wpv_filter_meta_html_content' ) {
-			current_cursor = codemirror_views_query.getCursor( true );
-			codemirror_views_query.setSelection( current_cursor, current_cursor );
-			codemirror_views_query.replaceSelection( shortcode, 'end' );
-			end_cursor = codemirror_views_query.getCursor( true );
-			pagination_marker = codemirror_views_query.markText( current_cursor, end_cursor, self.codemirror_highlight_options );
+			current_cursor = WPV_Toolset.CodeMirror_instance['wpv_filter_meta_html_content'].getCursor( true );
+			WPV_Toolset.CodeMirror_instance['wpv_filter_meta_html_content'].setSelection( current_cursor, current_cursor );
+			WPV_Toolset.CodeMirror_instance['wpv_filter_meta_html_content'].replaceSelection( shortcode, 'end' );
+			end_cursor = WPV_Toolset.CodeMirror_instance['wpv_filter_meta_html_content'].getCursor( true );
+			pagination_marker = WPV_Toolset.CodeMirror_instance['wpv_filter_meta_html_content'].markText( current_cursor, end_cursor, self.codemirror_highlight_options );
 			self.pagination_dialog.dialog( 'close' );
-			codemirror_views_query.focus();
+			WPV_Toolset.CodeMirror_instance['wpv_filter_meta_html_content'].focus();
 			setTimeout( function() {
 				  pagination_marker.clear();
 			}, 2000);
 		}
 		if ( window.wpcfActiveEditor == 'wpv_layout_meta_html_content' ) {
-			current_cursor = codemirror_views_layout.getCursor( true );
-			codemirror_views_layout.setSelection( current_cursor, current_cursor );
-			codemirror_views_layout.replaceSelection( shortcode, 'end' );
-			end_cursor = codemirror_views_layout.getCursor( true );
-			pagination_marker = codemirror_views_layout.markText( current_cursor, end_cursor, self.codemirror_highlight_options );
+			current_cursor = WPV_Toolset.CodeMirror_instance['wpv_layout_meta_html_content'].getCursor( true );
+			WPV_Toolset.CodeMirror_instance['wpv_layout_meta_html_content'].setSelection( current_cursor, current_cursor );
+			WPV_Toolset.CodeMirror_instance['wpv_layout_meta_html_content'].replaceSelection( shortcode, 'end' );
+			end_cursor = WPV_Toolset.CodeMirror_instance['wpv_layout_meta_html_content'].getCursor( true );
+			pagination_marker = WPV_Toolset.CodeMirror_instance['wpv_layout_meta_html_content'].markText( current_cursor, end_cursor, self.codemirror_highlight_options );
 			self.pagination_dialog.dialog( 'close' );
-			codemirror_views_layout.focus();
+			WPV_Toolset.CodeMirror_instance['wpv_layout_meta_html_content'].focus();
 			setTimeout( function() {
 				  pagination_marker.clear();
 			}, 2000);
@@ -338,25 +353,25 @@ WPViews.ViewEditScreenPaginationUX = function( $ ) {
 			self.pagination_insert_newline = false;
 		}
 		if ( window.wpcfActiveEditor == 'wpv_filter_meta_html_content' ) {
-			current_cursor = codemirror_views_query.getCursor( true );
-			codemirror_views_query.setSelection( current_cursor, current_cursor );
-			codemirror_views_query.replaceSelection( shortcode, 'end' );
-			end_cursor = codemirror_views_query.getCursor( true );
-			pagination_marker = codemirror_views_query.markText( current_cursor, end_cursor, self.codemirror_highlight_options );
+			current_cursor = WPV_Toolset.CodeMirror_instance['wpv_filter_meta_html_content'].getCursor( true );
+			WPV_Toolset.CodeMirror_instance['wpv_filter_meta_html_content'].setSelection( current_cursor, current_cursor );
+			WPV_Toolset.CodeMirror_instance['wpv_filter_meta_html_content'].replaceSelection( shortcode, 'end' );
+			end_cursor = WPV_Toolset.CodeMirror_instance['wpv_filter_meta_html_content'].getCursor( true );
+			pagination_marker = WPV_Toolset.CodeMirror_instance['wpv_filter_meta_html_content'].markText( current_cursor, end_cursor, self.codemirror_highlight_options );
 			self.pagination_infinite_dialog.dialog( 'close' );
-			codemirror_views_query.focus();
+			WPV_Toolset.CodeMirror_instance['wpv_filter_meta_html_content'].focus();
 			setTimeout( function() {
 				  pagination_marker.clear();
 			}, 2000);
 		}
 		if ( window.wpcfActiveEditor == 'wpv_layout_meta_html_content' ) {
-			current_cursor = codemirror_views_layout.getCursor( true );
-			codemirror_views_layout.setSelection( current_cursor, current_cursor );
-			codemirror_views_layout.replaceSelection( shortcode, 'end' );
-			end_cursor = codemirror_views_layout.getCursor( true );
-			pagination_marker = codemirror_views_layout.markText( current_cursor, end_cursor, self.codemirror_highlight_options );
+			current_cursor = WPV_Toolset.CodeMirror_instance['wpv_layout_meta_html_content'].getCursor( true );
+			WPV_Toolset.CodeMirror_instance['wpv_layout_meta_html_content'].setSelection( current_cursor, current_cursor );
+			WPV_Toolset.CodeMirror_instance['wpv_layout_meta_html_content'].replaceSelection( shortcode, 'end' );
+			end_cursor = WPV_Toolset.CodeMirror_instance['wpv_layout_meta_html_content'].getCursor( true );
+			pagination_marker = WPV_Toolset.CodeMirror_instance['wpv_layout_meta_html_content'].markText( current_cursor, end_cursor, self.codemirror_highlight_options );
 			self.pagination_infinite_dialog.dialog( 'close' );
-			codemirror_views_layout.focus();
+			WPV_Toolset.CodeMirror_instance['wpv_layout_meta_html_content'].focus();
 			setTimeout( function() {
 				  pagination_marker.clear();
 			}, 2000);
@@ -392,7 +407,7 @@ WPViews.ViewEditScreenPaginationUX = function( $ ) {
 						$( document ).trigger( 'js_event_wpv_dismiss_pointer', [ pointer_name ] );
 					}
 					t.element.pointer('close');
-					codemirror_views_query.focus();
+					WPV_Toolset.CodeMirror_instance['wpv_filter_meta_html_content'].focus();
 				});
 				return button_close;
 			}

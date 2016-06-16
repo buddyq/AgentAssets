@@ -69,6 +69,7 @@ $wpv_shortcodes['wpv-archive-link'] = array('wpv-archive-link', __('Post archive
 $wpv_shortcodes['wpv-current-user'] = array('wpv-current-user', __('Current user info', 'wpv-views'), 'wpv_current_user');
 $wpv_shortcodes['wpv-user'] = array('wpv-user', __('Show user data', 'wpv-views'), 'wpv_user');
 $wpv_shortcodes['wpv-login-form'] = array('wpv-login-form', __('Login form', 'wpv-views'), 'wpv_shortcode_wpv_login_form');
+$wpv_shortcodes['wpv-logout-link'] = array('wpv-logout-link', __('Logout link', 'wpv-views'), 'wpv_shortcode_wpv_logout_link');
 
 if (defined('WPV_WOOCOMERCE_VIEWS_SHORTCODE')) {
 	$wpv_shortcodes['wpv-wooaddcart'] = array('wpv-wooaddcart', __('Add to cart button', 'wpv-views'), 'wpv-wooaddcart');
@@ -261,7 +262,7 @@ function wpv_search_term( $attr ) {
 		} else {
 			$out = $term;
 		}
-		$out = urldecode( sanitize_text_field( $out ) );
+		$out = esc_attr( urldecode( wp_unslash( $out ) ) );
 	}
 	return $out;
 }
@@ -574,33 +575,186 @@ function wpv_shortcodes_get_wpv_current_user_data() {
  *  Façade for http://codex.wordpress.org/Function_Reference/wp_login_form
  */
 function wpv_shortcode_wpv_login_form( $atts ) {
-    global $current_user;
-    if((int)$current_user->ID > 0) {
+    
+    if ( is_user_logged_in() ) {
         /* Do not display anything if a user is already logged in */
         return '';
     }
 
     // WordPress gets the current URL this way
     $current_url = set_url_scheme( 'http://' . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'] );
+	if (
+		defined( 'DOING_AJAX' )
+		&& DOING_AJAX
+		&& isset( $_REQUEST['action'] )
+		&& (
+			$_REQUEST['action'] == 'wpv_get_view_query_results' 
+			|| $_REQUEST['action'] == 'wpv_get_archive_query_results'
+		)
+	) {
+		$current_url = wp_get_referer();
+	}
 
-    extract( shortcode_atts(
-                    array(
-        'redirect_url' => $current_url,
-        'allow_remember' => false,
-        'remember_default' => false,
-                    ), $atts )
+    extract( 
+		shortcode_atts(
+            array(
+				'redirect_url'		=> $current_url,
+				'redirect_url_fail'	=> '',
+				'allow_remember'	=> false,
+				'remember_default'	=> false,
+            ), 
+			$atts 
+		)
     );
 
     $args = array(
-        'echo' => false,
-        'redirect' => $redirect_url, /* Use absolute URLs */
-        'remember' => $allow_remember,
-        'value_remember' => $remember_default
+        'echo'				=> false,
+        'redirect'			=> $redirect_url, /* Use absolute URLs */
+		'redirect_fail'		=> $redirect_url_fail,
+        'remember'			=> $allow_remember,
+        'value_remember'	=> $remember_default
     );
 
-    $out = wp_login_form( $args );
+    $out = wpv_login_form( $args );
     apply_filters( 'wpv_shortcode_debug', 'wpv-login-form', json_encode( $atts ), '', '', $out );
     return $out;
+}
+
+/**
+* Provides a simple login form for use anywhere within WordPress.
+*
+* The login format HTML is echoed by default. Pass a false value for `$echo` to return it instead.
+* Borrowed from wp_login_form almost entirely.
+*
+* @since 2.1
+*
+* @param array $args {
+*     Optional. Array of options to control the form output. Default empty array.
+*
+*     @type bool   $echo           Whether to display the login form or return the form HTML code.
+*                                  Default true (echo).
+*     @type string $redirect       URL to redirect to. Must be absolute, as in "https://example.com/mypage/".
+*                                  Default is to redirect back to the request URI.
+*     @type string $redirect_fail  URL to redirect to on failure. Must be absolute, as in "https://example.com/mypage/".
+*                                  Default is to redirect to the login page.
+*     @type string $form_id        ID attribute value for the form. Default 'loginform'.
+*     @type string $label_username Label for the username or email address field. Default 'Username or Email'.
+*     @type string $label_password Label for the password field. Default 'Password'.
+*     @type string $label_remember Label for the remember field. Default 'Remember Me'.
+*     @type string $label_log_in   Label for the submit button. Default 'Log In'.
+*     @type string $id_username    ID attribute value for the username field. Default 'user_login'.
+*     @type string $id_password    ID attribute value for the password field. Default 'user_pass'.
+*     @type string $id_remember    ID attribute value for the remember field. Default 'rememberme'.
+*     @type string $id_submit      ID attribute value for the submit button. Default 'wp-submit'.
+*     @type bool   $remember       Whether to display the "rememberme" checkbox in the form.
+*     @type string $value_username Default value for the username field. Default empty.
+*     @type bool   $value_remember Whether the "Remember Me" checkbox should be checked by default.
+*                                  Default false (unchecked).
+*
+* }
+* @return string|void String when retrieving.
+*/
+function wpv_login_form( $args = array() ) {
+	$defaults = array(
+		'echo'				=> true,
+		'redirect'			=> ( is_ssl() ? 'https://' : 'http://' ) . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'],
+		'redirect_fail'		=> '',
+		'form_id'			=> 'loginform',
+		'label_username'	=> __( 'Username or Email' ),
+		'label_password'	=> __( 'Password' ),
+		'label_remember'	=> __( 'Remember Me' ),
+		'label_log_in'		=> __( 'Log In' ),
+		'id_username'		=> 'user_login',
+		'id_password'		=> 'user_pass',
+		'id_remember'		=> 'rememberme',
+		'id_submit'			=> 'wp-submit',
+		'remember'			=> true,
+		'value_username'	=> '',
+		'value_remember'	=> false,
+	);
+
+	/**
+	* Filters the default login form output arguments.
+	*
+	* @see wp_login_form()
+	*
+	* @param array $defaults An array of default login form arguments.
+	*/
+	$args = wp_parse_args( $args, apply_filters( 'login_form_defaults', $defaults ) );
+
+	/**
+	* Filters content to display at the top of the login form.
+	*
+	* The filter evaluates just following the opening form tag element.
+	*
+	* @param string $content Content to display. Default empty.
+	* @param array  $args    Array of login form arguments.
+	*/
+	$login_form_top = apply_filters( 'login_form_top', '', $args );
+
+	/**
+	* Filters content to display in the middle of the login form.
+	*
+	* The filter evaluates just following the location where the 'login-password'
+	* field is displayed.
+	*
+	* @param string $content Content to display. Default empty.
+	* @param array  $args    Array of login form arguments.
+	*/
+	$login_form_middle = apply_filters( 'login_form_middle', '', $args );
+
+	/**
+	* Filters content to display at the bottom of the login form.
+	*
+	* The filter evaluates just preceding the closing form tag element.
+	*
+	* @param string $content Content to display. Default empty.
+	* @param array  $args    Array of login form arguments.
+	*/
+	$login_form_bottom = apply_filters( 'login_form_bottom', '', $args );
+	
+	$login_form_bottom .= '<input type="hidden" name="wpv_login_form" value="on"/>';
+	if ( $args['redirect_fail'] != '' ) {
+		$login_form_bottom .= '<input type="hidden" name="wpv_login_form_redirect_on_fail" value="' . esc_url( $args['redirect_fail'] ) . '" />';
+	}
+
+	$form = '
+		<form name="' . $args['form_id'] . '" id="' . $args['form_id'] . '" action="' . esc_url( site_url( 'wp-login.php', 'login_post' ) ) . '" method="post">
+			' . $login_form_top . '
+			<p class="login-username">
+				<label for="' . esc_attr( $args['id_username'] ) . '">' . esc_html( $args['label_username'] ) . '</label>
+				<input type="text" name="log" id="' . esc_attr( $args['id_username'] ) . '" class="input" value="' . esc_attr( $args['value_username'] ) . '" size="20" />
+			</p>
+			<p class="login-password">
+				<label for="' . esc_attr( $args['id_password'] ) . '">' . esc_html( $args['label_password'] ) . '</label>
+				<input type="password" name="pwd" id="' . esc_attr( $args['id_password'] ) . '" class="input" value="" size="20" />
+			</p>
+			' . $login_form_middle . '
+			' . ( $args['remember'] ? '<p class="login-remember"><label><input name="rememberme" type="checkbox" id="' . esc_attr( $args['id_remember'] ) . '" value="forever"' . ( $args['value_remember'] ? ' checked="checked"' : '' ) . ' /> ' . esc_html( $args['label_remember'] ) . '</label></p>' : '' ) . '
+			<p class="login-submit">
+				<input type="submit" name="wp-submit" id="' . esc_attr( $args['id_submit'] ) . '" class="button-primary" value="' . esc_attr( $args['label_log_in'] ) . '" />
+				<input type="hidden" name="redirect_to" value="' . esc_url( $args['redirect'] ) . '" />
+			</p>
+			' . $login_form_bottom . '
+		</form>';
+
+	if ( $args['echo'] )
+		echo $form;
+	else
+		return $form;
+}
+
+add_action( 'wp_login_failed', 'wpv_login_form_fail_redirect' );
+
+function wpv_login_form_fail_redirect( $username ) {
+	if (
+		isset( $_REQUEST['wpv_login_form'] ) 
+		&& isset( $_REQUEST['wpv_login_form_redirect_on_fail'] )
+		&& $_REQUEST['wpv_login_form_redirect_on_fail'] != ''
+	) {
+		wp_safe_redirect( $_REQUEST['wpv_login_form_redirect_on_fail'] );
+        exit;
+	}
 }
 
 /**
@@ -630,9 +784,14 @@ function wpv_shortcodes_get_wpv_login_form_data()  {
                 'header' => __('Display options', 'wpv-views'),
                 'fields' => array(
                     'redirect_url' => array(
-                        'label' => __( 'Redirect target URL', 'wpv-views'),
+                        'label' => __( 'Redirect to this URL', 'wpv-views'),
                         'type' => 'url',
 						'description' => __( 'URL to redirect users after login in. Defaults to the current URL.', 'wpv-views' ),
+                    ),
+					'redirect_url_fail' => array(
+                        'label' => __( 'Redirect to this URL on failure', 'wpv-views'),
+                        'type' => 'url',
+						'description' => __( 'URL to redirect users when the login fails. Defaults to the WordPress login page.', 'wpv-views' ),
                     ),
                     'allow_remember' => array(
                         'label' => __( 'Remember me checkbox', 'wpv-views'),
@@ -659,6 +818,170 @@ function wpv_shortcodes_get_wpv_login_form_data()  {
         ),
     );
     return $data;
+}
+
+/**
+ * Views-Shortcode: wpv-logout-link
+ *
+ * Description: Display WordPress logout link and uses supplied content as a link label.
+ * If no label is supplied, it outputs 'Logout' as a default label.
+ *
+ * Parameters:
+ *  "redirect_url" redirects to this URL after successful logout. Absolute URL.
+ *  "class" HTML class attribute for generated A tag
+ *  "style" HTML style attribute for generated A tag
+ *
+ * Example usage:
+ *  [wpv-logout-link]Logout[/wpv-logout-link]
+ *  [wpv-logout-link]Sign Out[/wpv-logout-link]
+ *  [wpv-logout-link class="my-class" style="text-decoration: none;" redirect_url="http://example.com"]
+ *  [wpv-logout-link redirect_url="[wpv-post-url]"]Sign out and go to [wpv-post-title][/wpv-logout-link]
+ *
+ *
+ * Link:
+ * @todo: public documentation link?
+ * @todo: find a way to allow redirect to external links
+ *
+ * Note:
+ *  http://codex.wordpress.org/Template_Tags/wp_logout_url
+ *
+ * @since 2.1
+ */
+function wpv_shortcode_wpv_logout_link( $atts, $content = '' ) {
+	global $current_user;
+
+	if((int)$current_user->ID <= 0) {
+		/* Do not display anything if a user is already logged out */
+		return '';
+	}
+
+	if (
+		defined( 'DOING_AJAX' )
+		&& DOING_AJAX
+		&& isset( $_REQUEST['action'] )
+		&& (
+			$_REQUEST['action'] == 'wpv_get_view_query_results' 
+			|| $_REQUEST['action'] == 'wpv_get_archive_query_results'
+		)
+	) {
+		// It's an AJAX request - Views AJAX Pagination or Parametric Search Request
+		$current_url = wp_get_referer();
+	} else {
+		// It's non-AJAX request
+		// WordPress gets the current URL this way
+		$current_url = set_url_scheme( 'http://' . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'] );
+	}
+
+	extract( shortcode_atts(
+		array(
+			'redirect_url' => $current_url,
+			'class' => '',
+			'style' => '',
+		), $atts )
+	);
+
+	// Get logout URL
+	$url = wp_logout_url( $redirect_url );
+
+	// Parse the content (if any) for inline short codes
+	$outContent = !empty( $content ) ? wpv_do_shortcode( $content ) : '';
+
+	// Assemble the output
+	$out = '<a href="' . $url . '"';
+	$out .= !empty( $class ) ? ' class="' . esc_attr( $class ) . '"' : '';
+	$out .= !empty( $style ) ? ' style="' . esc_attr( $style ) . '"' : '';
+	$out .= '>';
+	$out .= $outContent;
+	$out .= '</a>';
+
+	apply_filters( 'wpv_shortcode_debug', 'wpv-logout-link', json_encode( $atts ), '', '', $out );
+	return $out;
+}
+
+/**
+ * Checks if the supplied URL points to an external site or not.
+ *
+ * @param $url URL to check
+ * @return bool
+ * @since 2.1
+ *
+ * Notes:
+ *  - www.example.com and example.com are treated as 2 different URLs (domains).
+ *  - This function implements simple check and compares with 'host' of current blog URL.
+ *  - Relative paths are of course treated as internal URLs.
+ *
+ * @todo: Improve the function if needed.
+ * @todo: Left for future reference.
+ */
+function wpv_is_external_url( $url ) {
+	$external = false;
+	$url_parts = parse_url( $url );
+	$blog_url_parts = parse_url( get_bloginfo( 'url' ) );
+
+	if(
+		isset( $url_parts['host'] )
+		&& !empty( $url_parts['host'] )
+		&& $url_parts['host'] != $blog_url_parts['host']
+	) {
+		$external = true;
+	}
+
+	return $external;
+}
+
+/**
+ * wpv_shortcodes_register_wpv_logout_link_data
+ *
+ * Register the wpv-logout-link shortcode in the GUI API.
+ *
+ * @since 2.1
+ */
+
+add_filter( 'wpv_filter_wpv_shortcodes_gui_data', 'wpv_shortcodes_register_wpv_logout_link_data' );
+
+function wpv_shortcodes_register_wpv_logout_link_data( $views_shortcodes ) {
+	$views_shortcodes['wpv-logout-link'] = array(
+			'callback' => 'wpv_shortcodes_get_wpv_logout_link_data'
+	);
+	return $views_shortcodes;
+}
+
+function wpv_shortcodes_get_wpv_logout_link_data()  {
+	$data = array(
+		'name' => __( 'Logout Link', 'wpv-views' ),
+		'label' => __( 'Logout Link', 'wpv-views' ),
+		'attributes' => array(
+			'display-options' => array(
+				'label' => __( 'Display options', 'wpv-views' ),
+				'header' => __( 'Display options', 'wpv-views' ),
+				'fields' => array(
+					'redirect_url' => array(
+						'label' => __( 'Redirect target URL', 'wpv-views' ),
+						'type' => 'url',
+						'description' => __( 'URL to redirect users after logout. Defaults to the current URL. Redirect is only supported to the URLs within the current blog (or site). Redirection to external URLs (or sites) is not supported.', 'wpv-views' ),
+					),
+					'class' => array(
+						'label' => __( 'Class', 'wpv-views' ),
+						'type' => 'text',
+						'description' => __( 'Space-separated list of class names that will be added to the anchor HTML tag.', 'wpv-views' ),
+						'placeholder' => 'class1 class2',
+					),
+					'style' => array(
+						'label' => __( 'Style', 'wpv-views' ),
+						'type' => 'text',
+						'description' => __( 'Inline styles that will be added to the anchor HTML tag.', 'wpv-views' ),
+						'placeholder' => 'border: 1px solid red; font-size: 2em;',
+					),
+				),
+				'content' => array(
+					'label' => __( 'Link label', 'wpv-views' ),
+					'description' => __( 'This will be displayed as a text or label for the link.', 'wpv-views' ),
+					'default' => __('Logout', 'wpv-views'),
+				),
+			),
+		),
+	);
+	return $data;
 }
 
 /**
@@ -1435,7 +1758,15 @@ function wpv_shortcodes_get_wpv_post_body_data() {
 	$exclude_loop_templates_ids = wpv_get_loop_content_template_ids();
 	// Be sure not to include the current CT when editing one
 	if ( isset( $_REQUEST['wpv_suggest_wpv_post_body_view_template_exclude'] ) ) {
-		$exclude_loop_templates_ids[] = $_REQUEST['wpv_suggest_wpv_post_body_view_template_exclude'];
+		$requested_ex_ids = $_REQUEST['wpv_suggest_wpv_post_body_view_template_exclude'];
+
+		// Refactored to accept an array of excluded content template IDs
+		if( is_array( $requested_ex_ids ) ) {
+			$exclude_loop_templates_ids = array_merge($exclude_loop_templates_ids, $requested_ex_ids);
+		} else {
+			// @todo: Left for any backward compatibility
+			$exclude_loop_templates_ids[] = $_REQUEST['wpv_suggest_wpv_post_body_view_template_exclude'];
+		}
 	}
 	if (
 		isset( $_GET['page'] )
@@ -4234,42 +4565,61 @@ function wpv_filter_search_box($atts){
             ), $atts )
 	);
 
-	global $WP_Views;
-	$view_settings = $WP_Views->get_view_settings();
+	$view_settings = apply_filters( 'wpv_filter_wpv_get_object_settings', array() );
+	
+	$return = '';
 
     if ( ! empty( $style ) ) {
         $style = ' style="'. esc_attr( $style ) .'"';
     }
-
-	if ($view_settings['query_type'][0] == 'posts') {
-		if ($view_settings && isset($view_settings['post_search_value']) && isset($view_settings['search_mode']) && $view_settings['search_mode'] == 'specific') {
-			$value = 'value="' . $view_settings['post_search_value'] . '"';
-		} else {
-			$value = '';
-		}
-		if (isset($_GET['wpv_post_search'])) {
-			$value = 'value="' . stripslashes( urldecode( sanitize_text_field( $_GET['wpv_post_search'] ) ) ) . '"';
-		}
-        if ( ! empty( $class ) ) {
-            $class = ' ' . esc_attr( $class ) . '';
-        }
-		return '<input type="text" name="wpv_post_search" ' . $value . ' class="js-wpv-filter-trigger-delayed'.  $class . '"'. $style .' />';
+	
+	if ( ! empty( $class ) ) {
+		$class = ' ' . esc_attr( $class ) . '';
+	}
+	
+	$query_mode = 'posts';
+	
+	if ( 
+		! isset( $view_settings['view-query-mode'] )
+		|| 'normal' == $view_settings['view-query-mode'] 
+	) {
+		$query_mode = $view_settings['query_type'][0];
+	}
+	
+	switch ( $query_mode ) {
+		case 'posts':
+			if (
+				isset( $view_settings['post_search_value'] ) 
+				&& isset( $view_settings['search_mode'] ) 
+				&& $view_settings['search_mode'] == 'specific'
+			) {
+				$value = 'value="' . $view_settings['post_search_value'] . '"';
+			} else {
+				$value = '';
+			}
+			if ( isset( $_GET['wpv_post_search'] ) ) {
+				$value = 'value="' . esc_attr( urldecode( wp_unslash( $_GET['wpv_post_search'] ) ) ) . '"';
+			}
+			$return = '<input type="text" name="wpv_post_search" ' . $value . ' class="js-wpv-filter-trigger-delayed'.  $class . '"'. $style .' />';
+			break;
+		case 'taxonomy':
+			if (
+				isset( $view_settings['taxonomy_search_value'] ) 
+				&& isset( $view_settings['taxonomy_search_mode'] ) 
+				&& $view_settings['taxonomy_search_mode'] == 'specific'
+			) {
+				$value = 'value="' . $view_settings['taxonomy_search_value'] . '"';
+			} else {
+				$value = '';
+			}
+			if ( isset( $_GET['wpv_taxonomy_search'] ) ) {
+				$value = 'value="' . esc_attr( urldecode( wp_unslash( $_GET['wpv_taxonomy_search'] ) ) )  . '"';
+			}
+			$return = '<input type="text" name="wpv_taxonomy_search" ' . $value . ''.  $class . $style .'/>';
+			break;
 	}
 
-	if ($view_settings['query_type'][0] == 'taxonomy') {
-		if ($view_settings && isset($view_settings['taxonomy_search_value'])  && isset($view_settings['taxonomy_search_mode']) && $view_settings['taxonomy_search_mode'] == 'specific') {
-			$value = 'value="' . $view_settings['taxonomy_search_value'] . '"';
-		} else {
-			$value = '';
-		}
-		if (isset($_GET['wpv_taxonomy_search'])) {
-			$value = 'value="' . stripslashes( urldecode( sanitize_text_field( $_GET['wpv_taxonomy_search'] ) ) )  . '"';
-		}
-        if ( ! empty( $class ) ) {
-            $class = ' class="' . esc_attr( $class ) . '"';
-        }
-		return '<input type="text" name="wpv_taxonomy_search" ' . $value . ''.  $class . $style .'/>';
-	}
+	return $return;
 }
 
 

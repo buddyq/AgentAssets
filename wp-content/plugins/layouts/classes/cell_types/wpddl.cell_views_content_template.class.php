@@ -104,9 +104,21 @@ class WPDD_layout_cell_post_content_views_factory extends WPDD_layout_cell_facto
 			add_action('wp_ajax_ddl_ct_loader_inline_preview', array($this, 'get_ct_editor_preview'));
 			add_action('wp_ajax_get_posts_for_post_content', array($this, 'get_posts_for_post_content_callback') );
             add_action('wp_ajax_posts_for_post_content_json', array($this, 'get_posts_for_post_content_json') );
-		}
 
+			if( isset($_GET['page']) and $_GET['page'] == 'dd_layouts_edit' ){
+				add_filter( 'cred-register_cred_editor_scripts_and_styles', array(&$this, '__return_true'), 10, 1 );
+			}
+
+		}
 	}
+
+    public function __return_true( $bool ){
+        return true;
+    }
+
+    public function __return_false( $bool ){
+        return false;
+    }
 
 	public function build($name, $width, $css_class_name = '', $content = null, $css_id, $tag) {
 		return new WPDD_layout_cell_post_content_views($name, $width, $css_class_name, $content, $css_id, $tag);
@@ -170,18 +182,19 @@ class WPDD_layout_cell_post_content_views_factory extends WPDD_layout_cell_facto
 
 		<ul class="ddl-form">
 			<li>
+                <?php if ($views_1_6_available || (defined('WPV_VERSION') && sizeof($view_tempates_available) > 0)): ?>
 				<fieldset>
 					<legend><?php _e('Display content for:', 'ddl-layouts'); ?></legend>
 					<div class="fields-group">
 						<ul>
 							<li>
-								<label class="post-content-page">
+								<label class="post-content-page radio align-left">
 									<input type="radio" name="<?php the_ddl_name_attr('page'); ?>" value="current_page" checked="checked"/>
 									<?php _e('A page using this layout', 'ddl-layouts'); ?>
 								</label>
 							</li>
 							<li>
-								<label class="post-content-page">
+								<label class="post-content-page radio align-left">
 									<input type="radio" name="<?php the_ddl_name_attr( 'page' ); ?>" value="this_page" />
 									<?php _e( 'A specific page:', 'ddl-layouts' ); ?>
 								</label>
@@ -212,6 +225,7 @@ class WPDD_layout_cell_post_content_views_factory extends WPDD_layout_cell_facto
 						</ul>
 					</div>
 				</fieldset>
+                <?php endif;?>
 			</li>
 
 			<?php if ($views_1_6_available || (defined('WPV_VERSION') && sizeof($view_tempates_available) > 0)): ?>
@@ -247,7 +261,7 @@ class WPDD_layout_cell_post_content_views_factory extends WPDD_layout_cell_facto
 			<?php else: ?>
 				<li>
 					<div class="toolset-alert toolset-alert-info js-ddl-views-not-activated">
-						<?php if (sizeof($view_tempates_available) > 0): ?>
+
 							<p>
 								<i class="icon-views-logo ont-color-orange ont-icon-24"></i>
 								<?php _e('This cell can display the post content using a Content Template, but your site does not have any Content Template yet. Install and activate the Views plugin, and you will be able to create Content Templates to display post fields', 'ddl-layouts'); ?>
@@ -257,25 +271,7 @@ class WPDD_layout_cell_post_content_views_factory extends WPDD_layout_cell_facto
 									<?php _e('About Views', 'ddl-layouts');?>
 								</a>
 							</p>
-						<?php else: ?>
-							<p>
-								<i class="icon-module-logo ont-color-orange ont-icon-24"></i>
-								<?php _e('This cell can display the post content using fields and there are no Content Templates available.', 'ddl-layouts'); ?>
-								<br />
-								<?php _e('You can download pre-built modules using the Module Manager plugin.', 'ddl-layouts'); ?>
-								<br />
-								<br />
-								<?php if (defined( 'MODMAN_CAPABILITY' )): ?>
-									<a class="fieldset-inputs button button-primary-toolset" href="<?php echo admin_url('admin.php?page=ModuleManager_Modules&amp;tab=library&amp;module_cat=layouts'); ?>" target="_blank">
-										<i class="icon-download fa fa-download-alt"></i> <?php _e('Download Modules', 'ddl-layouts');?>
-									</a>
-								<?php else: ?>
-									<a class="fieldset-inputs button button-primary-toolset" href="http://wp-types.com/home/module-manager?utm_source=layoutsplugin&utm_campaign=layouts&utm_medium=content-template-cell&utm_term=get-module-manager" target="_blank">
-										<?php _e('Get Module Manager plugin', 'ddl-layouts');?>
-									</a>
-								<?php endif; ?>
-							</p>
-						<?php endif; ?>
+						
 					</div>
 				</li>
 				<li class="js-post-content-ct js-ct-edit">

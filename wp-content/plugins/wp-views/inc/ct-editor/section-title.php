@@ -125,6 +125,8 @@ function wpv_ct_editor_title_section( $ct )
             <?php _e('Update', 'wpv-views'); ?>
         </button>
     </p>
+    <div class="clear"></div>
+    <div class="toolset-video-box-wrap"></div>
 <?php
 
 	$content = ob_get_contents();

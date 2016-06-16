@@ -188,9 +188,7 @@ function MarkerClusterer(map, opt_markers, opt_options) {
  * @type {string}
  * @private
  */
-MarkerClusterer.prototype.MARKER_CLUSTER_IMAGE_PATH_ =
-    'https://google-maps-utility-library-v3.googlecode.com/svn/trunk/markerclusterer/' +
-    'images/m';
+MarkerClusterer.prototype.MARKER_CLUSTER_IMAGE_PATH_ = views_addon_maps_clusterer_i10n.cluster_default_imagePath;
 
 
 /**

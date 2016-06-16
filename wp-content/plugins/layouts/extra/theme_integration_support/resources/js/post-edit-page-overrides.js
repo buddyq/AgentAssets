@@ -20,7 +20,7 @@ DDLayout.ThemeIntegrations.PostEditPageOverrides = function ($) {
         themes = DDLayout_Settings.ThemeIntegrations.templates;
 
     self.init = function () {
-        wp.hooks.addFilter('ddl-init-template-selector-on-ready', function() {
+        Toolset.hooks.addFilter('ddl-init-template-selector-on-ready', function() {
             return false;
         });
         self.populate_combined_select_box_if_empty();
@@ -29,7 +29,7 @@ DDLayout.ThemeIntegrations.PostEditPageOverrides = function ($) {
     self.populate_combined_select_box_if_empty = function() {
         var $after = $('#parent_id');
 
-        wp.hooks.addFilter('ddl-default_template-template', function (template) {
+        Toolset.hooks.addFilter('ddl-default_template-template', function (template) {
             return template_default;
         });
 

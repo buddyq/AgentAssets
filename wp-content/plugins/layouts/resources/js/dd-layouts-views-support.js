@@ -109,6 +109,13 @@ DDLayout.layouts_views_support = function($)
         $('#views-layouts-parametric-div #wpv-filter-form-target-' + data_parametric_extra.target).eq(0).prop( 'checked', true ).trigger( 'change' );
         $('#views-layouts-parametric-div input[name="ddl-layout-parametric_target_title"]').eq(0).val(data_parametric_extra.targettitle);
         $('#views-layouts-parametric-div input[name="ddl-layout-parametric_target_id"]').eq(0).val(data_parametric_extra.targetid);
+		
+		// Hide the parametric search controls when dealing with a WordPress Archive, now that they do have parametric purposes
+		if ( $('.js-wpv-settings-archive-loop').length > 0 ) {
+			$('#views-layouts-parametric-div')
+				.removeClass('js-wpv-display-for-purpose js-wpv-display-for-purpose-parametric')
+				.hide();
+		}
     };
 	
 	self._handle_save_state = function () {

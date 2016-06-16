@@ -147,6 +147,11 @@ DDLayout.listing.views.ListingTableView = Backbone.View.extend({
 				jQuery('a[data-orderby="date"]').find('i').removeClass('sort-icon-active').addClass('sort-icon-inactive');
 				jQuery(this).find('i').removeClass('sort-icon-inactive').addClass('sort-icon-active');
 				icon = self.icon_title;
+			} else if( sort_by == 'id' ){
+				order_by = 'id';
+				jQuery('a[data-orderby="date"]').find('i').removeClass('sort-icon-active').addClass('sort-icon-inactive');
+				jQuery(this).find('i').removeClass('sort-icon-inactive').addClass('sort-icon-active');
+				icon = self.icon_date;
 			}
 			else if (order_by = 'date') {
 				order_by = 'post_date';
@@ -332,7 +337,7 @@ DDLayout.listing.views.ListingTableView = Backbone.View.extend({
     no_permission:function(){
         this.errors_div.wpvToolsetMessage({
             text: DDLayout_settings.DDL_JS.strings.user_no_caps,
-            type: 'warning',
+            type: 'error',
             stay: false,
             stay_for:15000,
             close: false,

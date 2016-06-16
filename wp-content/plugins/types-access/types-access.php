@@ -5,11 +5,11 @@ Plugin URI: http://wp-types.com/home/types-access/?utm_source=accessplugin&utm_c
 Description: User access control and roles management
 Author: OnTheGoSystems
 Author URI: http://www.onthegosystems.com/
-Version: 2.0
+Version: 2.1
 */
 
 // current version
-define('TACCESS_VERSION','2.0');
+define('TACCESS_VERSION','2.1');
 if ( function_exists('realpath') )
     define('TACCESS_PLUGIN_PATH', realpath(dirname(__FILE__)));
 else
@@ -365,7 +365,13 @@ function wpcf_access_layouts_capabilities ($data){
     return $data;
 }
 
-
+/**
+* otg_access_plugin_row_meta
+*
+* Add a link to the Access release notes on the plugin row.
+*
+* @since 2.0
+*/
 
 add_filter( 'plugin_row_meta', 'otg_access_plugin_row_meta', 10, 4 );
 function otg_access_plugin_row_meta( $plugin_meta, $plugin_file, $plugin_data, $status ) {
@@ -373,9 +379,23 @@ function otg_access_plugin_row_meta( $plugin_meta, $plugin_file, $plugin_data, $
 	if ( $plugin_file == $this_plugin ) {
 		$plugin_meta[] = sprintf(
 				'<a href="%s" target="_blank">%s</a>',
-				'https://wp-types.com/version/access-2-0/?utm_source=accessplugin&utm_campaign=access&utm_medium=release-notes-plugins-list&utm_term=Access 2.0 release notes',
-				__( 'Access 2.0 release notes', 'wpcf-access' )
+				'https://wp-types.com/version/access-2-1/?utm_source=accessplugin&utm_campaign=access&utm_medium=release-notes-plugins-list&utm_term=Access 2.1 release notes',
+				__( 'Access 2.1 release notes', 'wpcf-access' )
 			);
 	}
 	return $plugin_meta;
 }
+
+/**
+* toolset_access_return_installed_version
+*
+* Return the curently installed Access version number.
+*
+* @since 2.1
+*/
+
+add_filter( 'toolset_access_version_installed', 'toolset_access_return_installed_version' );
+
+function toolset_access_return_installed_version( $version ) {
+	return TACCESS_VERSION;
+};

@@ -134,7 +134,7 @@ final class CRED_User_Fields_Model extends CRED_Abstract_Model implements CRED_S
         return $fields;
     }
 
-    public function getCustomFields($role = "") {
+    public function getCustomFields($role = "", $type_form = "") {
         $fields = array();
         //return get_option('wpcf-usermeta', false);
         $isTypesActive = defined('WPCF_VERSION');
@@ -156,7 +156,7 @@ final class CRED_User_Fields_Model extends CRED_Abstract_Model implements CRED_S
                                 (is_array($f['_wp_types_group_showfor']) && in_array($role, $f['_wp_types_group_showfor'])) ||
                                 (is_string($f['_wp_types_group_showfor']) && 'all' == $f['_wp_types_group_showfor'])
                                 )
-                                ) || empty($role)) {
+                                ) || (empty($role) && empty($type_form) || $type_form=='edit')) {
                             $fields = array_merge($fields, $f['fields']);
                         }
                     }
@@ -255,7 +255,11 @@ final class CRED_User_Fields_Model extends CRED_Abstract_Model implements CRED_S
         return $fields;
     }
 
-    public function getFields($autogenerate = array('username' => true, 'nickname' => true, 'password' => true), $role = "", $add_default = true, $localized_message_callback = null) {
+    public function getFields($autogenerate = array('username' => true, 'nickname' => true, 'password' => true), 
+                                $role = "", 
+                                $type_form = "", 
+                                $add_default = true, 
+                                $localized_message_callback = null) {
         // ALL FIELDS
         $fields_all = array();
 
@@ -263,7 +267,7 @@ final class CRED_User_Fields_Model extends CRED_Abstract_Model implements CRED_S
         $groups = array();
         $groups_conditions = array();
 
-        $fields = $this->getCustomFields($role);
+        $fields = $this->getCustomFields($role, $type_form);
 
         //Check this because is working fine in post without it
         foreach ($fields as $k => &$field) {
@@ -305,7 +309,7 @@ final class CRED_User_Fields_Model extends CRED_Abstract_Model implements CRED_S
             if ($localized_message_callback) {
                 $message = call_user_func($localized_message_callback, 'field_required');
             } else {
-                $message = __('This field is requireds', 'wp-cred');
+                $message = __('This field is required', 'wp-cred');
             }
 
             $expression_user = isset($autogenerate['username']) && ( (bool) $autogenerate['username'] !== true || $autogenerate['username'] === 'false');

@@ -42,7 +42,7 @@ $clear_date_showhide = '';
 if ( empty( $post_expiration_time ) ) {
 	$clear_date_showhide = 'display:none;';
 }
-echo '<img src="' . $delete_date_image . '" title="' . esc_attr( __( 'Clear date', $cred_post_expiration->getLocalizationContext() ) ) . '" alt="' . esc_attr( __( 'Clear date', $cred_post_expiration->getLocalizationContext() ) ) . '" class="js-cred-pe-date-clear cred-pe-date-clear" style="cursor:pointer;' . $clear_date_showhide . '" />';
+//echo '<img src="' . $delete_date_image . '" title="' . esc_attr( __( 'Clear date', $cred_post_expiration->getLocalizationContext() ) ) . '" alt="' . esc_attr( __( 'Clear date', $cred_post_expiration->getLocalizationContext() ) ) . '" class="js-cred-pe-date-clear cred-pe-date-clear" style="cursor:pointer;' . $clear_date_showhide . '" />';
 ?>
 <p>
 <select name="cred_pe[<?php echo $time_field_name; ?>][hours]" id="<?php echo $time_field_name; ?>-hours" class="js-cred-pe-date-hour">

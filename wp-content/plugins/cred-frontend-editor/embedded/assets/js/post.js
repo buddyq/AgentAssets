@@ -16,8 +16,7 @@
 
     var cred_media_buttons,
             cred_popup_boxes,
-            checkButtonTimer
-            ;
+            checkButtonTimer;
 
     // auxilliary functions
     var aux = {
@@ -307,26 +306,33 @@
                     {
                         disable = true;
                         tip = settings.locale.select_post;
+                        //FIXME: this is useless and wrong, we have 2 other events
                     } else {
-                        var form_id = $('.cred_form-edit-shortcode-select2').val();
-                        var loader = $('.cred-form-addtional-loader2', $parent).show();
-                        $.ajax({
-                            url: self.route('/Posts/getUsers?form_id=' + form_id),
-                            timeout: 10000,
-                            type: 'GET',
-                            data: '',
-                            dataType: 'html',
-                            success: function (result)
-                            {
-                                clearInterval(checkButtonTimer);
-                                $('.cred-edit-user-select2', $parent).html(result);
-                                loader.hide();
-                            },
-                            error: function ()
-                            {
-                                loader.hide();
-                            }
-                        });
+                        
+                        if( Toolset.hooks.applyFilters( 'cred_cred_aux_reload_button_content_ajax', true ) ){
+
+                            var form_id = $('.cred_form-edit-shortcode-select2').val();
+                            var loader = $('.cred-form-addtional-loader2', $parent).show();
+                            $.ajax({
+                                url: self.route('/Posts/getUsers?form_id=' + form_id),
+                                timeout: 10000,
+                                type: 'GET',
+                                data: '',
+                                dataType: 'html',
+                                success: function (result)
+                                {
+                                    clearInterval(checkButtonTimer);
+                                    $('.cred-edit-user-select2', $parent).html(result);
+                                    loader.hide();
+                                },
+                                error: function ()
+                                {
+                                    loader.hide();
+                                }
+                            });
+                        } else {
+                            clearInterval(checkButtonTimer);
+                        }
                     }
                 }
             }
@@ -415,7 +421,8 @@
 
             event.stopPropagation();
             event.preventDefault();
-
+            
+            //post_id is user_id in this case
             var form_id, form_name, post_id, shortcode, form_page_id, parent_id;
 
             var el = $(this);
@@ -483,13 +490,13 @@
                             if (post_id == null)
                                 shortcode = '[cred_link_user_form form=\'' + form_name + '\'' + _atts + ']';
                             else
-                                shortcode = '[cred_link_user_form form=\'' + form_name + '\' post=\'' + post_id + '\'' + _atts + ']';
+                                shortcode = '[cred_link_user_form form=\'' + form_name + '\' user=\'' + post_id + '\'' + _atts + ']';
                             break;
                         case 'insert-form':
                             if (post_id == null)
                                 shortcode = '[cred_user_form form=\'' + form_name + '\']';
                             else
-                                shortcode = '[cred_user_form form=\'' + form_name + '\' post=\'' + post_id + '\']';
+                                shortcode = '[cred_user_form form=\'' + form_name + '\' user=\'' + post_id + '\']';
                             break;
                         default:
                             return false;
@@ -689,7 +696,7 @@
         },
         popupHandler2: function (event)
         {
-            event.stopPropagation();
+            event.stopImmediatePropagation();
             event.preventDefault();
 
             var form_id, form_name, post_id, shortcode, form_page_id, parent_id, error = false;
@@ -851,15 +858,15 @@
                                 else
                                     _atts = '';
                                 if (null == post_id)
-                                    shortcode = '[cred_link_user_form form=\'' + form_name + '"' + _atts + ']';
+                                    shortcode = '[cred_link_user_form form=\'' + form_name + '\'' + _atts + ']';
                                 else
-                                    shortcode = '[cred_link_user_form form=\'' + form_name + '" post="' + post_id + '"' + _atts + ']';
+                                    shortcode = '[cred_link_user_form form=\'' + form_name + '\' user=\'' + post_id + '\'' + _atts + ']';
                                 break;
                             case 'insert-form':
                                 if (null == post_id)
                                     shortcode = '[cred_user_form form=\'' + form_name + '\']';
                                 else
-                                    shortcode = '[cred_user_form form=\'' + form_name + '\' post=\'' + post_id + '\']';
+                                    shortcode = '[cred_user_form form=\'' + form_name + '\' user=\'' + post_id + '\']';
                                 break;
                             default:
                                 error = 'No Option';
@@ -990,11 +997,14 @@
             if (shortcode && '' != shortcode)
             {
                 try {
+                    content = Toolset.hooks.applyFilters('toolset_get_icl_target', content);
                     utils.InsertAtCursor(content, shortcode);
                     utils.doDelayed(function () {
                         clearInterval(checkButtonTimer);
                         cred_media_buttons.css('z-index', 1);
-                        cred_popup_boxes.hide();
+                        cred_popup_boxes.hide('fast', function(){
+                            Toolset.hooks.doAction( 'cred_cred_short_code_dialog_close' );
+                        });
                     });
                 } catch (e) {
                     console.log('A problem occurred', e.message)
@@ -1062,7 +1072,8 @@
                 $('.cred-show-hide-advanced', $(this).parent()).text(settings.locale.hide_advanced_options);
             });
 
-            cred_popup_boxes.on('click', '.cred-show-hide-advanced', function () {
+            cred_popup_boxes.on('click', '.cred-show-hide-advanced', function (event) {
+                event.stopImmediatePropagation();
                 var adv_option = $('.cred-shortcodes-container-advanced', $(this).parent());
 
                 if (adv_option.hasClass('cred-show'))
@@ -1399,6 +1410,7 @@
                 }
             });
 
+
             $(document).on('click', '#cred-form-shortcode-button-button', function (event) {
                 event.stopPropagation();
                 event.preventDefault();
@@ -1415,6 +1427,8 @@
                 checkButtonTimer = setInterval(function () {
                     aux.checkButton();
                 }, 500);
+
+                Toolset.hooks.doAction('cred_cred_checkButtonTimer_inerval_set', checkButtonTimer, aux, this );
             });
 
             $(document).on('click', '.cred-form-shortcode-button-button2,.js-code-editor-toolbar-button-cred-icon', function (event) {
@@ -1431,6 +1445,7 @@
                 checkButtonTimer = setInterval(function () {
                     aux.checkButton2($parent);
                 }, 1000);
+                Toolset.hooks.doAction('cred_cred_checkButtonTimer_inerval_set', checkButtonTimer, aux, this );
             });
 
             $('#cred-form-shortcodes-box').on('click', '#cred-popup-cancel', function (event) {
@@ -1438,7 +1453,9 @@
                 utils.doDelayed(function () {
                     clearInterval(checkButtonTimer);
                     cred_media_buttons.css('z-index', 1);
-                    cred_popup_boxes.hide();
+                    cred_popup_boxes.hide('fast', function(){
+                        Toolset.hooks.doAction( 'cred_cred_short_code_dialog_close' );
+                    });
                 });
             });
 
@@ -1447,7 +1464,9 @@
                 utils.doDelayed(function () {
                     clearInterval(checkButtonTimer);
                     cred_media_buttons.css('z-index', 1);
-                    cred_popup_boxes.hide();
+                    cred_popup_boxes.hide('fast', function(){
+                        Toolset.hooks.doAction( 'cred_cred_short_code_dialog_close' );
+                    });
                 });
             });
 
@@ -1484,14 +1503,23 @@
                 utils.doDelayed(function () {
                     clearInterval(checkButtonTimer);
                     cred_media_buttons.css('z-index', 1);
-                    cred_popup_boxes.hide();
+                    cred_popup_boxes.hide('fast', function(){
+                        Toolset.hooks.doAction( 'cred_cred_short_code_dialog_close' );
+                    });
                 });
             });
         }
     };
 
-    // make public methods/properties available
-    window.cred_cred = self;
+    $(document).ready(function () {
+        var cred_cred_instance = Toolset.hooks.applyFilters('cred_cred_cred_run', self, cred_settings, cred_utils, cred_gui);
+    });
 
+    // make public methods/properties available
+    window.cred_cred =  self;
+
+    return window.cred_cred;
 
 })(window, jQuery, cred_settings, cred_utils, cred_gui);
+
+

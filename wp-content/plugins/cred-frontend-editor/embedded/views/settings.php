@@ -71,7 +71,8 @@ if (isset($_POST['import']) && $_POST['import'] == __('Import', 'wp-cred') &&
 
 $settings_model = CRED_Loader::get('MODEL/Settings');
 
-$url = admin_url('admin.php') . '?page=CRED_Settings';
+//$url = admin_url('admin.php') . '?page=CRED_Settings';
+$url = admin_url('admin.php') . '?page=toolset-settings';
 $doaction = isset($_POST['cred_settings_action']) ? $_POST['cred_settings_action'] : false;
 
 $settings = $settings_model->getSettings();
@@ -179,12 +180,12 @@ if ($doaction) {
                                             </td>
                                         </tr>
                                         <tr>
-                                            <td width="20%"><?php _e('Private Key', 'wp-cred'); ?></td>
+                                            <td width="20%"><?php _e('Secret Key', 'wp-cred'); ?></td>
                                             <td width="5%"><input type="text" size='50' name="settings[recaptcha][private_key]" value="<?php if (isset($settings['recaptcha']['private_key'])) echo $settings['recaptcha']['private_key']; ?>"  /></td>
                                             <td></td>
                                         </tr>        
                                         <tr>
-                                            <td><?php _e('Public Key', 'wp-cred'); ?></td>
+                                            <td><?php _e('Site Key', 'wp-cred'); ?></td>
                                             <td><input type="text" size='50' name="settings[recaptcha][public_key]" value="<?php if (isset($settings['recaptcha']['public_key'])) echo $settings['recaptcha']['public_key']; ?>"  /></td>
                                             <td></td>
                                         </tr>        

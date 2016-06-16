@@ -22,7 +22,7 @@ function wpv_admin_archive_listing_page() {
 
                 // 'trash' or 'publish'
                 $current_post_status = wpv_getget( 'status', 'publish', array( 'trash', 'publish' ) );
-                $search_term = urldecode( sanitize_text_field( wpv_getget( 's' ) ) );
+                $search_term = esc_attr( urldecode( wp_unslash( wpv_getget( 's', '' ) ) ) );
                 $arrange_by_usage = ( sanitize_text_field( wpv_getget( 'arrangeby' ) ) == 'usage' );
 
                 wp_nonce_field( 'work_views_listing', 'work_views_listing' );

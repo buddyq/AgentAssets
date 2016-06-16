@@ -13,6 +13,7 @@ if (!class_exists('Layouts_cell_views_content_grid')) {
     class Layouts_cell_views_content_grid{
         
         private $cell_type = 'views-content-grid-cell';
+        private $views_not_available_message = "Sorry, preview is not available. Please make sure that the Toolset Views plugin is active.";
         
         function __construct() {
 
@@ -157,8 +158,6 @@ if (!class_exists('Layouts_cell_views_content_grid')) {
                                                 <input type="radio" name="view-grid-view-action" class="js-ddl-views-dialog-mode js-ddl-views-grid-create" <?php checked( get_ddl_field('ddl_layout_view_id'), '' ); ?> value="new_layout" />
                                                 <?php _e('Create new View', 'ddl-layouts');?>
                                             </label>
-                                        </p>
-                                        <p>
                                             <label class="radio">
                                                 <?php $checked = ( get_ddl_field('ddl_layout_view_id') != '' ) ? ' checked="checked" ' : '';?>
                                                 <input type="radio" name="view-grid-view-action" class="js-ddl-views-dialog-mode js-ddl-views-grid-existing" value="existing_layout" <?php echo $checked?> />
@@ -309,39 +308,39 @@ if (!class_exists('Layouts_cell_views_content_grid')) {
                                 <div class="fields-group ddl-form-indent" style="background:#f0f0f0;padding:1px 10px 10px">
                                     <ul>
                                         <li>
-                                            <label>
+                                            <label class="radio">
                                                 <input type="radio" name="view_purpose" class="js-view-purpose" id="view_purpose_all" value="all" />
                                                 <?php _e('Display all results','ddl-layouts'); ?>
-                                            </label>
-                                            <span class="desc"><?php _e('The View will output all the results returned from the query section.', 'ddl-layouts'); ?></span>
+                                            </label class="radio">
+                                            <p class="desc cleared"><?php _e('The View will output all the results returned from the query section.', 'ddl-layouts'); ?></p>
                                         </li>
                                         <li>
-                                            <label>
+                                            <label class="radio">
                                                 <input type="radio" name="view_purpose" class="js-view-purpose" id="view_purpose_pagination" value="pagination" />
                                                 <?php _e('Display the results with pagination','ddl-layouts'); ?>
                                             </label>
-                                            <span class="desc"><?php _e('The View will display the query results in pages.', 'ddl-layouts'); ?></span>
+                                            <p class="desc cleared"><?php _e('The View will display the query results in pages.', 'ddl-layouts'); ?></p>
                                         </li>
                                         <li>
-                                            <label>
+                                            <label class="radio">
                                                 <input type="radio" name="view_purpose" class="js-view-purpose" id="view_purpose_slider" value="slider" />
                                                 <?php _e('Display the results as a slider','ddl-layouts'); ?>
                                             </label>
-                                            <span class="desc"><?php _e('The View will display the query results as slides.', 'ddl-layouts'); ?></span>
+                                            <p class="desc cleared"><?php _e('The View will display the query results as slides.', 'ddl-layouts'); ?></p>
                                         </li>
                                         <li>
-                                            <label>
+                                            <label class="radio">
                                                 <input type="radio" name="view_purpose" class="js-view-purpose" id="view_purpose_parametric" value="parametric" />
                                                 <?php _e('Display the results as a parametric search','ddl-layouts'); ?>
                                             </label>
-                                            <span class="desc"><?php _e('Visitors will be able to search through your content using different search criteria.', 'ddl-layouts'); ?></span>
+                                            <p class="desc cleared"><?php _e('Visitors will be able to search through your content using different search criteria.', 'ddl-layouts'); ?></p>
                                         </li>
                                         <li>
-                                            <label>
+                                            <label class="radio">
                                                 <input type="radio" name="view_purpose" class="js-view-purpose" id="view_purpose_full" value="full" checked="checked" />
                                                 <?php _e('Full custom display mode','ddl-layouts'); ?>
                                             </label>
-                                            <span class="desc"><?php _e('See all the View controls open and set up things manually.', 'ddl-layouts'); ?></span>
+                                            <p class="desc cleared"><?php _e('See all the View controls open and set up things manually.', 'ddl-layouts'); ?></p>
                                         </li>
                                     </ul>
                                 </div>
@@ -456,6 +455,14 @@ if (!class_exists('Layouts_cell_views_content_grid')) {
         
         
         function ddl_views_content_grid_preview(){
+            /*
+            if(!class_exists('WP_Views')){
+                $output = "<center>";
+                $output .=__($this->views_not_available_message, 'ddl-layouts');
+                $output .= "</center><br><br>";
+                die( $output ); 
+            }
+            */
             // check permissions
             if( WPDD_Utils::user_not_admin() ){
                 die( __("You don't have permission to perform this action!", 'ddl-layouts') );
@@ -812,6 +819,22 @@ if (!class_exists('Layouts_cell_views_content_grid')) {
                             print( preview );
                             }
                             #>
+                    </div>
+                </div>
+                <?php
+                return ob_get_clean();
+            } else {
+                ob_start();
+                $output = '<div class="ddl-center-align">';
+                $output .=__($this->views_not_available_message, 'ddl-layouts');
+                $output .= "</div>";
+                ?> 
+                <div class="cell-content">
+                    <p class="cell-name"><?php echo __('View');?></p>
+                    <div class="cell-preview">
+                        <div class="js-views-content-grid-92-full92">
+                            <?php echo $output;?>
+                        </div>
                     </div>
                 </div>
                 <?php

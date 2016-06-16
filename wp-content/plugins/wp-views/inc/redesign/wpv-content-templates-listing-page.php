@@ -20,7 +20,7 @@ function wpv_admin_menu_content_templates_listing_page()
             // 'trash' or 'publish'
             $current_post_status = wpv_getget( 'status', 'publish', array( 'trash', 'publish' ) );
 
-            $search_term = urldecode( sanitize_text_field( wpv_getget( 's', '' ) ) );
+            $search_term = esc_attr( urldecode( wp_unslash( wpv_getget( 's', '' ) ) ) );
 
             $is_search = !empty( $search_term );
 
@@ -552,17 +552,6 @@ function wpv_admin_content_template_listing_name( $search_term ) {
 									 * they get echoed as a class of the span tag and get styled from WordPress core css
 									 * accordingly (e.g. trash in different colour than the rest) */
 									$row_actions = array();
-									$asigned_count = $wpdb->get_var(
-										$wpdb->prepare(
-											"SELECT COUNT(post_id) FROM {$wpdb->postmeta} JOIN {$wpdb->posts} p 
-											WHERE meta_key = '_views_template' 
-											AND meta_value = %s
-											AND post_id = p.ID 
-											AND p.post_status NOT IN ('auto-draft') 
-											AND p.post_type != 'revision'",
-											$template_id
-										)
-									);
 									if ( 'publish' == $wpv_args['post_status'] ) {
 										$row_actions['edit'] = sprintf(
 												'<a href="%s">%s</a>',
@@ -584,7 +573,6 @@ function wpv_admin_content_template_listing_name( $search_term ) {
 
 									echo wpv_admin_table_row_actions( $row_actions,	array(
 												"data-ct-id" => $template_id,
-												"data-postcount" => $asigned_count,
 												"data-ct-name" => htmlentities( $post->post_title, ENT_QUOTES ),
 												"data-viewactionnonce" => $ct_action_nonce,
 												// Used by the "duplicate" action
@@ -740,8 +728,10 @@ function wpv_content_template_used_for_list( $ct_id ) {
 			if ( isset( $WPV_settings['views_template_for_' . $type] ) && $WPV_settings['views_template_for_' . $type] == $ct_id ) {
                 $list .= '<li>' . $label . __(' (single)', 'wpv-views');
 
-				// @todo We do not need the exact number here, let's create a has_dissident_posts method instead with a LIMITed query
-                $dissident_post_count = $ct->get_dissident_posts( $type, 'count' );
+				// @todo We check here whether there are dissident posts
+				// @since 2.1 removing this for now, might get back later, this causes performance problems
+				/*
+                $dissident_post_count = $ct->has_dissident_posts( $type, 'count' );
 
                 if ( $dissident_post_count > 0 ) {
                     $list .= sprintf(
@@ -751,9 +741,10 @@ function wpv_content_template_used_for_list( $ct_id ) {
 						$type,
 						$ct_id,
 						wp_create_nonce( 'work_view_template' ),
-                        sprintf( __( 'Bind %u %s ', 'wpv-views' ), $dissident_post_count, $label )
+                        sprintf( __( 'Bind all %s ', 'wpv-views' ), $label )
                     );
                 }
+				*/
 
 				$list .= '</li>';
 			}
@@ -830,7 +821,7 @@ function wpv_content_template_used_for_list( $ct_id ) {
  * )
  */
 /**
- * @deprecated Use WP_Views_archive_loops::get_archive_loops instead of this function.
+ * @deprecated Use WPV_WordPress_Archive_Frontend::get_archive_loops instead of this function.
  * @return mixed
  * @since unknown
  */

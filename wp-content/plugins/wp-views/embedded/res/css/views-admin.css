@@ -51,7 +51,7 @@
 		position: relative;
 		display: inline-block;
 		background: #e9e9e9;
-		margin: 5px 15px 5px 0;
+		margin: 8px 15px 2px 0;
 		padding: 2px 8px;
 		vertical-align: bottom;
 		-webkit-transition: all 0.15s linear;
@@ -69,6 +69,8 @@
 		position: absolute;
 		top: -7px;
 		right: -7px;
+		cursor: pointer;
+		color: #B94A48;
 	}
 
 .wpv-mightlong-list,
@@ -82,6 +84,14 @@
 		float:left;
 		padding-right:4%;
 		margin: 0 0 6px;
+	}
+	
+	.wpv-mightlong-list li.wpv-mightlong-list-item-fixwidth {
+		width: 45%;
+	}
+	
+	.wpv-mightlong-list li.wpv-mightlong-list-item-clear {
+		clear: left;
 	}
 
 .wpv-helper-text {
@@ -261,7 +271,6 @@
 .wpv-setting-container {
 	position: relative;
 	padding: 15px 0;
-	max-width: 900px;
 	border-bottom: 1px solid #ededed;
 	clear: both;
 /*	background: #fff;*/
@@ -277,7 +286,7 @@
 	.wpv-help-section,
     .wpv-settings-section {
 		margin-top: 20px;
-		max-width: 900px;
+		margin-right: 100px;
 	}
 
 	.wpv-query-section:before,
@@ -360,8 +369,10 @@
 			float: left;
 			width: 30%;
 		}
+		
 		.wpv-setting-container-horizontal .wpv-settings-header {
 			float: none;
+			width: auto;
 		}
 
 		.wpv-query-section .wpv-settings-header {
@@ -449,6 +460,10 @@
 				padding:1px 10px 10px 20px;
 				background:#f6f6f6;
 				border-left:solid 3px #cdcdcd;
+			}
+			
+			.wpv-setting .wpv-advanced-setting.wpv-mightlong-list {
+				padding-top: 15px;
 			}
 			
 			/* DEPRECATED this h4 */
@@ -1120,6 +1135,13 @@
 
 /* Settings section: Filter Templates for this View */
 .wpv-settings-templates { }
+
+	.wpv-settings-templates h3 {
+		background: #999 none repeat scroll 0 0;
+		color: #efefef;
+		padding: 2px 5px;
+		font-weight: 14px;
+	}
 /* Settings section: Filter Templates for this View END */
 
 /* Settings section: Filter Layout HTML/CSS/JS */
@@ -1128,6 +1150,13 @@
 
 /* Settings section: Aditional Javascript files */
 .wpv-settings-output-extra-js { }
+
+	.wpv-settings-output-extra-js h3 {
+		background: #999 none repeat scroll 0 0;
+		color: #efefef;
+		padding: 2px 5px;
+		font-weight: 14px;
+	}
 /* Settings section: Aditional Javascript files END */
 
 /* Settings section: Complete Output */
@@ -1148,6 +1177,22 @@
 	.wpv-settings-archive-loops.wpv-setting-replacing label {
 		opacity: 0.7;
 	}
+	
+	.wpv-settings-archive-loops .wpv-archive-loop-post-types-info {
+		background: #efefef none repeat scroll 0 0;
+		border: 1px solid #dbdbdb;
+		border-radius: 2px;
+		box-shadow: 0 0 5px #ddd inset;
+		margin: 5px 0 10px;
+		padding: 5px 10px;
+		font-size: 11px;
+		line-height: 22px;
+	}
+	
+		.wpv-settings-archive-loops .wpv-archive-loop-post-types-info .button {
+			margin: 0 4px;
+		}
+	
 /* Settings section: Loops selection END */
 
 /* Settings section: Save all sections at once */
@@ -1605,22 +1650,51 @@
 	.wpv-screen-options h6 {
 		margin-bottom: 0;
 	}
-
-	.wpv-show-hide-section  {
+	
+	.wpv-screen-options-wrapper .wpv-screen-options-metasection {
 		padding: 0 0 0 10px;
 		border-left: 5px solid;
 	}
+	
+		.wpv-screen-options-wrapper .wpv-screen-options-metasection h6 {
+			padding: 2px 10px;
+			margin: 2.33em 0 1em;
+			color: #fff;
+			font-size: 11px;
+			font-weight: bold;
+		}
 
-	.wpv-show-hide-section-query {
+	.wpv-screen-options-wrapper .wpv-screen-options-metasection-query {
 		border-color: #4AA4A4;
 	}
+		
+		.wpv-screen-options-wrapper .wpv-screen-options-metasection-query h6 {
+			background-color: #4AA4A4;
+		}
 
-	.wpv-show-hide-section-filter {
+	.wpv-screen-options-wrapper .wpv-screen-options-metasection-filter {
 		border-color: #C09853;
 	}
+	
+		.wpv-screen-options-wrapper .wpv-screen-options-metasection-filter h6 {
+			background-color: #C09853;
+		}
 
-	.wpv-show-hide-section-layout {
+	.wpv-screen-options-wrapper .wpv-screen-options-metasection-layout {
 		border-color: #348BB6;
+	}
+	
+		.wpv-screen-options-wrapper .wpv-screen-options-metasection-layout h6 {
+			background-color: #348BB6;
+		}
+	
+	.wpv-screen-options-wrapper .wpv-screen-options {
+		transition: all 0.5s linear;
+		box-shadow: none;
+	}
+	
+	.wpv-screen-options-wrapper .wpv-screen-options.wpv-screen-options-changing {
+		box-shadow: 0 0 5px 3px #f6921e;
 	}
 
 /* SCREEN OPTIONS END */
@@ -1884,7 +1958,8 @@
 3.0 - Toolset Primary Button Style
 ---------------------------------------------------------------------------- */
 
-.wp-core-ui .button-primary-toolset {
+.wp-core-ui .button-primary-toolset,
+.wp-core-ui .button.button-primary-toolset {
 	background: #f6921e;
 	border-color: #EF6223;
  	-webkit-box-shadow: inset 0 1px 0 rgba(239, 239, 239, 0.5), 0 1px 0 rgba(0,0,0,.15);
@@ -1897,7 +1972,11 @@
 .wp-core-ui .button-primary-toolset.hover,
 .wp-core-ui .button-primary-toolset:hover,
 .wp-core-ui .button-primary-toolset.focus,
-.wp-core-ui .button-primary-toolset:focus {
+.wp-core-ui .button-primary-toolset:focus,
+.wp-core-ui .button.button-primary-toolset.hover,
+.wp-core-ui .button.button-primary-toolset:hover,
+.wp-core-ui .button.button-primary-toolset.focus,
+.wp-core-ui .button.button-primary-toolset:focus {
 	background: #EF6223;
 	border-color: #EF6223;
 	-webkit-box-shadow: inset 0 1px 0 rgba(239, 239, 239, 0.5);
@@ -1906,7 +1985,9 @@
 }
 
 .wp-core-ui .button-primary-toolset.focus,
-.wp-core-ui .button-primary-toolset:focus {
+.wp-core-ui .button-primary-toolset:focus,
+.wp-core-ui .button.button-primary-toolset.focus,
+.wp-core-ui .button.button-primary-toolset:focus {
 	border-color: #EF6223;
 	-webkit-box-shadow: inset 0 1px 0 rgba(120,200,230,0.6), 1px 1px 2px rgba(0,0,0,0.4);
 	box-shadow: inset 0 1px 0 rgba(120,200,230,0.6), 1px 1px 2px rgba(0,0,0,0.4);
@@ -1915,7 +1996,11 @@
 .wp-core-ui .button-primary-toolset.active,
 .wp-core-ui .button-primary-toolset.active:hover,
 .wp-core-ui .button-primary-toolset.active:focus,
-.wp-core-ui .button-primary-toolset:active {
+.wp-core-ui .button-primary-toolset:active,
+.wp-core-ui .button.button-primary-toolset.active,
+.wp-core-ui .button.button-primary-toolset.active:hover,
+.wp-core-ui .button.button-primary-toolset.active:focus,
+.wp-core-ui .button.button-primary-toolset:active {
 	background: #f6921e;
 	border-color: #EF6223;
 	color: rgba(255,255,255,0.95);
@@ -1926,13 +2011,20 @@
 .wp-core-ui .notice .button-primary-toolset.active,
 .wp-core-ui .notice .button-primary-toolset.active:hover,
 .wp-core-ui .notice .button-primary-toolset.active:focus,
-.wp-core-ui .notice .button-primary-toolset:active {
+.wp-core-ui .notice .button-primary-toolset:active,
+.wp-core-ui .notice .button.button-primary-toolset.active,
+.wp-core-ui .notice .button.button-primary-toolset.active:hover,
+.wp-core-ui .notice .button.button-primary-toolset.active:focus,
+.wp-core-ui .notice .button.button-primary-toolset:active {
 	vertical-align: baseline;
 }
 
 .wp-core-ui .button-primary-toolset[disabled],
 .wp-core-ui .button-primary-toolset:disabled,
-.wp-core-ui .button-primary-toolset.disabled {
+.wp-core-ui .button-primary-toolset.disabled,
+.wp-core-ui .button.button-primary-toolset[disabled],
+.wp-core-ui .button.button-primary-toolset:disabled,
+.wp-core-ui .button.button-primary-toolset.disabled {
 	color: #94cde7 !important;
 	background: #298cba !important;
 	border-color: #1b607f !important;
@@ -1947,7 +2039,7 @@
 /* ----------------- */
 
 .wpv-general-actions-bar {
-	max-width: 900px;
+	margin-right: 100px;
 	background: #f1f1f1;
 	transition: all 1s linear, width 1ms;
 }
@@ -1987,6 +2079,19 @@
 .wpv-general-actions-bar-fixed .toolset-views-embedded .wpv-title-section {
 	margin-top: 208px;
 }
+
+.wpv-general-actions-bar .wpv-view-save-all-progress {
+	position: absolute;
+	bottom: 0;
+	left: 0;
+	width: 0;
+	height: 2px;
+	background: transparent;
+	transition: all 1s linear;
+}
+	.wpv-general-actions-bar .wpv-view-save-all-progress.wpv-view-save-all-progress-working {
+		background: #7ad03a;
+	}
 
 
 /* ************************************************************************** *\
@@ -2129,7 +2234,7 @@
 
 .js-wpv-codemirror-panel-close {
 	position: absolute;
-	top: 6px;
+	top: 7px;
 	left: 15px;
 }
 
@@ -2234,6 +2339,7 @@ html[dir='rtl'] .wpv-itembox-header .wpv-code-editor-toggler {
 
 .wpv-editor_addon_dropdown_content.editor_addon_dropdown_content {
 	padding: 16px;
+	max-height: none;
 }
 
 .wpv-fields-and-views-dialog .item {
@@ -2304,4 +2410,10 @@ html[dir='rtl'] .wpv-itembox-header .wpv-code-editor-toggler {
 
 .wpv-fields-and-views-dialog .direct-links li:last-child {
     border-right: 0;
+}
+
+.wpv-ct-control-switch-editor {
+	padding: 10px;
+	line-height: 30px;
+	margin-top: -54px;
 }

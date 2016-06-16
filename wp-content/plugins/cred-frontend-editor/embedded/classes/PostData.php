@@ -20,7 +20,7 @@ class PostData {
         if ($post_id && is_numeric($post_id)) {
             $fm = CRED_Loader::get('MODEL/Forms');
             $data = $fm->getPost($post_id);
-            //StaticClass::_pre($data);
+            
             if ($data && isset($data[0])) {
                 $mypost = $data[0];
                 $myfields = isset($data[1]) ? $data[1] : array();

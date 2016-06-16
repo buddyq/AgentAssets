@@ -10,6 +10,7 @@
 /* ------- */
 /* Overlay */
 /* ------- */
+.noscroll { overflow: hidden; position:absolute; }
 .loader-overlay {
     position: absolute;
     top: 0;
@@ -185,6 +186,21 @@
 .ddl-layout-assigned-to-many{}
 .ddl-layout-assigned-to-many ul{}
 .dd-layouts-header #edit-slug-box{display: inline-block;float:left;position:relative;}
+.dd-layouts-header #edit-slug-box{width:100%;}
+
+.trash-layout {
+    float: right;
+    font-size: 18px!important;
+    position: relative;
+    right: 12px;
+}
+.trash-layout i {position: relative;
+    left: -4px;
+    bottom: 1px;
+    color:#666!important;
+}
+.trash-layout i:hover{}
+.trash-layout span{font-size:10px;position:relative;bottom:3px;}
 
 /* Layout editor header END */
 
@@ -287,7 +303,8 @@ li.padding-top{padding-top:10px;}
 .dd-layouts-breadcrumbs {
     display: none;
     float: left;
-    width: 780px;
+    min-width: 780px;
+    width:100%;
     font-size: 14px;
     margin-top: 0px;
     margin-bottom: 0px;
@@ -498,6 +515,8 @@ li.padding-top{padding-top:10px;}
     box-shadow: 0 0 2px #ccc;
     margin-top: 1px;
     padding: 0px 3px 0px 3px;
+    display: block;
+    overflow: hidden;
 }
 
 
@@ -1479,8 +1498,11 @@ li.padding-top{padding-top:10px;}
 }
 
 .editor-toolbar .undo-redo-wrap .button {
-    margin: 0 10px 0 0;
+    margin: 0 1px 5px 0;
 }
+
+.editor-toolbar .is-parent{color:green;}
+.editor-toolbar .icon-home-parent{font-size:18px;padding-right:4px;}
 
 /* Editor toolbar END */
 
@@ -1998,7 +2020,7 @@ div#visual-editor-editor-container{padding:0px 0px 44px 10px;}
     border-radius: 50%;
 }
 
-.all_changes_saved{display:none;color:rgb(150,150,150);font-size:13px;position:relative;float:right;right:180px;top:-22px;}
+.all_changes_saved{display:none;color:rgb(150,150,150);font-size:13px;position:relative;float:right;right:5px;top:7px;}
 .cell-extra-info{font-size:10px;text-align: center;opacity:.5!important;}
 .new_layout_alert_border{
     border-color: #f05a28 !important;
@@ -2012,5 +2034,18 @@ div#visual-editor-editor-container{padding:0px 0px 44px 10px;}
     font-size: 10px;
     height: 0px;
     color: #f05a28;
+    position:relative;
+    bottom:24px;
 }
-
+/************* CRED OVERRIDES *****************************/
+.ddl-dialog-header, .ddl-dialog-footer{z-index:1;}
+.ddl-dialog-content, .js-popup-tabs,.ddl-dialog-content-main, .ddl-form, #visual-editor-editor-container,
+.js-visual-editor-tinymce, .js-default-dialog-content{  position: relative;z-index:999;}
+.ddl-form .cred-popup-box{z-index:9999999999999999999999999999999;top:-30px;left:-145px;padding:0px 10px;}
+.ddl-form .cred-popup-box select, .ddl-form .cred-popup-box input {max-width:300px;}
+.ddl-form .cred-popup-box .cred-help-link { position: absolute;  top: 8px; right: 308px;}
+.ddl-form .wpv-ct-inline-edit .cred-popup-box{left: -30px; top: -120px;}
+.ddl-form .cred-popup-box .cred-buttons-holder{padding-bottom:10px;}
+.icon-cred-logo{color:#555;}
+#visual-editor-editor-container .icon-cred-logo{color:#888;}
+.float-left{float:left;}

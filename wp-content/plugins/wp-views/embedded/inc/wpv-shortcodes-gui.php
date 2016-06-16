@@ -105,12 +105,17 @@ function wpv_ajax_wpv_insert_view_dialog_callback() {
 								$helper = __( 'You can sort by a custom field simply using the value <em>field-xxx</em> where xxx is the custom field slug.', 'wpv-views' );
 								break;
 							case 'taxonomy':
-								$placeholder = __( 'id, count, name or slug', 'wpv-views' );
-								$helper = __( 'Use values like <em>id</em>, <em>count</em>, <em>name</em> or <em>slug</em>.', 'wpv-views' );
+								$placeholder = __( 'id, count, name, slug or taxonomy-field-slug', 'wpv-views' );
+								global $wp_version;
+								if ( version_compare( $wp_version, '4.5', '<' ) ) {
+									$helper = __( 'Use values like <em>id</em>, <em>count</em>, <em>name</em> or <em>slug</em>.', 'wpv-views' );
+								} else {
+									$helper = __( 'You can sort by a term field simply using the value <em>taxonomy-field-xxx</em> where xxx is the term field slug.', 'wpv-views' );
+								}
 								break;
 							case 'users':
 								$placeholder = __( 'user_email, user_login...', 'wpv-views' );
-								$helper = __( 'Use values like <em>user_email</em>, <em>user_login</em>, <em>display_name</em>, <em>user_url</em> or <em>user_registered</em>.', 'wpv-views' );
+								$helper = __( 'Use values like <em>user_email</em>, <em>user_login</em>, <em>display_name</em>, <em>user_url</em>, <em>user_registered</em> or <em>include</em>.', 'wpv-views' );
 								break;
 						}
 						?>
@@ -134,6 +139,23 @@ function wpv_ajax_wpv_insert_view_dialog_callback() {
 							<?php echo __( 'Change the order of the results.', 'wpv-views' ); ?>
 						</span>
 					</li>
+					<?php
+					if ( in_array( $query_type, array( 'posts', 'taxonomy' ) ) ) {
+					?>
+					<li class="js-wpv-insert-view-shortcode-orderby_as-setting" style="display:none">
+						<label for="wpv-insert-view-shortcode-orderby_as" class="label-alignleft"><?php _e( 'Orderby as', 'wpv-views' ); ?></label>
+						<select id="wpv-insert-view-shortcode-orderby_as" class="js-wpv-insert-view-shortcode-orderby_as">
+							<option value=""><?php _e( 'Default setting', 'wpv-views' ); ?></option>
+							<option value="string"><?php _e( 'String', 'wpv-views' ); ?></option>
+							<option value="numeric"><?php _e( 'Numeric', 'wpv-views' ); ?></option>
+						</select>
+						<span class="wpv-helper-text">
+							<?php echo __( 'Change how to manage the sorting by a field.', 'wpv-views' ); ?>
+						</span>
+					</li>
+					<?php
+					}
+					?>
 				</ul>
 			</div>
 			<?php if ( ! empty( $has_extra_attributes ) ) { ?>
@@ -289,17 +311,17 @@ function wpv_ajax_wpv_insert_view_dialog_callback() {
 *
 * Render the options for each shortcode attribute in the dialog
 *
-* @param $id (string) Format {shortcode}-{attribute_key}(?-value)
-* @param $data (array) Data for the current attribute
-* @param $classes (array) Classnames to be applied to the current attribute form elements
-* @param $post_type (array) Post type object that the current post belongs to, empty array of none, to render the post selector if needed
+* @param $id 			(string) 		Format {shortcode}-{attribute_key}(?-value)
+* @param $data 			(array) 		Data for the current attribute
+* @param $classes 		(array) 		Classnames to be applied to the current attribute form elements
+* @param $post_type		(object|null) 	Post type object that the current post belongs to, null otherwise
 *
 * @return Print the shortcode attribute options
 *
 * @since 1.9
 */
 
-function wpv_shortcode_gui_dialog_render_attribute( $id, $data = array(), $classes = array(), $post_type = array() ) {
+function wpv_shortcode_gui_dialog_render_attribute( $id, $data = array(), $classes = array(), $post_type = null ) {
     if ( 
 		isset( $data['classes'] ) 
 		&& is_array( $data['classes'] ) 
@@ -496,9 +518,12 @@ function wpv_shortcode_gui_dialog_render_attribute( $id, $data = array(), $class
 		* Hierarchical
 		*/
         if ( 
-			! empty( $post_type ) 
-			&& isset( $post_type->hierarchical ) 
-			&& $post_type->hierarchical
+			is_null( $post_type ) 
+			|| (
+				is_object( $post_type ) 
+				&& isset( $post_type->hierarchical ) 
+				&& $post_type->hierarchical
+			)
 		) {
             $content .= '<li class="wpv-shortcode-gui-item-selector-option">';
 			$content .= '<label for="wpv-shortcode-gui-item-selector-post-id-parent">';
@@ -511,13 +536,27 @@ function wpv_shortcode_gui_dialog_render_attribute( $id, $data = array(), $class
         /**
 		* Types relationships
 		*/
-        
-		if (
-			! empty( $post_type )
-            && isset( $post_type->slug )
+		
+		$current_post_type_parents = array();
+		$custom_post_types_relations = get_option( 'wpcf-custom-types', array() );
+		
+		if ( is_null( $post_type ) ) {
+			foreach ( $custom_post_types_relations as $cptr_key => $cptr_data ) {
+				if ( isset( $cptr_data['post_relationship']['has'] ) ) {
+					$current_post_type_parents[] = $cptr_key;
+				}
+				if ( 
+					isset( $cptr_data['post_relationship']['belongs'] ) 
+					&& is_array( $cptr_data['post_relationship']['belongs'] )
+				) {
+					$this_belongs = array_keys( $cptr_data['post_relationship']['belongs'] );
+					$current_post_type_parents = array_merge( $current_post_type_parents, $this_belongs );
+				}
+			}
+		} else if (
+			is_object( $post_type )
+			&& isset( $post_type->slug )
 		) {
-			$custom_post_types_relations = get_option( 'wpcf-custom-types', array() );
-			$current_post_type_parents = array();
 			// Fix legacy problem, when child CPT has no parents itself, but parent CPT has children
 			foreach ( $custom_post_types_relations as $cptr_key => $cptr_data ) {
 				if ( 
@@ -543,29 +582,37 @@ function wpv_shortcode_gui_dialog_render_attribute( $id, $data = array(), $class
 					}
 				}
 			}
-			if ( ! empty( $current_post_type_parents) ) {
-				$content .= '<li class="wpv-shortcode-gui-item-selector-option wpv-shortcode-gui-item-selector-has-related js-wpv-shortcode-gui-item-selector-has-related">';
-				$content .= '<label for="wpv-shortcode-gui-item-selector-post-id-related">';
-				$content .= '<input type="radio" class="js-wpv-shortcode-gui-item-selector" id="wpv-shortcode-gui-item-selector-post-id-related" name="item_id" value="related" />';
-				$content .= __( 'The parent of the current post in another post type, set by Types relationship', 'wpv-views' );
+		}
+		
+		$current_post_type_parents = array_values( $current_post_type_parents );
+		$current_post_type_parents = array_unique( $current_post_type_parents );
+		
+		if ( ! empty( $current_post_type_parents) ) {
+			$content .= '<li class="wpv-shortcode-gui-item-selector-option wpv-shortcode-gui-item-selector-has-related js-wpv-shortcode-gui-item-selector-has-related">';
+			$content .= '<label for="wpv-shortcode-gui-item-selector-post-id-related">';
+			$content .= '<input type="radio" class="js-wpv-shortcode-gui-item-selector" id="wpv-shortcode-gui-item-selector-post-id-related" name="item_id" value="related" />';
+			$content .= __( 'The parent of the current post in another post type, set by Types relationship', 'wpv-views' );
+			$content .= '</label>';
+			$content .= '<div class="wpv-shortcode-gui-item-selector-is-related js-wpv-shortcode-gui-item-selector-is-related" style="display:none">';
+			$content .= '<ul class="wpv-advanced-setting wpv-mightlong-list" style="padding-top:15px;margin:5px 0 10px;">';
+			$first = true;
+			foreach ( $current_post_type_parents as $slug  ) {
+				$content .= '<li>';
+				$content .= sprintf( '<label for="wpv-shortcode-gui-item-selector-post-relationship-id-%s">', $slug );
+				$content .= sprintf(
+					'<input type="radio" name="related_post" id="wpv-shortcode-gui-item-selector-post-relationship-id-%s" value="%s" %s />',
+					$slug,
+					$slug,
+					$first ? 'checked="checked"' : ''
+				);
+				$content .= $custom_post_types_relations[$slug]['labels']['singular_name'];
 				$content .= '</label>';
-				$content .= '<div class="wpv-shortcode-gui-item-selector-is-related js-wpv-shortcode-gui-item-selector-is-related" style="display:none">';
-				$first = true;
-				foreach ( $current_post_type_parents as $slug  ) {
-					$content .= sprintf( '<label for="post-id-%s">', $slug );
-					$content .= sprintf(
-						'<input type="radio" name="related_post" id="wpv-shortcode-gui-item-selector-post-id-%s" value="%s" %s />',
-						$slug,
-						$slug,
-						$first ? 'checked="checked"' : ''
-					);
-					$content .= $custom_post_types_relations[$slug]['labels']['singular_name'];
-					$content .= '</label>';
-					$first = false;
-				}
-				$content .= '</div>';
 				$content .= '</li>';
+				$first = false;
 			}
+			$content .= '</ul>';
+			$content .= '</div>';
+			$content .= '</li>';
 		}
 		
 		/**
@@ -760,9 +807,12 @@ function wp_ajax_wpv_shortcode_gui_dialog_create() {
     if ( isset( $_GET['post_id'] ) ) {
         $post_id = intval( $_GET['post_id'] );
     }
-    $post_type = array();
+    $post_type = null;
     if ( $post_id ) {
-        $post_type = get_post_type_object( get_post_type( $post_id ) );
+		$post_type_slug = get_post_type( $post_id );
+		if ( ! in_array( $post_type_slug, array( 'view', 'view-template', 'cred-form', 'cred-user-form', 'dd_layouts' ) ) ) {
+			$post_type = get_post_type_object( $post_type_slug );
+		}
     }
 
     printf(
@@ -882,18 +932,28 @@ function wp_ajax_wpv_shortcode_gui_dialog_create() {
 					'<h3>%s</h3>', 
 					esc_html( $group_data['content']['label'] )
 				);
+				$default = '';
+				if(
+					isset( $group_data['content']['default'] )
+					&& !empty( $group_data['content']['default'] )
+				) {
+					$default = esc_attr( $group_data['content']['default'] );
+				}
 				if (
 					isset( $group_data['content']['type'] ) 
 					&& $group_data['content']['type'] == 'textarea'
 				) {
 					$content .= sprintf(
-						'<textarea id="shortcode-gui-content-%s" type="text" class="large-text js-wpv-shortcode-gui-content"></textarea>',
-						esc_attr( $shortcode )
+						'<textarea id="shortcode-gui-content-%s" type="text" class="large-text js-wpv-shortcode-gui-content">%s</textarea>',
+						esc_attr( $shortcode ),
+						$default
 					);
 				} else {
+					$default = !empty( $default ) ? 'value="' . $default . '"' : $default;
 					$content .= sprintf(
-						'<input id="shortcode-gui-content-%s" type="text" class="large-text js-wpv-shortcode-gui-content" />',
-						esc_attr( $shortcode )
+						'<input id="shortcode-gui-content-%s" type="text" class="large-text js-wpv-shortcode-gui-content" %s />',
+						esc_attr( $shortcode ),
+						$default
 					);
 				}
 				$desc_and_doc = array();
@@ -1171,7 +1231,7 @@ function wpv_create_form_target_page() {
 * Even when displaying data for Views listing taxonomy terms or users
 *
 * Right now, we enforce:
-* 'wpv-bloginfo', 'wpv-current-user', 'wpv-search-term', 'wpv-login-form', 'wpv-archive-link'
+* 'wpv-bloginfo', 'wpv-current-user', 'wpv-search-term', 'wpv-login-form', 'wpv-archive-link', 'wpv-logout-link'
 *
 * @since 1.10
 */
@@ -1213,6 +1273,14 @@ function wpv_force_shortcodes_gui_basic_items( $menu = array() ) {
 			'wpv-login-form',
 			$basic,
 			"WPViews.shortcodes_gui.wpv_insert_popup('wpv-login-form', '" . $login_form_title . "', {}, '" . $nonce . "', this )"
+		);
+		// Add wpv-logout-link
+		$logout_link_title = __('Logout link', 'wpv-views');
+		$menu[$basic][$logout_link_title] = array(
+				$logout_link_title,
+				'wpv-logout-link',
+				$basic,
+				"WPViews.shortcodes_gui.wpv_insert_popup('wpv-logout-link', '" . $logout_link_title . "', {}, '" . $nonce . "', this )"
 		);
 		// Add wpv-archive-link
 		$archive_link_title = __('Post archive link', 'wpv-views');

@@ -14,14 +14,16 @@
 
 class WPV_Cache {
 	
-	static $stored_cache								= array();
-	static $stored_cache_extended_for_post_relationship	= array();
-	static $stored_relationship_cache					= array();
+	static $stored_cache									= array();
+	static $stored_cache_extended_for_post_relationship		= array();
+	static $stored_relationship_cache						= array();
 	
-	static $invalidate_views_cache_flag					= false;
-	static $delete_transient_meta_keys_flag				= false;
-	static $delete_transient_termmeta_keys_flag			= false;
-	static $delete_transient_usermeta_keys_flag			= false;
+	static $invalidate_views_cache_flag						= false;
+	static $delete_transient_meta_keys_flag					= false;
+	static $delete_transient_termmeta_keys_flag				= false;
+	static $delete_transient_usermeta_keys_flag				= false;
+	
+	static $collected_parametric_search_filter_attributes	= array();
 	
 	function __construct() {
 		
@@ -93,9 +95,90 @@ class WPV_Cache {
 		add_action( 'save_post',					array( $this, 'delete_shortcodes_gui_transients_action' ), 10, 2 );
 		add_action( 'delete_post',					array( $this, 'delete_shortcodes_gui_transients_action' ), 10 );
 		add_action( 'wpv_action_wpv_save_item',		array( $this, 'delete_shortcodes_gui_transients_action' ) );
+		// Custom action
+		add_action( 'wpv_action_wpv_delete_transient_shortcodes_gui_views',		array( $this, 'delete_shortcodes_gui_views_transient_action' ) );
+		add_action( 'wpv_action_wpv_delete_transient_shortcodes_gui_cts',		array( $this, 'delete_shortcodes_gui_cts_transient_action' ) );
 		
 		// Execution!!!
 		add_action( 'shutdown',						array( $this, 'maybe_clear_cache' ) );
+	}
+	
+	/**
+	* get_parametric_search_data_to_cache
+	*
+	* Process the filter_meta_html content, find the wpv-control and wpv-control-set shortcodes and extract their attributes.
+	* Transform that data into something that WPV_Cache can use.
+	*
+	* @since 2.1
+	*/
+	
+	static function get_parametric_search_data_to_cache( $view_settings = array() ) {
+		$parametric_search_data_to_cache = array(
+			'cf' => array(),
+			'tax' => array()
+		);
+		if ( 
+			! isset( $view_settings['filter_meta_html'] ) 
+			|| (
+				strpos( $view_settings['filter_meta_html'], '[wpv-control' ) === false
+				&& strpos( $view_settings['filter_meta_html'], '[wpv-control-set' ) === false 
+			)
+		) {
+			return $parametric_search_data_to_cache;
+		}
+		global $shortcode_tags;
+		self::$collected_parametric_search_filter_attributes = array();
+		// Back up current registered shortcodes and clear them all out
+		$orig_shortcode_tags = $shortcode_tags;
+		remove_all_shortcodes();
+		
+		add_shortcode( 'wpv-control',		array( 'WPV_Cache', 'collect_shortcode_attributes' ) );
+		add_shortcode( 'wpv-control-set',	array( 'WPV_Cache', 'collect_shortcode_attributes' ) );
+		do_shortcode( $view_settings['filter_meta_html'] );
+		
+		$shortcode_tags = $orig_shortcode_tags;
+		
+		foreach ( self::$collected_parametric_search_filter_attributes as $atts_set ) {
+			if ( isset( $atts_set['ancestors'] ) ) {
+				if ( function_exists( 'wpcf_pr_get_belongs' ) ) {
+					$returned_post_types = $view_settings['post_type'];
+					$returned_post_type_parents = array();
+					if ( empty( $returned_post_types ) ) {
+						$returned_post_types = array( 'any' );
+					}
+					foreach ( $returned_post_types as $returned_post_type_slug ) {
+						$parent_parents_array = wpcf_pr_get_belongs( $returned_post_type_slug );
+						if ( $parent_parents_array != false && is_array( $parent_parents_array ) ) {
+							$returned_post_type_parents = array_merge( $returned_post_type_parents, array_values( array_keys( $parent_parents_array ) ) );
+						}
+					}
+					foreach ( $returned_post_type_parents as $parent_to_cache ) {
+						$parametric_search_data_to_cache['cf'][] = '_wpcf_belongs_' . $parent_to_cache . '_id';
+					}
+				}
+			} else if ( isset( $atts_set['taxonomy'] ) ) {
+				$parametric_search_data_to_cache['tax'][] = $atts_set['taxonomy'];
+			} else if ( isset( $atts_set['auto_fill'] ) ) {
+				$parametric_search_data_to_cache['cf'][] = _wpv_get_field_real_slug( $atts_set['auto_fill'] );
+			} else if ( isset( $atts_set['field'] ) ) {
+				$parametric_search_data_to_cache['cf'][] = _wpv_get_field_real_slug( $atts_set['field'] );
+			}
+		}
+		self::$collected_parametric_search_filter_attributes = array();
+		return $parametric_search_data_to_cache;
+	}
+	
+	/**
+	* collect_shortcode_attributes
+	*
+	* Dummy helper callback for collecting shortcode attributes.
+	*
+	* @since 2.1
+	*/
+	
+	static function collect_shortcode_attributes( $atts, $content = null ) {
+		self::$collected_parametric_search_filter_attributes[] = $atts;
+		return;
 	}
 	
 	/**
@@ -176,6 +259,10 @@ class WPV_Cache {
 		self::$stored_cache = $cache_combined;
 		
 		return $cache_combined;
+	}
+	
+	static function restart_cache() {
+		self::$stored_cache = array();
 	}
 	
 	/**
@@ -563,6 +650,26 @@ class WPV_Cache {
 				break;
 			
 		}
+	}
+	
+	/**
+	* Invalidate wpv_transient_published_views cache manually
+	*
+	* @since 2.1
+	*/
+	
+	function delete_shortcodes_gui_views_transient_action() {
+		delete_transient( 'wpv_transient_published_views' );
+	}
+	
+	/**
+	* Invalidate wpv_transient_published_cts cache manually
+	*
+	* @since 2.1
+	*/
+	
+	function delete_shortcodes_gui_cts_transient_action() {
+		delete_transient( 'wpv_transient_published_cts' );
 	}
 	
 	/**

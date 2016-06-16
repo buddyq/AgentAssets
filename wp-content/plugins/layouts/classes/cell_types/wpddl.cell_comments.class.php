@@ -251,20 +251,21 @@ if (!class_exists('Layouts_cell_comments')) {
             $comment_author = $commenter['comment_author'];
             $comment_author_email = $commenter['comment_author_email'];
             $comment_author_url = esc_url($commenter['comment_author_url']);
-
+            $comments_order = 'ASC';
+            
             if ( $user_ID) {
-                $comments = $wpdb->get_results($wpdb->prepare("SELECT * FROM $wpdb->comments WHERE comment_post_ID = %d AND (comment_approved = '1' OR ( user_id = %d AND comment_approved = '0' ) )  ORDER BY comment_date_gmt DESC", $id, $user_ID));
+                $comments = $wpdb->get_results($wpdb->prepare("SELECT * FROM $wpdb->comments WHERE comment_post_ID = %d AND (comment_approved = '1' OR ( user_id = %d AND comment_approved = '0' ) )  ORDER BY comment_date_gmt ".$comments_order, $id, $user_ID));
             } else if ( empty($comment_author) ) {
-                $comments = get_comments( array('post_id' => $post->ID, 'status' => 'approve', 'order' => 'DESC') );
+                $comments = get_comments( array('post_id' => $post->ID, 'status' => 'approve', 'order' => $comments_order) );
             } else {
-                $comments = $wpdb->get_results($wpdb->prepare("SELECT * FROM $wpdb->comments WHERE comment_post_ID = %d AND ( comment_approved = '1' OR ( comment_author = %s AND comment_author_email = %s AND comment_approved = '0' ) ) ORDER BY comment_date_gmt DESC", $id, wp_specialchars_decode($comment_author,ENT_QUOTES), $comment_author_email));
+                $comments = $wpdb->get_results($wpdb->prepare("SELECT * FROM $wpdb->comments WHERE comment_post_ID = %d AND ( comment_approved = '1' OR ( comment_author = %s AND comment_author_email = %s AND comment_approved = '0' ) ) ORDER BY comment_date_gmt ".$comments_order, $id, wp_specialchars_decode($comment_author,ENT_QUOTES), $comment_author_email));
             }
 
             $wp_query->comments = apply_filters( 'comments_array', $comments, $id );
             $comments = &$wp_query->comments;
             $wp_query->comment_count = count($wp_query->comments);
             update_comment_cache($wp_query->comments);
-
+            
             return $comments;
 	}
         
@@ -345,6 +346,16 @@ if (!class_exists('Layouts_cell_comments')) {
                     if ( $comments_defaults['style'] == 'div'  ){
                             $before_comments_list = '<div class="commentlist">';
                             $after_comments_list = '</div>';
+                    }
+                           
+                    $comments_order_db = get_option( 'comment_order', 'desc' );
+                    
+                    if($comments_order_db === 'desc'){
+                        $comments_defaults['reverse_top_level'] = true;
+                        $comments_defaults['reverse_children'] = false;
+                    } else {
+                        $comments_defaults['reverse_top_level'] = false;
+                        $comments_defaults['reverse_children'] = false;
                     }
 
                     echo '<div id="comments-listing">';

@@ -6,17 +6,12 @@
  */
 class CRED_Form_Builder_Helper implements CRED_Friendly, CRED_FriendlyStatic {
 
+    public static $_current_post_title;
+    public static $_current_prefix;
+    public static $_current_form_id;
+
     // CONSTANTS
     const MSG_PREFIX = 'Message_';                                 // Message prefix for WPML localization
-
-    //const METHOD='POST';                                         // form method POST
-    //const PREFIX='_cred_cred_prefix_';                           // prefix for various hidden auxiliary fields
-    //const NONCE='_cred_cred_wpnonce';                            // nonce field name
-    //const POST_CONTENT_TAG='%__CRED__CRED__POST__CONTENT__%';    // placeholder for post content
-    //const FORM_TAG='%__CRED__CRED__FORM___FORM__%';              //
-    //const DELAY=0;                                               // seconds delay before redirection
-    // PRIVATE INSTANCE
-    // form builder instance associated with current helper (quasi-Dependency Injection)
 
     private $_formBuilder = null;
     // for delayed redirection, if needed
@@ -314,39 +309,6 @@ class CRED_Form_Builder_Helper implements CRED_Friendly, CRED_FriendlyStatic {
         return $mimes;
     }
 
-//    public function getPostData($post_id)
-//    {
-//        if ($post_id)
-//        {
-//            $fm = CRED_Loader::get('MODEL/Forms');
-//            $data = $fm->getPost($post_id);
-//            if ($data && isset($data[0]))
-//            {
-//                $mypost=$data[0];
-//                $myfields=isset($data[1])?$data[1]:array();
-//                $mytaxs=isset($data[2])?$data[2]:array();
-//                $myextra=isset($data[3])?$data[3]:array();
-//                if (isset($mypost->post_title))
-//                    $myfields['post_title']=array($mypost->post_title);
-//                if (isset($mypost->post_content))
-//                    $myfields['post_content']=array($mypost->post_content);
-//                if (isset($mypost->post_excerpt))
-//                    $myfields['post_excerpt']=array($mypost->post_excerpt);
-//                if (isset($mypost->post_parent))
-//                    $myfields['post_parent']=array($mypost->post_parent);
-//
-//                return (object) array(
-//                    'post'=>$mypost,
-//                    'fields'=>$myfields,
-//                    'taxonomies'=>$mytaxs,
-//                    'extra'=>$myextra
-//                );
-//            }
-//            return $this->error(__('Post does not exist', 'wp-cred'));
-//        }
-//        return null;
-//    }
-
     public function getFieldSettings($post_type) {
         static $fields = null;
         static $_post_type = null;
@@ -354,7 +316,7 @@ class CRED_Form_Builder_Helper implements CRED_Friendly, CRED_FriendlyStatic {
             $_post_type = $post_type;
             if ($post_type == 'user') {
                 $ffm = CRED_Loader::get('MODEL/UserFields');
-                $fields = $ffm->getFields(false, '', true, array($this, 'getLocalisedMessage'));
+                $fields = $ffm->getFields(false, '', '', true, array($this, 'getLocalisedMessage'));
             } else {
                 $ffm = CRED_Loader::get('MODEL/Fields');
                 $fields = $ffm->getFields($post_type, true, array($this, 'getLocalisedMessage'));
@@ -397,9 +359,13 @@ class CRED_Form_Builder_Helper implements CRED_Friendly, CRED_FriendlyStatic {
             header("Location: $uri");
             exit();
         } else {
-            echo sprintf("<script type='text/javascript'>document.location='%s';</script>", $uri);
+            echo sprintf("<script>jQuery(document).ready(function() { jQuery('.submit').hide();  } );</script><script type='text/javascript'>document.location='%s';</script>", $uri);
             exit();
         }
+    }
+
+    public function redirectFromAjax($uri) {
+        return sprintf("<script type='text/javascript'>document.location='%s';</script>", $uri);
     }
 
     public function redirectDelayed($uri, $delay) {
@@ -413,13 +379,21 @@ class CRED_Form_Builder_Helper implements CRED_Friendly, CRED_FriendlyStatic {
             $this->_delay_ = $delay;
             add_action('wp_head', array(&$this, 'doDelayedRedirect'), 1000);
         } else {
-            echo sprintf("<script type='text/javascript'>setTimeout(function(){document.location='%s';},%d);</script>", $uri, $delay * 1000);
+            echo sprintf("<script>jQuery(document).ready(function() { jQuery('.submit').hide();  } );</script><script type='text/javascript'>setTimeout(function(){document.location='%s';},%d);</script>", $uri, $delay * 1000);
         }
+    }
+
+    public function redirectDelayedFromAjax($uri, $delay) {
+        $delay = intval($delay);
+        if ($delay <= 0) {
+            return $this->redirectFromAjax($uri);
+        }
+        return sprintf("<script type='text/javascript'>setTimeout(function(){document.location='%s';},%d);</script>", $uri, $delay * 1000);
     }
 
     // hook to add html head meta tag for delayed redirect
     public function doDelayedRedirect() {
-        echo sprintf("<meta http-equiv='refresh' content='%d;url=%s'>", $this->_delay_, $this->_uri_);
+        echo sprintf("<script>jQuery(document).ready(function() { jQuery('.submit').hide();  } );</script><meta http-equiv='refresh' content='%d;url=%s'>", $this->_delay_, $this->_uri_);
     }
 
     public function displayMessage($form) {
@@ -430,7 +404,14 @@ class CRED_Form_Builder_Helper implements CRED_Friendly, CRED_FriendlyStatic {
                                 'Display Message: ' . $form->getForm()->post_title, $_fields['form_settings']->form['action_message'], 'cred-form-' . $form->getForm()->post_title . '-' . $form->getForm()->ID
                         )
         );
-        return "<div id='#cred_form_{$_GET['_success_message']}'>$mess</div>";
+
+        $succ_mess = $_GET['_success_message'];
+        ob_start();
+        ?>
+        <div id="cred_form_<?php echo $succ_mess; ?>"><?php echo $mess; ?></div>        
+        <?php
+        $content = ob_get_clean();
+        return $content;
 
         /* return  do_shortcode(
           cred_translate(
@@ -488,257 +469,6 @@ class CRED_Form_Builder_Helper implements CRED_Friendly, CRED_FriendlyStatic {
         $user = get_userdata($user_id);
         return empty($user) ? array() : $user->roles;
     }
-
-    //** Notification Manager takes care of sending notifications now
-    //**
-    // translate codes in notification fields of cred form (like %%POST_ID%% to post id etc..)
-    /* public function translateNotificationField($field, $data)
-      {
-      return str_replace(array_keys($data), array_values($data), $field);
-      } */
-
-    //** Notification Manager takes care of sending notifications now
-    //**
-    // TODO: use a template(user defined) to render notifications for mail
-    // render notification data for this form and send them through wp_mail
-    /* public function sendNotifications($post_id, $renderedForm)
-      {
-      $formBuilder=$this->_formBuilder;
-      // get ref here
-      $form=&$this->friendGet($formBuilder, '&_formData');
-
-      $n_failed=array();
-      $n_sent=array();
-
-      // send notification
-      if (
-      isset($form->fields['notification']->enable) &&
-      $form->fields['notification']->enable &&
-      !empty($form->fields['notification']->notifications)
-      )
-      {
-      $globals=&self::friendGetStatic('CRED_Form_Builder', '&_staticGlobal');
-      // get Zebra form instance
-      $zebraForm=$this->friendGet($formBuilder, '_zebraForm');
-      // get Mailer
-      $mh=CRED_Loader::get('CLASS/Mail_Handler');
-
-      $form_id=$form->form->ID;
-      $form_type=$form->fields['form_settings']->form['type'];
-      $post_type=$form->fields['form_settings']->post['post_type'];
-      $thisform=array(
-      'id' => $form_id,
-      'post_type' => $post_type,
-      'form_type' => $form_type
-      );
-
-      $notification_data=isset($renderedForm['notification_data'])?$renderedForm['notification_data']:'';
-      $parent_link=$formBuilder->cred_parent(array('get'=>'url'));
-      $parent_title=$formBuilder->cred_parent(array('get'=>'title'));
-      $link=get_permalink( $post_id );
-      $title=get_the_title( $post_id );
-      $date=date('d/m/Y H:i:s');
-      $admin_edit_link=admin_url('post.php').'?action=edit&post='.$post_id;
-      $data_all=array(
-      '%%USER_LOGIN_NAME%%'=>$globals['CURRENT_USER']->login,
-      '%%USER_DISPLAY_NAME%%'=>$globals['CURRENT_USER']->display_name,
-      '%%POST_PARENT_TITLE%%'=>$parent_title,
-      '%%POST_PARENT_LINK%%'=>$parent_link,
-      '%%POST_ID%%'=>$post_id,
-      '%%POST_TITLE%%'=>$title,
-      '%%POST_LINK%%'=>$link,
-      '%%FORM_NAME%%'=>$form->form->post_title,
-      //'%%FORM_DATA%%'=>$notification_data,
-      '%%DATE_TIME%%'=>$date,
-      '%%POST_ADMIN_LINK%%'=>$admin_edit_link
-      );
-      $data_restricted=array(
-      '%%USER_LOGIN_NAME%%'=>$globals['CURRENT_USER']->login,
-      '%%USER_DISPLAY_NAME%%'=>$globals['CURRENT_USER']->display_name,
-      '%%POST_PARENT_TITLE%%'=>$parent_title,
-      '%%POST_ID%%'=>$post_id,
-      '%%POST_TITLE%%'=>$title,
-      '%%FORM_NAME%%'=>$form->form->post_title,
-      '%%DATE_TIME%%'=>$date
-      );
-
-      // allow to bypass notifications by returning false here in these filters
-      $notifications=apply_filters('cred_filter_notification_'.$form_id, $form->fields['notification']->notifications, $post_id, $thisform);
-      $notifications=apply_filters('cred_filter_notification', $notifications, $post_id, $thisform);
-      if ($notifications && !empty($notifications))
-      {
-      // send notifications
-      foreach ($notifications as $ii=>$_notification)
-      {
-      if ($_notification && !empty($_notification) && isset($_notification['to']['type']))
-      {
-
-      if (isset($_notification['event']['type']) && 'form_submit'!=$_notification['event']['type'])
-      continue;  // not send this notification on form submit
-
-      // custom actions to integrate 3rd-party (eg CRED Commerce)
-      do_action('cred_before_send_notification_'.$form_id, $ii, $_notification, $post_id, $thisform);
-      do_action('cred_before_send_notification', $ii, $_notification, $post_id, $thisform);
-
-      // reset mail handler
-      $mh->reset();
-      $mh->setHTML(true);
-      $_addr=false;
-      $_addr_name=false;
-      $_addr_lastname=false;
-
-      // parse Notification Fields
-      // provide WPML translations for notification fields also
-      if (
-      'mail_field'==$_notification['to']['type'] &&
-      isset($_notification['to']['address_field']) && !empty($_notification['to']['address_field']) &&
-      isset($renderedForm['form_fields'][$_notification['to']['address_field']])
-      )
-      {
-      $mailcontrol=$zebraForm->controls[$renderedForm['form_fields'][$_notification['to']['address_field']][0]];
-      if (isset($mailcontrol->controls)) // repetitive control
-      {
-      // take 1st field
-      $_addr=$mailcontrol->controls[0]->attributes['value'];
-      }
-      else
-      {
-      $_addr=$mailcontrol->attributes['value'];;
-      }
-      if (
-      isset($_notification['to']['name_field']) && !empty($_notification['to']['name_field']) &&
-      isset($renderedForm['form_fields'][$_notification['to']['name_field']]) &&
-      '###none###'!=$_notification['to']['name_field']
-      )
-      {
-      $mailcontrol=$zebraForm->controls[$renderedForm['form_fields'][$_notification['to']['name_field']][0]];
-      if (isset($mailcontrol->controls)) // repetitive control
-      {
-      // take 1st field
-      $_addr_name=$mailcontrol->controls[0]->attributes['value'];
-      }
-      else
-      {
-      $_addr_name=$mailcontrol->attributes['value'];;
-      }
-      }
-      if (
-      isset($_notification['to']['lastname_field']) && !empty($_notification['to']['lastname_field']) &&
-      isset($renderedForm['form_fields'][$_notification['to']['lastname_field']]) &&
-      '###none###'!=$_notification['to']['lastname_field']
-      )
-      {
-      $mailcontrol=$zebraForm->controls[$renderedForm['form_fields'][$_notification['to']['lastname_field']][0]];
-      if (isset($mailcontrol->controls)) // repetitive control
-      {
-      // take 1st field
-      $_addr_lastname=$mailcontrol->controls[0]->attributes['value'];
-      }
-      else
-      {
-      $_addr_lastname=$mailcontrol->attributes['value'];;
-      }
-      }
-      }
-      elseif ('wp_user'==$_notification['to']['type'])
-      {
-      $_addr=cred_translate('CRED Notification '.$ii.' Mail To', $_notification['to']['user'], 'cred-form-'.$form->form->post_title.'-'.$form->form->ID);
-      $user_id = email_exists($_addr);
-      if ($user_id)
-      {
-      $user_info = get_userdata($user_id);
-      $_addr_name = (isset($user_info->user_firstname)&&!empty($user_info->user_firstname))?$user_info->user_firstname:false;
-      $_addr_lastname = (isset($user_info->user_lasttname)&&!empty($user_info->user_lasttname))?$user_info->user_lastname:false;
-      }
-      else
-      $_addr=false;
-      }
-      elseif ('specific_mail'==$_notification['to']['type'] && isset($_notification['to']['address']))
-      {
-      $_addr=cred_translate('CRED Notification '.$ii.' Mail To', $_notification['to']['address'], 'cred-form-'.$form->form->post_title.'-'.$form->form->ID);
-      if (
-      isset($_notification['to']['name'])
-      )
-      {
-      $_addr_name=cred_translate('CRED Notification '.$ii.' Mail To Name', $_notification['to']['name'], 'cred-form-'.$form->form->post_title.'-'.$form->form->ID);
-      }
-      if (
-      isset($_notification['to']['lastname'])
-      )
-      {
-      $_addr_lastname=cred_translate('CRED Notification '.$ii.' Mail To LastName', $_notification['to']['lastname'], 'cred-form-'.$form->form->post_title.'-'.$form->form->ID);
-      }
-      }
-      else  continue;
-      if (!$_addr)    continue;
-
-      // build TO address
-      $_to=array();
-      if ($_addr_name)
-      $_to[]=$_addr_name;
-      if ($_addr_lastname)
-      $_to[]=$_addr_lastname;
-      if (!empty($_to))
-      $_to[]='<'.$_addr.'>';
-      else
-      $_to[]=$_addr;
-      $_to=implode(' ', $_to);
-      $mh->addAddress($_to);
-
-      // build SUBJECT
-      $_subj='';
-      if (isset($_notification['mail']['subject']))
-      $_subj=$_notification['mail']['subject'];
-      $_subj=$this->translateNotificationField(cred_translate('CRED Notification '.$ii.' Subject', $_subj, 'cred-form-'.$form->form->post_title.'-'.$form->form->ID), $data_restricted);
-      $mh->setSubject($_subj);
-
-      // build BODY
-      $_bod='';
-      if (isset($_notification['mail']['body']))
-      $_bod=$_notification['mail']['body'];
-      // allow shortcodes in body message
-      $_bod=do_shortcode($this->translateNotificationField(cred_translate('CRED Notification '.$ii.' Body', $_bod, 'cred-form-'.$form->form->post_title.'-'.$form->form->ID), $data_all));
-      // add notification data after shortcodes are parsed, to avoid any complications with data having raw shortcodes
-      $_bod=$this->translateNotificationField($_bod, array('%%FORM_DATA%%'=>$notification_data));
-      $mh->setBody($_bod);
-
-      // build FROM address
-      $_from_addr=isset($_notification['from']['address'])?$_notification['from']['address']:false;
-      if ($_from_addr)
-      {
-      if (isset($_notification['from']['name']))
-      {
-      $mh->setFrom($_from_addr, $_notification['from']['name'], false);
-      }
-      else
-      {
-      $mh->setFrom($_from_addr, '');
-      }
-      }
-
-      // send it
-      if (($_send_result=$mh->send()))
-      {
-      $zebraForm->add_form_message('notification_'.$ii, $this->getLocalisedMessage('notification_was_sent'));
-      // save them to be used later as messages if PRG
-      $n_sent[]=$ii;
-      }
-      else
-      {
-      $zebraForm->add_form_error('notification_'.$ii, $this->getLocalisedMessage('notification_failed'));
-      // save them to be used later as messages if PRG
-      $n_failed[]=$ii;
-      }
-
-      // custom actions to integrate 3rd-party (eg CRED Commerce)
-      do_action('cred_after_send_notification_'.$form_id, $_send_result, $ii, $_notification, $post_id, $thisform);
-      do_action('cred_after_send_notification', $_send_result, $ii, $_notification, $post_id, $thisform);
-      }
-      }
-      }
-      }
-      return array($n_sent, $n_failed);
-      } */
 
     public function CRED_extractPostFields($post_id, $track = false) {
         global $user_ID;
@@ -1152,7 +882,7 @@ class CRED_Form_Builder_Helper implements CRED_Friendly, CRED_FriendlyStatic {
                             $n++;
                         }
                         foreach ($rep_files_array as $n => $cfile) {
-                            if (!$this->is_correct_filetype($cfile['name'], $cfile['type'], $field['type'])) {
+                            if (!empty($cfile['name']) && !$this->is_correct_filetype($cfile['name'], $cfile['type'], $field['type'])) {
                                 $error_files[] = $mykey;
                                 $zebraForm->add_field_message($field['name'] . ' ' . __("File Type Error", 'wp-cred'), $mykey);
                                 $zebraForm->add_top_message($field['name'] . ' ' . __("File Type Error", 'wp-cred'), $mykey);
@@ -1163,8 +893,10 @@ class CRED_Form_Builder_Helper implements CRED_Friendly, CRED_FriendlyStatic {
                     }
                 } else {
                     if (isset($_FILES[$mykey]) &&
-                            (!empty($_FILES[$mykey]['type'])) &&
-                            !$this->is_correct_filetype($_FILES[$mykey]['name'], $_FILES[$mykey]['type'], $field['type'])) {
+                            !empty($_FILES[$mykey]['type']) &&
+                            (isset($_FILES[$mykey]['error'][0]) && $_FILES[$mykey]['error'][0] != 4) &&
+                            !$this->is_correct_filetype($_FILES[$mykey]['name'], $_FILES[$mykey]['type'], $field['type'])
+                    ) {
                         $error_files[] = $mykey;
                         $zebraForm->add_field_message($field['name'] . ' ' . __("File Type Error", 'wp-cred'), $mykey);
                         $zebraForm->add_top_message($field['name'] . ' ' . __("File Type Error", 'wp-cred'), $mykey);
@@ -1369,7 +1101,7 @@ class CRED_Form_Builder_Helper implements CRED_Friendly, CRED_FriendlyStatic {
                         //$tmp_data=implode(', ',$tmp_data);
                         unset($tmp_val);
                     }
-                    if (null !== $tmp_data) {
+                    if (isset($tmp_data)) {
                         $this->trackData(array($field_label => $tmp_data));
                         $done_data = true;
                     }
@@ -1697,16 +1429,6 @@ class CRED_Form_Builder_Helper implements CRED_Friendly, CRED_FriendlyStatic {
             return array($fields, $fieldsInfo, $files, $removed_fields, $error_files);
         }
 
-//        foreach ($_fields['custom_fields'] as $key => $field) {
-//            delete_user_meta($user_id, $field['meta_key']);
-//            if ($field == 'checkboxes')
-//                continue;
-//            if (isset($field['meta_key']) && isset($method[$field['meta_key']])) {
-//                if (!empty($method[$field['meta_key']]))
-//                    update_user_meta($user_id, $field['meta_key'], $method[$field['meta_key']]);
-//            }
-//        }
-
         foreach ($_fields['post_fields'] as $key => $field) {
             $field_label = $field['name'];
             $done_data = false;
@@ -1845,13 +1567,19 @@ class CRED_Form_Builder_Helper implements CRED_Friendly, CRED_FriendlyStatic {
                             $tmp_data = $field['data']['display_value_selected'];
                     }
                     elseif ('radio' == $field['type'] || 'select' == $field['type']) {
-                        foreach ($field['data']['options'] as $ele) {
-                            if (!isset($ele['value']))
-                                continue;
-                            if ($ele['value'] == $values) {
-                                $tmp_data = $ele['title'];
+                        //$tmp_data = $field['data']['options'][$values]['title'];
+                        foreach ($field['data']['options'] as $_key => $_val) {
+                            if (isset($_val['value']) && $_val['value'] == $values) {
+                                $tmp_data = $_val['title'];
                             }
                         }
+//                        foreach ($field['data']['options'] as $ele) {
+//                            if (!isset($ele['value']))
+//                                continue;
+//                            if ($ele['value'] == $values) {
+//                                $tmp_data = $ele['title'];
+//                            }
+//                        }
                         //$tmp_data = $field['data']['options'][$values]['title'];
                     } elseif ('checkboxes' == $field['type'] || 'multiselect' == $field['type']) {
                         $tmp_data = array();
@@ -1860,7 +1588,7 @@ class CRED_Form_Builder_Helper implements CRED_Friendly, CRED_FriendlyStatic {
                         //$tmp_data=implode(', ',$tmp_data);
                         unset($tmp_val);
                     }
-                    if (null !== $tmp_data) {
+                    if (isset($tmp_data)) {
                         $this->trackData(array($field_label => $tmp_data));
                         $done_data = true;
                     }
@@ -1876,12 +1604,21 @@ class CRED_Form_Builder_Helper implements CRED_Friendly, CRED_FriendlyStatic {
                     foreach ($field['data']['options'] as $optionkey => $optiondata) {
                         if (in_array($optionkey, $values)) {
                             if (array_key_exists('set_value', $optiondata) && isset($optiondata['set_value'])) {
-                                $result[$optionkey] = $optiondata['set_value'];
+                                $result[$optionkey] = array($optiondata['set_value']);
                             } elseif ('multiselect' == $field['type']) {
-                                $result[$optionkey] = $optionkey;
+                                $result[$optionkey] = array($optionkey);
                             }
                         }
                     }
+//                    foreach ($field['data']['options'] as $optionkey => $optiondata) {
+//                        if (in_array($optionkey, $values)) {
+//                            if (array_key_exists('set_value', $optiondata) && isset($optiondata['set_value'])) {
+//                                $result[$optionkey] = $optiondata['set_value'];
+//                            } elseif ('multiselect' == $field['type']) {
+//                                $result[$optionkey] = $optionkey;
+//                            }
+//                        }
+//                    }
 
                     $values = $result;
                     $fieldsInfo[$key]['save_single'] = true;
@@ -2160,7 +1897,7 @@ class CRED_Form_Builder_Helper implements CRED_Friendly, CRED_FriendlyStatic {
                         //$tmp_data=implode(', ',$tmp_data);
                         unset($tmp_val);
                     }
-                    if (null !== $tmp_data) {
+                    if (isset($tmp_data)) {
                         $this->trackData(array($field_label => $tmp_data));
                         $done_data = true;
                     }
@@ -2348,6 +2085,16 @@ class CRED_Form_Builder_Helper implements CRED_Friendly, CRED_FriendlyStatic {
         return array($fields, $fieldsInfo, $taxonomies, $files, $removed_fields);
     }
 
+    public function CRED_uploadFeaturedImage($post_id) {
+        if (isset($_POST['attachid__featured_image'])) {
+            if (empty($_POST['attachid__featured_image'])) {
+                delete_post_meta($post_id, '_thumbnail_id');
+            } else {
+                update_post_meta($post_id, '_thumbnail_id', $_POST['attachid__featured_image']);
+            }
+        }
+    }
+
     public function CRED_uploadAttachments($post_id, &$fields, &$files, &$extra_files, $track = false) {
         // dependencies
         require_once(ABSPATH . '/wp-admin/includes/file.php');
@@ -2362,6 +2109,12 @@ class CRED_Form_Builder_Helper implements CRED_Friendly, CRED_FriendlyStatic {
         $all_ok = true;
         // set featured image only if uploaded
         $fkey = '_featured_image';
+
+        if (isset($_POST[$fkey])) {
+            $this->trackData(array(__('Featured Image', 'wp-cred') => "<img src='" . $_POST[$fkey] . "'>"));
+            //$_feature_image = wp_get_attachment_image_src( get_post_thumbnail_id( $post->ID ));
+        }
+
         $extra_files = array();
         if (
                 array_key_exists($fkey, $_form_fields) &&
@@ -2395,27 +2148,27 @@ class CRED_Form_Builder_Helper implements CRED_Friendly, CRED_FriendlyStatic {
             ) {
                 delete_post_meta($post_id, '_thumbnail_id');
             }
-            /* $removed_fields[] = $fkey; */
-            /*
-              if (!isset($_POST[$fkey])) {
-              global $post;
-              if ($post) {
-              $args = array(
-              'post_type' => 'attachment',
-              'numberposts' => -1,
-              'post_status' => null,
-              'post_parent' => $post->ID
-              );
+        }
 
-              $attachments = get_posts( $args );
-              if ( $attachments ) {
-              foreach ( $attachments as $attachment ) {
-              wp_delete_attachment( $attachment->ID );
-              }
-              }
-              }
-              }
-             */
+        if (isset($_POST[$fkey]) && isset($_POST['_cred_cred_prefix_post_id'])) {
+            $post_id = intval($_POST['_cred_cred_prefix_post_id']);
+            delete_post_meta($post_id, '_thumbnail_id');
+
+            $args = array(
+                'post_type' => 'attachment',
+                'numberposts' => -1,
+                'post_status' => 'any',
+                'post_parent' => $post_id
+            );
+
+            $attachments = get_posts($args);
+            foreach ($attachments as $n => $attachment) {
+                if ($attachment->post_title == basename($_POST[$fkey])) {
+                    $attachment_id = $attachment->ID;
+                    break;
+                }
+            }
+            update_post_meta($post_id, '_thumbnail_id', $attachment_id);
         }
 
         $new_arr = array();
@@ -2573,6 +2326,15 @@ class CRED_Form_Builder_Helper implements CRED_Friendly, CRED_FriendlyStatic {
         return $all_ok;
     }
 
+    /**
+     * @deprecated since version 1.3.6.2
+     * @param type $user_id
+     * @param type $fields
+     * @param type $files
+     * @param type $extra_files
+     * @param type $track
+     * @return boolean
+     */
     public function CRED_userUploadAttachments($user_id, &$fields, &$files, &$extra_files, $track = false) {
         // dependencies
         require_once(ABSPATH . '/wp-admin/includes/file.php');
@@ -2621,7 +2383,6 @@ class CRED_Form_Builder_Helper implements CRED_Friendly, CRED_FriendlyStatic {
                 delete_user_meta($user_id, '_thumbnail_id');
             }
         }
-
 
         $new_arr = array();
         $i = 0;
@@ -2770,6 +2531,14 @@ class CRED_Form_Builder_Helper implements CRED_Friendly, CRED_FriendlyStatic {
         return $all_ok;
     }
 
+    /**
+     * attachUploads
+     * @deprecated since version 1.3.6.3
+     * @param type $result
+     * @param type $fields
+     * @param type $files
+     * @param type $extra_files
+     */
     public function attachUploads($result, &$fields, &$files, &$extra_files) {
         // you must first include the image.php file
         // for the function wp_generate_attachment_metadata() to work
@@ -2908,6 +2677,13 @@ class CRED_Form_Builder_Helper implements CRED_Friendly, CRED_FriendlyStatic {
         //setcookie($cookieName, ' ', time() - YEAR_IN_SECONDS, SITECOOKIEPATH);
     }
 
+    /**
+     * trackData used by notification
+     * @staticvar array $track
+     * @param type $data
+     * @param type $return
+     * @return type
+     */
     public function trackData($data, $return = false) {
         static $track = array();
         if ($return) {
@@ -2920,13 +2696,19 @@ class CRED_Form_Builder_Helper implements CRED_Friendly, CRED_FriendlyStatic {
         $track = array_merge($track, $data);
     }
 
+    /**
+     * formatData used by trackData and notification
+     * @param type $data
+     * @param type $level
+     * @return string
+     */
     public function formatData($data, $level = 0) {
         // tabular output format ;)
         $keystyle = ' style="background:#676767;font-weight:bold;color:#e1e1e1"';
         $valuestyle = ' style="background:#ddd;font-weight:normal;color:#121212"';
         $output = '';
         $data = (array) $data;
-        foreach ($data as $k => $v) {
+        foreach ($data as $k => &$v) {
             $output.='<tr>';
             if (!is_numeric($k))
                 $output.='<td' . $keystyle . '>' . $k . '</td><td' . $valuestyle . '>';
@@ -2935,8 +2717,35 @@ class CRED_Form_Builder_Helper implements CRED_Friendly, CRED_FriendlyStatic {
 
             if (is_array($v) || is_object($v))
                 $output.=$this->formatData((array) $v, $level + 1);
-            else
-                $output.=$v;
+            else {
+                $out_ = &$this->friendGet($this->_formBuilder, '&out_');
+
+                //########### START # String Translation WPML ##################################################
+                $new_v = cred_translate($k . " " . $v, $v, StaticClass::$_current_prefix . StaticClass::$_current_post_title . '-' . StaticClass::$_current_form_id);
+
+                if ($v == $new_v) {
+                    $field_id = "";
+                    if (isset($out_['fields']['post_fields'][$k])) {
+                        $field = $out_['fields']['post_fields'][$k];
+                        if ($field['type'] == 'select' ||
+                                $field['type'] == 'radio') {
+                            if (isset($field['data']['options']))
+                                foreach ($field['data']['options'] as $id => $values) {
+                                    if (isset($values['title']) && $values['title'] == $v) {
+                                        $field_id = $id;
+                                        break;
+                                    }
+                                }
+                        }
+                    }
+                    if (!empty($field_id)) {
+                        $new_v = cred_translate('field ' . $field_id . ' option ' . $k . ' title', $v, 'plugin Types');
+                    }
+                }
+                //########### END # String Translation WPML ##################################################
+
+                $output.=$new_v;
+            }
 
             $output.= '</td></tr>';
         }
@@ -2947,125 +2756,6 @@ class CRED_Form_Builder_Helper implements CRED_Friendly, CRED_FriendlyStatic {
         return $output;
     }
 
-    // parse and check conditional expressions to be used in javascript
-//    public function parseConditionalExpressions(&$out_)
-//    {
-//        global $user_ID;
-//
-//        // get ref here
-//        $globals=&self::friendGetStatic('CRED_Form_Builder', '&_staticGlobal');
-//        $zebraForm=$this->friendGet($this->_formBuilder, '_zebraForm');
-//        $formfields=array_keys($out_['form_fields']);
-//        $roles=$this->getUserRolesByID($user_ID);
-//        $conditional_js_data=array();
-//        $affected_fields=array();
-//        $kk=0;
-//
-//        // check expression is valid
-//        foreach ($out_['conditionals'] as $key=>$cond)
-//        {
-//            ++$kk;
-//            $out_['conditionals'][$key]['valid']=true;
-//            $replace=array(
-//                'original'=>array(),
-//                'original_name'=>array(),
-//                'field_reference'=>array(),
-//                'field_name'=>array(),
-//                'values_map'=>array(),
-//                'replace'=>array()
-//            );
-//
-//            if (preg_match_all('/\$\(([a-z_][a-z_\-\d]*:?)\)/si', $cond['condition'], $matches))
-//            {
-//                foreach ($matches[1] as $k=>$m)
-//                {
-//                    if (!in_array($m, $formfields))
-//                    {
-//                        if (in_array('administrator', $roles) && $zebraForm->preview)
-//                            $zebraForm->add_form_error('condition'.$key.$k,
-//                                sprintf(__('Variable {%1$s} in Expression {%2$s} does not refer to an existing form field','wp-cred'),htmlspecialchars($m),htmlspecialchars($cond['condition'])));
-//                        $out_['conditionals'][$key]['valid']=false;
-//                    }
-//                    else if (
-//                        $out_['form_fields_info'][$m]['type']=='audio' ||
-//                        $out_['form_fields_info'][$m]['type']=='video' ||
-//                        $out_['form_fields_info'][$m]['type']=='file' ||
-//                        $out_['form_fields_info'][$m]['type']=='image' ||
-//                        $out_['form_fields_info'][$m]['type']=='recaptcha' ||
-//                        $out_['form_fields_info'][$m]['type']=='skype' ||
-//                        $out_['form_fields_info'][$m]['type']=='form_messages' ||
-//                        $out_['form_fields_info'][$m]['repetitive']
-//                        )
-//                    {
-//                        if (in_array('administrator', $roles) && $zebraForm->preview)
-//                            $zebraForm->add_form_error('condition'.$key.$k,
-//                                sprintf(__('Variable {%1$s} in Expression {%2$s} refers to a field that cannot be used in conditional expressions','wp-cred'),htmlspecialchars($m),htmlspecialchars($cond['condition'])));
-//                        $out_['conditionals'][$key]['valid']=false;
-//                    }
-//                    else
-//                    {
-//                        if (!in_array($m, $replace['original_name']))
-//                        {
-//                            $name=$out_['form_fields_info'][$m]['name'];
-//                            $replace['original'][]=$matches[0][$k];
-//                            $replace['original_name'][]=$m;
-//                            $replace['field_reference'][]=$out_['form_fields'][$m][0]; // field id this var references
-//                            $replace['field_name'][]=$name; // field name this var references
-//                            $replace['replace'][]='__var__'.$kk.$k;
-//                            if (isset($out_['field_values_map'][$m]))
-//                                $replace['values_map'][]=$out_['field_values_map'][$m];
-//                            else
-//                                $replace['values_map'][]=false;
-//                        }
-//                    }
-//                }
-//            }
-//            if ($out_['conditionals'][$key]['valid'])
-//            {
-//                if (!empty($replace['replace']))
-//                    $out_['conditionals'][$key]['replaced_condition']=str_replace($replace['original'],$replace['replace'],$out_['conditionals'][$key]['condition']);
-//                else
-//                {
-//                    $out_['conditionals'][$key]['replaced_condition']=$out_['conditionals'][$key]['condition'];
-//                    if (in_array('administrator', $roles) && $zebraForm->preview)
-//                        $zebraForm->add_form_error('condition'.$key,
-//                            sprintf(__('Expression {%1$s} has no variables that refer to form fields, the evaluated result is constant','wp-cred'),htmlspecialchars($cond['condition'])));
-//                }
-//                $out_['conditionals'][$key]['var_field_map']=$replace;
-//                // format for js
-//                $tmp=array(
-//                    'condition' => $out_['conditionals'][$key]['replaced_condition'],
-//                    'group' => $out_['conditionals'][$key]['container_id'],
-//                    'mode' => $out_['conditionals'][$key]['mode'],
-//                    'affected_fields' => $replace['field_reference'],
-//                    'affected_fields_names' => $replace['field_name'],
-//                    'map' => array()
-//                );
-//                foreach ($replace['replace'] as $ii=>$var)
-//                    $tmp['map'][]=array(
-//                        'variable'=>$replace['replace'][$ii],
-//                        'field'=>$replace['field_reference'][$ii],
-//                        'field_name'=>$replace['field_name'][$ii],
-//                        'values_map'=>$replace['values_map'][$ii]
-//                    );
-//                $conditional_js_data[]=$tmp;
-//                // group all affected fields in one place for easy reference
-//                $affected_fields=array_merge($affected_fields, array_diff($replace['field_reference'], $affected_fields));
-//            }
-//            if (isset($zebraForm->controls[$key]) && $zebraForm->controls[$key]->isContainer())
-//                $zebraForm->controls[$key]->setConditionData($out_['conditionals'][$key]);
-//        }
-//        $extra_parameters=array(
-//            'parser_info'=>array(
-//                'user'=>(array)$globals['CURRENT_USER']
-//            )
-//        );
-//        $zebraForm->set_extra_parameters($extra_parameters);
-//        if (!empty($conditional_js_data))
-//        {
-//            $zebraForm->add_conditional_settings($conditional_js_data, $affected_fields);
-//        }
-//    }
     // get all form field values to be used in validation hooks
     public function get_form_field_values() {
         $fields = array();
@@ -3192,6 +2882,7 @@ class CRED_Form_Builder_Helper implements CRED_Friendly, CRED_FriendlyStatic {
 
     //cred
     public function cred_translate_field($name, &$field, $additional_options = array()) {
+        //cred_log("cred_translate_field");
         // allow multiple submit buttons
         static $_count_ = array(
             'submit' => 0
@@ -3238,17 +2929,23 @@ class CRED_Form_Builder_Helper implements CRED_Friendly, CRED_FriendlyStatic {
 
         $name_orig = $name;
 
-        if (!$is_tax) { // if not taxonomy field
-            if ($placeholder && $placeholder !== null && !empty($placeholder) && is_string($placeholder)) {
+        if (!$is_tax) {
+            // if not taxonomy field
+            if (isset($placeholder) && !empty($placeholder) && is_string($placeholder)) {
                 // use translated value by WPML if exists
                 $placeholder = cred_translate(
                         'Value: ' . $placeholder, $placeholder, 'cred-form-' . $form->getForm()->post_title . '-' . $form->getForm()->ID
                 );
-
                 $additional_options['placeholder'] = $placeholder;
             }
 
-            if ($preset_value && null !== $preset_value && is_string($preset_value) && !empty($preset_value)) {
+            if (isset($preset_value) &&
+                    !empty($preset_value) &&
+                    is_string($preset_value)
+            ) {
+
+                //cred_log("preset_value");
+                //cred_log($preset_value);
                 // use translated value by WPML if exists
                 $data_value = cred_translate(
                         'Value: ' . $preset_value, $preset_value, 'cred-form-' . $form->getForm()->post_title . '-' . $form->getForm()->ID
@@ -3256,26 +2953,59 @@ class CRED_Form_Builder_Helper implements CRED_Friendly, CRED_FriendlyStatic {
 
                 $additional_options['preset_value'] = $placeholder;
             }
+
+            if ($_POST && isset($_POST) && isset($_POST[$name_orig])) {
+                //cred_log("_POST");
+                //cred_log($_POST);
+                $data_value = $_POST[$name_orig];
+            } elseif ($postData && isset($postData->fields[$name_orig])) {
+                //cred_log("POST DATA");
+                //cred_log($postData->fields[$name_orig]);
+                if (is_array($postData->fields[$name_orig]) && count($postData->fields[$name_orig]) > 1) {
+                    if (isset($field['data']['repetitive']) &&
+                            $field['data']['repetitive'] == 1 &&
+                            !isset($data_value[0][0]) &&
+                            $field['type'] == 'skype') {
+                        $data_value = array($data_value);
+                    }
+                } else {
+                    $data_value = $postData->fields[$name_orig][0];
+                    //checkboxes needs to be different from from db
+                    if ($field['type'] == 'checkboxes') {
+                        if (isset($postData->fields[$name_orig]) && 
+                                isset($postData->fields[$name_orig][0]) && is_array($postData->fields[$name_orig][0])) {
+                            $data_value = array();
+                            foreach ($postData->fields[$name_orig][0] as $key => $value) {
+                                $data_value[] = $key;
+                            }
+                        }
+                    }
+                }
+//            } elseif ($preset_value &&
+//                    null !== $preset_value &&
+//                    is_string($preset_value) &&
+//                    !empty($preset_value)) {
+//
+//                $data_value = cred_translate(
+//                        'Value: ' . $preset_value, $preset_value, 'cred-form-' . $form->getForm()->post_title . '-' . $form->getForm()->ID
+//                );
+//
+//                $additional_options['preset_value'] = $placeholder;
+            }
             // allow field to get value through url parameter
             elseif (is_string($urlparam) && !empty($urlparam) && isset($_GET[$urlparam])) {
+                //cred_log("URL PARAM");
+                //cred_log($urlparam);
                 // use translated value by WPML if exists
                 $data_value = urldecode($_GET[$urlparam]);
-            }
-            // allow persisted generic fields to display values
-            elseif ($postData && isset($postData->fields[$name_orig])) {
-                if (is_array($postData->fields[$name_orig]) && count($postData->fields[$name_orig]) > 1) {
-                    $data_value = $postData->fields[$name_orig];
-                    //Fix for repetitive CRED POST TYPE
-                    if (isset($field['data']['repetitive']) && $field['data']['repetitive'] == 1 && !isset($data_value[0][0]) && $field['type'] == 'skype')
-                        $data_value = array($data_value);
-                } else
-                    $data_value = $postData->fields[$name_orig][0];
-            } elseif ($_POST && isset($_POST) && isset($_POST[$name_orig])) {
-                $data_value = $_POST[$name_orig];
             } else {
-                $data_value = null;
+                if (!isset($preset_value))
+                    $data_value = null;
             }
 
+            //cred_log($field['name'] . " " . $field['type']);
+            //cred_log("data value");
+            //cred_log($data_value);
             // save a map between options / actual values for these types to be used later
             if (in_array($field['type'], array('checkboxes', 'radio', 'select', 'multiselect'))) {
                 //cred_log($field);                
@@ -3290,6 +3020,9 @@ class CRED_Form_Builder_Helper implements CRED_Friendly, CRED_FriendlyStatic {
                 unset($optionData);
             }
 
+            if (isset($data_value))
+                $value = $data_value;
+
             switch ($field['type']) {
                 case 'form_messages' :
                     $type = 'messages';
@@ -3297,8 +3030,23 @@ class CRED_Form_Builder_Helper implements CRED_Friendly, CRED_FriendlyStatic {
 
                 case 'form_submit':
                     $type = 'submit';
-                    if (null !== $data_value)
+
+                    if (isset($preset_value) &&
+                            !empty($preset_value) &&
+                            is_string($preset_value)
+                    ) {
+
+                        //cred_log("preset_value");
+                        //cred_log($preset_value);
+                        // use translated value by WPML if exists
+                        $data_value = cred_translate(
+                                'Value: ' . $preset_value, $preset_value, 'cred-form-' . $form->getForm()->post_title . '-' . $form->getForm()->ID
+                        );
                         $value = $data_value;
+
+                        $additional_options['preset_value'] = $placeholder;
+                    }
+
                     // allow multiple submit buttons
                     $name.='_' . ++$_count_['submit'];
                     break;
@@ -3324,8 +3072,6 @@ class CRED_Form_Builder_Helper implements CRED_Friendly, CRED_FriendlyStatic {
                 case 'video':
                 case 'file':
                     $type = 'cred' . $field['type'];
-                    if ($data_value !== null)
-                        $value = $data_value;
 
                     global $post;
                     if (isset($post))
@@ -3358,8 +3104,6 @@ class CRED_Form_Builder_Helper implements CRED_Friendly, CRED_FriendlyStatic {
                 case 'image':
                     //$type='file';  
                     $type = 'cred' . $field['type'];
-                    if ($data_value !== null)
-                        $value = $data_value;
                     // show previous post featured image thumbnail
                     if ('_featured_image' == $name) {
                         $value = '';
@@ -3409,7 +3153,7 @@ class CRED_Form_Builder_Helper implements CRED_Friendly, CRED_FriendlyStatic {
                     }
                     $attributes = array_merge($additional_options, array('format' => $format, 'readonly_element' => false));
                     if (
-                            null !== $data_value &&
+                            isset($data_value) &&
                             !empty($data_value) /* &&
                       (is_numeric($data_value) || is_int($data_value) || is_long($data_value)) */
                     ) {
@@ -3422,13 +3166,6 @@ class CRED_Form_Builder_Helper implements CRED_Friendly, CRED_FriendlyStatic {
                         } else {
                             $value['timestamp'] = $data_value;
                         }
-//                        $value['timestamp'] = $data_value;
-//                        if (is_array($data_value)) {
-//                            foreach ($data_value as $dv) {
-//                                $value['datepicker'][] = adodb_date($format, $dv);
-//                            }
-//                        } else
-//                            $value['datepicker'] = adodb_date($format, $data_value);                        
                     }
                     break;
 
@@ -3444,10 +3181,6 @@ class CRED_Form_Builder_Helper implements CRED_Friendly, CRED_FriendlyStatic {
                     if ($field['type'] == 'multiselect') {
                         $attributes = array_merge($additional_options, array('multiple' => 'multiple'));
                     } else {
-                        /*
-                         * cred-340
-                         * class attribute was missed
-                         */
                         $attributes = array_merge($additional_options);
                     }
 
@@ -3455,29 +3188,32 @@ class CRED_Form_Builder_Helper implements CRED_Friendly, CRED_FriendlyStatic {
 
                     foreach ($field['data']['options'] as $key => $option) {
                         $index = $key; //$option['value'];
-                        if ('default' === $key) {
+                        if ('default' === $key && $option != 'no-default') {
                             $default[] = $option;
                         } else {
                             if (is_admin()) {
                                 //register strings on form save
                                 cred_translate_register_string('cred-form-' . $form->getForm()->post_title . '-' . $form->getForm()->ID, $field['slug'] . " " . $option['title'], $option['title'], false);
                             }
-                            $option = $this->translate_option($option, $key, $form, $field);
-                            $attributes['options'][$index] = $option['title'];
+                            if (isset($option['title'])) {
+                                $option = $this->translate_option($option, $key, $form, $field);
+                                $attributes['options'][$index] = $option['title'];
 
-                            if ((null !== $data_value) &&
-                                    $data_value == $option['value'] ||
-                                    (is_array($data_value) && (array_key_exists($option['value'], $data_value) || in_array($option['value'], $data_value)))) {
+                                if (isset($data_value) &&
+                                        ($data_value == $option['value'] ||
+                                        (is_array($data_value) && (array_key_exists($option['value'], $data_value) ||
+                                        in_array($option['value'], $data_value))))) {
 
-                                if ('select' == $field['type']) {
-                                    $titles[] = $key;
-                                    $value = $option['value'];
-                                } else {
-                                    $value = $data_value;
+                                    if ('select' == $field['type']) {
+                                        $titles[] = $key;
+                                        $value = $option['value'];
+                                    } else {
+                                        $value = $data_value;
+                                    }
                                 }
+                                if (isset($option['dummy']) && $option['dummy'])
+                                    $attributes['dummy'] = $key;
                             }
-                            if (isset($option['dummy']) && $option['dummy'])
-                                $attributes['dummy'] = $key;
                         }
                     }
 
@@ -3486,13 +3222,14 @@ class CRED_Form_Builder_Helper implements CRED_Friendly, CRED_FriendlyStatic {
                             $value = $default;
                         }
                     } else {
-                        if (empty($titles) && !empty($default)) {
-                            $titles = $default;
+                        if (empty($titles) && !empty($default[0])) {
+                            $titles = isset($field['data']['options'][$default[0]]['value']) ? $field['data']['options'][$default[0]]['value'] : "";
                         }
-                        $attributes['actual_value'] = $titles;
+                        $attributes['actual_value'] = isset($data_value) && !empty($data_value) ? $data_value : $titles;
                     }
                     if (isset($out_['field_values_map'][$field['slug']]))
                         $attributes['actual_options'] = $out_['field_values_map'][$field['slug']];
+
                     break;
 
                 case 'radio':
@@ -3517,10 +3254,8 @@ class CRED_Form_Builder_Helper implements CRED_Friendly, CRED_FriendlyStatic {
                             $default = $option['value'];
                         }
 
-                        $index = $key; //$option['display_value'];
-//                        if ('default' == $key) {
-//                            $default = $option;
-//                        } else {
+                        $index = $key;
+
                         if (is_admin()) {
                             //register strings on form save
                             cred_translate_register_string('cred-form-' . $form->getForm()->post_title . '-' . $form->getForm()->ID, $field['slug'] . " " . $option['title'], $option['title'], false);
@@ -3529,15 +3264,13 @@ class CRED_Form_Builder_Helper implements CRED_Friendly, CRED_FriendlyStatic {
 
                         $titles[$index] = $option['title'];
 
-                        //Fix radio cred-213
-                        if (($data_value !== null) && $data_value == $option['value']) {
+                        if (isset($data_value) && $data_value == $option['value']) {
                             $attributes = isset($option['value']) ? $option['value'] : $key;
                             $value = isset($option['value']) ? $option['value'] : $key;
                         }
-//                        }
                     }
 
-                    if (($data_value === null) && !empty($default)) {
+                    if (!isset($data_value) && !empty($default)) {
                         $attributes = $default;
                     }
                     $def = $attributes;
@@ -3554,13 +3287,13 @@ class CRED_Form_Builder_Helper implements CRED_Friendly, CRED_FriendlyStatic {
                     break;
 
                 case 'checkboxes':
-                    $type = 'checkboxes'; //$name.='[]';
-                    $save_empty = $field['data']['save_empty'];
+                    $type = 'checkboxes';
+                    $save_empty = isset($field['data']['save_empty']) ? $field['data']['save_empty'] : false;
                     $value = array();
-                    //Fixed cred-211
+
                     if (isset($data_value) && !empty($data_value)) {
                         foreach ($data_value as $v => $v1) {
-                            if ($save_empty) {                                
+                            if ($save_empty || $field['cred_generic'] == 1) {
                                 $value[$v] = $v1;
                             } else
                                 $value[$v] = 1;
@@ -3569,15 +3302,11 @@ class CRED_Form_Builder_Helper implements CRED_Friendly, CRED_FriendlyStatic {
 
                     $titles = array();
                     $attributes = array();
-                    /*
-                     * class attribute was missed
-                     */
                     $attributes = array_merge($additional_options);
 
-                    /* if (is_array($data_value))
-                      $data_value=array_keys($data_value);
-                      else */if (!is_array($data_value) && null !== $data_value)
+                    if (isset($data_value) && !is_array($data_value))
                         $data_value = array($data_value);
+
                     foreach ($field['data']['options'] as $key => $option) {
                         if (is_admin()) {
                             //register strings on form save
@@ -3594,7 +3323,7 @@ class CRED_Form_Builder_Helper implements CRED_Friendly, CRED_FriendlyStatic {
                         }
                         if (isset($option['checked']) && $option['checked'] && null === $data_value) {
                             $attributes[] = $index;
-                        } elseif ((null !== $data_value) && isset($data_value[$index]) /* && in_array($index,$data_value) */) {
+                        } elseif (isset($data_value) && isset($data_value[$index]) /* && in_array($index,$data_value) */) {
                             if (
                                     !('yes' == $field['data']['save_empty'] && (0 === $data_value[$index] || '0' === $data_value[$index]))
                             )
@@ -3606,14 +3335,23 @@ class CRED_Form_Builder_Helper implements CRED_Friendly, CRED_FriendlyStatic {
                     $attributes['actual_titles'] = $titles;
                     if (isset($out_['field_values_map'][$field['slug']]))
                         $attributes['actual_values'] = $out_['field_values_map'][$field['slug']];
-
                     break;
 
                 case 'checkbox':
+                    
+                    $save_empty = isset($field['data']['save_empty']) ? $field['data']['save_empty'] : false;
+                    //If save empty and $_POST is set but checkbox is not set data value 0
+                    if ($data_value==1 && 
+                            $save_empty=='no' && 
+                            isset($_POST) && !empty($_POST)
+                            && !isset($_POST[$name_orig]))
+                        $data_value = 0;
+                    
                     $type = 'checkbox';
+                                        
                     $value = $field['data']['set_value'];
                     $attributes = array();
-                    if ((null !== $data_value) && $data_value == $value)
+                    if (isset($data_value) && $data_value == $value)
                         $attributes = array('checked' => 'checked');
                     $attributes = array_merge($attributes, $additional_options);
                     if (is_admin()) {
@@ -3625,15 +3363,11 @@ class CRED_Form_Builder_Helper implements CRED_Friendly, CRED_FriendlyStatic {
 
                 case 'textarea':
                     $type = 'textarea';
-                    if (null !== $data_value)
-                        $value = $data_value;
                     $attributes = array_merge($additional_options);
                     break;
 
                 case 'wysiwyg':
                     $type = 'wysiwyg';
-                    if (null !== $data_value)
-                        $value = $data_value;
                     $attributes = array_merge($additional_options, array('disable_xss_filters' => true));
                     //cred_log($form->fields);
                     if ('post_content' == $name && isset($form->fields['form_settings']->form['has_media_button']) && $form->fields['form_settings']->form['has_media_button'])
@@ -3642,65 +3376,47 @@ class CRED_Form_Builder_Helper implements CRED_Friendly, CRED_FriendlyStatic {
 
                 case 'integer':
                     $type = 'integer';
-                    if (null !== $data_value)
-                        $value = $data_value;
                     $attributes = array_merge($attributes, $additional_options);
                     break;
 
                 case 'numeric':
                     $type = 'numeric';
-                    if (null !== $data_value)
-                        $value = $data_value;
                     $attributes = array_merge($attributes, $additional_options);
                     break;
 
                 case 'phone':
                     $type = 'phone';
-                    if (null !== $data_value)
-                        $value = $data_value;
                     $attributes = array_merge($attributes, $additional_options);
                     break;
 
                 case 'embed':
                 case 'url':
                     $type = 'url';
-                    if (null !== $data_value)
-                        $value = $data_value;
                     $attributes = array_merge($attributes, $additional_options);
                     break;
 
                 case 'email':
                     $type = 'email';
-                    if (null !== $data_value)
-                        $value = $data_value;
                     $attributes = array_merge($attributes, $additional_options);
                     break;
 
                 case 'colorpicker':
                     $type = 'colorpicker';
-                    if (null !== $data_value) 
-                        $value = $data_value;
                     $attributes = array_merge($attributes, $additional_options);
                     break;
 
                 case 'textfield':
                     $type = 'textfield';
-                    if (null !== $data_value)
-                        $value = $data_value;
                     $attributes = array_merge($attributes, $additional_options);
                     break;
 
                 case 'password':
                     $type = 'password';
-                    if (null !== $data_value)
-                        $value = $data_value;
                     $attributes = array_merge($attributes, $additional_options);
                     break;
 
                 case 'hidden':
                     $type = 'hidden';
-                    if (null !== $data_value)
-                        $value = $data_value;
                     $attributes = array_merge($attributes, $additional_options);
                     break;
 
@@ -3711,11 +3427,11 @@ class CRED_Form_Builder_Helper implements CRED_Friendly, CRED_FriendlyStatic {
                     if (isset($data_value[0]))
                         $data_value = $data_value[0];
 
-                    if ((null !== $data_value) && is_string($data_value))
-                        $data_value = array('skypename' => $data_value, 'style' => '');
-                    if (null !== $data_value)
+                    if (isset($data_value)) {
+                        if (is_string($data_value))
+                            $data_value = array('skypename' => $data_value, 'style' => '');
                         $value = $data_value;
-                    else
+                    } else
                         $value = array('skypename' => '', 'style' => '');
 
                     $attributes = array(
@@ -3730,11 +3446,11 @@ class CRED_Form_Builder_Helper implements CRED_Friendly, CRED_FriendlyStatic {
                 // everything else defaults to a simple text field
                 default:
                     $type = 'textfield';
-                    if (null !== $data_value)
-                        $value = $data_value;
                     $attributes = array_merge($attributes, $additional_options);
                     break;
             }
+
+            cred_log($attributes);
 
             if (isset($attributes['make_readonly']) && !empty($attributes['make_readonly'])) {
                 unset($attributes['make_readonly']);
@@ -3745,13 +3461,13 @@ class CRED_Form_Builder_Helper implements CRED_Friendly, CRED_FriendlyStatic {
 
             // repetitive field (special care)
             if (isset($field['data']['repetitive']) && $field['data']['repetitive']) {
-                //Fix attribute value
                 $value = isset($postData->fields[$name_orig]) ? $postData->fields[$name_orig] : isset($value) ? $value : array();
                 $objs = $zebraForm->add($type, $name, $value, $attributes, $field);
             } else {
                 $objs = $zebraForm->add($type, $name, $value, $attributes, $field);
             }
-        } else { // taxonomy field or auxilliary taxonomy field (eg popular terms etc..)
+        } else {
+            // taxonomy field or auxilliary taxonomy field (eg popular terms etc..)
             if (!array_key_exists('master_taxonomy', $field)) { // taxonomy field
                 if ($field['hierarchical']) {
                     if (in_array($preset_value, array('checkbox', 'select')))
@@ -3821,7 +3537,7 @@ class CRED_Form_Builder_Helper implements CRED_Friendly, CRED_FriendlyStatic {
                     $out_['taxonomy_map']['aux'][$name_orig]->set_attributes(array('master_taxonomy_id' => $objs->attributes['id']));
                 }
             } else { // taxonomy auxilliary field (eg most popular etc..)
-                if ($preset_value && null !== $preset_value)
+                if (isset($preset_value))
                 // use translated value by WPML if exists
                     $data_value = cred_translate(
                             'Value: ' . $preset_value, $preset_value, 'cred-form-' . $form->form->post_title . '-' . $form->form->ID
@@ -3832,23 +3548,6 @@ class CRED_Form_Builder_Helper implements CRED_Friendly, CRED_FriendlyStatic {
         }
 
         return $objs;
-
-        //$out_=&$this->friendGet($this->_formBuilder, '&out_');
-        /* $count = ($field['type']=='form_submit') ? '_'.($_count_['submit']++) : "";
-          $f = "";
-
-          if ($field['type']=='taxonomy_hierarchical'||$field['type']=='taxonomy_plain') {
-          $f = "_".$field['name'];
-          } else {
-          if (isset($field['master_taxonomy'])&&isset($field['type'])) {
-          $f = "_".$field['master_taxonomy']."_".$field['type'];
-          } else {
-          if (isset($field['id'])) {
-          $f = "_".$field['id'];
-          } else pre($field);
-          }
-          }
-          return array("cred_form_".$out_['prg_id'].$f.$count); */
     }
 
     /**
@@ -3860,6 +3559,8 @@ class CRED_Form_Builder_Helper implements CRED_Friendly, CRED_FriendlyStatic {
      * @return type
      */
     public function translate_option($option, $key, $form, $field) {
+        if (!isset($option['title']))
+            return $option;
         $original = $option['title'];
         $option['title'] = cred_translate(
                 $field['slug'] . " " . $option['title'], $option['title'], 'cred-form-' . $form->getForm()->post_title . '-' . $form->getForm()->ID
@@ -3881,505 +3582,7 @@ class CRED_Form_Builder_Helper implements CRED_Friendly, CRED_FriendlyStatic {
             'submit' => 0
         );
 
-        static $wpExtensions = false;
-        // get refs here
-        $globals = &self::friendGetStatic('CRED_Form_Builder', '&_staticGlobal');
-        if (false === $wpExtensions) {
-            $wpMimes = $globals['MIMES'];
-            $wpExtensions = implode(',', array_keys($wpMimes));
-        }
-        // get refs here
-        $form = &$this->friendGet($this->_formBuilder, '&_formData');
-        $supported_date_formats = &$this->friendGet($this->_formBuilder, '&_supportedDateFormats');
         $out_ = &$this->friendGet($this->_formBuilder, '&out_');
-        $postData = &$this->friendGet($this->_formBuilder, '&_postData');
-        $zebraForm = $this->friendGet($this->_formBuilder, '_zebraForm');
-
-        // extend additional_options with defaults
-        extract(array_merge(
-                        array(
-            'preset_value' => null,
-            'placeholder' => null,
-            'value_escape' => false,
-            'make_readonly' => false,
-            'is_tax' => false,
-            'max_width' => null,
-            'max_height' => null,
-            'single_select' => false,
-            'generic_type' => null,
-            'urlparam' => ''
-                        ), $additional_options
-        ));
-
-        // add the "name" element
-        // the "&" symbol is there so that $obj will be a reference to the object in PHP 4
-        // for PHP 5+ there is no need for it
-        $type = 'text';
-        $attributes = array();
-        $value = '';
-
-        $name_orig = $name;
-
-        if (!$is_tax) { // if not taxonomy field
-            if ($placeholder && $placeholder !== null && !empty($placeholder) && is_string($placeholder)) {
-                // use translated value by WPML if exists
-                $placeholder = cred_translate(
-                        'Value: ' . $placeholder, $placeholder, 'cred-form-' . $form->getForm()->post_title . '-' . $form->getForm()->ID
-                );
-            }
-
-            if ($preset_value && null !== $preset_value && is_string($preset_value) && !empty($preset_value)) {
-                // use translated value by WPML if exists
-                $data_value = cred_translate(
-                        'Value: ' . $preset_value, $preset_value, 'cred-form-' . $form->getForm()->post_title . '-' . $form->getForm()->ID
-                );
-            }
-            // allow field to get value through url parameter
-            elseif (is_string($urlparam) && !empty($urlparam) && isset($_GET[$urlparam])) {
-                // use translated value by WPML if exists
-                $data_value = urldecode($_GET[$urlparam]);
-            }
-            // allow persisted generic fields to display values
-            elseif ($postData && isset($postData->fields[$name_orig])) {
-                if (is_array($postData->fields[$name_orig]) && count($postData->fields[$name_orig]) > 1)
-                    $data_value = $postData->fields[$name_orig];
-                else
-                    $data_value = $postData->fields[$name_orig][0];
-            } elseif ($_POST && isset($_POST) && isset($_POST[$name_orig])) {
-                $data_value = $_POST[$name_orig];
-            } else {
-                $data_value = null;
-            }
-
-            $value = '';
-            // save a map between options / actual values for these types to be used later
-//            if (in_array($field['type'], array('checkboxes', 'radio', 'select', 'multiselect'))) {
-//                //cred_log($field);
-//                $tmp = array();
-//                foreach ($field['data']['options'] as $optionKey => $optionData) {
-//                    //cred-113
-//                    //added !==
-//                    if ($optionKey !== 'default' && is_array($optionData)) {
-//                        $tmp[$optionKey] = (isset($optionData['set_value']) && 'checkboxes' == $field['type']) ? $optionData['set_value'] : ((isset($optionData['value'])) ? $optionData['value'] : "");
-//                    }
-//                }
-//                $out_['field_values_map'][$field['slug']] = $tmp;
-//                unset($tmp);
-//                unset($optionKey);
-//                unset($optionData);
-//            }
-
-            switch ($field['type']) {
-                case 'form_messages' :
-                    $type = 'messages';
-                    break;
-
-                case 'form_submit':
-                    $type = 'submit';
-                    if (null !== $data_value)
-                        $value = $data_value;
-                    // allow multiple submit buttons
-                    $name.='_' . ++$_count_['submit'];
-                    break;
-
-//                case 'recaptcha':
-//                    $type = 'recaptcha';
-//                    $value = '';
-//                    $attributes = array(
-//                        'error_message' => $this->getLocalisedMessage('enter_valid_captcha'),
-//                        'show_link' => $this->getLocalisedMessage('show_captcha'),
-//                        'no_keys' => __('Enter your ReCaptcha keys at the CRED Settings page in order for ReCaptcha API to work', 'wp-cred')
-//                    );
-//                    if (false !== $globals['RECAPTCHA']) {
-//                        $attributes['public_key'] = $globals['RECAPTCHA']['public_key'];
-//                        $attributes['private_key'] = $globals['RECAPTCHA']['private_key'];
-//                    }
-//                    if (1 == $out_['count'])
-//                        $attributes['open'] = true;
-//                    // used to load additional js script
-//                    $out_['has_recaptcha'] = true;
-//                    break;
-//
-//                case 'audio':
-//                case 'video':
-//                case 'file':
-//                    $type = 'file';
-//                    if ($data_value !== null)
-//                        $value = $data_value;
-//                    break;
-//
-//                case 'image':
-//                    $type = 'file';
-//                    if ($data_value !== null)
-//                        $value = $data_value;
-//                    // show previous post featured image thumbnail
-//                    if ('_featured_image' == $name) {
-//                        $value = '';
-//                        if (isset($postData->extra['featured_img_html'])) {
-//                            $attributes['display_featured_html'] = $value = $postData->extra['featured_img_html'];
-//                        }
-//                    }
-//                    break;
-//
-//                case 'date':
-//                    $type = 'date';
-//                    $format = $zebraForm->getDateFormat();
-//                    $format .= " h:i:s";
-//                    $value = array();
-//                    $attributes['format'] = $format;
-//                    $attributes['readonly_element'] = false;
-//                    if (
-//                            null !== $data_value &&
-//                            !empty($data_value) &&
-//                            (is_numeric($data_value) || is_int($data_value) || is_long($data_value))
-//                    ) {
-//                        //$value = $data_value;
-//                        $value['timestamp'] = $data_value;
-//                        $value['datepicker'] = adodb_date($format, $data_value);
-//                    }
-//                    break;
-//
-//                case 'multiselect':
-//                case 'select':
-//                    $type = 'select';
-//                    $value = array();
-//                    $attributes = array();
-//                    $attributes['options'] = array();
-//                    $titles = array();
-//                    $default = array();
-//
-//                    foreach ($field['data']['options'] as $key => $option) {
-//                        $index = $key; //$option['value'];
-//                        //cred-113
-//                        //added !==
-//                        if ('default' === $key) {
-//                            if ('select' == $field['type']) {
-//                                $default[] = $option;
-//                            } else {
-//                                $default = (array) $option;
-//                            }
-//                        } else {
-//                            if (is_admin()) {
-//                                //register strings on form save
-//                                cred_translate_register_string(
-//                                        'cred-form-' . $form->getForm()->post_title . '-' . $form->getForm()->ID, $option['title'], $option['title'], false
-//                                );
-//                            }
-//                            $option = $this->translate_option($option, $key, $form, $field);
-//                            $attributes['options'][$index] = $option['title'];
-//                            if ((null !== $data_value) &&
-//                                    $data_value == $option['value'] ||
-//                                    is_array($data_value) && in_array($option['value'], $data_value)
-//                            ) {
-//
-//                                if ('select' == $field['type']) {
-//                                    $titles[] = $key;
-//                                    $value = $key;
-//                                } else {
-//                                    $value[] = $key;
-//                                }
-//                            }
-//                            if (isset($option['dummy']) && $option['dummy']) {
-//                                $attributes['dummy'] = $key;
-//                            }
-//                        }
-//                    }
-//                    if ('select' == $field['type']) {
-//                        if (empty($titles) && !empty($default)) {
-//                            $titles = $default;
-//                        }
-//                        $attributes['actual_value'] = $titles;
-//                    } else {
-//                        $attributes['multiple'] = 'multiple';
-//                        if (empty($value) && !empty($default)) {
-//                            $value = $default;
-//                        }
-//                    }
-//
-//                    if (isset($out_['field_values_map'][$field['slug']])) {
-//                        $attributes['actual_options'] = $out_['field_values_map'][$field['slug']];
-//                    }
-//                    break;
-//
-//                case 'radio':
-//                    $type = 'radios';
-//                    $value = array();
-//                    $titles = array();
-//                    $attributes = '';
-//                    $default = '';
-//
-//                    foreach ($field['data']['options'] as $key => $option) {
-//                        $index = $key; //$option['display_value'];
-//                        if ('default' == $key) {
-//                            $default = $option;
-//                        } else {
-//                            if (is_admin()) {
-//                                //register strings on form save
-//                                cred_translate_register_string('cred-form-' . $form->getForm()->post_title . '-' . $form->getForm()->ID, $option['title'], $option['title'], false);
-//                            }
-//                            $option = $this->translate_option($option, $key, $form, $field);
-//
-//                            $titles[$index] = $option['title'];
-//
-//                            if (($data_value !== null) && $data_value == $option['value']) {
-//                                $attributes = $key;
-//                                $value = $key;
-//                            }
-//                        }
-//                    }
-//                    if (($data_value === null) && !empty($default)) {
-//                        $attributes = $default;
-//                    }
-//                    $def = $attributes;
-//                    $attributes = array('default' => $def);
-//                    $attributes['actual_titles'] = $titles;
-//
-//                    if (isset($out_['field_values_map'][$field['slug']]))
-//                        $attributes['actual_values'] = $out_['field_values_map'][$field['slug']];
-//
-//                    break;
-//
-//                case 'checkboxes':
-//                    $type = 'checkboxes'; //$name.='[]';
-//                    //$value=array();
-//                    $value = array();
-//
-//                    //Fixed cred-211
-//                    if (isset($data_value) && !empty($data_value)) {
-//                        foreach ($data_value as $v => $v1) {
-//                            $value[$v] = 1;
-//                        }
-//                    }
-//
-//                    $titles = array();
-//                    $attributes = array();
-//                    /* if (is_array($data_value))
-//                      $data_value=array_keys($data_value);
-//                      else */if (!is_array($data_value) && null !== $data_value)
-//                        $data_value = array($data_value);
-//                    foreach ($field['data']['options'] as $key => $option) {
-//                        if (is_admin()) {
-//                            //register strings on form save
-//                            cred_translate_register_string('cred-form-' . $form->getForm()->post_title . '-' . $form->getForm()->ID, $option['title'], $option['title'], false);
-//                        }
-//                        $option['title'] = cred_translate(
-//                                $option['title'], $option['title'], 'cred-form-' . $form->getForm()->post_title . '-' . $form->getForm()->ID
-//                        );
-//                        $index = $key;
-//                        $titles[$index] = $option['title'];
-//                        if (empty($value)) {
-//                            if (isset($data_value) && !empty($data_value) && isset($data_value[$index]))
-//                                $value[$index] = $data_value[$index];
-//                            else
-//                                $value[$index] = 0;
-//                        }
-//                        if (isset($option['checked']) && $option['checked'] && null === $data_value) {
-//                            $attributes[] = $index;
-//                        } elseif ((null !== $data_value) && isset($data_value[$index]) /* && in_array($index,$data_value) */) {
-//                            if (
-//                                    !('yes' == $field['data']['save_empty'] && (0 === $data_value[$index] || '0' === $data_value[$index]))
-//                            )
-//                                $attributes[] = $index;
-//                        }
-//                    }
-//                    $def = $attributes;
-//                    $attributes = array('default' => $def);
-//                    $attributes['actual_titles'] = $titles;
-//                    if (isset($out_['field_values_map'][$field['slug']]))
-//                        $attributes['actual_values'] = $out_['field_values_map'][$field['slug']];
-//
-//                    break;
-//
-//                case 'checkbox':
-//                    $type = 'checkbox';
-//                    $value = $field['data']['set_value'];
-//                    if ((null !== $data_value) && $data_value == $value)
-//                        $attributes = array('checked' => 'checked');
-//                    break;
-//
-//                case 'textarea':
-//                    $type = 'textarea';
-//                    if (null !== $data_value)
-//                        $value = $data_value;
-//                    if ($placeholder && null !== $placeholder && !empty($placeholder))
-//                        $attributes['placeholder'] = $placeholder;
-//                    break;
-//
-//                case 'wysiwyg':
-//                    $type = 'wysiwyg';
-//                    if (null !== $data_value)
-//                        $value = $data_value;
-//                    $attributes = array('disable_xss_filters' => true);
-//                    //cred_log($form->fields);
-//                    if ('post_content' == $name && isset($form->fields['form_settings']->form['has_media_button']) && $form->fields['form_settings']->form['has_media_button'])
-//                        $attributes['has_media_button'] = true;
-//                    break;
-//
-//                case 'numeric': $type = 'numeric';
-//                    if (null !== $data_value)
-//                        $value = $data_value;
-//                    break;
-//
-//                case 'phone': $type = 'phone';
-//                    if (null !== $data_value)
-//                        $value = $data_value;
-//                    break;
-//
-//                case 'embed':
-//                case 'url':
-//                    $type = 'url';
-//                    if (null !== $data_value)
-//                        $value = $data_value;
-//                    break;
-//
-//                case 'email':
-//                    $type = 'email';
-//                    if (null !== $data_value)
-//                        $value = $data_value;
-//                    break;
-//
-//                case 'colorpicker':
-//                    $type = 'colorpicker';
-//                    if (null !== $data_value) {
-//                        $value = $data_value;
-//                    }
-//                    break;
-//
-//                case 'textfield':
-//                    $type = 'textfield';
-//                    if (null !== $data_value)
-//                        $value = $data_value;
-//                    if ($placeholder && null !== $placeholder && !empty($placeholder))
-//                        $attributes['placeholder'] = $placeholder;
-//                    break;
-//
-//                case 'password':
-//                    $type = 'password';
-//                    if (null !== $data_value)
-//                        $value = $data_value;
-//                    if ($placeholder && null !== $placeholder && !empty($placeholder))
-//                        $attributes['placeholder'] = $placeholder;
-//                    break;
-//
-//                case 'hidden':
-//                    $type = 'hidden';
-//                    if (null !== $data_value)
-//                        $value = $data_value;
-//                    break;
-//
-//                case 'skype':
-//                    $type = 'skype';
-//                    //if for some reason i receive data_value as array but it is not repetitive i need to get as not array of array
-//                    //if (isset($field['data']['repetitive']) && $field['data']['repetitive'] == 1)
-//                    if (isset($data_value[0]))
-//                        $data_value = $data_value[0];
-//
-//                    if ((null !== $data_value) && is_string($data_value))
-//                        $data_value = array('skypename' => $data_value, 'style' => '');
-//                    if (null !== $data_value)
-//                        $value = $data_value;
-//                    else
-//                        $value = array('skypename' => '', 'style' => '');
-//
-//                    $attributes = array(
-//                        'ajax_url' => admin_url('admin-ajax.php'),
-//                        'edit_skype_text' => $this->getLocalisedMessage('edit_skype_button'),
-//                        'value' => $data_value['skypename'],
-//                        '_nonce' => wp_create_nonce('insert_skype_button')
-//                    );
-//                    $attributes = array_merge($attributes, $additional_options);
-//                    break;
-                // everything else defaults to a simple text field
-                default: $type = 'textfield';
-                    if (null !== $data_value)
-                        $value = $data_value;
-                    break;
-            }
-
-            if ($make_readonly) {
-                if (!is_array($attributes))
-                    $attributes = array();
-                $attributes['readonly'] = 'readonly';
-            }
-
-            // repetitive field (special care)
-            if (isset($field['data']['repetitive']) && $field['data']['repetitive']) {
-                $value = isset($postData->fields[$name_orig]) ? $postData->fields[$name_orig] : array();
-                $objs = $zebraForm->noadd($type, $name, $value, $attributes, $field);
-            } else {
-                $objs = $zebraForm->noadd($type, $name, $value, $attributes, $field);
-            }
-        } else { // taxonomy field or auxilliary taxonomy field (eg popular terms etc..)
-            if (!array_key_exists('master_taxonomy', $field)) { // taxonomy field
-                if ($field['hierarchical']) {
-                    if (in_array($preset_value, array('checkbox', 'select')))
-                        $tax_display = $preset_value;
-                    else
-                        $tax_display = 'checkbox';
-                }
-
-                if ($postData && isset($postData->taxonomies[$name_orig])) {
-                    if (!$field['hierarchical']) {
-                        $data_value = array(
-                            'terms' => $postData->taxonomies[$name_orig]['terms'],
-                            'add_text' => $this->getLocalisedMessage('add_taxonomy'),
-                            'remove_text' => $this->getLocalisedMessage('remove_taxonomy'),
-                            'ajax_url' => admin_url('admin-ajax.php'),
-                            'auto_suggest' => true,
-                            'show_popular_text' => $this->getLocalisedMessage('show_popular'),
-                            'hide_popular_text' => $this->getLocalisedMessage('hide_popular')
-                        );
-                    } else {
-                        $data_value = array(
-                            'terms' => $postData->taxonomies[$name_orig]['terms'],
-                            'all' => $field['all'],
-                            'type' => $tax_display,
-                            'single_select' => $single_select
-                        );
-                    }
-                } else {
-                    if (!$field['hierarchical']) {
-                        $data_value = array(
-                            //'terms'=>array(),
-                            'add_text' => $this->getLocalisedMessage('add_taxonomy'),
-                            'remove_text' => $this->getLocalisedMessage('remove_taxonomy'),
-                            'ajax_url' => admin_url('admin-ajax.php'),
-                            'auto_suggest' => true,
-                            'show_popular_text' => $this->getLocalisedMessage('show_popular'),
-                            'hide_popular_text' => $this->getLocalisedMessage('hide_popular')
-                        );
-                    } else {
-                        $data_value = array(
-                            'all' => $field['all'],
-                            'type' => $tax_display,
-                            'single_select' => $single_select
-                        );
-                    }
-                }
-
-                // if not hierarchical taxonomy
-                if (!$field['hierarchical']) {
-                    $objs = /* & */ $zebraForm->add('taxonomy', $name, $value, $data_value);
-                } else {
-                    $objs = /* & */ $zebraForm->add('taxonomyhierarchical', $name, $value, $data_value);
-                }
-
-                // register this taxonomy field for later use by auxilliary taxonomy fields
-                $out_['taxonomy_map']['taxonomy'][$name_orig] = &$objs;
-                // if a taxonomy auxiliary field exists attached to this taxonomy, add this taxonomy id to it
-                if (isset($out_['taxonomy_map']['aux'][$name_orig])) {
-                    $out_['taxonomy_map']['aux'][$name_orig]->set_attributes(array('master_taxonomy_id' => $objs->attributes['id']));
-                }
-            } else { // taxonomy auxilliary field (eg most popular etc..)
-                if ($preset_value && null !== $preset_value)
-                // use translated value by WPML if exists
-                    $data_value = cred_translate(
-                            'Value: ' . $preset_value, $preset_value, 'cred-form-' . $form->form->post_title . '-' . $form->form->ID
-                    );
-                else
-                    $data_value = null;
-            }
-        }
 
         //$out_=&$this->friendGet($this->_formBuilder, '&out_');
         $count = ($field['type'] == 'form_submit') ? '_' . ($_count_['submit'] ++) : "";

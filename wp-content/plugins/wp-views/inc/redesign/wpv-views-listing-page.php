@@ -24,7 +24,7 @@ function wpv_admin_menu_views_listing_page()
             // 'trash' or 'publish'
             $current_post_status = wpv_getget( 'status', 'publish', array( 'trash', 'publish' ) );
 
-            $search_term = urldecode( sanitize_text_field( wpv_getget( 's' ) ) );
+            $search_term = esc_attr( urldecode( wp_unslash( wpv_getget( 's', '' ) ) ) );
 
             // IDs of possible results and counts per post status
             $views_pre_query_data = wpv_prepare_view_listing_query( 'normal', $current_post_status );

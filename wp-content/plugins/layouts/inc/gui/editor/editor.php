@@ -71,7 +71,18 @@ class WPDD_GUI_EDITOR{
             do_action('wpddl_layout_actions');
         }
 
+		/**
+		 * @args: $post_type:string
+         * @args: $current:int
+         * @args: $amount:int
+		 */
+		add_filter( 'ddl-get_x_posts_of_type', array(&$this,'get_x_posts_of_type'), 10, 3 );
 
+        /**
+         * @args: $post_type:string
+         * @args: $post->ID:int
+         */
+        add_filter( 'ddl-ddl_get_post_type_batched_preview_permalink', array(&$this,'ddl_get_post_type_batched_preview_permalink'), 10, 2);
         //leave wp_ajax out of the **** otherwise it won't be fired
         add_action('wp_ajax_get_layout_data', array(&$this, 'get_layout_data_callback'));
         add_action('wp_ajax_save_layout_data', array(&$this, 'save_layout_data_callback'));
@@ -107,9 +118,13 @@ class WPDD_GUI_EDITOR{
     }
 
     function load_dialog_boxes(){
-        $dialogs = new WPDDL_EditorDialog( array( 'toolset_page_dd_layouts_edit' ) );
+        $dialogs = array();
+        $dialogs[] = new WPDDL_EditorDialog( array( 'toolset_page_dd_layouts_edit' ) );
+        $dialogs[] = new WPDDL_DeleteAlertDialog( array( 'toolset_page_dd_layouts_edit' ) );
         //$dialogs->init_screen_render();
-        add_action('current_screen', array(&$dialogs, 'init_screen_render') );
+        foreach( $dialogs as &$dialog ){
+            add_action('current_screen', array(&$dialog, 'init_screen_render') );
+        }
         return $dialogs;
     }
 
@@ -716,7 +731,9 @@ class WPDD_GUI_EDITOR{
 					'ddl_show_all_posts_nonce' => wp_create_nonce('ddl_show_all_posts_nonce'),
 					'edit_layout_slug_nonce' => wp_create_nonce('edit_layout_slug_nonce'),
 					'compact_display_nonce' => wp_create_nonce('compact_display_nonce'),
-					'compact_display_mode' => $wpddlayout->get_option('compact_display'),
+                    'parents_options_nonce' => wp_create_nonce( WPDDL_Options::PARENTS_OPTIONS.'_nonce', WPDDL_Options::PARENTS_OPTIONS.'nonce' ),
+                    'parent_option_name' => WPDDL_Options::PARENTS_OPTIONS,
+                    'compact_display_mode' => $wpddlayout->get_option('compact_display'),
 					'DEBUG' => WPDDL_DEBUG,
 					'strings' => $this->get_editor_js_strings(),
 					'has_theme_sections' => $wpddlayout->has_theme_sections(),
@@ -738,7 +755,11 @@ class WPDD_GUI_EDITOR{
 					, 'get_shortcode_regex' => get_shortcode_regex(),
 						'max_num_posts' => DDL_MAX_NUM_POSTS
                     , 'POPUP_MESSAGE_OPTION'  => self::POPUP_MESSAGE_OPTION
-				),
+                    , 'default_parent' => $this->get_default_parent()
+					, 'layout_trash_nonce' => wp_create_nonce('layout-select-trash-nonce')
+                    , 'trash_redirect' => isset($_GET['ref']) && $_GET['ref'] === 'dashboard' ? admin_url( 'admin.php?page=toolset-dashboard' ) : admin_url( 'admin.php?page=dd_layouts' )
+				    , 'is_layout_assigned' => apply_filters( 'ddl-is_layout_assigned', false, $this->layout_id )
+                ),
                 'DDL_OPN' => WPDD_LayoutsListing::change_layout_dialog_options_name()
 			)
 		);
@@ -807,6 +828,14 @@ class WPDD_GUI_EDITOR{
         include_once 'templates/editor_box.tpl.php';
         echo ob_get_clean();
 
+    }
+
+	private function current_is_default_parent(){
+        return (int) $this->get_default_parent() === (int) $this->layout_id;
+    }
+
+    private function get_default_parent(){
+        return WPDDL_Settings::getInstance()->get_default_parent();
     }
 
 	function after_render_editor() {
@@ -907,6 +936,7 @@ class WPDD_GUI_EDITOR{
 			'no_more_posts_in_db' => __("No post items found.", 'ddl-layouts'),
 			'new_ct_message_title' => __("Content Template", 'ddl-layouts'),
 			'new_ct_message' => __("Insert fields to display parts of the content and add HTML around them for styling.", 'ddl-layouts'),
+			'views_plugin_missing' => __("Sorry, preview is not available. Please make sure that the Toolset Views plugin is active.", 'ddl-layouts'),
 			'this_is_a_parent_layout' => __('This layout has children. You should assign one of its children to content and not this parent layout.', 'ddl-layouts'),
             'switch_editor_warning_message' => __('You are about to switch editing modes. Please note that this may change the content of the cell. Are you sure?', 'ddl-layouts'),
 		    'content_template_should_have_name' => __('A Content Template should have a name please provide one.', 'ddl-layouts'),
@@ -922,6 +952,11 @@ class WPDD_GUI_EDITOR{
             , 'dialog_close' => __('OK', 'ddl-layouts')
             , 'all_changes_saved' => __('All changes saved', 'ddl-layouts')
             , 'saving' => __('Saving...', 'ddl-layouts')
+            , 'problem_saving' => __('Problem saving data', 'ddl-layouts')
+            , 'no_changes' => __('No changes made', 'ddl-layouts')
+			, 'layout_assigned' => __(' is an assigned layout!', 'ddl-layouts')
+            , 'layout_assigned_text' => __(' is assigned to render Wordpress resources in front-end and cannot be deleted. To delete it remove assignments first and try again.', 'ddl-layouts')
+            , 'close' => __('Close', 'ddl-layouts')
         );
 	}
 
@@ -1373,5 +1408,23 @@ class WPDDL_EditorDialog extends Toolset_DialogBoxes{
         <?php
         echo ob_get_clean();
     }
+}
 
+class WPDDL_DeleteAlertDialog extends Toolset_DialogBoxes{
+
+    public function template(){
+        ob_start();?>
+
+        <script type="text/html" id="ddl-delete-layout-dialog-tpl">
+            <div id="js-dialog-dialog-container">
+                <div class="ddl-dialog-content" id="js-dialog-content-dialog">
+                    <?php printf(
+                        __('%s is assigned to render Wordpress resources in front-end and cannot be deleted. To delete it remove assignments first and try again.', 'ddl-layouts'), '{{{layout_name}}}');
+                    ?>
+                </div>
+            </div>
+        </script>
+        <?php
+        echo ob_get_clean();
+    }
 }

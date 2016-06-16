@@ -11,12 +11,15 @@ class WPDD_Layouts_RenderManager{
             add_action('wp_head', array($this,'wpddl_frontend_header_init'));
             add_action('wpddl_before_header', array($this, 'before_header_hook'));
             add_filter('ddl_render_cell_content', array(&$this,'fix_attachment_body'), 10, 3 );
+            add_filter( 'ddl_render_cell_content', array(&$this, 'fix_cred_link_content_template_when_form_displays'), 10, 3 );
             add_filter('prepend_attachment', array(&$this, 'attachment_handler'), 999);
             add_action( 'ddl_before_frontend_render_cell', array(&$this, 'prevent_CRED_duplication_generic'), 1001, 2 );
             add_action('ddl_before_frontend_render_cell', array(&$this,'prevent_CRED_duplication_content_template'), 8, 2 );
             add_filter('ddl-content-template-cell-do_shortcode', array(&$this, 'prevent_cred_recursion'), 10, 2);
             add_action('get_header', array(&$this, 'fix_for_woocommerce_genesis'), 1 );
             add_filter('ddl_render_cell_content', array(&$this, 'message_if_menu_is_not_assigned'),11,2);
+            add_filter('ddl-is_ddlayout_assigned', array(&$this, 'fix_cred_preview_render'), 99, 1 );
+            add_filter( 'ddl-template_include-force-option', array(&$this, 'template_include_force_option'), 99, 1 );
 
             // Fix for 'Toolset Starter' theme.
             // When WooCommerce is enabled, the '/shop' page does not recognize the assigned layout.
@@ -24,6 +27,22 @@ class WPDD_Layouts_RenderManager{
                 add_action('template_redirect', array(&$this, 'fix_for_toolset_starter_wc_redirect'), 999);
             }
         }
+    }
+
+    public function template_include_force_option( $option ){
+        if( $_GET && ( isset( $_GET['cred_form_preview'] ) || isset( $_GET['cred_user_form_preview'] ) ) ){
+            $option = 2;
+        }
+
+        return $option;
+    }
+
+    public function fix_cred_preview_render( $bool ){
+        if( $_GET && ( isset( $_GET['cred_form_preview'] ) || isset( $_GET['cred_user_form_preview'] ) ) ){
+            $bool = apply_filters( 'ddl-template_include_force_render', false );
+        }
+
+        return $bool;
     }
 
     function fix_for_toolset_starter_wc_include($template) {
@@ -174,12 +193,53 @@ class WPDD_Layouts_RenderManager{
      * Prevents Visual Editor cells to render CRED
      */
     public function prevent_CRED_duplication_generic($cell, $renderer){
-
-        if( isset( $_GET['cred-edit-form']) &&
+        if( ( isset( $_GET['cred-edit-form']) || isset( $_GET['cred-edit-user-form'] ) ) &&
             class_exists('CRED_Helper')
         ){
-            remove_filter('the_content', array('CRED_Helper', 'replaceContentWithForm'), 1000);
+            if( $cell->get_cell_type( ) === 'cell-text' && $cell->content_content_contains( array( 'cred_link_form', 'cred_link_user_form' ) ) ){
+                $this->hide_cred_cred_links($_GET);
+            } else {
+                remove_filter('the_content', array('CRED_Helper', 'replaceContentWithForm'), 1000);
+            }
         }
+    }
+    
+    public function fix_cred_link_content_template_when_form_displays( $content, $cell, $renderer ){
+        if( ( isset( $_GET['cred-edit-form']) || isset( $_GET['cred-edit-user-form'] ) ) &&
+            class_exists('CRED_Helper')
+        ){
+
+            if( $cell->get_cell_type( ) === 'cell-content-template' && WPDD_Utils::string_contanins_strings( $content, array( '?cred-edit-user-form=', '?cred-edit-form=' ) ) ){
+                $content = $this->hide_cred_cred_links($_GET, false).$content;
+            } 
+        }
+
+        return $content;
+    }
+
+    function hide_cred_cred_links( $get, $echo = true ){
+        $selector = '';
+        if( isset($get['cred-edit-form']) ){
+            $selector = 'cred-edit-form';
+        } elseif ( isset($get['cred-edit-user-form']) ){
+            $selector = 'cred-edit-user-form';
+        }
+
+        if( $selector !== '' ):
+            ob_start();?>
+            <style type="text/css">
+                <!--
+                a[href*="<?php echo $selector;?>"]{display:none;}
+                -->
+            </style>
+            <?php
+            if( $echo ){
+                echo ob_get_clean();
+            } else {
+                return ob_get_clean();
+            }
+        endif;
+        return '';
     }
 
     /**
@@ -267,7 +327,8 @@ class WPDD_Layouts_RenderManager{
                 if (is_object($option) && property_exists($option, 'layout_id') && (int)$option->layout_id === (int)$id) {
                     $id = $option->layout_id;
                 }
-            } elseif( $this->is_woocommerce_product() ) { // If product page
+            } 
+            elseif( $this->is_woocommerce_product() ) { // If product page
                 global $post;
 
                 if( $post !== null )
@@ -286,20 +347,30 @@ class WPDD_Layouts_RenderManager{
                         }
                     }
                 }
-            } elseif( $this->is_woocommerce_archive() ) { // If Product archive (i.e. post type archive, category, tag or tax)
+            } 
+            elseif( $this->is_woocommerce_archive() ) { // If Product archive (i.e. post type archive, category, tag or tax)
                 $term =  $this->get_queried_object();
                 if ( $term && property_exists( $term, 'taxonomy' ) && $wpddlayout->layout_post_loop_cell_manager->get_option( WPDD_layout_post_loop_cell_manager::OPTION_TAXONOMY_PREFIX.$term->taxonomy) ) {
                     $id = $wpddlayout->layout_post_loop_cell_manager->get_option( WPDD_layout_post_loop_cell_manager::OPTION_TAXONOMY_PREFIX.$term->taxonomy);
                 }
             // when blog is front
-            } elseif( is_front_page() && is_home() && $wpddlayout->layout_post_loop_cell_manager->get_option( WPDD_layout_post_loop_cell_manager::OPTION_BLOG) )
-            {
+            }
+
+            elseif( is_front_page() && is_home() && $wpddlayout->layout_post_loop_cell_manager->get_option( WPDD_layout_post_loop_cell_manager::OPTION_BLOG) ){
                 $id = $wpddlayout->layout_post_loop_cell_manager->get_option( WPDD_layout_post_loop_cell_manager::OPTION_BLOG);
 
             // when blog is not front
-            } elseif ((is_home()) && (!(is_front_page())) && (!(is_page())) && ($wpddlayout->layout_post_loop_cell_manager->get_option( WPDD_layout_post_loop_cell_manager::OPTION_BLOG))) {
+            } 
+            elseif ((is_home()) && (!(is_front_page())) && (!(is_page())) && ($wpddlayout->layout_post_loop_cell_manager->get_option( WPDD_layout_post_loop_cell_manager::OPTION_BLOG)) && !get_option( 'page_for_posts' )) {
                 $id = $wpddlayout->layout_post_loop_cell_manager->get_option( WPDD_layout_post_loop_cell_manager::OPTION_BLOG);
-            } elseif ( is_post_type_archive()  ) {
+            } 
+            elseif($wpddlayout->layout_post_loop_cell_manager->get_option( WPDD_layout_post_loop_cell_manager::OPTION_STATIC_BLOG) && is_home() && (!(is_front_page())) && get_option( 'page_for_posts' )){
+                $id = $wpddlayout->layout_post_loop_cell_manager->get_option( WPDD_layout_post_loop_cell_manager::OPTION_STATIC_BLOG);
+            }
+            elseif($wpddlayout->layout_post_loop_cell_manager->get_option( WPDD_layout_post_loop_cell_manager::OPTION_HOME) && is_front_page() && (!(is_home())) && get_option('page_on_front')){
+                $id = $wpddlayout->layout_post_loop_cell_manager->get_option( WPDD_layout_post_loop_cell_manager::OPTION_HOME);
+            }
+            elseif ( is_post_type_archive()  ) {
 
                 $post_type_object = $this->get_queried_object();
 
@@ -342,6 +413,22 @@ class WPDD_Layouts_RenderManager{
             {
 
                 $id = $wpddlayout->layout_post_loop_cell_manager->get_option( WPDD_layout_post_loop_cell_manager::OPTION_404 );
+            }
+            elseif( is_front_page() && get_option( 'show_on_front' ) == 'page' && get_option( 'page_on_front' ) != 0 ) {
+                // When a static page is assigned to the Reading settings Posts page and that page has a layout assigned, use it
+                $static_page_for_posts = get_option( 'page_on_front' );
+                $layout_selected = get_post_meta( $static_page_for_posts, WPDDL_LAYOUTS_META_KEY, true );
+                if ( $layout_selected ) {
+                    $id = WPDD_Layouts_Cache_Singleton::get_id_by_name($layout_selected);
+                }
+            }
+            elseif( is_home() && get_option( 'show_on_front' ) == 'page' && get_option( 'page_for_posts' ) != 0 ) {
+                // When a static page is assigned to the Reading settings Posts page and that page has a layout assigned, use it
+                $static_page_for_posts = get_option( 'page_for_posts' );
+                $layout_selected = get_post_meta( $static_page_for_posts, WPDDL_LAYOUTS_META_KEY, true );
+                if ( $layout_selected ) {
+                    $id = WPDD_Layouts_Cache_Singleton::get_id_by_name($layout_selected);
+                }
             }
             else{
 
@@ -498,19 +585,26 @@ class WPDD_Layouts_RenderManager{
         // If it's 'Shop' page and has a separate layout assigned.
         if( $this->is_woocommerce_shop() ) {
             return true;
-        } elseif ( $this->is_woocommerce_product() ) { // If product page
+        } 
+        elseif ( $this->is_woocommerce_product() ) { // If product page
             return true;
-        } elseif ( $this->is_woocommerce_archive() ) { // If Product archive (i.e. post type archive, category, tag or tax)
-            return true;
-        } elseif( is_home() && $wpddlayout->layout_post_loop_cell_manager->get_option(WPDD_layout_post_loop_cell_manager::OPTION_BLOG) ){
-            return true;
-        }
-       elseif (is_front_page() && is_home() && $wpddlayout->layout_post_loop_cell_manager->get_option(WPDD_layout_post_loop_cell_manager::OPTION_BLOG)) {
+        } 
+        elseif ( $this->is_woocommerce_archive() ) { // If Product archive (i.e. post type archive, category, tag or tax)
             return true;
         }
-        elseif (is_home() && $wpddlayout->layout_post_loop_cell_manager->get_option(WPDD_layout_post_loop_cell_manager::OPTION_BLOG)) {
+        elseif( is_front_page() && is_home() && $wpddlayout->layout_post_loop_cell_manager->get_option( WPDD_layout_post_loop_cell_manager::OPTION_BLOG) ){
             return true;
-        } elseif ( is_post_type_archive()) {
+        // when blog is not front
+        } elseif ((is_home()) && (!(is_front_page())) && (!(is_page())) && ($wpddlayout->layout_post_loop_cell_manager->get_option( WPDD_layout_post_loop_cell_manager::OPTION_BLOG)) && !get_option( 'page_for_posts' )) {
+            return true;
+        } 
+        elseif($wpddlayout->layout_post_loop_cell_manager->get_option( WPDD_layout_post_loop_cell_manager::OPTION_STATIC_BLOG) && is_home() && (!(is_front_page())) && get_option( 'page_for_posts' )){
+            return true;
+        }
+        elseif($wpddlayout->layout_post_loop_cell_manager->get_option( WPDD_layout_post_loop_cell_manager::OPTION_HOME) && is_front_page() && (!(is_home())) && get_option('page_on_front')){
+            return true;
+        }
+        elseif ( is_post_type_archive()) {
             $post_type_object = $this->get_queried_object();
 
             if ($post_type_object && property_exists($post_type_object, 'public') && $post_type_object->public && $wpddlayout->layout_post_loop_cell_manager->get_option(WPDD_layout_post_loop_cell_manager::OPTION_TYPES_PREFIX . $post_type_object->name)) {
@@ -518,30 +612,53 @@ class WPDD_Layouts_RenderManager{
             } elseif ($post_type_object && property_exists($post_type_object, 'taxonomy') && $wpddlayout->layout_post_loop_cell_manager->get_option(WPDD_layout_post_loop_cell_manager::OPTION_TAXONOMY_PREFIX . $post_type_object->taxonomy)) {
                 return true;
             }
-        } elseif (is_archive() && (is_tax() || is_category() || is_tag())) {
+            
+        } 
+        elseif (is_archive() && (is_tax() || is_category() || is_tag())) {
             $term = $this->get_queried_object();
             if ($term && property_exists($term, 'taxonomy') && $wpddlayout->layout_post_loop_cell_manager->get_option(WPDD_layout_post_loop_cell_manager::OPTION_TAXONOMY_PREFIX . $term->taxonomy)) {
                 return true;
             }
-
         } // Check other archives
         elseif (is_search() && $wpddlayout->layout_post_loop_cell_manager->get_option(WPDD_layout_post_loop_cell_manager::OPTION_SEARCH)) {
 
             return true;
-        } elseif (is_author() && $wpddlayout->layout_post_loop_cell_manager->get_option(WPDD_layout_post_loop_cell_manager::OPTION_AUTHOR)) {
+        } 
+        elseif (is_author() && $wpddlayout->layout_post_loop_cell_manager->get_option(WPDD_layout_post_loop_cell_manager::OPTION_AUTHOR)) {
             return true;
-        } elseif (is_year() && $wpddlayout->layout_post_loop_cell_manager->get_option(WPDD_layout_post_loop_cell_manager::OPTION_YEAR)) {
+        } 
+        elseif (is_year() && $wpddlayout->layout_post_loop_cell_manager->get_option(WPDD_layout_post_loop_cell_manager::OPTION_YEAR)) {
 
             return true;
-        } elseif (is_month() && $wpddlayout->layout_post_loop_cell_manager->get_option(WPDD_layout_post_loop_cell_manager::OPTION_MONTH)) {
+        } 
+        elseif (is_month() && $wpddlayout->layout_post_loop_cell_manager->get_option(WPDD_layout_post_loop_cell_manager::OPTION_MONTH)) {
 
             return true;
-        } elseif (is_day() && $wpddlayout->layout_post_loop_cell_manager->get_option(WPDD_layout_post_loop_cell_manager::OPTION_DAY)) {
+        } 
+        elseif (is_day() && $wpddlayout->layout_post_loop_cell_manager->get_option(WPDD_layout_post_loop_cell_manager::OPTION_DAY)) {
 
             return true;
-        } elseif (is_404() && $wpddlayout->layout_post_loop_cell_manager->get_option(WPDD_layout_post_loop_cell_manager::OPTION_404)) {
+        } 
+        elseif (is_404() && $wpddlayout->layout_post_loop_cell_manager->get_option(WPDD_layout_post_loop_cell_manager::OPTION_404)) {
             return true;
-        } else {
+        }
+        elseif( is_front_page() && get_option( 'show_on_front' ) == 'page' && get_option( 'page_on_front' ) != 0 ) {
+            // When a static page is assigned to the Reading settings Posts page and that page has a layout assigned, use it
+            $static_page_for_posts = get_option( 'page_on_front' );
+            $layout_selected = get_post_meta( $static_page_for_posts, WPDDL_LAYOUTS_META_KEY, true );
+            if ( $layout_selected ) {
+                return true;
+            }
+        }
+        elseif( is_home() && get_option( 'show_on_front' ) == 'page' && get_option( 'page_for_posts' ) != 0 ) {
+            // When a static page is assigned to the Reading settings Posts page and that page has a layout assigned, use it
+            $static_page_for_posts = get_option( 'page_for_posts' );
+            $layout_selected = get_post_meta( $static_page_for_posts, WPDDL_LAYOUTS_META_KEY, true );
+            if ( $layout_selected ) {
+                return true;
+            }
+        }
+        else {
             global $post;
 
             if( $this->is_wp_post_object( $post ) && is_singular() ){

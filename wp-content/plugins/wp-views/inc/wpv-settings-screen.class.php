@@ -143,15 +143,12 @@ class WPV_Settings_Screen {
 		$section_content = '';
 		ob_start();
         ?>
-		<p>
-			<?php _e( "You can adjust some settings related to the syntax highlighting in Views editors here.", 'wpv-views' ); ?>
-		</p>
 		<ul class="">
 			<li>
 			<h3><?php _e( 'Autoresize', 'wpv-views' ); ?></h3>
 				<label>
 					<input id="js-wpv-codemirror-autoresize" type="checkbox" name="wpv-codemirror-autoresize" class="js-wpv-codemirror-autoresize" value="1" <?php checked( $settings->wpv_codemirror_autoresize == 1 ); ?> autocomplete="off" />
-					<?php _e( "Autoresize the editors as their content grows", 'wpv-views' ); ?>
+					<?php _e( "Autoresize the Views editors as their content grows", 'wpv-views' ); ?>
 				</label>
 			</li>
 
@@ -164,7 +161,7 @@ class WPV_Settings_Screen {
 			
 		$sections['codemirror-settings'] = array(
 			'slug'		=> 'codemirror-settings',
-			'title'		=> __( 'Syntax highlighting options', 'wpv-views' ),
+			'title'		=> __( 'Text editors options', 'wpv-views' ),
 			'content'	=> $section_content
 		);
 		return $sections;
@@ -363,6 +360,7 @@ class WPV_Settings_Screen {
 		$data = array(
 			'content'	=> $content
 		);
+		do_action( 'wpv_action_wpv_delete_transient_meta_keys' );
 		$settings->save();
 		wp_send_json_success( $data );
 	}
@@ -380,11 +378,11 @@ class WPV_Settings_Screen {
 			<p>
 				<label>
 					<input id="js-wpv-enable-pagination-manage-history" type="checkbox" name="wpv-enable-pagination-manage-history" class="js-wpv-enable-manage-history" value="on" <?php checked( $settings->wpv_enable_pagination_manage_history == 1 ); ?> autocomplete="off" />
-					<?php _e( "Enable history management setttings for manual AJAX pagination on each View", 'wpv-views' ); ?>
+					<?php _e( "Enable history management setttings for manual AJAX pagination", 'wpv-views' ); ?>
 				</label>
 			</p>
 			<p>
-				<?php _e( 'When doing manual AJAX pagination on a View, you can add each page to the browser history, so it can be reached using the back and forth browser buttons. You can either enable this feature (and control it on each View) or disable it globally.', 'wpv-views' ); ?>
+				<?php _e( 'When doing manual AJAX pagination on a View or WordPress Archive, you can add each page to the browser history, so it can be reached using the back and forth browser buttons. You can either enable this feature (and control it on each View or WordPress Archive) or disable it globally.', 'wpv-views' ); ?>
 			</p>
 		</div>
 		<h3><?php _e( 'Browser history management for AJAX parametric searches', 'wpv-views' ); ?></h3>
@@ -396,7 +394,7 @@ class WPV_Settings_Screen {
 				</label>
 			</p>
 			<p>
-				<?php _e( 'When loading parametric search results using AJAX, you can adjust the URL to match the options selected, so it can be used to link to those specific results. You can either enable this feature (and control it on each View) or disable it globally.', 'wpv-views' ); ?>
+				<?php _e( 'When loading parametric search results using AJAX, you can adjust the URL to match the options selected, so it can be used to link to those specific results. You can either enable this feature (and control it on each View or WordPress Archive) or disable it globally.', 'wpv-views' ); ?>
 			</p>
 		</div>
         <?php

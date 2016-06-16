@@ -312,12 +312,14 @@ wp_print_styles('onthego-admin-styles');
             </label>
             </li>
 
+<?php if (false) { ?>
             <li>
             <label class='cred-label'>
             <input type='checkbox' class='cred-checkbox' name='persist' value='1' />
             <span class='label'><?php _e('Save in Database', 'wp-cred'); ?></span>
             </label>
             </li>
+<?php } ?>
             </ul>
             </td>
             </tr>
@@ -409,13 +411,14 @@ wp_print_styles('onthego-admin-styles');
             <span class='label'><?php _e('Validate Format', 'wp-cred'); ?></span>
             </label>
             </li>
-
+<?php if (false) { ?>
             <li>
             <label class='cred-label'>
             <input type='checkbox' class='cred-checkbox' name='persist' value='1' />
             <span class='label'><?php _e('Save in Database', 'wp-cred'); ?></span>
             </label>
             </li>
+<?php } ?>
             </ul>
             </td>
             </tr>
@@ -533,7 +536,7 @@ wp_print_styles('onthego-admin-styles');
                         _class = $.trim($('input[name="class"]').val());
                         _required = $('input[name="required"]').length && $('input[name="required"]').is(':checked');
                         _validate_format = $('input[name="validate_format"]').length && $('input[name="validate_format"]').is(':checked');
-                        _persist = $('input[name="persist"]').length && $('input[name="persist"]').is(':checked');
+                        _persist = false; /*$('input[name="persist"]').length && $('input[name="persist"]').is(':checked');*/
                         if (!_name || _name == '')
                         {
                             alert('<?php echo esc_js(__('No name for field!', 'wp-cred')); ?>');
@@ -613,7 +616,7 @@ wp_print_styles('onthego-admin-styles');
                             shortcode += '{\n';
                             shortcode += '"required":' + ((_required) ? 1 : 0) + ',\n';
                             shortcode += '"validate_format":' + ((_validate_format) ? 1 : 0) + ',\n';
-                            shortcode += '"persist":' + ((_persist) ? 1 : 0) + ',\n';
+                            /*shortcode += '"persist":' + ((_persist) ? 1 : 0) + ',\n';*/
                             if (_default_option.length == 0)
                                 shortcode += '"default":[],\n';
                             else
@@ -703,7 +706,7 @@ wp_print_styles('onthego-admin-styles');
                             shortcode += '{\n';
                             shortcode += '"required":' + ((_required) ? 1 : 0) + ',\n';
                             shortcode += '"validate_format":' + ((_validate_format) ? 1 : 0) + ',\n';
-                            shortcode += '"persist":' + ((_persist) ? 1 : 0) + ',\n';
+                            /*shortcode += '"persist":' + ((_persist) ? 1 : 0) + ',\n';*/
                             shortcode += _additional;
 
                             //https://icanlocalize.basecamphq.com/projects/7393061-toolset/todo_items/196897073/comments

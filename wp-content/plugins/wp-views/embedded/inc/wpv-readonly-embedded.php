@@ -77,6 +77,8 @@ function views_embedded_html() {
 							<?php _e( 'Title and Description', 'wpv-views' ); ?>
 						</h3>
 				</div>
+					
+
 				<div class="wpv-setting">
 					<h3 style="margin-top:8px;font-size:18px;line-height:1.5;">
 						<?php echo esc_html( get_the_title( $view_id ) ); ?>
@@ -97,9 +99,10 @@ function views_embedded_html() {
 						}
 					?>
 				</div>
+                <div class="toolset-video-box-wrap"></div>
 			</div>
 		</div> <!-- .wpv-title-section -->
-		
+
 		<div class="wpv-query-section">
 			<?php
 				// Commented out in Views 1.8
@@ -224,7 +227,9 @@ function content_templates_embedded_html() {
 					<textarea cols="30" rows="10" id="wpv_content" name="wpv_content"><?php echo esc_textarea( $content ); ?></textarea>
 				</div>
 			</div>
+            <div class="toolset-video-box-wrap"></div>
 		</div>
+
 	</div>
 	<?php
 }
@@ -330,9 +335,11 @@ function view_archives_embedded_html() {
 						}
 					?>
 				</div>
+                <div class="toolset-video-box-wrap"></div>
 			</div>
+           
 		</div> <!-- .wpv-title-section -->
-		
+
 		<?php
 			if ( 'archive' ==  $view_settings['view-query-mode'] ) {
 				?>

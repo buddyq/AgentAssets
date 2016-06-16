@@ -72,7 +72,6 @@ final class CRED_Admin {
 
     // when form is submitted from admin, save the custom fields which describe the form configuration to DB
     public static function saveFormCustomFields($post_id, $post) {
-        cred_log("saveFormCustomFields");
         if (defined('DOING_AUTOSAVE') && DOING_AUTOSAVE)
             return;
 
@@ -161,17 +160,21 @@ final class CRED_Admin {
 
             $allowed_protocols = array('http', 'https', 'mailto');
 
-            $extra_js = isset($_POST['_cred']['extra']['js']) ? $_POST['_cred']['extra']['js'] : '';
-            $extra_css = isset($_POST['_cred']['extra']['css']) ? $_POST['_cred']['extra']['css'] : '';
-            if (!empty($extra_js)) {
-                //Fix JS strips backslashes from code on Save
-                $extra_js = addcslashes($extra_js, '\\');
-                $extra_js = wp_kses($extra_js, $allowed_tags, $allowed_protocols);
-            }
-            if (!empty($extra_css)) {
-                //$extra_css = wp_kses_stripslashes($extra_css, $allowed_tags, $allowed_protocols);
-                $extra_css = wp_kses($extra_css, $allowed_tags, $allowed_protocols);
-                $extra_css = stripslashes($extra_css);
+            $extra_js = "";
+            $extra_css = "";
+            if (current_user_can('unfiltered_html')) {
+                $extra_js = isset($_POST['_cred']['extra']['js']) ? $_POST['_cred']['extra']['js'] : '';
+                $extra_css = isset($_POST['_cred']['extra']['css']) ? $_POST['_cred']['extra']['css'] : '';
+                if (!empty($extra_js)) {
+                    //Fix JS strips backslashes from code on Save
+                    $extra_js = addcslashes($extra_js, '\\');
+                    //$extra_js = wp_kses($extra_js, $allowed_tags, $allowed_protocols);
+                }
+                if (!empty($extra_css)) {
+                    //$extra_css = wp_kses_stripslashes($extra_css, $allowed_tags, $allowed_protocols);
+                    //$extra_css = wp_kses($extra_css, $allowed_tags, $allowed_protocols);
+                    $extra_css = stripslashes($extra_css);
+                }
             }
 
             $messages = $model->getDefaultMessages();
@@ -306,6 +309,10 @@ final class CRED_Admin {
                     'priority' => 'low',
                     'callback_args' => $form_fields),
             );
+
+            if (!current_user_can('unfiltered_html'))
+                unset($metaboxes['credextradiv']);
+
             // CRED_PostExpiration
             $metaboxes = apply_filters('cred_ext_meta_boxes', $metaboxes, $form_fields);
             if (defined('MODMAN_PLUGIN_NAME'))
@@ -403,6 +410,9 @@ final class CRED_Admin {
                     'priority' => 'low',
                     'callback_args' => $form_fields),
             );
+
+            if (!current_user_can('unfiltered_html'))
+                unset($metaboxes['credextradiv']);
 
             // CRED_PostExpiration
             $metaboxes = apply_filters('cred_ext_meta_boxes', $metaboxes, $form_fields);

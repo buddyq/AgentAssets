@@ -3,7 +3,7 @@
 Plugin Name: Toolset Maps
 Plugin URI: https://wp-types.com/documentation/user-guides/display-on-google-maps/
 Description: Toolset Maps will extend Types, WP Views and CRED with advanced geolocalization features
-Version: 1.1
+Version: 1.1.1
 Text Domain: toolset-maps
 Author: OnTheGoSystems
 Author URI: http://www.onthegosystems.com
@@ -65,7 +65,7 @@ function toolset_addon_map_load_or_deactivate() {
 	}
 
 	if ( $do_load ) {
-		define( 'TOOLSET_ADDON_MAPS_VERSION', '1.1' );
+		define( 'TOOLSET_ADDON_MAPS_VERSION', '1.1.1' );
 		define( 'TOOLSET_ADDON_MAPS_PATH', dirname( __FILE__ ) );
 		define( 'TOOLSET_ADDON_MAPS_FOLDER', basename( TOOLSET_ADDON_MAPS_PATH ) );
 		define( 'TOOLSET_ADDON_MAPS_FIELD_TYPE', 'google_address' );

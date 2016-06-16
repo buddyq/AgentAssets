@@ -53,6 +53,17 @@ final class WPDD_Utils{
         add_filter('assign_layout_to_post_object', array(__CLASS__, 'clear_cache'), 999, 5 );
 
         add_filter('remove_layout_assignment_to_post_object', array(__CLASS__, 'clear_cache'), 999, 5 );
+
+
+        add_filter( 'ddl-is_layout_assigned', array(__CLASS__, 'is_layout_assigned'), 10, 2);
+
+        add_filter( 'ddl-get_post_type_items_assigned_count', array(__CLASS__, 'get_post_type_items_assigned_count'), 10, 1 );
+    }
+
+    public static function get_post_type_items_assigned_count( $post_type ){
+        global $wpdb;
+        $query = $wpdb->prepare("SELECT COUNT(wposts.ID) FROM $wpdb->posts wposts, $wpdb->postmeta wpostmeta WHERE wposts.ID = wpostmeta.post_id AND wpostmeta.meta_key = '%s' AND wposts.post_type = '%s' ORDER BY wpostmeta.meta_value DESC", WPDDL_LAYOUTS_META_KEY, $post_type );
+        return $wpdb->get_var( $query );
     }
 
     public static final function clear_cache( $ret, $post_id, $layout_slug, $template = null, $meta = '' ){
@@ -63,6 +74,88 @@ final class WPDD_Utils{
 
         return $ret;
     }
+
+    public static function content_template_cell_has_body_tag( $cells ){
+
+        if( !is_array($cells) || count($cells) === 0 ) return '';
+
+        $ret = '';
+
+        foreach( $cells as $cell ){
+            if( method_exists($cell, 'check_if_cell_renders_post_content') && $cell->check_if_cell_renders_post_content( ) ){
+                $ret = 'cell-content-template';
+                break;
+            } else {
+                $ret = '';
+            }
+
+        }
+
+        return $ret;
+    }
+
+    public static function layout_assigned_count( $layout_id ){
+        global $wpdb;
+        $layout_name = WPDD_Layouts_Cache_Singleton::get_name_by_id( $layout_id );
+        $count =  $wpdb->get_var( $wpdb->prepare("SELECT COUNT(meta_id) FROM {$wpdb->postmeta} WHERE meta_key=%s AND meta_value=%s", WPDDL_LAYOUTS_META_KEY, $layout_name) );
+        return $count && $count > 0;
+    }
+    
+    public static function is_layout_assigned( $bool, $layout_id ){
+        
+        if( !$layout_id ) return $bool;
+        
+        $archives = apply_filters('ddl-get_layout_loops', $layout_id );
+        $single = self::layout_assigned_count( $layout_id );
+        $types = apply_filters( 'ddl-get_layout_post_types', $layout_id);
+
+        return $single || count( $archives ) > 0 || count($types) > 0;
+    }
+
+    public static function visual_editor_cell_has_wpvbody_tag( $cells ){
+        if( !is_array($cells) || count($cells) === 0 ) return '';
+
+        $ret = '';
+
+        foreach( $cells as $cell ){
+            $content = $cell->get_content();
+
+            if( !$content ) {
+                $ret = '';
+            } else {
+                $content = (object) $content;
+                if( self::content_content_has_views_tag( $content ) ){
+                    $ret = 'cell-content-template';
+                    break;
+                } else {
+                    $ret = '';
+                }
+            }
+        }
+
+        return $ret;
+
+    }
+
+    public static function content_content_has_views_tag( $content ){
+
+        if(  property_exists(  $content, 'content' ) === false ) return false;
+
+        $checks = apply_filters('ddl-do-not-apply-overlay-for-post-editor', array('wpv-post-body') );
+
+        $bool = false;
+
+        foreach( $checks as $check ){
+            if( strpos(  $content->content, $check ) !== false ){
+                $bool = true;
+                break;
+            }
+        }
+
+        return apply_filters( 'ddl-show_post_edit_page_editor_overlay', $bool, __CLASS__ );
+    }
+    
+    
 
     public static function get_post_property_from_ID( $id, $property = 'post_name' )
     {
@@ -75,6 +168,24 @@ final class WPDD_Utils{
         if( get_class( $post ) !== 'WP_Post' ) return null;
 
         return $post->{$property};
+    }
+
+    public static function string_contanins_strings( $string = '', $strings = array() ){
+        
+        if( $string === '' ) return false;
+
+        if( count( $strings ) === 0 ) return false;
+
+        $bool = false;
+
+        foreach( $strings as $check ){
+            if( strpos($string, $check) !== false ){
+                $bool = true;
+                break;
+            }
+        }
+
+        return $bool;
     }
 
     public static function get_layout_id_from_post_name($layout_name)

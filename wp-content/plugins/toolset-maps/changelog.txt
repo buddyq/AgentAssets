@@ -1,4 +1,11 @@
 -------------------------------------------------------------------------------------------------------------------
+Toolset Maps 1.1.1
+	- Added support for address fields in CRED forms submitted using AJAX.
+	- Fixed an issue with the cluster icons depending on external resources.
+	- Fixed an issue with the registered Google Maps API key not being used on the main frontend script.
+	- Fixed an issue where all Latitude/Longitude labels were focusing only on the first fields in page, and all fields had the same IDs.
+
+-------------------------------------------------------------------------------------------------------------------
 Toolset Maps 1.1, AKA Brussels
 	- Added full support for usermeta and termmeta address fields.
 	- Added support for ID parameters on marker shortcodes, to display addresses from specific or parent posts, users, and terms.

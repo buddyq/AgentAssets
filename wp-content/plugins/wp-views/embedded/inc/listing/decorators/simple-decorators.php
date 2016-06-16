@@ -169,7 +169,7 @@ class WPV_SearchForm_Decorator implements IWPV_SearchForm_Decorator {
      */
     public function render_search_form( $args )
     {
-        $search_term = wpv_getarr( $args, 'search', '' );
+        $search_term = esc_attr( urldecode( wp_unslash( wpv_getarr( $args, 'search', '' ) ) ) );
 
         $hidden_fields = array(
             'page' => wpv_getarr( $args, 'page', '' ),

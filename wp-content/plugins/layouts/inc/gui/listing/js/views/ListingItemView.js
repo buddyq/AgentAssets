@@ -125,7 +125,7 @@ DDLayout.listing.views.ListingItemView = Backbone.View.extend({
     no_permission:function(){
         this.errors_div.wpvToolsetMessage({
             text: DDLayout_settings.DDL_JS.strings.user_no_caps,
-            type: 'warning',
+            type: 'error',
             stay: false,
             stay_for:15000,
             close: false,

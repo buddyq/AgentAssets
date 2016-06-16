@@ -11,14 +11,17 @@ final class Access_Helper
 	static $import_messages;
 	
     public static function init() {
-        /*
-         * Plus functions.
-         */
+
         self::$import_messages = null;
+		
+		// Loading actions
         add_action( 'plugins_loaded',	array( __CLASS__, 'wpcf_access_early_plugins_loaded'), 0 );
-        add_action( 'wpml_loaded',		array( __CLASS__, 'wpcf_access_wpml_loaded' ) );// This happens at plugins_loaded:1
+		// This happens at plugins_loaded:1
+        add_action( 'wpml_loaded',		array( __CLASS__, 'wpcf_access_wpml_loaded' ) );
         add_action( 'plugins_loaded',	array( __CLASS__, 'register_post_types_and_taxonomies'), 1 );
         add_action( 'plugins_loaded',	array( __CLASS__, 'wpcf_access_late_plugins_loaded'), 2 );
+		
+		
         add_action( 'init',				array( __CLASS__, 'wpcf_access_early_init'), 1 );
         
 		if ( is_admin() ) {
@@ -35,22 +38,239 @@ final class Access_Helper
         }
 
         add_shortcode( 'toolset_access',			array( __CLASS__, 'wpcf_access_create_shortcode_toolset_access' ) );
-        add_filter('wpv_custom_inner_shortcodes',	array( __CLASS__, 'wpv_access_string_in_custom_inner_shortcodes' ) );
+        add_filter( 'wpv_custom_inner_shortcodes',	array( __CLASS__, 'wpv_access_string_in_custom_inner_shortcodes' ) );
 		
 		add_action( 'otg_access_action_access_roles_updated', array( __CLASS__, 'otg_access_reload_access_roles' ) );
         
 
     }
+	
+	public static function wpcf_access_early_plugins_loaded() {
+		// Initialize the global $wpcf_access and all its most needed data
+		global $wpcf_access;
+		$wpcf_access						= new stdClass();
+		// WPML related properties
+		$wpcf_access->wpml_installed		= false;
+        $wpcf_access->wpml_installed_groups	= false;
+		$wpcf_access->active_languages		= array();
+		$wpcf_access->current_language		= null;
+		$wpcf_access->language_permissions	= array();		
+		// API
+		add_filter( 'otg_access_filter_is_wpml_installed', array( __CLASS__, 'otg_access_is_wpml_installed' ) );
+	}
+	
+	public static function otg_access_is_wpml_installed( $status ) {
+		global $wpcf_access;
+		$status = $wpcf_access->wpml_installed_groups;
+		return $status;
+	}
+	
+	public static function wpcf_access_wpml_loaded() {
+		global $wpcf_access;
+		$wpcf_access->wpml_installed		= apply_filters( 'wpml_setting', false, 'setup_complete' );
+        $wpcf_access->wpml_installed_groups	= false;
+		$wpcf_access->active_languages		= array();
+		$wpcf_access->current_language		= apply_filters( 'wpml_current_language', null );
+		if ( $wpcf_access->wpml_installed ) {
+            if ( wpml_version_is( '3.3', '>=' ) ) {
+                $wpcf_access->active_languages		= apply_filters( 'wpml_active_languages', '', array('skip_missing' => 0) );
+                $wpcf_access->wpml_installed_groups	= true;
+            } else {
+                $wpcf_access->wpml_installed		= false;
+            }
+        }
+	}
     
-    public static function register_post_types_and_taxonomies(){
-        add_action('registered_post_type', array(__CLASS__,  'wpcf_access_registered_post_type_hook'), 10, 2);
-        add_action('registered_taxonomy', array(__CLASS__,  'wpcf_access_registered_taxonomy_hook'), 10, 3);
+    public static function register_post_types_and_taxonomies() {
+        add_action('registered_post_type',	array(__CLASS__,  'wpcf_access_registered_post_type_hook'), 10, 2);
+        add_action('registered_taxonomy',	array(__CLASS__,  'wpcf_access_registered_taxonomy_hook'), 10, 3);
     }
+	
+	public static function wpcf_access_late_plugins_loaded() {
+		
+		global $wpcf_access;
+		
+		$model = TAccess_Loader::get('MODEL/Access');
+        
+        if ( ! isset( $wp_roles ) ) {
+            $wp_roles = new WP_Roles();
+		}
+
+        // Access works standalone now
+        define( 'WPCF_PLUS', true );
+        if ( ! defined( 'WPCF_ACCESS_DEBUG' ) ) {
+            define( 'WPCF_ACCESS_DEBUG', false );
+		}
+
+        // TODO Not used yet
+        // Take a snapshot (to restore on deactivation???)
+        /*$snapshot = get_option('wpcf_access_snapshot', array());
+        if (empty($snapshot)) {
+            $snapshot = get_option('wp_user_roles', array());
+            update_option('wpcf_access_snapshot', $snapshot);
+        }*/
+
+        // Settings
+        $wpcf_access->settings				= new stdClass;
+        // TYpes
+        $wpcf_access->settings->types		= $model->getAccessTypes();
+        // Taxonomies
+        $wpcf_access->settings->tax			= $model->getAccessTaxonomies();
+        // Third party
+        $wpcf_access->settings->third_party	= $model->getAccessThirdParty();
+        $wpcf_access->third_party			= array();
+        $wpcf_access->third_party_post		= array();
+        $wpcf_access->third_party_caps		= array();
+        // Rules
+        $wpcf_access->rules					= new stdClass();
+        $wpcf_access->rules->types			= array();
+        $wpcf_access->rules->taxonomies		= array();
+        // Other
+        $wpcf_access->errors				= array();
+        $wpcf_access->shared_taxonomies		= array();
+        $wpcf_access->upload_files			= array();
+        $wpcf_access->debug					= array();
+        $wpcf_access->debug_hooks_with_args	= array();
+        $wpcf_access->debug_all_hooks		= array();
+
+        $wpcf_access = apply_filters('types_access', $wpcf_access);
+
+        // Set locale
+        $locale = get_locale();
+        TAccess_Loader::loadLocale( 'wpcf-access', 'access-' . $locale . '.mo' );
+        
+        // Load admin code
+        if ( is_admin() ) {
+            /*
+            * Post functions.
+            */
+            TAccess_Loader::load('CLASS/Post');
+            //TAccess_Loader::load('CLASS/Admin');
+        }
+        /*
+         * Disable Access for administrator
+         */
+        add_action( 'init', array( __CLASS__, 'wpcf_access_init' ), 9 );
+        add_action( 'init', array( __CLASS__, 'wpcf_access_late_init' ), 9999 );
+        add_action( 'init', array( __CLASS__, 'wpcf_access_get_taxonomies_shared_init' ), 19 );
+
+        if ( $wpcf_access->wpml_installed ){
+            self::wpcf_load_wpml_groups_caps();   
+        }
+        TAccess_Loader::load('CLASS/Ajax');
+		
+		/*
+         * Hooks to collect and map settings.
+         */
+        add_filter('wpcf_type', array(__CLASS__, 'wpcf_access_init_types_rules'), 10, 2);
+        add_action('wpcf_type_registered', array(__CLASS__,  'wpcf_access_collect_types_rules'));
+        add_filter('wpcf_taxonomy_data', array(__CLASS__,  'wpcf_access_init_tax_rules'), 10, 3);
+        // WATCHOUT:  this hook callback does not exist
+        //add_action('wpcf_taxonomy_registered', array(__CLASS__, 'wpcf_access_collect_tax_rules'));
+        
+       
+	   // @toto whouser WTF; we set 3 arguments and we pass only one!!!! Smells!!!
+        add_filter('types_access_check', array(__CLASS__,  'wpcf_access_filter_rules'), 15, 3);
+        //TAccess_Loader::load('CLASS/Collect');
+
+        /*
+         * Check functions.
+         * 
+         * 'user_has_cap' is main WP filter we use to filter capability check.
+         * All changes are done on-the-fly and per call. No caching.
+         * 
+         * WP accepts $allcaps array of capabilities returned.
+         * It?s actually property of $WP_User->allcaps.
+         *
+         * TODO we should use other way to assign capabilities
+         * This is runing on each current_user_can() call and it might happen docens of times per pagenow
+         * At least we have added caching per cap
+         * 
+         */
+
+
+         add_filter( 'user_has_cap', array(__CLASS__,  'wpcf_access_user_has_cap_filter'), 0, 4 );
+
+        //        add_filter('role_has_cap', 'wpcf_access_role_has_cap_filter', 10, 3);    
+        //TAccess_Loader::load('CLASS/Check');
+
+        /*
+         * Exceptions.
+         */
+        add_filter('types_access_check', array(__CLASS__,  'wpcf_access_exceptions_check'), 10, 3);
+        //TAccess_Loader::load('CLASS/Exceptions');
+
+        /*
+         * Access hooks.
+         */
+        //TAccess_Loader::load('CLASS/Hooks');
+        
+        /*
+         * Dependencies definitions.
+         */
+        add_action('admin_footer', array(__CLASS__,  'wpcf_access_dependencies_render_js'));
+        //TODO: Review this hook, why we load this in frontend
+        //add_action('wp_footer', array(__CLASS__,  'wpcf_access_dependencies_render_js'));
+        
+        add_filter('types_access_dependencies', array(__CLASS__,  'wpcf_access_dependencies_filter'));
+        //TAccess_Loader::load('CLASS/Dependencies');
+        
+        
+
+        
+        TAccess_Loader::load('CLASS/Upload');
+        TAccess_Loader::load('CLASS/Debug');
+
+        do_action('wpcf_access_plugins_loaded');
+	}
+	
+	public static function wpcf_access_early_init() {
+        // Force roles initialization
+        // WP is lazy and it does not initialize $wp_roles if user is not logged in.
+        global $wpcf_access;
+		/*
+        if ( !function_exists('wp_get_current_user') ){
+             require_once( ABSPATH. 'wp-includes/pluggable.php');
+        }
+		*/
+        $current_user = wp_get_current_user();
+
+        if ( $wpcf_access->wpml_installed ) {
+            if ( wpml_version_is( '3.3', '>=' ) ) {
+                if ( ! isset( $current_user->allcaps['level_10'] ) ) {
+                    add_filter('wpml_active_languages_access',	array(__CLASS__,'otg_access_check_language_edit_permissions'), 10, 2);
+                    add_filter('wpml_override_is_translator',	array(__CLASS__,'otg_access_filter_wpml_override_is_translator'), 10, 3);
+                    add_filter('wpml_link_to_translation',		array(__CLASS__,'otg_access_filter_wpml_link'), 9, 4);
+                    add_filter('wpml_icon_to_translation',		array(__CLASS__,'otg_access_filter_wpml_icon'), 9, 4);
+                    add_filter('wpml_text_to_translation',		array(__CLASS__,'otg_access_filter_wpml_text'), 9, 4);
+                } else{
+                    $wpcf_access->wpml_installed = false;
+                }
+            } else {
+                $wpcf_access->wpml_installed = false;
+            }
+        }
+		
+		// Setup roles
+        self::$roles = self::wpcf_get_editable_roles();
+
+        if ( isset( $current_user->allcaps['level_10'] ) ) {
+            //self::otg_access_add_types_caps();
+            //TAccess_Loader::load('CLASS/Ajax');
+            //return;
+        }
+    }
+	
+	/**
+	* ----------------------------
+	* WPML related methods
+	* ----------------------------
+	*/
     
     /*
         Replace Translation management permissions with Access settings
     */
-    public static function otg_access_filter_wpml_override_is_translator( $is_translator, $user_id, $args){
+    public static function otg_access_filter_wpml_override_is_translator( $is_translator, $user_id, $args ){
         return true;
     }
     
@@ -59,7 +279,10 @@ final class Access_Helper
     */
     public static function otg_access_filter_wpml_link( $link, $post_id, $lang, $trid ){
         $status = self::otg_access_wpml_check_access_by_post_id( $post_id, $lang);
-        if ( !$status['edit_any'] && !$status['edit_own'] ){
+        if ( 
+			! $status['edit_any'] 
+			&& ! $status['edit_own'] 
+		) {
             $link = '#no_privileges';
         }
         return $link;
@@ -70,7 +293,10 @@ final class Access_Helper
     */
     public static function otg_access_filter_wpml_icon( $icon, $post_id, $lang, $trid ){
         $status = self::otg_access_wpml_check_access_by_post_id( $post_id, $lang);
-        if ( !$status['edit_any'] && !$status['edit_own'] ){
+        if ( 
+			! $status['edit_any'] 
+			&& ! $status['edit_own'] 
+		) {
             if ( $icon == 'add_translation.png' ){
                 $icon = 'add_translation_disabled.png';
             }else{
@@ -91,7 +317,7 @@ final class Access_Helper
     /*
     *
     */
-    public static function otg_access_check_language_read_permissions( $languages ){
+    public static function otg_access_check_language_read_permissions( $languages ) {
         global $wpcf_access, $current_user, $typenow;
         if ( current_user_can('manage_options') ){
              return $languages;
@@ -217,7 +443,7 @@ final class Access_Helper
         
     }
 
-    public static function otg_access_check_translation_by_post_id( $post_id, $post_type, $user_id, $lang ){
+    public static function otg_access_check_translation_by_post_id( $post_id, $post_type, $user_id, $lang ) {
         global $wpcf_access;
         if ( !has_action('wpml_tm_loaded') || !did_action('wpml_tm_loaded') ){
             return false;
@@ -269,18 +495,21 @@ final class Access_Helper
     /*
     * Get post type name by plural name
     */
-    public static function get_post_type_singular_by_name( $post_type_name ){
-        $model = TAccess_Loader::get('MODEL/Access');
-        $_post_types=Access_Helper::wpcf_object_to_array( $model->getPostTypes() );
-        foreach ( $_post_types as $post_type => $post_type_data){
-            if ( strtolower($post_type_data['labels']['name']) == ($post_type_name) || strtolower($post_type_data['labels']['singular_name']) == ($post_type_name) ){
+    public static function get_post_type_singular_by_name( $post_type_name ) {
+        $model = TAccess_Loader::get( 'MODEL/Access' );
+        $_post_types = $model->getPostTypes();
+        foreach ( $_post_types as $post_type => $post_type_data ) {
+            if ( 
+				strtolower( $post_type_data->labels->name ) == $post_type_name 
+				|| strtolower( $post_type_data->labels->singular_name ) == $post_type_name 
+			) {
                 return $post_type;
             }
         }
         return '';
     }
     
-    public static function wpcf_load_wpml_groups_caps(){
+    public static function wpcf_load_wpml_groups_caps() {
         global $wpcf_access;
         $wpcf_access->language_permissions = array();
         $model = TAccess_Loader::get('MODEL/Access');
@@ -305,18 +534,22 @@ final class Access_Helper
        
     }
     
-    public static function wpcf_load_wpml_languages_permissions(){
+    public static function wpcf_load_wpml_languages_permissions() {
         global $wpcf_access;
 
         $model = TAccess_Loader::get('MODEL/Access');
         $settings_access = $model->getAccessTypes();
-        $_post_types=Access_Helper::wpcf_object_to_array( $model->getPostTypes() );
+        $_post_types = $model->getPostTypesNames();
         //Load language permissions from post_type, if group for language not exists
         $wpml_active_languages = $wpcf_access->active_languages;
-        foreach( $_post_types as $post_type => $post_type_data ){
-            foreach( $wpml_active_languages as $language => $language_data ){
-                if ( !isset($wpcf_access->language_permissions[$post_type][$language]) && $post_type != 'attachment' && isset($settings_access[$post_type]['permissions']) ){
-                    $wpcf_access->language_permissions[$post_type][$language] = $settings_access[$post_type]['permissions'];
+        foreach ( $_post_types as $post_type ) {
+            foreach ( $wpml_active_languages as $language => $language_data ) {
+                if ( 
+					! isset( $wpcf_access->language_permissions[ $post_type ][ $language ] ) 
+					&& $post_type != 'attachment' 
+					&& isset( $settings_access[ $post_type ]['permissions'] ) 
+				) {
+                    $wpcf_access->language_permissions[ $post_type ][ $language ] = $settings_access[ $post_type ]['permissions'];
                 }
             }
         }
@@ -677,11 +910,11 @@ final class Access_Helper
 	}
 	
         
-        public static function wpcf_prepare_form_for_shortcodes_dialog(){
-            global $post, $wp_roles;
-                
+	public static function wpcf_prepare_form_for_shortcodes_dialog(){
+		global $post, $wp_roles;
+			
 
-                if (!isset($post) || empty($post) ){
+		if (!isset($post) || empty($post) ){
 			return '';
 		}
 
@@ -709,17 +942,17 @@ final class Access_Helper
         	<label>
         		<input type="radio" class="js-wpcf-access-shortcode-operator" name="wpcf-access-shortcode-operator" value="deny" /> '. __('Everyone except these roles will see the text', 'wpcf-access') . '</label><br>
 		</p>';
-                $out .='</form>';
-                $out .= '</div>';
-	
-                return $out;
-        }
+		$out .='</form>';
+		$out .= '</div>';
+
+		return $out;
+    }
         
 	/*
 	 * Add A-Icon to edit post editor
 	 * 
 	*/
-	public static function wpcf_access_add_editor_icon( $editor_class ){
+	public static function wpcf_access_add_editor_icon( $editor_class ) {
 		global $post, $wp_version;
                 
 
@@ -786,114 +1019,117 @@ final class Access_Helper
 	// TODO add support for the Content Templates here, wee need those scripts and styles to add the button to insert the shortcode
 	public static function wpcf_access_select_group_metabox_files() {
 
-        global $post;
+        global $post, $pagenow;
 
-        if (isset($post) && is_object($post) && $post->ID != '') {
+		if ( 'revision.php' != $pagenow ) {
 
-            $post_object = get_post_type_object($post->post_type);
-            if (($post_object->publicly_queryable || $post_object->public) && $post_object->name != 'attachment') {
+			if (isset($post) && is_object($post) && $post->ID != '') {
 
-
-                if (!wp_script_is('ddl-abstract-dialog', 'registered')) {
-                    wp_register_script('ddl-abstract-dialog', TOOLSET_COMMON_URL . '/utility/dialogs/js/views/abstract/ddl-abstract-dialog.js', array('jquery', 'wpdialogs', 'toolset-utils'), '0.1', false);
-                }
-                if (!wp_script_is('ddl-abstract-dialog', 'enqueued')) {
-                    wp_enqueue_script('ddl-abstract-dialog');
-                }
-
-                if (!wp_script_is('ddl-dialog-boxes', 'registered')) {
-                    wp_register_script('ddl-dialog-boxes', TOOLSET_COMMON_URL . '/utility/dialogs/js/views/abstract/dialog-view.js', array('jquery', 'ddl-abstract-dialog', 'underscore', 'backbone', 'toolset-utils'), '0.1', false);
-                }
-                if (!wp_script_is('ddl-dialog-boxes', 'enqueued')) {
-                    wp_enqueue_script('ddl-dialog-boxes');
-                }
+				$post_object = get_post_type_object($post->post_type);
+				if (($post_object->publicly_queryable || $post_object->public) && $post_object->name != 'attachment') {
 
 
-                if (!wp_script_is('wpcf-access-dev', 'registered')) {
-                    wp_register_script('wpcf-access-dev', TACCESS_ASSETS_URL . '/js/basic.js', array('jquery', 'suggest', 'jquery-ui-dialog', 'jquery-ui-tabs', 'wp-pointer', 'toolset-utils', 'toolset-colorbox'), WPCF_ACCESS_VERSION, false);
-                }
+					if (!wp_script_is('ddl-abstract-dialog', 'registered')) {
+						wp_register_script('ddl-abstract-dialog', TOOLSET_COMMON_URL . '/utility/dialogs/js/views/abstract/ddl-abstract-dialog.js', array('jquery', 'wpdialogs', 'toolset-utils'), '0.1', false);
+					}
+					if (!wp_script_is('ddl-abstract-dialog', 'enqueued')) {
+						wp_enqueue_script('ddl-abstract-dialog');
+					}
+
+					if (!wp_script_is('ddl-dialog-boxes', 'registered')) {
+						wp_register_script('ddl-dialog-boxes', TOOLSET_COMMON_URL . '/utility/dialogs/js/views/abstract/dialog-view.js', array('jquery', 'ddl-abstract-dialog', 'underscore', 'backbone', 'toolset-utils'), '0.1', false);
+					}
+					if (!wp_script_is('ddl-dialog-boxes', 'enqueued')) {
+						wp_enqueue_script('ddl-dialog-boxes');
+					}
 
 
+					if (!wp_script_is('wpcf-access-dev', 'registered')) {
+						wp_register_script('wpcf-access-dev', TACCESS_ASSETS_URL . '/js/basic.js', array('jquery', 'suggest', 'underscore', 'jquery-ui-dialog', 'jquery-ui-tabs', 'wp-pointer', 'toolset-utils', 'toolset-colorbox'), WPCF_ACCESS_VERSION, false);
+					}
 
-                if (!wp_script_is('ddl-dialog-boxes', 'enqueued')) {
-                    wp_enqueue_script('ddl-dialog-boxes');
-                }
 
-                if (!wp_script_is('wpcf-access-dev', 'enqueued')) {
-                    wp_enqueue_script('wpcf-access-dev');
-                    $help_box_translations = array(
-					'otg_access_general_nonce'	=> wp_create_nonce( 'otg_access_general_nonce' ),
-					'wpcf_change_perms'			=> __("Change Permissions", 'wpcf-access'),
-					'wpcf_close'				=> __("Close", 'wpcf-access'),
-					'wpcf_cancel'				=> __("Cancel", 'wpcf-access'),
-					'wpcf_group_exists'			=> __("Group title already exists", 'wpcf-access'),
-					'wpcf_assign_group'			=> __("Assign group", 'wpcf-access'),
-					'wpcf_set_errors'			=> __("Set errors", 'wpcf-access'),
-					'wpcf_error1'				=> __("Show 404 - page not found", 'wpcf-access'),
-					'wpcf_error2'				=> __("Show Content Template", 'wpcf-access'),
-					'wpcf_error3'				=> __("Show Page template", 'wpcf-access'),
-					'wpcf_info1'				=> __("Template", 'wpcf-access'),
-					'wpcf_info2'				=> __("PHP Template", 'wpcf-access'),
-					'wpcf_info3'				=> __("PHP Archive", 'wpcf-access'),
-					'wpcf_info4'				=> __("View Archive", 'wpcf-access'),
-					'wpcf_info5'				=> __("Display: 'No posts found'", 'wpcf-access'),
-					'wpcf_access_group'			=> __("Access group", 'wpcf-access'),
-					'wpcf_custom_access_group'	=> __("Custom Access Group", 'wpcf-access'),
-					'wpcf_add_group'			=> __("Add Group", 'wpcf-access'),
-					'wpcf_modify_group'			=> __("Modify Group", 'wpcf-access'),
-					'wpcf_remove_group'			=> __("Remove Group", 'wpcf-access'),
-					'wpcf_role_permissions'		=> __("Role permissions", 'wpcf-access'),
-					'wpcf_delete_role'			=> __("Delete role", 'wpcf-access'),
-					'wpcf_save'					=> __("Save", 'wpcf-access'),
-					'wpcf_ok'					=> __("OK", 'wpcf-access'),
-					'wpcf_advanced_mode1'		=> __("Enabling the Advanced mode gives you the possibility to change permissions for user roles created by other plugins. By proceeding, you acknowledge that you know what you are doing and understand all possible risks.", 'wpcf-access'),
-					'wpcf_advanced_mode2'		=> __("After clicking OK, any unsaved data will be lost.", 'wpcf-access'),
-					'wpcf_advanced_mode3'		=> __("You are about to disable the Advanced mode.", 'wpcf-access'),
-					'wpcf_advanced_mode'		=> __("Advanced mode", 'wpcf-access'),
-					'wpcf_set_wpml_settings'	=> __("Set permission for languages", 'wpcf-access'),
-					'wpcf_save1'				=> __("Save", 'wpcf-access'),
-					'wpcf_insert'				=> __("Insert conditional text",'wpcf-access'),
-					'wpcf_shortcodes_dialog_title' => __("Insert conditionaly-displayed text",'wpcf-access'),
-					'wpcf_create_group'			=> __("OK", 'wpcf-access'),
-					'wpcf_modify_group'			=> __("OK", 'wpcf-access'),
-					'wpcf_delete_group'			=> __("Remove group", 'wpcf-access'),
-					'otg_access_managed'		=> __( '(Managed by Access)', 'wpcf-access' ),
-					'otg_access_not_managed'	=> __( '(Not managed by Access)', 'wpcf-access' ),
-				);
-                    wp_localize_script('wpcf-access-dev', 'wpcf_access_dialog_texts', $help_box_translations);
-                }
-                if (!wp_script_is('wpcf-access-dev', 'enqueued')) {
-                    wp_enqueue_script('wpcf-access-dev');
-                }
+					if (!wp_script_is('ddl-dialog-boxes', 'enqueued')) {
+						wp_enqueue_script('ddl-dialog-boxes');
+					}
 
-                if (!wp_script_is('icl_editor-script', 'enqueued')) {
-                    wp_enqueue_script('icl_editor-script');
-                }
-                if (!wp_style_is('editor_addon_menu', 'enqueued')) {
-                    wp_enqueue_style('editor_addon_menu');
-                }
-                if (!wp_style_is('editor_addon_menu_scroll', 'enqueued')) {
-                    wp_enqueue_style('editor_addon_menu_scroll');
-                }
+					if (!wp_script_is('wpcf-access-dev', 'enqueued')) {
+						wp_enqueue_script('wpcf-access-dev');
+						$help_box_translations = array(
+							'otg_access_general_nonce' => wp_create_nonce('otg_access_general_nonce'),
+							'wpcf_change_perms' => __("Change Permissions", 'wpcf-access'),
+							'wpcf_close' => __("Close", 'wpcf-access'),
+							'wpcf_cancel' => __("Cancel", 'wpcf-access'),
+							'wpcf_group_exists' => __("Group title already exists", 'wpcf-access'),
+							'wpcf_assign_group' => __("Assign group", 'wpcf-access'),
+							'wpcf_set_errors' => __("Set errors", 'wpcf-access'),
+							'wpcf_error1' => __("Show 404 - page not found", 'wpcf-access'),
+							'wpcf_error2' => __("Show Content Template", 'wpcf-access'),
+							'wpcf_error3' => __("Show Page template", 'wpcf-access'),
+							'wpcf_info1' => __("Template", 'wpcf-access'),
+							'wpcf_info2' => __("PHP Template", 'wpcf-access'),
+							'wpcf_info3' => __("PHP Archive", 'wpcf-access'),
+							'wpcf_info4' => __("View Archive", 'wpcf-access'),
+							'wpcf_info5' => __("Display: 'No posts found'", 'wpcf-access'),
+							'wpcf_access_group' => __("Access group", 'wpcf-access'),
+							'wpcf_custom_access_group' => __("Custom Access Group", 'wpcf-access'),
+							'wpcf_add_group' => __("Add Group", 'wpcf-access'),
+							'wpcf_modify_group' => __("Modify Group", 'wpcf-access'),
+							'wpcf_remove_group' => __("Remove Group", 'wpcf-access'),
+							'wpcf_role_permissions' => __("Role permissions", 'wpcf-access'),
+							'wpcf_delete_role' => __("Delete role", 'wpcf-access'),
+							'wpcf_save' => __("Save", 'wpcf-access'),
+							'wpcf_ok' => __("OK", 'wpcf-access'),
+							'wpcf_apply'				=> __("Apply", 'wpcf-access'),
+							'wpcf_advanced_mode1' => __("Enabling the Advanced mode gives you the possibility to change permissions for user roles created by other plugins. By proceeding, you acknowledge that you know what you are doing and understand all possible risks.", 'wpcf-access'),
+							'wpcf_advanced_mode2' => __("After clicking OK, any unsaved data will be lost.", 'wpcf-access'),
+							'wpcf_advanced_mode3' => __("You are about to disable the Advanced mode.", 'wpcf-access'),
+							'wpcf_advanced_mode' => __("Advanced mode", 'wpcf-access'),
+							'wpcf_set_wpml_settings' => __("Set permission for languages", 'wpcf-access'),
+							'wpcf_save1' => __("Save", 'wpcf-access'),
+							'wpcf_insert' => __("Insert conditional text", 'wpcf-access'),
+							'wpcf_shortcodes_dialog_title' => __("Insert conditionaly-displayed text", 'wpcf-access'),
+							'wpcf_create_group' => __("OK", 'wpcf-access'),
+							'wpcf_modify_group' => __("OK", 'wpcf-access'),
+							'wpcf_delete_group' => __("Remove group", 'wpcf-access'),
+							'otg_access_managed' => __('(Managed by Access)', 'wpcf-access'),
+							'otg_access_not_managed' => __('(Not managed by Access)', 'wpcf-access'),
+						);
+						wp_localize_script('wpcf-access-dev', 'wpcf_access_dialog_texts', $help_box_translations);
+					}
+					if (!wp_script_is('wpcf-access-dev', 'enqueued')) {
+						wp_enqueue_script('wpcf-access-dev');
+					}
 
-                if (!wp_style_is('wpcf-access-dev', 'registered')) {
-                    wp_register_style('wpcf-access-dev', TACCESS_ASSETS_URL . '/css/basic.css', array('wp-jquery-ui-dialog'), WPCF_ACCESS_VERSION);
-                }
-                if (!wp_style_is('toolset-notifications-css', 'enqueued')) {
-                    wp_enqueue_style('toolset-notifications-css');
-                }
+					if (!wp_script_is('icl_editor-script', 'enqueued')) {
+						wp_enqueue_script('icl_editor-script');
+					}
+					if (!wp_style_is('editor_addon_menu', 'enqueued')) {
+						wp_enqueue_style('editor_addon_menu');
+					}
+					if (!wp_style_is('editor_addon_menu_scroll', 'enqueued')) {
+						wp_enqueue_style('editor_addon_menu_scroll');
+					}
 
-                if (!wp_style_is('wpcf-access-dialogs-css', 'registered')) {
-                    wp_register_style('wpcf-access-dialogs-css', TACCESS_ASSETS_URL . '/css/dialogs.css', array('wp-jquery-ui-dialog'), WPCF_ACCESS_VERSION);
-                }
-                if (!wp_style_is('wpcf-access-dialogs-css', 'enqueued')) {
-                    wp_enqueue_style('wpcf-access-dialogs-css');
-                }
-                if (!wp_style_is('wpcf-access-dev', 'enqueued')) {
-                    wp_enqueue_style('wpcf-access-dev');
-                }
-            }
-        }
+					if (!wp_style_is('wpcf-access-dev', 'registered')) {
+						wp_register_style('wpcf-access-dev', TACCESS_ASSETS_URL . '/css/basic.css', array('wp-jquery-ui-dialog'), WPCF_ACCESS_VERSION);
+					}
+					if (!wp_style_is('toolset-notifications-css', 'enqueued')) {
+						wp_enqueue_style('toolset-notifications-css');
+					}
+
+					if (!wp_style_is('wpcf-access-dialogs-css', 'registered')) {
+						wp_register_style('wpcf-access-dialogs-css', TACCESS_ASSETS_URL . '/css/dialogs.css', array('wp-jquery-ui-dialog'), WPCF_ACCESS_VERSION);
+					}
+					if (!wp_style_is('wpcf-access-dialogs-css', 'enqueued')) {
+						wp_enqueue_style('wpcf-access-dialogs-css');
+					}
+					if (!wp_style_is('wpcf-access-dev', 'enqueued')) {
+						wp_enqueue_style('wpcf-access-dev');
+					}
+				}
+			}
+		}
     }
 
     public static function wpcf_access_select_group_metabox( ) 
@@ -988,224 +1224,6 @@ final class Access_Helper
 			return false;	
 		}
 	}
-	
-	public static function wpcf_access_early_plugins_loaded() {
-		// Initialize the global $wpcf_access and all its most needed data
-		global $wpcf_access;
-		$wpcf_access = new stdClass();
-		// WPML related properties
-		$wpcf_access->wpml_installed = false;
-        $wpcf_access->wpml_installed_groups = false;
-		$wpcf_access->active_languages = array();
-		$wpcf_access->current_language = null;
-		$wpcf_access->language_permissions = array();		
-		// API
-		add_filter( 'otg_access_filter_is_wpml_installed', array( __CLASS__, 'otg_access_is_wpml_installed' ) );
-		
-	}
-	
-	public static function otg_access_is_wpml_installed( $status ) {
-		global $wpcf_access;
-		$status = $wpcf_access->wpml_installed_groups;
-		return $status;
-	}
-	
-	public static function wpcf_access_wpml_loaded() {
-		global $wpcf_access;
-		$wpcf_access->wpml_installed = apply_filters( 'wpml_setting', false, 'setup_complete' );
-        $wpcf_access->wpml_installed_groups = false;
-		$wpcf_access->active_languages = array();
-		$wpcf_access->current_language = apply_filters( 'wpml_current_language', null );
-		if ( $wpcf_access->wpml_installed ){
-            if ( wpml_version_is( '3.3', '>=' )  ){
-                $wpcf_access->active_languages = apply_filters( 'wpml_active_languages', '', array('skip_missing' => 0) );
-                $wpcf_access->wpml_installed_groups = true;
-            }
-            else{
-                $wpcf_access->wpml_installed = false;
-            }
-        }
-	}
-	
-	public static function wpcf_access_late_plugins_loaded() {
-		
-		global $wpcf_access;
-		
-		$model = TAccess_Loader::get('MODEL/Access');
-        
-        if (!isset($wp_roles))
-            $wp_roles = new WP_Roles();
-
-        // Access works standalone now
-        define('WPCF_PLUS', true);
-        if (!defined('WPCF_ACCESS_DEBUG'))
-            define('WPCF_ACCESS_DEBUG', false);
-
-        // TODO Not used yet
-        // Take a snapshot (to restore on deactivation???)
-        /*$snapshot = get_option('wpcf_access_snapshot', array());
-        if (empty($snapshot)) {
-            $snapshot = get_option('wp_user_roles', array());
-            update_option('wpcf_access_snapshot', $snapshot);
-        }*/
-
-        // Settings
-        $wpcf_access->settings				= new stdClass;
-        // TYpes
-        $wpcf_access->settings->types		= $model->getAccessTypes();
-        // Taxonomies
-        $wpcf_access->settings->tax			= $model->getAccessTaxonomies();
-        // Third party
-        $wpcf_access->settings->third_party	= $model->getAccessThirdParty();
-        $wpcf_access->third_party			= array();
-        $wpcf_access->third_party_post		= array();
-        $wpcf_access->third_party_caps		= array();
-        // Rules
-        $wpcf_access->rules					= new stdClass();
-        $wpcf_access->rules->types			= array();
-        $wpcf_access->rules->taxonomies		= array();
-        // Other
-        $wpcf_access->errors				= array();
-        $wpcf_access->shared_taxonomies		= array();
-        $wpcf_access->upload_files			= array();
-        $wpcf_access->debug					= array();
-        $wpcf_access->debug_hooks_with_args	= array();
-        $wpcf_access->debug_all_hooks		= array();
-
-        $wpcf_access = apply_filters('types_access', $wpcf_access);
-
-        // Set locale
-        $locale = get_locale();
-        TAccess_Loader::loadLocale('wpcf-access', 'access-' . $locale . '.mo');
-        
-        // Load admin code
-        if ( is_admin() ) {
-            /*
-            * Post functions.
-            */
-            TAccess_Loader::load('CLASS/Post');
-            //TAccess_Loader::load('CLASS/Admin');
-        }
-        /*
-         * Disable Access for administrator
-         */
-        add_action( 'init', array( __CLASS__, 'wpcf_access_init' ), 9 );
-        add_action( 'init', array( __CLASS__, 'wpcf_access_late_init' ), 9999 );
-        add_action( 'init', array( __CLASS__, 'wpcf_access_get_taxonomies_shared_init' ), 19 );
-
-        if ( $wpcf_access->wpml_installed ){
-            self::wpcf_load_wpml_groups_caps();   
-        }
-        TAccess_Loader::load('CLASS/Ajax');
-		
-		
-		
-		/*
-         * Hooks to collect and map settings.
-         */
-        add_filter('wpcf_type', array(__CLASS__, 'wpcf_access_init_types_rules'), 10, 2);
-        add_action('wpcf_type_registered', array(__CLASS__,  'wpcf_access_collect_types_rules'));
-        add_filter('wpcf_taxonomy_data', array(__CLASS__,  'wpcf_access_init_tax_rules'), 10, 3);
-        // WATCHOUT:  this hook callback does not exist
-        //add_action('wpcf_taxonomy_registered', array(__CLASS__, 'wpcf_access_collect_tax_rules'));
-        
-       
-        add_filter('types_access_check', array(__CLASS__,  'wpcf_access_filter_rules'), 15, 3);
-        //TAccess_Loader::load('CLASS/Collect');
-
-        /*
-         * Check functions.
-         * 
-         * 'user_has_cap' is main WP filter we use to filter capability check.
-         * All changes are done on-the-fly and per call. No caching.
-         * 
-         * WP accepts $allcaps array of capabilities returned.
-         * It?s actually property of $WP_User->allcaps.
-         *
-         * TODO we should use other way to assign capabilities
-         * This is runing on each current_user_can() call and it might happen docens of times per pagenow
-         * At least we have added caching per cap
-         * 
-         */
-
-
-         add_filter('user_has_cap', array(__CLASS__,  'wpcf_access_user_has_cap_filter'), 0, 3);
-
-        //        add_filter('role_has_cap', 'wpcf_access_role_has_cap_filter', 10, 3);    
-        //TAccess_Loader::load('CLASS/Check');
-
-        /*
-         * Exceptions.
-         */
-        add_filter('types_access_check', array(__CLASS__,  'wpcf_access_exceptions_check'), 10, 3);
-        //TAccess_Loader::load('CLASS/Exceptions');
-
-        /*
-         * Access hooks.
-         */
-        //TAccess_Loader::load('CLASS/Hooks');
-        
-        /*
-         * Dependencies definitions.
-         */
-        add_action('admin_footer', array(__CLASS__,  'wpcf_access_dependencies_render_js'));
-        //TODO: Review this hook, why we load this in frontend
-        //add_action('wp_footer', array(__CLASS__,  'wpcf_access_dependencies_render_js'));
-        
-        add_filter('types_access_dependencies', array(__CLASS__,  'wpcf_access_dependencies_filter'));
-        //TAccess_Loader::load('CLASS/Dependencies');
-        
-        
-
-        
-        TAccess_Loader::load('CLASS/Upload');
-        TAccess_Loader::load('CLASS/Debug');
-
-        do_action('wpcf_access_plugins_loaded');
-	}
-	
-    /**
-     * Init function. 
-     */
-    public static function wpcf_access_early_init() 
-    {
-        // Force roles initialization
-        // WP is lazy and it does not initialize $wp_roles if user is not logged in.
-        global $wpcf_access;
-		/*
-        if ( !function_exists('wp_get_current_user') ){
-             require_once( ABSPATH. 'wp-includes/pluggable.php');
-        }
-		*/
-        $current_user = wp_get_current_user();
-
-        if ( $wpcf_access->wpml_installed ){
-            if ( wpml_version_is( '3.3', '>=' )  ){
-                if (  !isset($current_user->allcaps['level_10']) ){
-                    add_filter('wpml_active_languages_access', array(__CLASS__,'otg_access_check_language_edit_permissions'), 10, 2);
-                    add_filter('wpml_override_is_translator', array(__CLASS__,'otg_access_filter_wpml_override_is_translator'), 10, 3);
-                    add_filter('wpml_link_to_translation', array(__CLASS__,'otg_access_filter_wpml_link'), 9, 4);
-                    add_filter('wpml_icon_to_translation', array(__CLASS__,'otg_access_filter_wpml_icon'), 9, 4);
-                    add_filter('wpml_text_to_translation', array(__CLASS__,'otg_access_filter_wpml_text'), 9, 4);
-                }
-                else{
-                    $wpcf_access->wpml_installed = false;
-                }
-            }
-            else{
-                $wpcf_access->wpml_installed = false;
-            }
-        }
-		
-		// Setup roles
-        self::$roles = self::wpcf_get_editable_roles();
-
-        if ( isset($current_user->allcaps['level_10']) ){
-            //self::otg_access_add_types_caps();
-            //TAccess_Loader::load('CLASS/Ajax');
-            //return;
-        }
-    }
 
     public static function otg_access_add_types_caps(){
         global $wpcf_access;
@@ -1356,7 +1374,7 @@ final class Access_Helper
     /*
      *
      */
-    public static function wpcf_access_check_translation_jobs_exists( $allcaps, $post_type ){
+    public static function wpcf_access_check_translation_jobs_exists( $allcaps, $post_type, $user = null ){
         global $wp_post_types, $current_user;
 
         $translation_batches = self::wpcf_access_get_translation_batches();
@@ -1373,10 +1391,8 @@ final class Access_Helper
                 $test_post_type = substr($temp_batch[$i]['original_post_type'],5);
                 if ( $test_post_type == $post_type ){
                     $post_type = strtolower($wp_post_types[$post_type]->labels->name);
-                    $allcaps['edit_' . $post_type] = 1;
-                    $current_user->allcaps['edit_' . $post_type] = true;
-                    $allcaps['edit_published_' . $post_type] = 1;
-                    $current_user->allcaps['edit_published_' . $post_type] = true;
+					$allcaps = Access_Helper::otg_access_add_or_remove_cap( $allcaps, 'edit_' . $post_type, true, $user );
+					$allcaps = Access_Helper::otg_access_add_or_remove_cap( $allcaps, 'edit_published_' . $post_type, true, $user );
                     return $allcaps;
                 }
             }
@@ -1389,10 +1405,13 @@ final class Access_Helper
     /*
     *
     */
-    public static function wpcf_check_wpml_post_type_permissions($allcaps, $cap, $args, $res){
-        global $wpcf_access,$current_user;
+    public static function wpcf_check_wpml_post_type_permissions( $allcaps, $cap, $args, $res, $user = null ) {
+		if ( is_null( $user ) ) {
+			return $allcaps;
+		}
+        global $wpcf_access;
 
-            if ( !isset($current_user->ID) || $current_user->ID == 0 ){
+            if ( !isset($user->ID) || $user->ID == 0 ){
                 return $allcaps;
             }
 
@@ -1402,10 +1421,13 @@ final class Access_Helper
             $post_type = preg_replace("/edit_others_|edit_published_|delete_others_|delete_published_|edit_|delete_|publish_/",'',$cap[0]);
               
             $model = TAccess_Loader::get('MODEL/Access');
-            $_post_types=Access_Helper::wpcf_object_to_array( $model->getPostTypes() );
-            if ( isset($_post_types[$post_type]) ){
-                $post_type_cap = strtolower($_post_types[$post_type]['labels']['name']);
-            }else{
+            $_post_types = $model->getPostTypesNames();
+			$post_type_object = null;
+			
+			if ( in_array( $post_type, $_post_types ) ) {
+				$post_type_object = get_post_type_object( $post_type );
+                $post_type_cap = strtolower( $post_type_object->labels->name );
+            } else {
                 $post_type_cap = $post_type;
                 $post_type = self::get_post_type_singular_by_name($post_type_cap);
             }
@@ -1432,19 +1454,17 @@ final class Access_Helper
             }
 
             if ( !isset($args[2]) || empty($args[2])){
-                unset($allcaps['edit_' . $post_type_cap]);
-                unset($current_user->allcaps['edit_' .$post_type_cap]);
-                unset($allcaps['edit_published_' . $post_type_cap]);
-                unset($current_user->allcaps['edit_published_' .$post_type_cap]);
-                unset($allcaps['edit_others_' . $post_type_cap]);
-                unset($current_user->allcaps['edit_others_' .$post_type_cap]);
+				$allcaps = Access_Helper::otg_access_add_or_remove_cap( $allcaps, 'edit_' . $post_type_cap, false, $user );
+				$allcaps = Access_Helper::otg_access_add_or_remove_cap( $allcaps, 'edit_published_' . $post_type_cap, false, $user );
+				$allcaps = Access_Helper::otg_access_add_or_remove_cap( $allcaps, 'edit_others_' . $post_type_cap, false, $user );
 
                 $set_all_caps = false;
 
-                if ( //!isset($current_user->allcaps[$action . '_' .$post_type_cap]) &&
-                   //  ( empty($current_user->allcaps[$action . '_' .$post_type_cap]) ) &&
+                if ( //!isset($user->allcaps[$action . '_' .$post_type_cap]) &&
+                   //  ( empty($user->allcaps[$action . '_' .$post_type_cap]) ) &&
                    isset($access_settings[$post_type]) ){
                     foreach( $access_settings[$post_type] as $lang => $lang_data ){
+						// @todo check whouser
                         $status = self::otg_access_wpml_check_access_by_post_id( '', $lang, $post_type, array('edit_any' => true, 'edit_own' => true, 'publish' => true, 'delete_any' => true, 'delete_own' => true));
 
                         if ( !$status['edit_own'] && $wpcf_access->current_language == $lang ){
@@ -1456,30 +1476,24 @@ final class Access_Helper
 
                         //Resolve publish option
                         if ( $status['publish'] && $wpcf_access->current_language == $lang  ){
-                            $allcaps['publish_' . $post_type_cap] = 1;
-                            $current_user->allcaps['publish_' . $post_type_cap] = true;
+							$allcaps = Access_Helper::otg_access_add_or_remove_cap( $allcaps, 'publish_' . $post_type_cap, true, $user );
                         }elseif (  !$status['publish'] && $wpcf_access->current_language == $lang ){
-                            unset($allcaps['publish_' . $post_type_cap]);
-                            unset($current_user->allcaps['publish_' . $post_type_cap]);
+							$allcaps = Access_Helper::otg_access_add_or_remove_cap( $allcaps, 'publish_' . $post_type_cap, false, $user );
                         }
 
 
                         if (  !isset($allcaps['edit_' . $post_type_cap])   ){
                             if ( $status['edit_any'] ){
-                                $allcaps['edit_' . $post_type_cap] = 1;
-                                $current_user->allcaps['edit_' . $post_type_cap] = true;
-                                $allcaps['edit_published_' . $post_type_cap] = 1;
-                                $current_user->allcaps['edit_published_' . $post_type_cap] = true;
-                                $allcaps['edit_others_' . $post_type_cap] = 1;
-                                $current_user->allcaps['edit_others_' . $post_type_cap] = true;
+								$allcaps = Access_Helper::otg_access_add_or_remove_cap( $allcaps, 'edit_' . $post_type_cap, true, $user );
+								$allcaps = Access_Helper::otg_access_add_or_remove_cap( $allcaps, 'edit_published_' . $post_type_cap, true, $user );
+								$allcaps = Access_Helper::otg_access_add_or_remove_cap( $allcaps, 'edit_others_' . $post_type_cap, true, $user );
                             }elseif ( !$status['edit_any'] && $status['edit_own'] ){
-                                $allcaps['edit_' . $post_type_cap] = 1;
-                                $current_user->allcaps['edit_' . $post_type_cap] = true;
-                                $allcaps['edit_published_' . $post_type_cap] = 1;
-                                $current_user->allcaps['edit_published_' . $post_type_cap] = true;
+								$allcaps = Access_Helper::otg_access_add_or_remove_cap( $allcaps, 'edit_' . $post_type_cap, true, $user );
+								$allcaps = Access_Helper::otg_access_add_or_remove_cap( $allcaps, 'edit_published_' . $post_type_cap, true, $user );
                             }else{
                                 if ( has_action('wpml_tm_loaded') && did_action('wpml_tm_loaded') ){
-                                    $allcaps = self::wpcf_access_check_translation_jobs_exists( $allcaps, $post_type );
+									// @todo check whouser
+                                    $allcaps = self::wpcf_access_check_translation_jobs_exists( $allcaps, $post_type, $user );
                                 }
                             }
 
@@ -1496,9 +1510,10 @@ final class Access_Helper
                     $post_language['language_code'] = $_POST['icl_post_language'];
                     if ( isset($_POST['post_type']) ){
                         $post_type = $_POST['post_type'];
-                        if ( isset($_post_types[$post_type]) ){
-                            $post_type_cap = strtolower($_post_types[$post_type]['labels']['name']);
-                        }else{
+						if ( in_array( $post_type, $_post_types ) ) {
+							$post_type_object = get_post_type_object( $post_type );
+							$post_type_cap = strtolower( $post_type_object->labels->name );
+                        } else {
                             $post_type_cap = $post_type;
                             $post_type = self::get_post_type_singular_by_name($post_type_cap);
                         }
@@ -1526,80 +1541,53 @@ final class Access_Helper
                     }
 
                     // Delete/Edit any
-                    if ( ( isset(${$action . '_any_level'}) && !empty($current_user->allcaps[${$action . '_any_level'}]) )
-                        || ( isset(${$action . '_any_users'}) && in_array($current_user->data->ID, ${$action . '_any_users'})) ){
+                    if ( ( isset(${$action . '_any_level'}) && !empty($user->allcaps[${$action . '_any_level'}]) )
+                        || ( isset(${$action . '_any_users'}) && in_array($user->data->ID, ${$action . '_any_users'})) ){
                         if ( $action == 'edit' ){
-                            $allcaps['edit_' . $post_type_cap] = 1;
-                            $current_user->allcaps['edit_' . $post_type_cap] = true;
-                            $allcaps['edit_published_' . $post_type_cap] = 1;
-                            $current_user->allcaps['edit_published_' . $post_type_cap] = true;
-                            $allcaps['edit_others_' . $post_type_cap] = 1;
-                            $current_user->allcaps['edit_others_' . $post_type_cap] = true;
-                            $allcaps['edit_private_' . $post_type_cap] = 1;
-                            $current_user->allcaps['edit_private_' . $post_type_cap] = true;
-
+							$allcaps = Access_Helper::otg_access_add_or_remove_cap( $allcaps, 'edit_' . $post_type_cap, true, $user );
+							$allcaps = Access_Helper::otg_access_add_or_remove_cap( $allcaps, 'edit_published_' . $post_type_cap, true, $user );
+							$allcaps = Access_Helper::otg_access_add_or_remove_cap( $allcaps, 'edit_others_' . $post_type_cap, true, $user );
+							$allcaps = Access_Helper::otg_access_add_or_remove_cap( $allcaps, 'edit_private_' . $post_type_cap, true, $user );
                         }else{
-                            $allcaps['delete_' . $post_type_cap] = 1;
-                            $current_user->allcaps['delete_' . $post_type_cap] = true;
-                            $allcaps['delete_others_' . $post_type_cap] = 1;
-                            $current_user->allcaps['delete_others_' . $post_type_cap] = true;
-                            $allcaps['delete_published_' . $post_type_cap] = 1;
-                            $current_user->allcaps['delete_published_' . $post_type_cap] = true;
-                            $allcaps['delete_private_' . $post_type_cap] = 1;
-                            $current_user->allcaps['delete_private_' . $post_type_cap] = true;
+							$allcaps = Access_Helper::otg_access_add_or_remove_cap( $allcaps, 'delete_' . $post_type_cap, true, $user );
+							$allcaps = Access_Helper::otg_access_add_or_remove_cap( $allcaps, 'delete_others_' . $post_type_cap, true, $user );
+							$allcaps = Access_Helper::otg_access_add_or_remove_cap( $allcaps, 'delete_published_' . $post_type_cap, true, $user );
+							$allcaps = Access_Helper::otg_access_add_or_remove_cap( $allcaps, 'delete_private_' . $post_type_cap, true, $user );
                         }
                         return $allcaps;
                     }else{
                         if ( $action == 'edit' ){
-                            unset($allcaps['edit_' . $post_type_cap]);
-                            unset($current_user->allcaps['edit_' . $post_type_cap]);
-                            unset($allcaps['edit_published_' . $post_type_cap]);
-                            unset($current_user->allcaps['edit_published_' . $post_type_cap]);
-                            unset($allcaps['edit_others_' . $post_type_cap]);
-                            unset($current_user->allcaps['edit_others_' . $post_type_cap]);
+							$allcaps = Access_Helper::otg_access_add_or_remove_cap( $allcaps, 'edit_' . $post_type_cap, false, $user );
+							$allcaps = Access_Helper::otg_access_add_or_remove_cap( $allcaps, 'edit_published_' . $post_type_cap, false, $user );
+							$allcaps = Access_Helper::otg_access_add_or_remove_cap( $allcaps, 'edit_others_' . $post_type_cap, false, $user );
                         }else{
-                            unset($allcaps['delete_' . $post_type_cap]);
-                            unset($current_user->allcaps['delete_' . $post_type_cap]);
-                            unset($allcaps['delete_published_' . $post_type_cap]);
-                            unset($current_user->allcaps['delete_published_' . $post_type_cap]);
-                            unset($allcaps['delete_others_' . $post_type_cap]);
-                            unset($current_user->allcaps['delete_others_' . $post_type_cap]);
+							$allcaps = Access_Helper::otg_access_add_or_remove_cap( $allcaps, 'delete_' . $post_type_cap, false, $user );
+							$allcaps = Access_Helper::otg_access_add_or_remove_cap( $allcaps, 'delete_published_' . $post_type_cap, false, $user );
+							$allcaps = Access_Helper::otg_access_add_or_remove_cap( $allcaps, 'delete_others_' . $post_type_cap, false, $user );
                         }
                     }
 
-                    if ( ( isset(${$action . '_own_level'}) && !empty($current_user->allcaps[${$action . '_own_level'}]) )
-                        || ( isset(${$action . '_own_users'}) && in_array($current_user->data->ID, ${$action . '_own_users'})) ){
+                    if ( ( isset(${$action . '_own_level'}) && !empty($user->allcaps[${$action . '_own_level'}]) )
+                        || ( isset(${$action . '_own_users'}) && in_array($user->data->ID, ${$action . '_own_users'})) ){
                         if ( $action == 'edit' ){
-                            $allcaps['edit_' . $post_type_cap] = 1;
-                            $current_user->allcaps['edit_' . $post_type_cap] = true;
-                            $allcaps['edit_published_' . $post_type_cap] = 1;
-                            $current_user->allcaps['edit_published_' . $post_type_cap] = true;
-                            unset($allcaps['edit_others_' . $post_type_cap]);
-                            unset($current_user->allcaps['edit_others_' . $post_type_cap]);
+							$allcaps = Access_Helper::otg_access_add_or_remove_cap( $allcaps, 'edit_' . $post_type_cap, true, $user );
+							$allcaps = Access_Helper::otg_access_add_or_remove_cap( $allcaps, 'edit_published_' . $post_type_cap, true, $user );
+							$allcaps = Access_Helper::otg_access_add_or_remove_cap( $allcaps, 'edit_others_' . $post_type_cap, false, $user );
                         }else{
-                            $allcaps['delete_' . $post_type_cap] = 1;
-                            $current_user->allcaps['delete_' . $post_type_cap] = true;
-                            $allcaps['delete_published_' . $post_type_cap] = 1;
-                            $current_user->allcaps['delete_published_' . $post_type_cap] = true;
-                            unset($allcaps['delete_others_' . $post_type_cap]);
-                            unset($current_user->allcaps['delete_others_' . $post_type_cap]);
+							$allcaps = Access_Helper::otg_access_add_or_remove_cap( $allcaps, 'delete_' . $post_type_cap, true, $user );
+							$allcaps = Access_Helper::otg_access_add_or_remove_cap( $allcaps, 'delete_published_' . $post_type_cap, true, $user );
+							$allcaps = Access_Helper::otg_access_add_or_remove_cap( $allcaps, 'delete_others_' . $post_type_cap, false, $user );
                         }
                         return $allcaps;
                     }else{
                         if ( $action == 'edit' ){
-                            unset($allcaps['edit_' . $post_type_cap]);
-                            unset($current_user->allcaps['edit_' . $post_type_cap]);
-                            unset($allcaps['edit_published_' . $post_type_cap]);
-                            unset($current_user->allcaps['edit_published_' . $post_type_cap]);
-                            unset($allcaps['edit_others_' . $post_type_cap]);
-                            unset($current_user->allcaps['edit_others_' . $post_type_cap]);
+							$allcaps = Access_Helper::otg_access_add_or_remove_cap( $allcaps, 'edit_' . $post_type_cap, false, $user );
+							$allcaps = Access_Helper::otg_access_add_or_remove_cap( $allcaps, 'edit_published_' . $post_type_cap, false, $user );
+							$allcaps = Access_Helper::otg_access_add_or_remove_cap( $allcaps, 'edit_others_' . $post_type_cap, false, $user );
                         }else{
-                            unset($allcaps['delete_' . $post_type_cap]);
-                            unset($current_user->allcaps['delete_' . $post_type_cap]);
-                            unset($allcaps['delete_published_' . $post_type_cap]);
-                            unset($current_user->allcaps['delete_published_' . $post_type_cap]);
-                            unset($allcaps['delete_others_' . $post_type_cap]);
-                            unset($current_user->allcaps['delete_others_' . $post_type_cap]);
+							$allcaps = Access_Helper::otg_access_add_or_remove_cap( $allcaps, 'delete_' . $post_type_cap, false, $user );
+							$allcaps = Access_Helper::otg_access_add_or_remove_cap( $allcaps, 'delete_published_' . $post_type_cap, false, $user );
+							$allcaps = Access_Helper::otg_access_add_or_remove_cap( $allcaps, 'delete_others_' . $post_type_cap, false, $user );
                         }
                     }
                         
@@ -1613,7 +1601,7 @@ final class Access_Helper
      *
      * Returns all the modified capabilities. Cached per capability
      * NOTE cached per cap checked
-     * NOTE maybe it sets them in just the first passand we do not need one per different cap check
+     * NOTE maybe it sets them in just the first pass and we do not need one per different cap check
      * 
      * @global type $current_user
      * @global type $wpcf_access->rules->types
@@ -1622,11 +1610,12 @@ final class Access_Helper
      * @param array $args    [0] Requested capability
      *                       [1] User ID
      *                       [2] Associated object ID
+	 * @param object $user   The user ti check capabilities against, added in WP 3.7.0
      * @return array
      */
-    public static function wpcf_access_user_has_cap_filter($allcaps, $caps, $args) 
+    public static function wpcf_access_user_has_cap_filter( $allcaps, $caps, $args, $user ) 
     {
-        global $wpcf_access,$current_user;
+        global $wpcf_access;
 
         $admin_include_caps_list = "/edit\_|wpcf\_|manage\_|\_cred|delete\_|publish\_|\_cred|view_own_in_profile\_|modify_own\_|view_fields_in|modify_fields_in|assign_/";
 
@@ -1634,34 +1623,36 @@ final class Access_Helper
 
         if ( preg_match( $admin_include_caps_list, $args[0]) && !in_array( $args[0], $admin_exclude_caps) ){
 
-            if ( isset($current_user->allcaps['level_10']) ){
-                if ( isset($caps[0]) ){
-                    foreach( $caps as $val => $cap ){
-                        $allcaps[$cap] = 1;
+            if ( isset( $user->allcaps['level_10'] ) ) {
+                if ( isset( $caps[0] ) ) {
+                    foreach ( $caps as $val => $cap ) {
+						$allcaps = Access_Helper::otg_access_add_or_remove_cap( $allcaps, $cap, true, $user );
                     }
                 }
                 return $allcaps;
             }
-            if ( preg_match( "/(^edit\_|^delete\_|^publish\_)/", $args[0], $res) && $args[0] !== 'edit_comments' ){
+            if ( preg_match( "/(^edit\_|^delete\_|^publish\_)/", $args[0], $res) && $args[0] !== 'edit_comments' ) {
 
-               $allcaps = self::wpcf_access_check($allcaps, $caps, $args);
-               if ( $wpcf_access->wpml_installed &&  !isset($current_user->allcaps['level_10']) ){
-                    $allcaps = self::wpcf_check_wpml_post_type_permissions($allcaps, $caps, $args, $res);
-               }
-               return $allcaps;
+				$allcaps = self::wpcf_access_check( $allcaps, $caps, $args, true, $user );
+				if ( 
+					$wpcf_access->wpml_installed 
+					&& ! isset( $user->allcaps['level_10'] ) ) {
+                    $allcaps = self::wpcf_check_wpml_post_type_permissions( $allcaps, $caps, $args, $res, $user );
+				}
+				return $allcaps;
             }
-
 
             $access_cache_user_has_cap = 'access_cache_user_has_cap';
             $arg3 = '';
-            if ( isset($args[2]) ){
+            if ( isset( $args[2] ) ){
                 $arg3 = '_'.$args[2];	
             }
-            $access_cache_user_has_cap_key = md5( 'access::user' . $args[1]  . 'cap' . $args[0].$arg3 );
+            $access_cache_user_has_cap_key = md5( 'access::user' . $args[1]  . 'cap' . $args[0] . $arg3 . '#' . $user->ID );
             $cached_caps = wp_cache_get( $access_cache_user_has_cap_key, $access_cache_user_has_cap );
-            if ( false === $cached_caps ) { 
-                $allcaps = self::wpcf_access_check($allcaps, $caps, $args);               
-                wp_cache_add( $access_cache_user_has_cap_key, $allcaps, $access_cache_user_has_cap );                
+
+            if ( false === $cached_caps ) {
+                $allcaps = self::wpcf_access_check( $allcaps, $caps, $args, true, $user );
+                wp_cache_add( $access_cache_user_has_cap_key, $allcaps, $access_cache_user_has_cap );
             }else{
                 $allcaps = $cached_caps;
             }
@@ -1675,43 +1666,30 @@ final class Access_Helper
      * @global type $wpcf_access
      * @global type $post
      * @global type $pagenow
-     * @staticvar null $current_user
      * @param array $allcaps All the capabilities of the user
      * @param array $cap     [0] Required capability
      * @param array $args    [0] Requested capability
      *                       [1] User ID
      *                       [2] Associated object ID
-     * @param bool $parse true|false to return $allcaps or boolean
+     * @param bool   $parse true|false to return $allcaps or boolean
+	 * @param object $user   The user to check the capability against
      * @return array|boolean 
      */
-    public static function wpcf_access_check($allcaps, $caps, $args, $parse = true) 
-    {
-        global $wpcf_access;
-        
-        // Set user (changed after noticed WP signon empty user)
-        static $current_user = null, $_user_id=-1;
-        /*
-        if (is_null($current_user)) 
-        {
-            if (isset($_POST['log'])
-                    && basename($_SERVER['PHP_SELF']) == 'wp-login.php') 
-                    {
-                $current_user = get_user_by('login', esc_sql($_POST['log']));
-            } 
-            else 
-            {
-                $current_user = new WP_User(get_current_user_id());
-            }
-        }*/
-        $current_user = wp_get_current_user();
+    public static function wpcf_access_check( $allcaps, $caps, $args, $parse = true, $user = null ) {
+		if ( is_null( $user ) ) {
+			return $allcaps;
+		}
+
+		global $wpcf_access;
         // this is number but users stored are strings
-        $_user_id = $current_user->ID;
-        
+        $_user_id = $user->ID;
+
         // Debug if some args[0] is array
-        if (WPCF_ACCESS_DEBUG) 
-        {
-            if (empty($args[0]) || !is_string($args[0])) 
-            {
+        if ( WPCF_ACCESS_DEBUG ) {
+            if (
+				empty( $args[0] ) 
+				|| ! is_string( $args[0] ) 
+			) {
                 $wpcf_access->errors['cap_args'][] = array(
                     'file' => __FILE__ . ' #' . __LINE__,
                     'args' => func_get_args(),
@@ -1719,8 +1697,10 @@ final class Access_Helper
                 );
             }
         }
-        if (empty($args[0]) || !is_string($args[0])) 
-        {
+        if (
+			empty( $args[0] ) 
+			|| ! is_string( $args[0] ) 
+		) {
             return $allcaps;
         }
 
@@ -1750,8 +1730,9 @@ final class Access_Helper
         );
 
         // Allow check to be altered
-        list($capability_requested, $parse_args) = apply_filters('types_access_check',
-                array($capability_requested, $parse_args, $args));
+		// @todo whouser check on callbacks
+        $parse_args['requested_user'] = $user;
+        list( $capability_requested, $parse_args ) = apply_filters( 'types_access_check', array( $capability_requested, $parse_args, $args ) );
 
         // TODO Monitor this
         // I saw mixup of $key => $cap and $cap => $true filteres by collect.php
@@ -1773,9 +1754,9 @@ final class Access_Helper
         // Allow rules to be altered
         $wpcf_access->rules = apply_filters('types_access_rules',
                 $wpcf_access->rules, $parse_args);
-
-        $override = apply_filters('types_access_check_override', null, $parse_args);
-        if (!is_null($override)) 
+		// @todo whouser check in UploadHelper.php
+        $override = apply_filters( 'types_access_check_override', null, $parse_args );
+        if (!is_null($override))
         {
             return $override;
         }
@@ -1809,9 +1790,9 @@ final class Access_Helper
             // Presumption that any capability that requires user to be not-logged
             // (guest) should be allowed. Because other roles have level ranked higher
             // than guest, means it's actually unrestricted by any means.
-            if ($types_role == 'guest') 
-            {
-                return $parse ? self::wpcf_access_parse_caps(true, $parse_args) : true;
+            if ( $types_role == 'guest' ) {
+				// @todo whouser
+                return $parse ? self::wpcf_access_parse_caps( true, $parse_args, $user ) : true;
             }
 
             // Set data
@@ -1830,7 +1811,7 @@ final class Access_Helper
                 // Check level
                 if ($level_needed) 
                 {
-                    if (!empty($current_user->allcaps[$level_needed])) 
+                    if (!empty($user->allcaps[$level_needed])) 
                     {
                         $allow = $level_passed = true;
                     }
@@ -1847,8 +1828,8 @@ final class Access_Helper
                     }
                 }
             }
-            
-            $return  = $parse ?  self::wpcf_access_parse_caps((bool) $allow, $parse_args) : (bool) $allow;
+
+            $return  = $parse ?  self::wpcf_access_parse_caps( (bool) $allow, $parse_args, $user ) : (bool) $allow;
             /*if ($log)
             {
                 //taccess_log(array($capability_requested, $return));
@@ -1894,7 +1875,7 @@ final class Access_Helper
             // Return true for guest (same as for post types)
             if ($tax_role == 'guest') 
             {
-                return $parse ? self::wpcf_access_parse_caps(true, $parse_args) : true;
+                return $parse ? self::wpcf_access_parse_caps( true, $parse_args, $user ) : true;
             }
 
             // Set level and user
@@ -1915,7 +1896,7 @@ final class Access_Helper
                     $allow = false;
                     if ($level_needed) 
                     {
-                        if (!empty($current_user->allcaps[$level_needed])) 
+                        if (!empty($user->allcaps[$level_needed])) 
                         {
                             $allow = $level_passed = true;
                         }
@@ -1927,8 +1908,7 @@ final class Access_Helper
                             $allow = true;
                         }
                     }
-                    return $parse ? self::wpcf_access_parse_caps((bool) $allow,
-                                    $parse_args) : (bool) $allow;
+                    return $parse ? self::wpcf_access_parse_caps( (bool) $allow, $parse_args, $user ) : (bool) $allow;
                 }
             } 
             /*else 
@@ -2024,7 +2004,7 @@ final class Access_Helper
             // Return true for guest (same as post_types)
             if ($data['role'] == 'guest') 
             {
-                return $parse ? self::wpcf_access_parse_caps(true, $parse_args) : true;
+                return $parse ? self::wpcf_access_parse_caps( true, $parse_args, $user ) : true;
             }
             // removing level testing for custom 3rd party capabilities
             $level_needed = isset($map[$data['role']]) ? $map[$data['role']] : false;
@@ -2038,7 +2018,7 @@ final class Access_Helper
                 $allow = false;
                 if ($level_needed) 
                 {
-                    if (!empty($current_user->allcaps[$level_needed])) 
+                    if (!empty($user->allcaps[$level_needed])) 
                     {
                         $allow = $level_passed = true;
                     }
@@ -2050,14 +2030,12 @@ final class Access_Helper
                         $allow = true;
                     }
                 }
-                return $parse ? self::wpcf_access_parse_caps((bool) $allow,
-                                $parse_args) : (bool) $allow;
+                return $parse ? self::wpcf_access_parse_caps( (bool) $allow, $parse_args, $user ) : (bool) $allow;
             }
             //}
         }
         $wpcf_access->debug_all_hooks[$capability_requested][] = $parse_args;
-        return is_null($allow) ? $allcaps : self::wpcf_access_parse_caps((bool) $allow,
-                        $parse_args);
+        return is_null($allow) ? $allcaps : self::wpcf_access_parse_caps( (bool) $allow, $parse_args, $user );
     }
 
     /**
@@ -2068,8 +2046,7 @@ final class Access_Helper
      * @param type $caps
      * @param type $allcaps 
      */
-    public static function wpcf_access_parse_caps($allow, $args) 
-    {
+    public static function wpcf_access_parse_caps( $allow, $args, $user = null ) {
         // Set vars
         $args_clone = $args;
         $cap = $args['cap'];
@@ -2078,19 +2055,23 @@ final class Access_Helper
         $data = $args['data'];
     //    $role = $args['role'];
         $args = $args['args'];
+
+		if ( is_null( $user ) ) {
+			return $allcaps;
+		}
         
         if ($allow) 
         {
             // If true - force all caps to true
 
-            $allcaps[$cap] = 1;
+			$allcaps = Access_Helper::otg_access_add_or_remove_cap( $allcaps, $cap, true, $user );
             foreach ($caps as $c) 
             {
                 // TODO - this is temporary solution for comments
                 if ($cap == 'edit_comment'
                         && (strpos($c, 'edit_others_') === 0
                         || strpos($c, 'edit_published_') === 0)) {
-                    $allcaps[$c] = 1;
+					$allcaps = Access_Helper::otg_access_add_or_remove_cap( $allcaps, $c, true, $user );
                 }
                 // TODO Monitor this - tricky, WP requires that all required caps
                 // to be true in order to allow cap.
@@ -2098,25 +2079,25 @@ final class Access_Helper
                 {
                     foreach ($data['fallback'] as $fallback) 
                     {
-                        $allcaps[$fallback] = 1;
+						$allcaps = Access_Helper::otg_access_add_or_remove_cap( $allcaps, $fallback, true, $user );
                     }
                 } 
                 else 
                 {
-                    $allcaps[$c] = 1;
+					$allcaps = Access_Helper::otg_access_add_or_remove_cap( $allcaps, $c, true, $user );
                 }
             }
         } 
         else 
         {
             // If false unset caps in allcaps
-            unset($allcaps[$cap]);
+			$allcaps = Access_Helper::otg_access_add_or_remove_cap( $allcaps, $cap, false, $user );
 
             // TODO Monitor this
             // Do we want to unset allcaps?
             foreach ($caps as $c) 
             {
-                unset($allcaps[$c]);
+				$allcaps = Access_Helper::otg_access_add_or_remove_cap( $allcaps, $c, false, $user );
             }
         }
 
@@ -2612,14 +2593,17 @@ final class Access_Helper
      * @staticvar null $cache
      * @return null 
      */
-    public static function wpcf_access_filter_rules() 
+    public static function wpcf_access_filter_rules( )
     {
         global $current_user, $wpcf_access;
-		
+
         static $cache = null;
-        
-        
         $args = func_get_args();
+        $_user_id = $current_user->ID;
+        if ( isset($args[0][1]['requested_user']->ID) && $args[0][1]['requested_user']->ID != $_user_id ){
+            $_user_id = $args[0][1]['requested_user']->ID;
+        }
+
 		$key_var1 = serialize($args[0][0]);
 		$key_var2 = serialize($args[0][1]);
 		$key_var3 = serialize($args[0][2]);
@@ -2641,7 +2625,7 @@ final class Access_Helper
             return array($cap, $parse_args, $args);
         }
 
-        $set = self::wpcf_access_user_get_caps_by_type($current_user->ID,
+        $set = self::wpcf_access_user_get_caps_by_type($_user_id,
                 $found['_context']);
 
         if (empty($set)) {
@@ -2731,25 +2715,18 @@ final class Access_Helper
             ),
             // taxonomies
             'edit_terms' => array(
-                'false_disallow' => array('manage_terms'),
-            ),
-            'manage_terms' => array(
-                'true_allow' => array('edit_terms', 'delete_terms')
+                'true_allow' => array('manage_terms'),
+                'false_disallow' => array('manage_terms','delete_terms')
             ),
             'delete_terms' => array(
-                'true_allow' => array('manage_terms')
+                'true_allow' => array('manage_terms', 'edit_terms')
             ),
-            
+            'manage_terms' => array(
+                'true_allow' => array('edit_terms', 'delete_terms'),
+                'false_disallow' => array('edit_terms','delete_terms')
+            ),
             'assign_terms' => array(),
-            /*// comments
-            'edit_own_comments' => array(
-                'true_allow'=>array('read', 'publish')
-            ),
-            'edit_any_comments' => array(
-                'true_allow'=>array('read', 'publish')
-            )*/
-            
-        );        
+        );
         return $deps;
     }
     
@@ -2926,7 +2903,11 @@ final class Access_Helper
         $args = func_get_args();
         $capability_requested = $args[0][0];
         $parse_args = $args[0][1];
+        if ( $args[0][1]['requested_user']->ID != $args[0][2] ){
+            $args[0][2][1] = $args[0][1]['requested_user']->ID;
+        }
         $args = $args[0][2];
+        $user_id = $args[1];
 		
         $found = self::wpcf_access_search_cap($capability_requested);
         // Allow filtering
@@ -2950,8 +2931,7 @@ final class Access_Helper
                         break;
                     }
                 }
-                if ( !current_user_can("edit_others_{$post_type}")) {
-                    $user_id = $args[1];
+                if ( !user_can($user_id, "edit_others_{$post_type}")) {
                     $comment_id = $args[2];
                     $comment = get_comment($comment_id);
                     if ( !empty($comment->comment_post_ID) ) {
@@ -3018,7 +2998,7 @@ final class Access_Helper
                         }
                         // Not sure why we didn't use this mapping before
                         $capability_requested = self::wpcf_access_map_cap($capability_requested,
-                                $post_id);
+                                $post_id, $user_id );
                     }
 
                     if (WPCF_ACCESS_DEBUG) 
@@ -3168,9 +3148,18 @@ final class Access_Helper
     {
         global $wpcf_access;
         $r = array();
-        
-        $a = apply_filters('types-access-area', array());
-        if (!is_array($a)) $a=array();
+		
+		$extra_tabs	= apply_filters( 'types-access-tab', array() );
+		// Native Third Party areas
+        $a			= apply_filters( 'types-access-area', array() );
+		//Third Party areas coming from custom tabs
+		foreach ( $extra_tabs as $tab_slug => $tab_name ) {
+			$a = apply_filters( 'types-access-area-for-' . $tab_slug, $a );
+		}
+		
+        if ( ! is_array( $a ) ) {
+			$a = array();
+		}
         
         foreach ($a as $area) 
         {
@@ -3201,7 +3190,15 @@ final class Access_Helper
         return $r;
     }
 
-	public static function wpcf_access_get_current_page( ){
+	public static function wpcf_access_get_current_page( ) {
+		// Avoid breaking CLI
+		if (
+			! isset( $_SERVER['HTTP_HOST'] )
+			|| ! isset( $_SERVER['REQUEST_URI'] )
+		) {
+			return '';
+		}
+		
 		global $wpdb;
         
 		$url = "http://".$_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI'];
@@ -3976,7 +3973,7 @@ final class Access_Helper
                 include( get_stylesheet_directory() . '/'. $file );
              }
              else{
-                echo '<h2>' . __('Can\'t find php template', 'wpcf-access') . '</h2>';  
+                echo '<h1>' . __('Can\'t find php template', 'wpcf-access') . '</h1>';
              }
 			 exit;
 		}
@@ -4263,13 +4260,17 @@ final class Access_Helper
      * @param type $post_id
      * @return type 
      */
-    public static function wpcf_access_map_cap($cap, $post_id) 
+    public static function wpcf_access_map_cap($cap, $post_id, $user_id = null)
     {
         $current_user = wp_get_current_user();
         // do check for 0 post id
+        $_user_id = $current_user->ID;
+        if ( $_user_id != $user_id ){
+            $_user_id = $user_id;
+        }
         if (intval($post_id)>0)
         {
-            $map = map_meta_cap($cap, $current_user->ID, $post_id);
+            $map = map_meta_cap($cap, $_user_id, $post_id);
             if (is_array($map) && !empty($map[0])) {
                 return $map[0];
             }
@@ -4553,7 +4554,7 @@ final class Access_Helper
         TAccess_Loader::load('CLASS/Admin_Edit');
         echo "\r\n" . '<div class="wrap">
         <div id="icon-wpcf-access" class="icon32"><br /></div>
-        <h2>' . __('Access', 'wpcf-access') . '</h2>' . "\r\n";
+        <h1>' . __('Access', 'wpcf-access') . '</h1>' . "\r\n";
         Access_Admin_Edit::wpcf_access_admin_edit_access();
         echo "\r\n" . '</div>' . "\r\n";
     }
@@ -5456,6 +5457,32 @@ final class Access_Helper
 		);
 		
 		return $results;
+	}
+	
+	public static function otg_access_add_or_remove_cap( $allcaps, $cap, $add = true, $user = null ) {
+		global $current_user;
+		if ( is_null( $user ) ) {
+			//return $allcaps;
+		}
+		if ( $add ) {
+			$allcaps[ $cap ] = 1;
+			if ( isset($user->allcaps) ){
+			    $user->allcaps[ $cap ] = true;
+            }
+			if ( isset($user->ID) && $user->ID == $current_user->ID ){
+                $current_user->allcaps[ $cap ] = true;
+            }
+
+		} else {
+			unset( $allcaps[ $cap ] );
+            if ( isset($user->allcaps[ $cap ]) ){
+			    unset( $user->allcaps[ $cap ] );
+            }
+			if ( isset($user->ID) && $user->ID == $current_user->ID ){
+                unset( $current_user->allcaps[ $cap ] );
+            }
+		}
+		return $allcaps;
 	}
 	
 }

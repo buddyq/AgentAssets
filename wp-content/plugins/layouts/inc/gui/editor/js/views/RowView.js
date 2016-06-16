@@ -19,6 +19,30 @@ DDLayout.views.RowView = DDLayout.views.abstract.ElementView.extend({
         //call parent constructor
         DDLayout.views.abstract.ElementView.prototype.initialize.call(self, options);
     },
+    beforeRender:function()
+    {
+        this.adjustHeights();
+    },
+    afterRender:function()
+    {
+        var self = this;
+
+        _.delay(function(){
+            self.$el.css('min-height', '110px');
+        }, 280, self);
+
+        _.delay(function(){
+            DDLayout.AdminPage.Rows[self.model.get('id')] = self.$el.outerHeight();
+        }, 1000, self)
+
+    },
+    adjustHeights:function(){
+        var self = this;
+
+       if( DDLayout.AdminPage.Rows.hasOwnProperty( self.model.get('id') ) ){
+            self.$el.css( 'min-height', DDLayout.AdminPage.Rows[self.model.get('id')] );
+        }
+    },
     render:function(args)
     {
 

@@ -767,12 +767,20 @@ class WPV_Export_Import_Embedded {
 				}
 				$template_extra_css = '';
 				if ( isset( $view_template['template_extra_css'] ) ) {
-					$template_extra_css = $view_template['template_extra_css'];
+					if ( is_string( $view_template['template_extra_css'] ) ) {
+						// Data with just line breaks becomes an array with an empty item
+						// Thanks, SimpleXML!
+						$template_extra_css = $view_template['template_extra_css'];
+					}
 					unset( $view_template['template_extra_css'] );
 				}
 				$template_extra_js = '';
 				if ( isset( $view_template['template_extra_js'] ) ) {
-					$template_extra_js = $view_template['template_extra_js'];
+					if ( is_string( $view_template['template_extra_js'] ) ) {
+						// Data with just line breaks becomes an array with an empty item
+						// Thanks, SimpleXML!
+						$template_extra_js = $view_template['template_extra_js'];
+					}
 					unset( $view_template['template_extra_js'] );
 				}
 				$template_description = '';
@@ -1836,6 +1844,11 @@ class WPV_Export_Import_Embedded {
 							$ccf_option_value[] = $cond_func;
 						}
 						$WPV_settings[$option_name] = $ccf_option_value;
+					} else if (
+						'wpv_post_types_for_archive_loop' == $option_name 
+						&& is_array( $option_value )
+					) {
+						$WPV_settings[ $option_name ] = json_decode( $option_value );
 					} else {
 						$WPV_settings[$option_name] = $option_value;
 					}
@@ -3211,6 +3224,40 @@ function _wpv_adjust_view_parametric_for_import( $view_settings = array(), $view
 				$view_settings[ $filter_control ] = array( $view_settings[ $filter_control ][ $filter_control ] );
 			}
 			unset( $view_settings[ $filter_control ][ $filter_control ] );
+		}
+	}
+	return $view_settings;
+}
+
+/**
+* _wpv_adjust_extra_css_js_for_import
+*
+* Adjust values for several View settings related to extra assets, as SimpleXML can transform just line breaks into arrays with empty values
+*
+* @param (array) $view_settings
+* @param (array) $view_post_array
+*
+* @return
+*
+* @since 2.1
+*/
+
+
+add_filter( 'wpv_filter_adjust_view_settings_for_import', '_wpv_adjust_extra_css_js_for_import', 50, 2 );
+
+function _wpv_adjust_extra_css_js_for_import( $view_settings = array(), $view_post_array = array() ) {
+	$extra_settings = array(
+		'filter_meta_html_css',
+		'filter_meta_html_js',
+		'layout_meta_html_css',
+		'layout_meta_html_js'
+	);
+	foreach ( $extra_settings as $extra_settings_key ) {
+		if ( 
+			isset( $view_settings[ $extra_settings_key ] ) 
+			&& ! is_string( $view_settings[ $extra_settings_key ] )
+		) {
+			$view_settings[ $extra_settings_key ] = '';
 		}
 	}
 	return $view_settings;

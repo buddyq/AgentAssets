@@ -158,8 +158,23 @@ DDLayout.ContentTemplateCell = function($)
             self.extra_editors.destroy();
         });
 
+        // Add 'wpv-filter-wpv-shortcodes-gui-wpv_post_body-exclude-content-template' filter
+        Toolset.hooks.addFilter( 'wpv-filter-wpv-shortcodes-gui-wpv_post_body-exclude-content-template', self.wpv_filter_wpv_shortcodes_gui_exclude_content_template_callback );
+
         self.set_up_live_events( );
     };
+
+    /**
+     *  wpv_filter_wpv_shortcodes_gui_exclude_content_template_callback
+     *
+     *  Callback function for 'wpv-filter-wpv-shortcodes-gui-*-exclude-content-template' filter
+     *  Returns the ID of currently editing content template, as an array.
+     *  So it is not presented as a self-pointing CT for views short codes (i.e. wpv-post-body)
+     */
+    self.wpv_filter_wpv_shortcodes_gui_exclude_content_template_callback = function( excluded_cts ) {
+        excluded_cts.push( self._ct_editor );
+        return excluded_cts;
+    }
 
     self.toggle_extra_editors_visibility = function( event ){
             var $me = $( this),
@@ -640,7 +655,7 @@ DDLayout.ContentTemplateCell = function($)
 
     self.display_post_content_info = function(content, current_text, specific_text, loading_text, preview_image, that) {
         var preview = '';
-
+        
         if (content.ddl_view_template_id != 0) {
             preview += '<br />';
 
@@ -683,32 +698,41 @@ DDLayout.ContentTemplateCell = function($)
                         dataType:'json',
                         data: data,
                         cache: false,
-                        success: function(data) {
+                        success: function(response) {
                             //cache view id data
-                            self._preview_cache[content.ddl_view_template_id] = data.content;
+                            if(!response){
+                                var response = {Data:{content: '<div class="ddl-center-align">'+DDLayout_settings.DDL_JS.strings.views_plugin_missing+'</div>'}};
+                            }
 
-                            var local_copy = jQuery.jStorage.get('content-template-' + content.ddl_view_template_id, '');
+                            if(!response.hasOwnProperty('Data') || !response.Data.hasOwnProperty('content')){
+                                response = {Data:{content: '<div class="ddl-center-align">'+DDLayout_settings.DDL_JS.strings.views_plugin_missing+'</div>'}};
+                            } else {
 
-                            if (local_copy != data.content) {
+                                self._preview_cache[content.ddl_view_template_id] = response.Data.content;
 
-                                jQuery.jStorage.set('content-template-' + content.ddl_view_template_id, data.content);
+                                var local_copy = jQuery.jStorage.get('content-template-' + content.ddl_view_template_id, '');
 
-                                jQuery(div_place_holder).html(data.content);
+                                if (local_copy != response.Data.content) {
 
-                                // If we have received all the previews we need to refresh
-                                // the layout display to re-calculate the heights.
+                                    jQuery.jStorage.set('content-template-' + content.ddl_view_template_id, response.Data.content);
 
-                                var all_previews_ready = true;
-                                for (var key in self._preview_cache) {
-                                    if (self._preview_cache.hasOwnProperty(key)) {
-                                        if (self._preview_cache[key] == null) {
-                                            all_previews_ready = false;
+                                    jQuery(div_place_holder).html(response.Data.content);
+
+                                    // If we have received all the previews we need to refresh
+                                    // the layout display to re-calculate the heights.
+
+                                    var all_previews_ready = true;
+                                    for (var key in self._preview_cache) {
+                                        if (self._preview_cache.hasOwnProperty(key)) {
+                                            if (self._preview_cache[key] == null) {
+                                                all_previews_ready = false;
+                                            }
                                         }
                                     }
-                                }
 
-                                if (all_previews_ready) {
-                                    DDLayout.ddl_admin_page.render_all();
+                                    if (all_previews_ready) {
+                                        DDLayout.ddl_admin_page.render_all();
+                                    }
                                 }
                             }
                         }

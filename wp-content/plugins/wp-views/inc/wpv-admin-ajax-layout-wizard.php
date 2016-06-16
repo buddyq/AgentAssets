@@ -300,7 +300,10 @@ function wpv_loop_wizard_load_saved_fields() {
 							! $current_shortcode_is_selected 
 							&& 'wpv-post-taxonomy' == $current_shortcode_handle 
 							&& 'wpv-post-taxonomy' == $shortcode_selected_handle
-							&& strpos( $current_shortcode_to_insert, 'type="' . $shortcode_selected_attributes['type'] . '"' ) !== false
+							&& (
+								strpos( $current_shortcode_to_insert, 'type="' . $shortcode_selected_attributes['type'] . '"' ) !== false 
+								|| strpos( $current_shortcode_to_insert, "type='" . $shortcode_selected_attributes['type'] . "'" ) !== false 
+							)
 						) {
 							$current_shortcode_is_selected = true;
 							$current_shortcode_to_insert = trim( $shortcode_selected_unslashed, '[]');
@@ -327,8 +330,11 @@ function wpv_loop_wizard_load_saved_fields() {
 							) {
 								$current_shortcode_is_selected = true;
 							} else if (
-								strpos( $current_shortcode_to_insert, 'view_template="' . $shortcode_selected_ct_selected . '"' ) !== false
-								&& __('Content Template', 'wpv-views') == $group_title
+								__('Content Template', 'wpv-views') == $group_title 
+								&& (
+									strpos( $current_shortcode_to_insert, 'view_template="' . $shortcode_selected_ct_selected . '"' ) !== false
+									|| strpos( $current_shortcode_to_insert, "view_template='" . $shortcode_selected_ct_selected . "'" ) !== false
+								)
 							) {
 								$current_shortcode_is_selected = true;
 							}
@@ -338,6 +344,7 @@ function wpv_loop_wizard_load_saved_fields() {
 							! $current_shortcode_is_selected 
 							&& 'types' == $current_shortcode_handle 
 						) {
+							// Double quotes
 							if ( 
 								$shortcode_selected_is_types_field 
 								&& preg_match( '/field="(.*?)"/', $current_shortcode_to_insert, $field_in_loop ) !== 0 
@@ -353,6 +360,26 @@ function wpv_loop_wizard_load_saved_fields() {
 							} else if ( 
 								$shortcode_selected_is_types_termfield 
 								&& preg_match( '/termmeta="(.*?)"/', $current_shortcode_to_insert, $field_in_loop ) !== 0 
+								&& $field_in_loop[1] == $shortcode_selected_types_name
+							) {
+								$current_shortcode_is_selected = true;
+							}
+							// Single quotes
+							else if ( 
+								$shortcode_selected_is_types_field 
+								&& preg_match( "/field='(.*?)'/", $current_shortcode_to_insert, $field_in_loop ) !== 0 
+								&& $field_in_loop[1] == $shortcode_selected_types_name
+							) {
+								$current_shortcode_is_selected = true;
+							} else if ( 
+								$shortcode_selected_is_types_userfield 
+								&& preg_match( "/usermeta='(.*?)'/", $current_shortcode_to_insert, $field_in_loop ) !== 0 
+								&& $field_in_loop[1] == $shortcode_selected_types_name
+							) {
+								$current_shortcode_is_selected = true;
+							} else if ( 
+								$shortcode_selected_is_types_termfield 
+								&& preg_match( "/termmeta='(.*?)'/", $current_shortcode_to_insert, $field_in_loop ) !== 0 
 								&& $field_in_loop[1] == $shortcode_selected_types_name
 							) {
 								$current_shortcode_is_selected = true;
@@ -390,6 +417,8 @@ function wpv_loop_wizard_load_saved_fields() {
 							// if it is a new WooCommerce Views field
 							if ( preg_match('/name="views_woo(.*?)"/', $current_shortcode_to_insert, $woo_match) ) {
 								$current_shortcode_head = 'post-field-views_woo' . $woo_match[1];
+							} else if ( preg_match("/name='views_woo(.*?)'/", $current_shortcode_to_insert, $woo_match) ) {
+								$current_shortcode_head = 'post-field-views_woo' . $woo_match[1];
 							}
 						} else if ( $current_shortcode_handle === "wpv-taxonomy-field" ) {
 							//$current_shortcode_handle_corrected = $current_shortcode_handle . '_corrected';
@@ -414,6 +443,7 @@ function wpv_loop_wizard_load_saved_fields() {
 							$current_shortcode_head = 'post-view';
 							$current_shortcode_head = '';
 						} else if ( $current_shortcode_handle === "types" ) {
+							// Double quotes
 							if ( preg_match( '/field="(.*?)"/', $current_shortcode_to_insert, $field_in_loop ) !== 0 ) {
 								$current_shortcode_head = 'types-field-' . $field_in_loop[1];
 								$current_shortcode_is_types = true;
@@ -427,6 +457,20 @@ function wpv_loop_wizard_load_saved_fields() {
 								$current_shortcode_is_types = true;
 								$current_shortcode_types_name = $field_in_loop[1];
 							}
+							// Single quotes
+							else if ( preg_match( "/field='(.*?)'/", $current_shortcode_to_insert, $field_in_loop ) !== 0 ) {
+								$current_shortcode_head = 'types-field-' . $field_in_loop[1];
+								$current_shortcode_is_types = true;
+								$current_shortcode_types_name = $field_in_loop[1];
+							} else if ( preg_match( "/usermeta='(.*?)'/", $current_shortcode_to_insert, $field_in_loop ) !== 0 ) {
+								$current_shortcode_head = '';
+								$current_shortcode_is_types = true;
+								$current_shortcode_types_name = $field_in_loop[1];
+							} else if ( preg_match( "/termmeta='(.*?)'/", $current_shortcode_to_insert, $field_in_loop ) !== 0 ) {
+								$current_shortcode_head = 'taxonomy-field-' . $field_in_loop[1];
+								$current_shortcode_is_types = true;
+								$current_shortcode_types_name = $field_in_loop[1];
+							}
 						} else if ( substr( $current_shortcode_to_insert, 0, 12 ) === "wpv-taxonomy" ) { // heading table solumns for wpv-taxonomy-* shortcodes
 							if ( in_array( $current_shortcode_handle, array( 'wpv-taxonomy-link', 'wpv-taxonomy-title', 'wpv-taxonomy-id', 'wpv-taxonomy-slug' ) ) ) {
 								$current_shortcode_head = substr( $current_shortcode_handle, 4 );
@@ -435,12 +479,20 @@ function wpv_loop_wizard_load_saved_fields() {
 								$current_shortcode_head = 'taxonomy-post_count';
 							}
 						} else if ( $current_shortcode_handle === "wpv-user" ) { // heaading table columns for wpv-user shortcodes
+							// Double quotes
 							preg_match( '/field="(.*?)"/', $current_shortcode_to_insert, $view_user_field );
+							// Single quotes
+							preg_match( "/field='(.*?)'/", $current_shortcode_to_insert, $view_user_field_single_quotes );
 							if ( 
 								isset( $view_user_field[1] ) 
 								&& in_array( $view_user_field[1], $user_fields_with_head ) 
 							) {
 								$current_shortcode_head = $view_user_field[1];
+							} else if (
+								isset( $view_user_field_single_quotes[1] ) 
+								&& in_array( $view_user_field_single_quotes[1], $user_fields_with_head ) 
+							) {
+								$current_shortcode_head = $view_user_field_single_quotes[1];
 							} else {
 								$current_shortcode_head = '';
 							}
@@ -866,6 +918,8 @@ function wpv_loop_wizard_add_field() {
 					// if it is a new WooCommerce Views field
 					if ( preg_match('/name="views_woo(.*?)"/', $current_shortcode_to_insert, $woo_match) ) {
 						$current_shortcode_head = 'post-field-views_woo' . $woo_match[1];
+					} else if ( preg_match("/name='views_woo(.*?)'/", $current_shortcode_to_insert, $woo_match) ) {
+						$current_shortcode_head = 'post-field-views_woo' . $woo_match[1];
 					}
 				} else if ( $current_shortcode_handle === "wpv-taxonomy-field" ) {
 					//$current_shortcode_handle_corrected = $current_shortcode_handle . '_corrected';
@@ -890,6 +944,7 @@ function wpv_loop_wizard_add_field() {
 					$current_shortcode_head = 'post-view';
 					$current_shortcode_head = '';
 				} else if ( $current_shortcode_handle === "types" ) {
+					// Double quotes
 					if ( preg_match( '/field="(.*?)"/', $current_shortcode_to_insert, $field_in_loop ) !== 0 ) {
 						$current_shortcode_head = 'types-field-' . $field_in_loop[1];
 						$current_shortcode_is_types = true;
@@ -903,6 +958,20 @@ function wpv_loop_wizard_add_field() {
 						$current_shortcode_is_types = true;
 						$current_shortcode_types_name = $field_in_loop[1];
 					}
+					// Single quotes
+					else if ( preg_match( "/field='(.*?)'/", $current_shortcode_to_insert, $field_in_loop ) !== 0 ) {
+						$current_shortcode_head = 'types-field-' . $field_in_loop[1];
+						$current_shortcode_is_types = true;
+						$current_shortcode_types_name = $field_in_loop[1];
+					} else if ( preg_match( "/usermeta='(.*?)'/", $current_shortcode_to_insert, $field_in_loop ) !== 0 ) {
+						$current_shortcode_head = '';
+						$current_shortcode_is_types = true;
+						$current_shortcode_types_name = $field_in_loop[1];
+					} else if ( preg_match( "/termmeta='(.*?)'/", $current_shortcode_to_insert, $field_in_loop ) !== 0 ) {
+						$current_shortcode_head = 'taxonomy-field-' . $field_in_loop[1];
+						$current_shortcode_is_types = true;
+						$current_shortcode_types_name = $field_in_loop[1];
+					}
 				} else if ( substr( $current_shortcode_to_insert, 0, 12 ) === "wpv-taxonomy" ) { // heading table solumns for wpv-taxonomy-* shortcodes
 					if ( in_array( $current_shortcode_handle, array( 'wpv-taxonomy-link', 'wpv-taxonomy-title', 'wpv-taxonomy-id', 'wpv-taxonomy-slug' ) ) ) {
 						$current_shortcode_head = substr( $current_shortcode_handle, 4 );
@@ -911,12 +980,20 @@ function wpv_loop_wizard_add_field() {
 						$current_shortcode_head = 'taxonomy-post_count';
 					}
 				} else if ( $current_shortcode_handle === "wpv-user" ) { // heaading table columns for wpv-user shortcodes
+					// Double quotes
 					preg_match( '/field="(.*?)"/', $current_shortcode_to_insert, $view_user_field );
+					// Single quotes
+					preg_match( "/field='(.*?)'/", $current_shortcode_to_insert, $view_user_field_single_quotes );
 					if ( 
 						isset( $view_user_field[1] ) 
 						&& in_array( $view_user_field[1], $user_fields_with_head ) 
 					) {
 						$current_shortcode_head = $view_user_field[1];
+					} else if (
+						isset( $view_user_field_single_quotes[1] ) 
+						&& in_array( $view_user_field[1], $view_user_field_single_quotes ) 
+					) {
+						$current_shortcode_head = $view_user_field_single_quotes[1];
 					} else {
 						$current_shortcode_head = '';
 					}

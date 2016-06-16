@@ -38,6 +38,7 @@ class WPDDL_Options{
                 $this->layouts_options[$option] = new WPDDL_Options_Manager( $option );
                 add_filter('ddl-get-default-'.$option, array(&$this, 'get_default_option' ), 10, 1 );
                 add_filter('ddl-set-default-'.$option, array(&$this, 'set_default_option' ), 10, 2 );
+                add_filter( 'ddl-delete-default-'.$option, array(&$this, 'delete_default_option'), 10, 1 );
             }
         }
     }
@@ -57,6 +58,14 @@ class WPDDL_Options{
      */
     function set_default_option($option, $value ){
         return $this->layouts_options[$option]->update_options( $option, $value );
+    }
+
+    /**
+     * @param $option
+     * @return bool true on success false on failure
+     */
+    function delete_default_option( $option ){
+        return $this->layouts_options[$option]->delete_option( $option );
     }
 
     public function get_layouts_options_array(){

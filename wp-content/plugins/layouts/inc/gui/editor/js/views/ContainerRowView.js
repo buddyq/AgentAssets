@@ -57,7 +57,7 @@ DDLayout.views.ContainerRowView = DDLayout.views.RowView.extend({
 	        self._initializeEditRowHandler();
 
             self._makeElementNameEditable();
-
+        
             return self;
 
     },

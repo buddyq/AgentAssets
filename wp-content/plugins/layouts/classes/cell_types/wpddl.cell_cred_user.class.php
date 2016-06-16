@@ -245,7 +245,7 @@ if (!class_exists('CRED_User_Cell')) {
             </div>
 
             <div id="ddl-cred-user-preview-cred-user-not-found" style="display:none">
-                <h2><?php _e('The CRED User Form was not found. It may have been deleted.', 'ddl-layouts'); ?></h2>
+                <div class="ddl-center-align"><?php _e('The CRED User Form was not found. It may have been deleted or CRED plugin is not active.', 'ddl-layouts'); ?></div>
             </div>
 
             <?php
@@ -266,7 +266,7 @@ if (!class_exists('CRED_User_Cell')) {
 
                 <div class="cell-preview">
                     <#
-                        var preview = wp.hooks.applyFilters( 'ddl-js-show-cred-user-preview', DDLayout.cred_user_cell.preview(content) );
+                        var preview = Toolset.hooks.applyFilters( 'ddl-js-show-cred-user-preview', DDLayout.cred_user_cell.preview(content) );
                         print( preview );
                         #>
                 </div>

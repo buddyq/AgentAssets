@@ -45,7 +45,7 @@ if( $wpddlayout->post_types_manager->no_templates_at_all() === false ): ?>
             <input class="js-individual-quick-search ddl-individual-quick-search" type="search"
                    id="ddl-individual-search" value="" title="Search" autocomplete="off"
                    placeholder="<?php _e('Search', 'ddl-layouts'); ?>" />
-
+            <span class="desc individual-quick-search-desc"><?php _e('You can enter the page title or paste the URL of a page, copied from the site\'s front-end.', 'ddl-layouts'); ?></span>
             <div id="ddl-individual-search-results-<?php echo $unique_id; ?>"></div>
         </div>
         <!-- .ddl-popup-tab -->

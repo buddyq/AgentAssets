@@ -9,6 +9,7 @@ DDLayout._templateSettings = DDLayout._templateSettings || {
 DDLayout.CreateLayoutForPages = function($)
 {
     var self = this
+        , allowed_statuses = ["pending", "private", "publish", "draft"]
         , $button_standard = $('.js-create-layout-for-page')
         , $button_custom = $('.js-create-layout-for-post-custom');
 
@@ -17,6 +18,8 @@ DDLayout.CreateLayoutForPages = function($)
     self.init = function(){
        // _.templateSettings.variable = "ddl";
         self.set_post();
+        self.set_assigned_count();
+        self.post.post_count = self.get_posts_types_total_count();
         self.call_create_for_standard();
         self.handle_custom_post_types_dialog();
      //   $(document).on('ddl-editor-dialog-complete', self.handle_dialog_open_overrides );
@@ -35,7 +38,7 @@ DDLayout.CreateLayoutForPages = function($)
         });
     };
 
-    self.open_create_dialog = function( who )
+    self.open_create_dialog = function( who, for_whom )
     {
         var undefined, data;
 
@@ -43,7 +46,8 @@ DDLayout.CreateLayoutForPages = function($)
             data = undefined;
         } else {
             data = {
-                who:who
+                who:who,
+                for_whom:for_whom
             };
             data = _.extend( data, self.post );
         }
@@ -64,6 +68,25 @@ DDLayout.CreateLayoutForPages = function($)
         self.post = DDLayout_settings_create.DDL_JS.post;
     };
 
+    self.get_posts_types_total_count = function(){
+        var count = 0;
+        if( self.post.hasOwnProperty('count') ){
+
+            _.each(self.post.count, function(value, key){
+                    if( ~ allowed_statuses.indexOf( key ) ){
+                        count += +value;
+                    }
+            });
+        }
+
+        return count;
+    };
+
+    self.set_assigned_count = function(){
+        self.post.assigned_count = self.post.hasOwnProperty('assigned_count') ? +self.post.assigned_count : 0;
+        return self.post.assigned_count;
+    };
+
     self.openAssignToPostTypesDialog = function()
     {
         var template = $("#js-ddl-create-layout-for-post-types-selection").html();
@@ -80,8 +103,9 @@ DDLayout.CreateLayoutForPages = function($)
                 closeButton:false,
                 fixed: true,
                 top: false,
-
+                width:'600px',
                 onComplete: function() {
+                    self.handle_change();
                     self.handle_continue_to_creation();
                 },
                 onCleanup: function() {
@@ -103,16 +127,32 @@ DDLayout.CreateLayoutForPages = function($)
     self.handle_continue_to_creation = function(){
         var $continue = $('.js-ddl-continue-to-layout-creation');
 
+        $('#create_layout_for_post_type_one').prop('checked', true).trigger('change');
+        
         $continue.one('click', function(event){
             event.preventDefault();
             var $radio = $('input[name="create_layout_for_post_type"]:checked'),
+                for_whom,
                 who = $radio.val();
 
-            self.open_create_dialog( who );
+            if( who === 'all' ){
+                var $radio_whom = $('input[name="create_layout_for_new_posts"]:checked');
+                for_whom = $radio_whom.val();
+            }
+
+            self.open_create_dialog( who, for_whom );
         });
     };
 
-
+    self.handle_change = function(){
+        $('input[name="create_layout_for_post_type"]').on('change', function(event){
+                if( $(this).val() === 'all' ){
+                    $('.js-ddl-extra-controls').show();
+                } else {
+                    $('.js-ddl-extra-controls').hide();
+                }
+        });
+    };
 
     self.init();
 };

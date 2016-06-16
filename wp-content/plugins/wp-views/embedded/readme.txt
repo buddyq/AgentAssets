@@ -13,7 +13,58 @@ You're done!
 
 = Changelog =
 
-v. 2.0
+v. 2.1, AKA Clarisse McClellan
+	- Added pagination settings to WordPress Archives, including AJAX pagination with fade, horizontal and vertical slide and infinite scroll effects.
+	
+	- Added query filters to WordPress Archives.
+	
+	- Added parametric search to WordPress Archives.
+	
+	- Added support for adjusting the post types to include on an archive page.
+	
+	- Added new settings to sort a View by a field as a number or a string.
+	
+	- Added a shortcode [wpv-logout-link] to display the logout link, with an option to redirect when logout is completed.
+	
+	- Added a new attribute redirect_url_fail to the [wpv-login-form] shortcode to allow redirection on login failure.
+	
+	- Added a new API filter wpv_filter_public_wpv_get_view_shortcodes_attributes for getting the current View shortcode attributes.
+	
+	- Added an option for sorting Views that list users by the order of the values passed to a query filter.
+	
+	- Added support for Types shortcodes with single or double quotes in the Loop Wizard.
+	
+	- Improved the security in frontend parametric search forms.
+	
+	- Improved the way we gather information about the current View parametric search filters for building our internal cache.
+	
+	- Improved the frontend AJAX for parametric search to avoid problems with nested Views structures.
+	
+	- Extended the post selection on the shortcodes GUI so you can set a post parent on broader situations.
+	
+	- Fixed an issue with Views AJAX pagination related to long URLs.
+	
+	- Fixed an issue with Views AJAX pagination related to installations with custom WordPress directory structures.
+	
+	- Fixed a bug in AJAX pagination and fade effect on Firefox that caused the content to bounce up and down the page.
+	
+	- Fixed an issue with the query filter by specific terms set by the current post on Views listing terms.
+	
+	- Fixed an issue with misleading data passed on the js_event_wpv_parametric_search_triggered JavaScript frontend event.
+	
+	- Fixed an issue with select dropdowns in parametric searches if a custom class is passed as an attribute.
+	
+	- Fixed an issue with some auxiliar hidden inputs on parametric search forms having duplicated class attributes.
+	
+	- Fixed an issue with the [wpv-attribute] shortcode returning an empty string after performing a parametric search.
+	
+	- Fixed an issue with the parametric search form action attribute, when the form and the results are displayed on different pages.
+	
+	- Fixed an issue with importing the Views and Content Templates extra CSS and JS content when it is made of line breaks only.
+	
+	- Fixed an issue with the parametric search reset button, that caused that sometimes the results were not updated when they should have been.
+
+v. 2.0, AKA Cthulhu
 	- Added Views to the new shared Toolset admin menu and Export / Import page.
 	
 	- Added the functionality to sort a View listing terms by termmeta.

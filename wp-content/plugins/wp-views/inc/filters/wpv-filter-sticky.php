@@ -1,94 +1,144 @@
 <?php
 /**
- * Sticky Filter
- *
- * @package Views
- *
- * @since 1.10
- */
+* Sticky Filter
+*
+* @package Views
+*
+* @since 1.10
+*/
 WPV_Sticky_Filter::on_load();
 
 /**
- * WPV_Sticky_Filter
- *
- * Views Sticky Filter Class
- *
- * @since 1.10
- */
+* WPV_Sticky_Filter
+*
+* Views Sticky Filter Class
+*
+* @since 1.10
+* @since 2.1	Added to WordPress Archives
+* @since 2.1	Include this file only when editing a View or WordPress Archive, or when doing AJAX
+*/
 class WPV_Sticky_Filter {
 
     /**
-     * Register scripts before initializing this class 
-     */
+	* Register scripts before initializing this class 
+	*/
+	
     static function on_load() {
-        add_action( 'init', array( 'WPV_Sticky_Filter', 'init' ) );
-        add_action( 'admin_init', array( 'WPV_Sticky_Filter', 'admin_init' ) );
+        add_action( 'init',			array( 'WPV_Sticky_Filter', 'init' ) );
+        add_action( 'admin_init',	array( 'WPV_Sticky_Filter', 'admin_init' ) );
     }
 
     /**
-     * Add frontend hooks
-     */
+	* Add frontend hooks
+	*/
+	
     static function init() {
-        // DO NOTHING
+        wp_register_script( 'views-filter-sticky-js', ( WPV_URL . '/res/js/filters/views_filter_sticky.js' ), array( 'views-filters-js', 'underscore' ), WPV_VERSION, true );
+		$sticky_strings = array(
+			'post'		=> array(
+								'post_type_not_supported'		=> __( 'Only posts from the Post post type can be sticky', 'wpv-views' ),
+							),
+			'archive'	=> array(
+								'disable_post_sticky_filter'	=> __( 'Only posts from the Post post type can be sticky', 'wpv-views' ),
+							),
+		);
+		wp_localize_script( 'views-filter-sticky-js', 'wpv_sticky_strings', $sticky_strings );
     }
 
     /**
-     * Add backend hooks
-     */
+	* Add backend hooks
+	*/
+	
     static function admin_init() {
-        // Register filter in lists and dialogs
-        add_filter( 'wpv_filters_add_filter', array( 'WPV_Sticky_Filter', 'wpv_filters_add_filter_post_sticky' ), 1, 1 );
-        add_action( 'wpv_add_filter_list_item', array( 'WPV_Sticky_Filter', 'wpv_add_filter_post_sticky_list_item' ), 1, 1 );
-
-        // AJAX calbacks
-        add_action( 'wp_ajax_wpv_filter_post_sticky_update', array( 'WPV_Sticky_Filter', 'wpv_filter_post_sticky_update_callback' ) );
-        add_action( 'wp_ajax_wpv_filter_post_sticky_delete', array( 'WPV_Sticky_Filter', 'wpv_filter_post_sticky_delete_callback' ) );
-        add_action( 'wp_ajax_wpv_filter_sticky_sumary_update', array( 'WPV_Sticky_Filter', 'wpv_filter_post_sticky_sumary_update_callback' ) ); // Used?
-        add_filter( 'wpv-view-get-summary', array( 'WPV_Sticky_Filter', 'wpv_post_sticky_summary_filter' ), 5, 3 );
-
-        // Register scripts
-        add_action( 'admin_enqueue_scripts', array( 'WPV_Sticky_Filter', 'admin_enqueue_scripts' ), 20 );
+        // Register filters in dialogs
+        add_filter( 'wpv_filters_add_filter',					array( 'WPV_Sticky_Filter', 'wpv_filters_add_filter_post_sticky' ), 1, 1 );
+		add_filter( 'wpv_filters_add_archive_filter',			array( 'WPV_Sticky_Filter', 'wpv_filters_add_archive_filter_post_sticky' ), 1, 1 );
+		// Register filters in lists
+        add_action( 'wpv_add_filter_list_item',					array( 'WPV_Sticky_Filter', 'wpv_add_filter_post_sticky_list_item' ), 1, 1 );
+		// Update and delete
+        add_action( 'wp_ajax_wpv_filter_post_sticky_update',	array( 'WPV_Sticky_Filter', 'wpv_filter_post_sticky_update_callback' ) );
+        add_action( 'wp_ajax_wpv_filter_post_sticky_delete',	array( 'WPV_Sticky_Filter', 'wpv_filter_post_sticky_delete_callback' ) );
+        // Scripts
+        add_action( 'admin_enqueue_scripts',					array( 'WPV_Sticky_Filter', 'admin_enqueue_scripts' ), 20 );
+		//add_action( 'wp_ajax_wpv_filter_sticky_sumary_update', array( 'WPV_Sticky_Filter', 'wpv_filter_post_sticky_sumary_update_callback' ) );
     }
 
     /**
-     * admin_enqueue_scripts
-     *
-     * Register required scripts for this filter
-     */
+	* admin_enqueue_scripts
+	*
+	* Register required scripts for this filter
+	*/
+	
     static function admin_enqueue_scripts( $hook ) {
-
-        wp_register_script( 'views-filter-sticky-js', ( WPV_URL . '/res/js/redesign/views_filter_sticky.js' ), array( 'views-filters-js' ), WPV_VERSION, true );
-        if ( isset( $_GET['page'] ) && $_GET['page'] == 'views-editor' ) {
-            wp_enqueue_script( 'views-filter-sticky-js' );
-        }
+        wp_enqueue_script( 'views-filter-sticky-js' );
     }
 
     /**
-     * wpv_filters_add_filter_post_sticky
-     *
-     * Register filter in the popup dialog
-     *
-     * @param $filters
-     */
+	* wpv_filters_add_filter_post_sticky
+	*
+	* Register filter in the popup dialog
+	*
+	* @param $filters
+	*/
+	
     static function wpv_filters_add_filter_post_sticky( $filters ) {
 
         $filters['post_sticky'] = array(
-            'name' => __( 'Post stickiness', 'wpv-views' ),
-            'present' => 'post_sticky',
-            'callback' => array( 'WPV_Sticky_Filter', 'wpv_add_new_filter_sticky_list_item' ),
-            'group' => __( 'Post filters', 'wpv-views' )
+            'name'		=> __( 'Post stickiness', 'wpv-views' ),
+            'present'	=> 'post_sticky',
+            'callback'	=> array( 'WPV_Sticky_Filter', 'wpv_add_new_filter_sticky_list_item' ),
+            'group'		=> __( 'Post filters', 'wpv-views' )
+        );
+        return $filters;
+    }
+	
+	/**
+	* wpv_filters_add_archive_filter_post_sticky
+	*
+	* Register filter in the popup dialog on WPAs.
+	*
+	* @param $filters
+	*
+	* @since 2.1
+	*/
+	
+    static function wpv_filters_add_archive_filter_post_sticky( $filters ) {
+
+        $filters['post_sticky'] = array(
+            'name'		=> __( 'Post stickiness', 'wpv-views' ),
+            'present'	=> 'post_sticky',
+            'callback'	=> array( 'WPV_Sticky_Filter', 'wpv_add_new_archive_filter_sticky_list_item' ),
+            'group'		=> __( 'Post filters', 'wpv-views' )
         );
         return $filters;
     }
 
     /**
-     * wpv_add_new_filter_sticky_list_item
-     *
-     * Register the sticky filter in the filters list
-     */
+	* wpv_add_new_filter_sticky_list_item
+	*
+	* Register the sticky filter in the filters list
+	*/
+	
     static function wpv_add_new_filter_sticky_list_item() {
         $args = array(
-            'post_sticky' => 'include'
+			'view-query-mode'	=> 'normal',
+            'post_sticky'		=> 'include'
+        );
+        WPV_Sticky_Filter::wpv_add_filter_post_sticky_list_item( $args );
+    }
+	
+	/**
+	* wpv_add_new_archive_filter_sticky_list_item
+	*
+	* Register the sticky filter in the filters list on WPAs.
+	*
+	* @since 2.1
+	*/
+	
+    static function wpv_add_new_archive_filter_sticky_list_item() {
+        $args = array(
+			'view-query-mode'	=> 'archive',
+            'post_sticky'		=> 'include'
         );
         WPV_Sticky_Filter::wpv_add_filter_post_sticky_list_item( $args );
     }
@@ -203,9 +253,10 @@ class WPV_Sticky_Filter {
         wp_send_json_success( $data );
     }
 
-    /**
-     * Update sticky posts filter summary callback
-     */
+	/**
+	* Update sticky posts filter summary callback
+	*/
+	/*
     static function wpv_filter_post_sticky_sumary_update_callback() {
         $nonce = $_POST['wpnonce'];
         if ( ! wp_verify_nonce( $nonce, 'wpv_view_filter_post_sticky_nonce' ) ) {
@@ -218,6 +269,7 @@ class WPV_Sticky_Filter {
         echo wpv_get_filter_sticky_summary_txt( $filter_sticky );
         die();
     }
+	*/
 
     /**
      * wpv_filter_post_sticky_delete_callback
@@ -267,24 +319,6 @@ class WPV_Sticky_Filter {
     }
 
     /**
-     * wpv_post_sticky_summary_filter
-     * 
-     * Show the sticky filter on the View summary
-     */
-    static function wpv_post_sticky_summary_filter( $summary, $post_id, $view_settings ) {
-        if ( isset( $view_settings['query_type'] ) 
-                && $view_settings['query_type'][0] == 'posts' 
-                && isset( $view_settings['post_sticky'] ) ) {
-            $result = wpv_get_filter_sticky_summary_txt( $view_settings, true );
-            if ( $result != '' && $summary != '' ) {
-                $summary .= '<br />';
-            }
-            $summary .= $result;
-        }
-        return $summary;
-    }
-
-    /**
      * wpv_render_sticky_options
      *
      * Render sticky posts filter options
@@ -293,7 +327,8 @@ class WPV_Sticky_Filter {
      */
     static function wpv_render_post_sticky_options( $view_settings = array() ) {
 		$defaults = array(
-			'post_sticky' => 'include'
+			'view-query-mode'	=> 'normal',
+			'post_sticky'		=> 'include'
 		);
 		$view_settings = wp_parse_args( $view_settings, $defaults );
         ?>

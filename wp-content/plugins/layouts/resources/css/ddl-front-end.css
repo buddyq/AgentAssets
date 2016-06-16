@@ -36,12 +36,17 @@
 
 /* handle full width rows */
 
+/*
+ * removed because it was breaking the other div heigth
+ *
+
 .ddl-full-width-row>[class*="col-"]:last-child {
 padding-right: 0px;
 }
 .ddl-full-width-row>[class*="col-"]:first-child {
 padding-left: 0px;
 }
+*/
 
 /* COMMENTS */
 

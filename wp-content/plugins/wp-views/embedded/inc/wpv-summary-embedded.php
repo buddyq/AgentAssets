@@ -1409,10 +1409,10 @@ function wpv_get_filter_taxonomy_term_summary_txt( $view_settings ) {
 			}
 			echo sprintf( __( 'Taxonomy is <strong>One</strong> of these: <strong>%s</strong>', 'wpv-views' ), $cat_text );
 			break;
-		case 'CURRENT_PAGE': // @deprecated on 1.12.1
 		case 'top_current_post':
 			echo __( 'Taxonomy is set by the page where this View is inserted', 'wpv-views' );
 			break;
+		case 'CURRENT_PAGE': // @deprecated on 1.12.1
 		case 'current_post_or_parent_post_view':
 			echo __( 'Taxonomy is set by the current post', 'wpv-views' );
 			break;

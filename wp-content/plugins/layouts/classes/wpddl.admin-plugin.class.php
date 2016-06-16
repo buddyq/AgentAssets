@@ -160,12 +160,18 @@ class WPDDL_Admin_Pages extends WPDDL_Admin
         // Create a empty layout. No preset.
         // TODO: Pick the preset best suited (and check if Views is installed)
         $layout = WPDD_Layouts::create_layout( 12 /* colums */, 'fluid' /* layout_type */ );
+        
+        $parent_post_name = '';
+        $parent_ID = apply_filters('ddl-get-default-' . WPDDL_Options::PARENTS_OPTIONS, WPDDL_Options::PARENTS_OPTIONS);
+        if ($parent_ID) {
+            $parent_post_name = WPDD_Layouts_Cache_Singleton::get_name_by_id($parent_ID);
+        }
 
         // Define layout parameters
         $layout['type'] = 'fluid'; // layout_type
         $layout['cssframework'] = $wpddlayout->get_css_framework();
         $layout['template'] = '';
-        $layout['parent'] = '';
+        $layout['parent'] = $parent_post_name;
         $layout['name'] = $title;
 
         $args = array(
@@ -255,6 +261,15 @@ class WPDDL_Admin_Pages extends WPDDL_Admin
 
         // redirect to editor (headers already sent)
         $edit_link = $toolset_admin_bar_menu->get_edit_link( 'layouts', false, $type, $class, $layout_id );
+
+        // forward url parameter toolset_help_video
+        if( isset( $_GET['toolset_help_video'] ) )
+            $edit_link = add_query_arg( 'toolset_help_video', $_GET['toolset_help_video'], $edit_link );
+
+        // forward url parameter ref
+        if( isset( $_GET['ref'] ) )
+            $edit_link = add_query_arg( 'ref', $_GET['ref'], $edit_link );
+
         $exit_string = '<script type="text/javascript">'.'window.location = "' . $edit_link . '";'.'</script>';
         exit( $exit_string );
 

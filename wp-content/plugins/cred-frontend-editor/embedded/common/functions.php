@@ -212,10 +212,10 @@ function cred_translate($name, $string, $context = 'CRED_CRED') {
  */
 function cred_translate_register_string($context, $name, $value, $allow_empty_value = false) {
     //cred_log("cred_translate_register_string");
-    //cred_log(array($context, $name, $value));
+    cred_log(array($context, $name, $value));
     
-//    cred_log("########################## cred_translate_register_string ############################");
-//    cred_log($context);
+    //cred_log("########################## cred_translate_register_string ############################");
+    //cred_log($context);
     if (strpos($context, 'cred-form-') !== false) {
         $tmp = explode("-", $context);
 //        cred_log($tmp);
@@ -225,8 +225,8 @@ function cred_translate_register_string($context, $name, $value, $allow_empty_va
         if ($is_user_form) {
             $context = str_replace('cred-form-', 'cred-user-form-', $context);
         }
-//        cred_log("new context");
-//        cred_log($context);
+        //cred_log("> new context");
+        //cred_log($context);
     }    
     
     if (function_exists('icl_register_string')) {

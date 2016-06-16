@@ -23,14 +23,34 @@ final class CRED_Forms_Controller extends CRED_Abstract_Controller {
         if (!current_user_can(CRED_CAPABILITY))
             wp_die();
 
-        global $wpdb;
-
-        //https://icanlocalize.basecamphq.com/projects/7393061-toolset/todo_items/187413931/comments
-        $user = esc_sql(cred_wrap_esc_like($post['user']));
-        $sql = "SELECT user_nicename AS label, user_email AS value FROM {$wpdb->users} WHERE user_nicename LIKE '%$user%' ORDER BY user_email,user_nicename LIMIT 0, 100";
-        $results = $wpdb->get_results($sql);
-
-        echo json_encode($results);
+        $current_blog_id = get_current_blog_id();
+        $search = cred_wrap_esc_like($post['user']);
+        $args = array(
+            'blog' => $current_blog_id,
+            'search' => "*" . $search . "*",
+            'search_columns' => array('user_nicename'),
+            'fields' => array('user_nicename','user_email')
+        );
+        $user_query = new WP_User_Query($args);
+        $results = $user_query->get_results();
+        
+        $new_results = array();
+        $count = 0;
+        foreach ($results as $result) {
+            $new_results[$count] = new stdClass();
+            $new_results[$count]->label = $result->user_nicename;
+            $new_results[$count]->value = $result->user_email;
+            $count++;
+        }
+        unset($results);
+        echo json_encode($new_results);
+        die;
+        
+//        global $wpdb;
+//        $user = esc_sql(cred_wrap_esc_like($post['user']));
+//        $sql = "SELECT user_nicename AS label, user_email AS value FROM {$wpdb->users} WHERE user_nicename LIKE '%$user%' ORDER BY user_email,user_nicename LIMIT 0, 100";
+//        $results = $wpdb->get_results($sql);
+//        echo json_encode($results);
     }
 
     public function updateFormFields($get, $post) {
@@ -213,9 +233,10 @@ final class CRED_Forms_Controller extends CRED_Abstract_Controller {
             'password' => isset($post['ag_pass']) ? $post['ag_pass'] : 1);
 
         $role = isset($post['role']) ? $post['role'] : "";
-        
+        $type_form = isset($post['type_form']) ? $post['type_form'] : "";
+
         $fields_model = CRED_Loader::get('MODEL/UserFields');
-        $fields_all = $fields_model->getFields($autogenerate, $role);
+        $fields_all = $fields_model->getFields($autogenerate, $role, $type_form);
 
         $settings_model = CRED_Loader::get('MODEL/Settings');
         $settings = $settings_model->getSettings();

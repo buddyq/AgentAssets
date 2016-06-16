@@ -11,20 +11,11 @@ if ( ! class_exists( 'WPV_Shortcode_Generator' ) ) {
 			parent::__construct();
 			$this->is_registered		= false;
 			$this->wpv_editor_addon		= null;
-			// Set the Views setting to "disable" when it is not set yet
-			add_filter( 'toolset_filter_force_unset_shortcode_generator_option', array( $this, 'force_unset_shortcode_generator_option_to_disable' ), 99 );
 			// Register the Fields and Views item
 			add_filter( 'toolset_shortcode_generator_register_item', array( $this, 'register_fields_and_views_shortcode_generator' ) );
 			// Make sure the Fields and Views dialog is added, even on pages without editors
 			add_action( 'admin_footer', array( $this, 'force_fields_and_views_dialog_shortcode_generator' ), 1 );
 	    }
-		
-		public function force_unset_shortcode_generator_option_to_disable( $state ) {
-			if ( $state == 'unset' ) {
-				$state = 'disable';
-			}
-			return $state;
-		}
 		
 		public function register_fields_and_views_shortcode_generator( $registered_sections ) {
 			$toolset_options = get_option( 'toolset_options', array() );

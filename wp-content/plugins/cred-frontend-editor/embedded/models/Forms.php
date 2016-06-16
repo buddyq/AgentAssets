@@ -76,7 +76,6 @@ final class CRED_Forms_Model extends CRED_Abstract_Model implements CRED_Singlet
                 /* 'cred_message_add_new_repeatable_field' =>'Add Another',
                   'cred_message_remove_repeatable_field'   =>'Remove',
                   'cred_message_cancel_upload_text' =>'Retry Upload', */
-                'cred_message_user_saved' => 'User ' . __('Saved', 'wp-cred'),
                 'cred_message_post_saved' => 'Post ' . __('Saved', 'wp-cred'),
                 //'cred_message_post_not_saved'=>'Post Not Saved',
                 'cred_message_post_not_saved_singular' => __('The post was not saved because of the following problem:', 'wp-cred'),
@@ -393,7 +392,7 @@ final class CRED_Forms_Model extends CRED_Abstract_Model implements CRED_Singlet
         return !(wp_delete_post($id, true) === false);
     }
 
-    public function saveForm($form, $fields = array(), $from_xml_processor = false) {
+    public function saveForm($form, $fields = array(), $from_xml_processor = false, $old_id = "", $old_title = "") {
         global $user_ID;
 
         $new_post = array(
@@ -409,6 +408,16 @@ final class CRED_Forms_Model extends CRED_Abstract_Model implements CRED_Singlet
                 //'post_category' => array(0)
         );
         $post_id = wp_insert_post($new_post);
+
+        if (!empty($old_id) && !empty($old_title)) {
+            $new_post_content = str_replace($old_title . "-" . $old_id, $form->post_title . "-" . $post_id, $form->post_content);
+            $my_post = array(
+                'ID' => $post_id,
+                'post_content' => $new_post_content,
+            );
+            wp_update_post($my_post);
+        }
+
         $this->addFormCustomFields($post_id, $fields);
 
         if (!$from_xml_processor) {
@@ -477,12 +486,13 @@ final class CRED_Forms_Model extends CRED_Abstract_Model implements CRED_Singlet
     public function cloneForm($form_id, $cloned_form_title = null) {
         $form = $this->getForm($form_id, array('commerce'));
         if ($form) {
+            $old_title = $form->form->post_title;
             if ($cloned_form_title == null || empty($cloned_form_title))
                 $cloned_form_title = $form->form->post_title . ' Copy';
             //$form->form->post_title = preg_replace('/[^\w\-_\. ]/', '', $cloned_form_title);
             $form->form->post_title = sanitize_text_field($cloned_form_title);
             $form->form->ID = '';
-            return $this->saveForm($form->form, $form->fields);
+            return $this->saveForm($form->form, $form->fields, false, $form_id, $old_title);
         }
         return false;
     }
@@ -782,9 +792,11 @@ final class CRED_Forms_Model extends CRED_Abstract_Model implements CRED_Singlet
         // get post type taxonomies
         $taxonomies = $this->getPostTaxonomies($post);
 
+        $_featured_image = wp_get_attachment_image_src(get_post_thumbnail_id($post_id), 'thumbnail');
+        $_featured_image_url = isset($_featured_image[0]) ? $_featured_image[0] : "";
         // extra fields
         $extra = array(
-            'featured_img_html' => get_the_post_thumbnail($post_id, 'thumbnail' /* , $attr */)
+            'featured_img_html' => $_featured_image_url
         );
         return array($post, $fields, $taxonomies, $extra);
     }
@@ -1012,6 +1024,7 @@ final class CRED_Forms_Model extends CRED_Abstract_Model implements CRED_Singlet
                 delete_post_meta($post_id, $meta_key);
             }
         }
+
         $fields['fields'] = $this->esc_data($fields['fields']);
         foreach ($fields['fields'] as $meta_key => $meta_value) {
             delete_post_meta($post_id, $meta_key);

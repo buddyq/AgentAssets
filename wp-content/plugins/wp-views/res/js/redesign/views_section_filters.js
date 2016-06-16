@@ -5,57 +5,92 @@ WPViews.QueryFilters = function( $ ) {
 	
 	var self = this;
 	
-	self.view_id = $( '.js-post_ID' ).val();
+	self.view_id	= $( '.js-post_ID' ).val();
 	
-	self.icon_edit = '<i class="icon-chevron-up fa fa-chevron-up"></i>&nbsp;&nbsp;';
-	self.icon_save = '<i class="icon-ok fa fa-check"></i>&nbsp;&nbsp;';
+	self.icon_edit	= '<i class="icon-chevron-up fa fa-chevron-up"></i>&nbsp;&nbsp;';
+	self.icon_save	= '<i class="icon-ok fa fa-check"></i>&nbsp;&nbsp;';
 	
 	self.query_filter_dialog = null;
 	
-	self.add_filter_button = $( '.js-wpv-filter-add-filter' );
-	self.filters_list = $( '.js-filter-list' );
-	self.filters_count = self.filters_list.find( '.js-filter-row' ).length;
-	self.no_filters = $( '.js-no-filters' );
+	self.add_filter_button	= $( '.js-wpv-filter-add-filter' );
+	self.filters_list		= $( '.js-filter-list' );
+	self.filters_count		= self.filters_list.find( '.js-filter-row' ).length;
+	self.no_filters			= $( '.js-no-filters' );
 		
-	self.selector_delete_simple_filter = '.js-filter-row-simple .js-filter-remove';
-	self.selector_delete_multiple_filter_one = '';
-	self.selector_delete_multiple_filter_all = '';
+	self.selector_delete_simple_filter			= '.js-filter-row-simple .js-filter-remove';
+	self.selector_delete_multiple_filter_one	= '';
+	self.selector_delete_multiple_filter_all	= '';
 	
-	self.url_pattern = /^[a-z0-9\-\_]+$/;
-	self.shortcode_pattern = /^[a-z0-9]+$/;
-	self.year_pattern = /^([0-9]{4})$/;
-	self.month_pattern = /^([1-9]|1[0-2])$/;
-	self.week_pattern = /^([1-9]|[1234][0-9]|5[0-3])$/;
-	self.day_pattern = /^([1-9]|[12][0-9]|3[0-1])$/;
-	self.hour_pattern = /^([0-9]|[1][0-9]|2[0-3])$/;
-	self.minute_pattern = /^([0-9]|[1234][0-9]|5[0-9])$/;
-	self.second_pattern = /^([0-9]|[1234][0-9]|5[0-9])$/;
-	self.dayofyear_pattern = /^([1-9]|[1-9][0-9]|[12][0-9][0-9]|3[0-6][0-6])$/;
-	self.dayofweek_pattern = /^[1-7]+$/;
-	self.numeric_natural_pattern = /^[0-9]+$/;
+	self.url_pattern				= /^[a-z0-9\-\_]+$/;
+	self.shortcode_pattern			= /^[a-z0-9]+$/;
+	self.year_pattern				= /^([0-9]{4})$/;
+	self.month_pattern				= /^([1-9]|1[0-2])$/;
+	self.week_pattern				= /^([1-9]|[1234][0-9]|5[0-3])$/;
+	self.day_pattern				= /^([1-9]|[12][0-9]|3[0-1])$/;
+	self.hour_pattern				= /^([0-9]|[1][0-9]|2[0-3])$/;
+	self.minute_pattern				= /^([0-9]|[1234][0-9]|5[0-9])$/;
+	self.second_pattern				= /^([0-9]|[1234][0-9]|5[0-9])$/;
+	self.dayofyear_pattern			= /^([1-9]|[1-9][0-9]|[12][0-9][0-9]|3[0-6][0-6])$/;
+	self.dayofweek_pattern			= /^[1-7]+$/;
+	self.numeric_natural_pattern	= /^[0-9]+$/;
+	
+	self.validation_patterns		= {
+		url:				/^[a-z0-9\-\_]+$/,
+		shortcode:			/^[a-z0-9]+$/,
+		year:				/^([0-9]{4})$/,
+		month:				/^([1-9]|1[0-2])$/,
+		week:				/^([1-9]|[1234][0-9]|5[0-3])$/,
+		day:				/^([1-9]|[12][0-9]|3[0-1])$/,
+		hour:				/^([0-9]|[1][0-9]|2[0-3])$/,
+		minute:				/^([0-9]|[1234][0-9]|5[0-9])$/,
+		second:				/^([0-9]|[1234][0-9]|5[0-9])$/,
+		dayofyear:			/^([1-9]|[1-9][0-9]|[12][0-9][0-9]|3[0-6][0-6])$/,
+		dayofweek:			/^[1-7]+$/,
+		numeric_natural:	/^[0-9]+$/
+	};
 	
 	// ---------------------------------
 	// Dialogs
 	// ---------------------------------
 	
+	/**
+	* Temporary dialog content to be displayed while the actual content is loading.
+	*
+	* It contains a simple spinner in the centre. I decided to implement styling directly, it will not be reused and
+	* it would only bloat views-admin.css (jan).
+	*
+	* @type {HTMLElement}
+	* @since 1.9
+	*/
+	self.query_filter_dialog_loading = $(
+		'<div style="min-height: 150px;">' +
+		'<div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); text-align: center; ">' +
+		'<div class="wpv-spinner ajax-loader"></div>' +
+		'<p>' + wpv_filters_strings.add_filter_dialog.loading + '</p>' +
+		'</div>' +
+		'</div>'
+	);
+	
 	self.init_dialogs = function() {
 		var dialog_height = $( window ).height() - 100;
-		self.query_filter_dialog = $( "#js-wpv-filter-add-filter-form-dialog" ).dialog({
-			autoOpen: false,
-			modal: true,
-			title: wpv_filters_strings.add_filter_dialog_title,
-			minWidth: 550,
-			maxHeight: dialog_height,
-			draggable: false,
-			resizable: false,
-			position: { my: "center top+50", at: "center top", of: window },
-			show: { 
-				effect: "blind", 
-				duration: 800 
+		$( 'body' ).append( '<div id="js-wpv-filter-add-query-filter-dialog" class="toolset-shortcode-gui-dialog-container wpv-shortcode-gui-dialog-container"></div>' );
+		self.query_filter_dialog = $( "#js-wpv-filter-add-query-filter-dialog" ).dialog({
+			autoOpen:	false,
+			modal:		true,
+			title:		wpv_filters_strings.add_filter_dialog.title,
+			minWidth:	550,
+			maxHeight:	dialog_height,
+			draggable:	false,
+			resizable:	false,
+			position:	{ my: "center top+50", at: "center top", of: window },
+			show:		{ 
+				effect:		"blind", 
+				duration:	800 
 			},
-			open: function( event, ui ) {
+			open:		function( event, ui ) {
 				$( 'body' ).addClass( 'modal-open' );
 				self.manage_filter_insert_button( false );
+				$( '.js-filter-add-select' ).val( '-1' );
 				var group = $( ".js-filter-add-select" ).find( "optgroup" );
 				$.each( group, function( i, v ) {
 					if ( $( v ).children().length === 0 ) {
@@ -63,20 +98,20 @@ WPViews.QueryFilters = function( $ ) {
 					}
 				});
 			},
-			close: function( event, ui ) {
+			close:		function( event, ui ) {
 				$( 'body' ).removeClass( 'modal-open' );
 			},
 			buttons:[
 				{
 					class: 'button-secondary',
-					text: wpv_filters_strings.add_filter_dialog_cancel,
+					text: wpv_filters_strings.add_filter_dialog.cancel,
 					click: function() {
 						$( this ).dialog( "close" );
 					}
 				},
 				{
 					class: 'button-primary js-filters-insert-filter',
-					text: wpv_filters_strings.add_filter_dialog_insert,
+					text: wpv_filters_strings.add_filter_dialog.insert,
 					click: function() {
 
 					}
@@ -89,32 +124,48 @@ WPViews.QueryFilters = function( $ ) {
 	// Functions
 	// ---------------------------------
 	
-	self.update_filters_select = function( nonce, openpopup ) {
-		var data = {
-			action: 'wpv_filters_update_filters_select',
-			id: self.view_id,
-			wpnonce: nonce,
-		};
-		$.post( ajaxurl, data, function( response ) {
-			if ( ( typeof( response ) !== 'undefined' ) ) {
-				$( '.js-filter-add-select' ).replaceWith( response );
-				if ( openpopup ) {
-					self.open_filters_popup();
-				}
-			} else {
-				//console.log( "Error: AJAX returned ", response );
-			}
-		})
-		.fail( function( jqXHR, textStatus, errorThrown ) {
-			//console.log( "Error: ", textStatus, errorThrown );
-		})
-		.always( function() {
-			$( '.js-wpv-filter-add-filter' ).prop( 'disabled', false );
-		});
-	};
+	/**
+	* open_add_filter_dialog
+	*
+	* Open the dialog to create a new query filter.
+	*
+	* @since 2.1
+	*/
 	
-	self.open_filters_popup = function() {
+	self.open_add_filter_dialog = function() {
+		var query_mode = Toolset.hooks.applyFilters( 'wpv-filter-wpv-edit-screen-get-query-mode', 'normal' ),
+		data = {
+			id:			self.view_id,
+			wpnonce:	wpv_filters_strings.add_filter_nonce,
+		};
+		switch ( query_mode ) {
+			case 'archive':
+				data.action = 'wpv_filters_add_archive_query_filter_dialog';
+				break;
+			case 'normal':
+			default:
+				data.action = 'wpv_filters_add_query_filter_dialog';
+				break;
+		}
+		
 		self.query_filter_dialog.dialog( 'open' );
+		self.query_filter_dialog.html( self.query_filter_dialog_loading );
+		
+		$.ajax({
+			url:		ajaxurl,
+			data:		data,
+			type:		"GET",
+			dataType:	"json",
+			success:	function( response ) {
+				if ( response.success ) {
+					$( 'body' ).addClass( 'modal-open' );
+					self.query_filter_dialog.html( response.data.dialog );
+				}
+			},
+			complete:	function() {
+				$( '.js-wpv-filter-add-filter' ).prop( 'disabled', false );
+			}
+		});
 	};
 	
 	self.filters_exist = function() {
@@ -148,7 +199,7 @@ WPViews.QueryFilters = function( $ ) {
 			.html( self.icon_save + save_text )
 			.addClass('button-primary js-wpv-section-unsaved')
 			.removeClass('button-secundary');
-		setConfirmUnload( true );
+		Toolset.hooks.doAction( 'wpv-action-wpv-edit-screen-set-confirm-unload', true );
 		thiz_row.addClass( 'wpv-filter-row-current' );
 	};
 	
@@ -192,92 +243,61 @@ WPViews.QueryFilters = function( $ ) {
 		value = selector.val(),
 		message = '',
 		filter_error_container = selector.closest( '.js-wpv-filter-multiple-element, .js-filter-row' ).find( '.js-wpv-filter-toolset-messages' );
-		if ( type == 'select' ) {
-			if ( value == '' ) {
-				message = wpv_filters_strings.select_empty;
-				input_valid = false;
-			}
-		} else if ( type == 'url' ) {
-			if ( value == '' ) {
-				message = wpv_filters_strings.param_missing;
-				input_valid = false;
-			} else if ( self.url_pattern.test( value ) == false ) {
-				message = wpv_filters_strings.param_url_ilegal;
-				input_valid = false;
-			} else if ( $.inArray( value, wpv_forbidden_parameters.wordpress ) > -1 ) {
-				message = wpv_filters_strings.param_forbidden_wordpress;
-				input_valid = false;
-			} else if ( $.inArray( value, wpv_forbidden_parameters.toolset ) > -1 ) {
-				message = wpv_filters_strings.param_forbidden_toolset;
-				input_valid = false;
-			} else if ( $.inArray( value, wpv_forbidden_parameters.post_type ) > -1 ) {
-				message = wpv_filters_strings.param_forbidden_post_type;
-				input_valid = false;
-			} else if ( $.inArray( value, wpv_forbidden_parameters.taxonomy ) > -1 ) {
-				message = wpv_filters_strings.param_forbidden_taxonomy;
-				input_valid = false;
-			}
-		} else if ( type == 'shortcode' ) {
-			if ( value == '' ) {
-				message = wpv_filters_strings.param_missing;
-				input_valid = false;
-			} else if ( self.shortcode_pattern.test( value ) == false ) {
-				message = wpv_filters_strings.param_shortcode_ilegal;
-				input_valid = false;
-			} else if ( $.inArray( value, wpv_forbidden_parameters.toolset_attr ) > -1 ) {
-				message = wpv_filters_strings.param_forbidden_toolset_attr;
-				input_valid = false;
-			}
-		} else if ( type == 'year' ) {
-			if ( self.year_pattern.test( value ) == false ) {
-				message = wpv_filters_strings.param_year_ilegal;
-				input_valid = false;
-			}
-		} else if ( type == 'month' ) {
-			if ( self.month_pattern.test( value ) == false ) {
-				message = wpv_filters_strings.param_month_ilegal;
-				input_valid = false;
-			}
-		} else if ( type == 'week' ) {
-			if ( self.week_pattern.test( value ) == false ) {
-				message = wpv_filters_strings.param_week_ilegal;
-				input_valid = false;
-			}
-		} else if ( type == 'day' ) {
-			if ( self.day_pattern.test( value ) == false ) {
-				message = wpv_filters_strings.param_day_ilegal;
-				input_valid = false;
-			}
-		} else if ( type == 'hour' ) {
-			if ( self.hour_pattern.test( value ) == false ) {
-				message = wpv_filters_strings.param_hour_ilegal;
-				input_valid = false;
-			}
-		} else if ( type == 'minute' ) {
-			if ( self.minute_pattern.test( value ) == false ) {
-				message = wpv_filters_strings.param_minute_ilegal;
-				input_valid = false;
-			}
-		} else if ( type == 'second' ) {
-			if ( self.second_pattern.test( value ) == false ) {
-				message = wpv_filters_strings.param_second_ilegal;
-				input_valid = false;
-			}
-		} else if ( type == 'dayofyear' ) {
-			if ( self.dayofyear_pattern.test( value ) == false ) {
-				message = wpv_filters_strings.param_dayofyear_ilegal;
-				input_valid = false;
-			}
-		} else if ( type == 'dayofweek' ) {
-			if ( self.dayofweek_pattern.test( value ) == false ) {
-				message = wpv_filters_strings.param_dayofweek_ilegal;
-				input_valid = false;
-			}
-		} else if ( type == 'numeric_natural' ) {
-			if ( self.numeric_natural_pattern.test( value ) == false ) {
-				message = wpv_filters_strings.param_numeric_natural_ilegal;
-				input_valid = false;
-			}
+		switch ( type ) {
+			case 'select':
+				if ( value == '' ) {
+					message = wpv_filters_strings.add_filter_dialog.select_empty;
+					input_valid = false;
+				}
+				break;
+			case 'url':
+				if ( value == '' ) {
+					message = wpv_filters_strings.validation.param_missing;
+					input_valid = false;
+				} else if ( self.validation_patterns[ 'url' ].test( value ) == false ) {
+					message = wpv_filters_strings.validation.param_ilegal[ 'url' ];
+					input_valid = false;
+				} else if ( $.inArray( value, wpv_forbidden_parameters.wordpress ) > -1 ) {
+					message = wpv_filters_strings.validation.param_forbidden_wordpress;
+					input_valid = false;
+				} else if ( $.inArray( value, wpv_forbidden_parameters.toolset ) > -1 ) {
+					message = wpv_filters_strings.validation.param_forbidden_toolset;
+					input_valid = false;
+				} else if ( $.inArray( value, wpv_forbidden_parameters.post_type ) > -1 ) {
+					message = wpv_filters_strings.validation.param_forbidden_post_type;
+					input_valid = false;
+				} else if ( $.inArray( value, wpv_forbidden_parameters.taxonomy ) > -1 ) {
+					message = wpv_filters_strings.validation.param_forbidden_taxonomy;
+					input_valid = false;
+				}
+				break;
+			case 'shortcode':
+				if ( value == '' ) {
+					message = wpv_filters_strings.validation.param_missing;
+					input_valid = false;
+				} else if ( self.validation_patterns[ 'shortcode' ].test( value ) == false ) {
+					message = wpv_filters_strings.validation.param_ilegal[ 'shortcode' ];
+					input_valid = false;
+				} else if ( $.inArray( value, wpv_forbidden_parameters.toolset_attr ) > -1 ) {
+					message = wpv_filters_strings.validation.param_forbidden_toolset_attr;
+					input_valid = false;
+				}
+				break;
+			case 'year':
+			case 'month':
+			case 'week':
+			case 'day':
+			case 'hour':
+			case 'minute':
+			case 'second':
+			case 'dayofyear':
+			case 'dayofweek':
+			case 'numeric_natural':
+				if ( self.validation_patterns[ type ].test( value ) == false ) {
+					message = wpv_filters_strings.validation.param_ilegal.type;
+					input_valid = false;
+				}
+				break;
 		}
 		if ( ! input_valid ) {
 			filter_error_container
@@ -308,10 +328,6 @@ WPViews.QueryFilters = function( $ ) {
 			});
 	};
 	
-	self.reset_filter_select = function() {
-		$( '.js-filter-add-select' ).val( '-1' );
-	};
-	
 	self.manage_filter_insert_button = function( state ) {
 		if ( state ) {
 			$( '.js-filters-insert-filter' )
@@ -332,10 +348,6 @@ WPViews.QueryFilters = function( $ ) {
 	
 	// Adding a filter
 	
-	$( document ).on( 'click', '.js-filters-cancel-filter', function() {
-		self.reset_filter_select();
-	});
-	
 	$( document ).on( 'change', '.js-filter-add-select', function() {
 		self.manage_filter_insert_button( $( this ).val() != '-1' );
 	});
@@ -343,25 +355,31 @@ WPViews.QueryFilters = function( $ ) {
 	$( document ).on( 'click', '.js-wpv-filter-add-filter', function() {
 		var thiz = $( this );
 		thiz.prop( 'disabled', true );
-		self.reset_filter_select();
-		$( '.js-filters-insert-filter' )
-			.addClass( 'button-secondary' )
-			.removeClass( 'button-primary' )
-			.prop( 'disabled', true );
-		self.update_filters_select( thiz.data( 'nonce' ), true );
+		self.open_add_filter_dialog();
 	});
 	
 	$( document ).on( 'click','.js-filters-insert-filter', function() {
 		var thiz = $( this ),
-		filter_type = $( '.js-filter-add-select' ).val(),
+		filter_type = $( '#js-wpv-filter-add-query-filter-dialog .js-filter-add-select' ).val(),
 		nonce = thiz.data( 'nonce' ),
 		spinnerContainer = $( '<div class="wpv-spinner ajax-loader">' ).insertBefore( thiz ).show(),
+		query_mode = Toolset.hooks.applyFilters( 'wpv-filter-wpv-edit-screen-get-query-mode', 'normal' ),
 		data = {
-			action: 'wpv_filters_add_filter_row',
-			id: self.view_id,
-			wpnonce: wpv_filters_strings.add_filter_nonce,
-			filter_type: filter_type
+			id:				self.view_id,
+			wpnonce:		wpv_filters_strings.add_filter_nonce,
+			filter_type:	filter_type
 		};
+		
+		switch ( query_mode ) {
+			case 'archive':
+				data.action = 'wpv_filters_add_archive_filter_row';
+				break;
+			case 'normal':
+			default:
+				data.action = 'wpv_filters_add_filter_row';
+				break;
+		}
+
 		thiz
 			.addClass( 'button-secondary' )
 			.removeClass( 'button-primary' )
@@ -418,6 +436,7 @@ WPViews.QueryFilters = function( $ ) {
 					var responseRow = $( '.js-filter-list' ).append( response );
 					self.first_open_filter_row( '.js-filter-list .js-filter-row-' + filter_type );
 				}
+				$( document ).trigger( 'js_event_wpv_query_filter_created', [ filter_type ] );
 			} else {
 				console.log( "Error: AJAX returned ", response );
 			}
@@ -428,11 +447,6 @@ WPViews.QueryFilters = function( $ ) {
 		.always( function() {
 			spinnerContainer.remove();
 			self.query_filter_dialog.dialog( 'close' );
-			self.reset_filter_select();
-			$( document ).trigger( 'js_event_wpv_query_filter_created', [ filter_type ] );
-			if ( filter_type == 'post_search' ) {
-				WPV_parametric_local.add_search.handle_flags();
-			}
 		});
 	});
 	
@@ -440,10 +454,7 @@ WPViews.QueryFilters = function( $ ) {
 
 	$( document ).on( 'js_event_wpv_query_filter_created js_event_wpv_query_filter_saved js_event_wpv_query_filter_deleted', function( event, filter_type ) {
 		self.filters_exist();
-		self.reset_filter_select();
-		if ( $( '.js-wpv-section-unsaved' ).length < 1 ) {
-			setConfirmUnload( false );
-		}
+		$( document ).trigger( 'js_event_wpv_set_confirmation_unload_check' );
 	});
 	
 	// Remove simple filter
@@ -457,9 +468,9 @@ WPViews.QueryFilters = function( $ ) {
 		spinnerContainer = $( '<div class="wpv-spinner ajax-loader">' ).insertBefore( thiz ).show(),
 		error_container = row.find( '.js-wpv-filter-toolset-messages' );
 		data = {
-			action: action,
-			id: self.view_id,
-			wpnonce: nonce,
+			action:		action,
+			id:			self.view_id,
+			wpnonce:	nonce,
 		};
 		$.post( ajaxurl, data, function( response ) {
 			if ( response.success ) {
@@ -469,14 +480,10 @@ WPViews.QueryFilters = function( $ ) {
 					.fadeOut( 500, function() {
 						$( this ).remove();
 						$( document ).trigger( 'js_event_wpv_query_filter_deleted', [ filter ] );
-						if ( filter == 'post_search' ) {
-							WPV_parametric_local.add_search.handle_flags();
-						}
 					});
 				$( '.js-filter-add-select' ).val( '-1' );
-				$( '.js-post_ID' ).trigger( 'wpv_trigger_dps_existence_intersection_missing' );
 			} else {
-				WPViews.view_edit_screen.manage_ajax_fail( response.data, error_container );
+				Toolset.hooks.doAction( 'wpv-action-wpv-edit-screen-manage-ajax-fail', { data: response.data, container: error_container} );
 			}
 		}, 'json' )
 		.fail( function( jqXHR, textStatus, errorThrown ) {
@@ -495,6 +502,7 @@ WPViews.QueryFilters = function( $ ) {
 	
 	$( document ).on( 'js_event_wpv_query_type_options_saved', '.js-wpv-query-type-update', function() {
 		self.filters_exist();
+		// @todo the save queue might need to be cleared from query filters here, or some kind of cache of pending filters should be stored
 	});
 	
 	// ---------------------------------
@@ -518,8 +526,10 @@ jQuery( document ).ready( function( $ ) {
 // Parametric search and results update settings
 //----------------------------
 
-WPViews.ParametricSearchSectionGUI = function( $ ) {
-	var self = this; // this is a private variable which scopes the full class to reference the Object in every scope
+WPViews.ParametricSearchGUI = function( $ ) {
+	
+	var self		= this;
+	self.view_id	= $( '.js-post_ID' ).val();
 	
 	// Parametric search data
 	self.helper_mode_val = $( '.js-wpv-dps-mode-helper:checked' ).val(),
@@ -540,8 +550,7 @@ WPViews.ParametricSearchSectionGUI = function( $ ) {
 	$( document ).on( 'change', '.js-wpv-dps-ajax-results', function() {
 		self.update_mode_val = $( '.js-wpv-dps-ajax-results:checked' ).val();
 		self.wpv_dps_showhide_javascript_settings();
-		WPV_parametric_local.add_spinner.handle_flags();
-		WPV_parametric_local.add_submit.handle_flags();
+		Toolset.hooks.doAction( 'wpv-action-wpv-edit-screen-parametric-filter-buttons-handle-flags' );
 		$( '.js-wpv-dps-ajax-results-extra' ).hide();
 		if ( self.update_mode_val == 'disable' ) {
 			$( '.js-wpv-dps-ajax-results-extra-disable' ).fadeIn();
@@ -551,13 +560,12 @@ WPViews.ParametricSearchSectionGUI = function( $ ) {
 	$( document ).on( 'change', '.js-wpv-ajax-results-submit', function() {
 		self.update_submit_action_val = $( '.js-wpv-ajax-results-submit:checked' ).val();
 		self.wpv_dps_showhide_javascript_settings();
-		WPV_parametric_local.add_spinner.handle_flags();
-		WPV_parametric_local.add_submit.handle_flags();
+		Toolset.hooks.doAction( 'wpv-action-wpv-edit-screen-parametric-filter-buttons-handle-flags' );
 	});
 	
 	$( document).on( 'change', '.js-wpv-dps-enable', function() {
 		self.dps_mode_val = $( '.js-wpv-dps-enable:checked' ).val()
-		WPV_parametric_local.add_spinner.handle_flags();
+		Toolset.hooks.doAction( 'wpv-action-wpv-edit-screen-parametric-filter-buttons-handle-flags' );
 		if ( self.dps_mode_val == 'disable' ) {
 			$( '.js-wpv-dps-crossed-details' ).hide();
 		} else {
@@ -621,9 +629,166 @@ WPViews.ParametricSearchSectionGUI = function( $ ) {
 			$( '.js-wpv-ajax-extra-callbacks' ).hide();
 		}
 	}
+	
+	// ---------------------------------
+	// Manage parametric search hints
+	// ---------------------------------
+	
+	self.manage_parametric_search_hints = function( parametric_hints_data ) {
+		var existence_container		= $( '.js-wpv-no-filters-container' ),
+		intersection_container		= $( '.js-wpv-dps-intersection-fail' ),
+		intersection_container_ok	= $( '.js-wpv-dps-intersection-ok' ),
+		missing_container			= $( '.js-wpv-missing-filter-container' ),
+		query_type					= Toolset.hooks.applyFilters( 'wpv-filter-wpv-edit-screen-get-query-type', 'posts' ),
+		purpose						= Toolset.hooks.applyFilters( 'wpv-filter-wpv-edit-screen-get-purpose', '' );
+		
+		if ( parametric_hints_data.existence != '' ) {
+			existence_container.html( parametric_hints_data.existence );
+			if ( 
+				query_type === 'posts' 
+				&& purpose === 'parametric' 
+			) {
+				existence_container.fadeIn( 'fast' );
+			} else {
+				existence_container.hide();
+			}
+		} else {
+			existence_container.hide();
+		}
+		if ( parametric_hints_data.intersection != '' ) {
+			intersection_container.html( parametric_hints_data.intersection );
+			if ( query_type === 'posts' ) {
+				intersection_container.fadeIn( 'fast' );
+				intersection_container_ok.hide();
+			}
+		} else {
+			intersection_container.hide();
+			intersection_container_ok.fadeIn( 'fast' );
+		}
+		if ( parametric_hints_data.missing != '' ) {
+			missing_container.html( parametric_hints_data.missing );
+			if ( query_type === 'posts' ) {
+				missing_container.fadeIn( 'fast' );
+			}
+		} else {
+			missing_container.hide();
+		}
+		
+	};
+	
+	self.get_parametric_search_hints = function() {
+		var data = {
+			action:		'wpv_get_parametric_search_hints',
+			id:			self.view_id,
+			wpnonce:	wpv_filters_strings.nonce
+		};
+		$.ajax( {
+			type:		"POST",
+			url:		ajaxurl,
+			dataType:	"json",
+			data:		data,
+			success:	function( response ) {
+				if ( response.success ) {
+					self.manage_parametric_search_hints( response.data.parametric );
+				}
+			},
+			error:		function( ajaxContext ) {
+				
+			},
+			complete:	function() {
+				
+			}
+		});
+	};
+	
+	$( document ).on( 'js_event_wpv_screen_options_saved js_event_wpv_query_type_saved', function() {
+		self.get_parametric_search_hints();
+	});
+	
+	$( document ).on( 'click', '.js-wpv-filter-missing-delete', function( e ) {
+		e.preventDefault();
+		var thiz			= $( this ),
+		spinnerContainer	= $('<div class="wpv-spinner ajax-loader">').insertBefore( thiz ).show(),
+		missing_filters		= {
+			cf:		[],
+			tax:	[],
+			rel:	[],
+			search:	[]
+		},
+		thiz_type,
+		thiz_name;
+		
+		thiz
+			.addClass( 'button-secondary' )
+			.removeClass( 'button-primary' )
+			.prop( 'disabled', true );
+		
+		$( '.js-wpv-filter-missing' ).find( 'li' ).each( function() {
+			thiz_type = $( this ).data( 'type' );
+			this_name = $( this ).data( 'name' );
+			missing_filters[ thiz_type ].push( this_name );
+		});
+		
+		var data = {
+			action:		'wpv_remove_filter_missing',
+			id:			self.view_id,
+			filters:	missing_filters,
+			wpnonce:	wpv_filters_strings.nonce
+		};
+		
+		$.ajax( {
+			type:		"POST",
+			url:		ajaxurl,
+			dataType:	"json",
+			data:		data,
+			success:	function( response ) {
+				if ( response.success ) {
+					$( '.js-filter-list' ).html( response.data.updated_filters_list );
+					$( document ).trigger( 'js_event_wpv_query_filter_deleted', [ 'all' ] );
+					thiz
+						.closest( '.js-wpv-missing-filter-container' )
+							.html( '' )
+							.hide();
+					self.manage_parametric_search_hints( response.data.parametric );
+				}
+			},
+			error:		function( ajaxContext ) {
+				
+			},
+			complete:	function() {
+				spinnerContainer.remove();
+			}
+		});
+	});
+	
+	$( document ).on( 'click', '.js-wpv-filter-missing-close', function( e ) {
+		e.preventDefault();
+		var thiz = $( this );
+		thiz
+			.closest( '.js-wpv-missing-filter-container' )
+				.html('')
+				.hide();
+	});
+	
+	// ---------------------------------
+	// Init hooks
+	// ---------------------------------
+	
+	self.init_hooks = function() {
+		
+		// Manage parametric search hints
+		Toolset.hooks.addAction( 'wpv-action-wpv-edit-screen-get-parametric-search-hints', self.get_parametric_search_hints );
+		Toolset.hooks.addAction( 'wpv-action-wpv-edit-screen-manage-parametric-search-hints', self.manage_parametric_search_hints );
+		
+		return self;
+	};
+	
+	// ---------------------------------
+	// Init
+	// ---------------------------------
 
 	self.init = function() {
-		
+		self.init_hooks();
 	};
 	
 	self.init();
@@ -631,131 +796,5 @@ WPViews.ParametricSearchSectionGUI = function( $ ) {
 };
 
 jQuery( document ).ready( function( $ ) {
-    WPViews.parametric_search_section_gui = new WPViews.ParametricSearchSectionGUI( $ );
-});
-
-jQuery( document ).on( 'click', '.js-wpv-filter-missing-delete', function(e) {
-	e.preventDefault();
-	var thiz = jQuery( this ),
-	spinnerContainer = jQuery('<div class="wpv-spinner ajax-loader">').insertBefore( thiz ).show(),
-	missing_cf = [],
-	missing_tax = [],
-	missing_rel = [],
-	missing_search = [],
-	thiz_type,
-	thiz_name;
-	jQuery( '.js-wpv-filter-missing' ).find( 'li' ).each( function() {
-		thiz_type = jQuery( this ).data( 'type' );
-		this_name = jQuery( this ).data( 'name' );
-		if ( thiz_type == 'cf' ) {
-			missing_cf.push( this_name );
-		} else if ( thiz_type == 'tax' ) {
-			missing_tax.push( this_name );
-		} else if ( thiz_type == 'rel' ) {
-			missing_rel.push( this_name );
-		} else if ( thiz_type == 'search' ) {
-			missing_search.push( this_name );
-		}
-	});
-	data = {
-		action: 'wpv_remove_filter_missing',
-		id: jQuery('.js-post_ID').val(),
-		cf: missing_cf,
-		tax: missing_tax,
-		rel: missing_rel,
-		search: missing_search,
-		wpnonce: thiz.data('nonce')
-	};
-	jQuery.post( ajaxurl, data, function( response ) {
-		if ( response.success ) {
-			jQuery( '.js-filter-list' ).html( response.data.updated_filters_list );
-			jQuery( document ).trigger( 'js_event_wpv_query_filter_deleted', [ 'all' ] );
-			thiz.closest( '.js-wpv-missing-filter-container' ).html( '' ).hide();
-			jQuery( '.js-post_ID' ).trigger( 'wpv_trigger_dps_existence_intersection_missing' );
-		} else {
-			
-		}
-	}, 'json' )
-	.fail(function(jqXHR, textStatus, errorThrown) {
-		//if(  WPV_Parametric.debug ) console.log( WPV_Parametric.error_generic, textStatus, errorThrown );
-	})
-	.always(function() {
-		spinnerContainer.remove();
-	});
-});
-
-jQuery(document).on( 'click', '.js-wpv-filter-missing-close', function(e) {
-	e.preventDefault();
-	var thiz = jQuery(this);
-	thiz.parents( '.js-wpv-missing-filter-container' ).html('').hide();
-});
-
-jQuery( document ).on( 'wpv_trigger_dps_existence_intersection_missing', '.js-post_ID', function() {
-	wpv_dps_existence_intersection_missing();
-});
-
-function wpv_dps_existence_intersection_missing() {
-	var mandy = jQuery( '.js-post_ID' ),
-	view_id = mandy.val(),
-	nonce = mandy.data( 'nonce' ),
-	existence_container = jQuery( '.js-wpv-no-filters-container' ),
-	intersection_container = jQuery( '.js-wpv-dps-intersection-fail' ),
-	intersection_container_ok = jQuery( '.js-wpv-dps-intersection-ok' ),
-	missing_container = jQuery( '.js-wpv-missing-filter-container' );
-	data = {
-		action: 'wpv_get_dps_related',
-		id: view_id,
-		nonce: nonce
-	};
-	jQuery.ajax( {
-		type: "POST",
-		async: false,
-		url: ajaxurl,
-		data: data,
-		success: function( response ) {
-			if ( typeof( response ) !== 'undefined' ) {
-				decoded_response = jQuery.parseJSON( response );
-				if ( decoded_response.existence != '' ) {
-					existence_container.html( decoded_response.existence );
-					if ( WPViews.view_edit_screen.query_type === 'posts' && WPViews.view_edit_screen.purpose === 'parametric' ) {
-						existence_container.fadeIn( 'fast' );
-					} else {
-						existence_container.hide();
-					}
-				} else {
-					existence_container.hide();
-				}
-				if ( decoded_response.intersection != '' ) {
-					intersection_container.html( decoded_response.intersection );
-					if ( WPViews.view_edit_screen.query_type === 'posts' ) {
-						intersection_container.fadeIn( 'fast' );
-						intersection_container_ok.hide();
-					}
-				} else {
-					intersection_container.hide();
-					intersection_container_ok.fadeIn( 'fast' );
-				}
-				if ( decoded_response.missing != '' ) {
-					missing_container.html( decoded_response.missing );
-					if ( WPViews.view_edit_screen.query_type === 'posts' ) {
-						missing_container.fadeIn( 'fast' );
-					}
-				} else {
-					missing_container.hide();
-				}
-			} else {
-				console.log( "Error: AJAX returned ", response );
-			}
-		},
-		error: function (ajaxContext) {
-			console.log( "Error: ", ajaxContext.responseText );
-		},
-		complete: function() {
-			
-		}
-	});
-}
-
-jQuery( document ).on( 'js_event_wpv_screen_options_saved js_event_wpv_query_type_saved', function() {
-	wpv_dps_existence_intersection_missing();
+    WPViews.parametric_search_gui = new WPViews.ParametricSearchGUI( $ );
 });

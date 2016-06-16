@@ -5,6 +5,8 @@
  * @package aveone
  * @subpackage Functions
  */
+
+ 
 add_action('wp_ajax_aveone_dynamic_css', 'aveone_dynamic_css');
 add_action('wp_ajax_nopriv_aveone_dynamic_css', 'aveone_dynamic_css');
 
@@ -12,7 +14,7 @@ function strip_tags_content($text, $tags = '', $invert = FALSE) {
 
   preg_match_all('/<(.+?)[\s]*\/?[\s]*>/si', trim($tags), $tags);
   $tags = array_unique($tags[1]);
-   
+
   if(is_array($tags) AND count($tags) > 0) {
     if($invert == FALSE) {
       return preg_replace('@<(?!(?:'. implode('|', $tags) .')\b)(\w+)\b.*?>.*?</\1>@si', '', $text);
@@ -25,7 +27,7 @@ function strip_tags_content($text, $tags = '', $invert = FALSE) {
     return preg_replace('@<(\w+)\b.*?>.*?</\1>@si', '', $text);
   }
   return $text;
-} 
+}
 
 
 
@@ -36,7 +38,7 @@ function strip_tags_content($text, $tags = '', $invert = FALSE) {
 function aveone_dynamic_css() {
     global $wp_customize;
     if (method_exists($wp_customize, 'is_preview') and !is_admin()) {
-        
+
     } else {
         header('Content-type: text/css');
     }
@@ -78,7 +80,7 @@ function aveone_media() {
     }
 
     if ($aveone_pos_button == "disable" || $aveone_pos_button == "") {
-        
+
     } else {
         wp_enqueue_script('jquery_scroll', AVEONEJS . '/jquery.scroll.pack.js');
     }
@@ -127,7 +129,7 @@ function aveone_media() {
     $font_storage[] = '';
     for ($i = 0; $i < 12; $i++) {
         if (in_array($selected_fonts[$i], $font_storage)) {
-            
+
         } else {
             $font_storage[] = $selected_fonts[$i];
             $font_face = explode(',', $selected_fonts[$i]);
@@ -148,7 +150,7 @@ function aveone_media() {
         wp_enqueue_style('googlefont', "//fonts.googleapis.com/css?family=" . $font_face_all);
     }
 
-    // FontAwesome 
+    // FontAwesome
 
     wp_enqueue_style('fontawesomecss', AVEONEJS . '/fontawesome/css/font-awesome.css');
 
@@ -178,7 +180,7 @@ function aveone_media() {
     add_action('wp_enqueue_scripts', 'aveone_styles');
 
 
-    // Bootstrap Elements        
+    // Bootstrap Elements
 
     wp_enqueue_script('bootstrap', AVEONEJS . '/bootstrap/js/bootstrap.js');
     wp_enqueue_style('bootstrapcss', AVEONEJS . '/bootstrap/css/bootstrap.css', array('maincss'));
@@ -392,7 +394,7 @@ function custom_property_details() {
             <div class="col-sm-4">
                 <h3 class="heading">Facts & Figures</h3>
                 <ul class="details">
-                    
+
     <?php
     if (get_option('property_price_type') == "fixed") {
         ?>
@@ -508,7 +510,7 @@ function custom_property_details() {
     <div class="contact-page">
         <div class="col-sm-12">
             <div class="col-sm-5">
-    <?php 
+    <?php
     $contact_form = stripcslashes(get_option('contact_form_shortcode'));
     echo do_shortcode($contact_form); ?>
             </div>
@@ -546,7 +548,7 @@ function send_contact_details_callback() {
         }elseif(5 == $subject_id){
             $subject = 'Other';
         }
-        
+
         $content = '';
         $content .= '<html>';
         $content .= '<body>';
@@ -561,11 +563,11 @@ function send_contact_details_callback() {
         $content .= '</div>';
         $content .= '</body>';
         $content .= '</html>';
-        
+
         $current_blog_id = get_current_blog_id();
         $users = get_users(array('blog_id'=>$current_blog_id,'role'=>'administrator'));
         $admin_email = $users['0']->data->user_email;
-        
+
         $send = wp_mail($admin_email, $subject, $content);
         if($send){
             echo "sent";
@@ -642,7 +644,7 @@ function custom_map_shortcode($atts) {
 
     $html .= '<script>
         jQuery(document).ready(function($){
-            
+
         });
 </script>';
 
@@ -663,7 +665,7 @@ function initialize() {
             lat = response.results[0].geometry.location.lat;
             lng = response.results[0].geometry.location.lng;
             directionsDisplay = new google.maps.DirectionsRenderer();
-            
+
               var myLatlng = new google.maps.LatLng(lat, lng);
               var mapOptions = {
                 zoom: 15,
@@ -671,7 +673,7 @@ function initialize() {
               }
               map = new google.maps.Map(document.getElementById(\'map-canvas\'), mapOptions);
               directionsDisplay.setMap(map);
-              
+
               directionsDisplay.setPanel(document.getElementById(\'directionsPanel\'));
 
              var contentString = "<div id=\'bubble-content\'><h3>' . $address . '</h3><h3>' . $city_state . '</h3><label>Price:&nbsp;</label>' . $price . '<br><label>Represented By:&nbsp;</label>'.$agent.'</div>";
@@ -685,15 +687,15 @@ function initialize() {
                 map: map,
                 title: "Location"
             });
-            
+
             infowindow.open(map,marker);
-            
-            
+
+
             calcRoute();
 
 
         }
-    }); 
+    });
 
 }
 
@@ -730,7 +732,7 @@ function calcRoute() {
       travelMode: google.maps.TravelMode.DRIVING
   };
   directionsService.route(request, function(response, status) {
-    
+
     if (status == google.maps.DirectionsStatus.OK) {
       directionsDisplay.setDirections(response);
     }
@@ -847,11 +849,11 @@ function my_custom_fonts() {
 }
 
 /*---------------- adding file types to types upload only for pdf docx doc txt files------------------*/
-    
-   
+
+
      if ( isset( $_REQUEST['post_id'] ) && get_post_type( $_REQUEST['post_id'] ) === 'printable_info' )
    {
-        
+
           add_filter('wp_handle_upload_prefilter', 'tang_wp_handle_upload_prefilter');
 function tang_wp_handle_upload_prefilter($file) {
   // This bit is for the flash uploader
@@ -865,10 +867,10 @@ function tang_wp_handle_upload_prefilter($file) {
     }
   }
   list($category,$type) = explode('/',$file['type']);
-  
+
   if (! in_array( $type, array( 'pdf', 'msword','vnd.openxmlformats-officedocument.wordprocessingml.document'))) {
     $file['error'] = "Sorry, you can only upload a .pdf, a .doc, .docx file.";
-  } 
+  }
   return $file;
    }
 }
@@ -887,7 +889,7 @@ add_action( 'manage_printable_info_posts_custom_column' , 'tan_printables_admin_
 function tan_printables_admin_column_reg($column, $post_id ){
  $meta_values = get_post_meta(get_the_ID(), 'wpcf-select-file-here', true);
                             $file_type_extension=substr($meta_values, -4);
-                           
+
                           if($file_type_extension == '.pdf')
                           { ?>
                              <img src="<?php echo get_template_directory_uri(); ?>/images/pdf.png" width="70px" height="70px"/>

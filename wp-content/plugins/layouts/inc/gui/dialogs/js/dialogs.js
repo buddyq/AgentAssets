@@ -253,7 +253,7 @@ DDLayout.Dialogs.DDL_Dialog = function($){
 
         $.extend($.colorbox.settings, {
             transition: 'fade',
-            opacity: 0.3,
+            opacity: 0.7,
             speed: 150,
             fadeOut : 0,
             inline : inline,
@@ -353,8 +353,7 @@ DDLayout.Dialogs.DDL_Dialog = function($){
     var color_box_overrides = function(){
 
         jQuery(document).on('cbox_load', function(event){
-
-
+            jQuery('body').addClass('noscroll');
             jQuery('#colorbox').css('z-index', '9999');
             jQuery('#cboxOverlay').css('z-index', '9999');
             jQuery('#cboxWrapper').css('z-index', '9999');
@@ -373,7 +372,6 @@ DDLayout.Dialogs.DDL_Dialog = function($){
         });
 
         jQuery(document).on('cbox_complete', function(event) {
-
             overrides_visibility();
 
             _.defer( fix_cancel_button_helper );
@@ -407,7 +405,7 @@ DDLayout.Dialogs.DDL_Dialog = function($){
         });
 
         jQuery(document).on('cbox_cleanup', function() {
-
+            jQuery('body').removeClass('noscroll');
             // Unbind keyup.colorbox event on colorbox close
             jQuery(document).off('keyup.colorbox');
 

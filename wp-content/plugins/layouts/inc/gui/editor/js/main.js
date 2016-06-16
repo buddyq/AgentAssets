@@ -24,12 +24,12 @@ DDLayout.utils = {};
 DDLayout_settings.DDL_JS.ns = head;
 
 DDLayout_settings.DDL_JS.ns.js(
-    DDLayout_settings.DDL_JS.lib_path + "he/he.min.js"
+    DDLayout_settings.DDL_JS.lib_path + "backbone_overrides.js"
+    , DDLayout_settings.DDL_JS.lib_path + "he/he.min.js"
     , DDLayout_settings.DDL_JS.common_rel_path + "/res/lib/jstorage.min.js"
     , DDLayout_settings.DDL_JS.common_rel_path + "/utility/js/keyboard.min.js"
     , DDLayout_settings.DDL_JS.lib_path + "prototypes.js"
     , DDLayout_settings.DDL_JS.lib_path +"imagesloaded.pkgd.js"
-    //, DDLayout_settings.DDL_JS.editor_lib_path + "backbone-overrides.js"
     , DDLayout_settings.DDL_JS.editor_lib_path + 'ddl-saving-saved-box.js'
     , DDLayout_settings.DDL_JS.editor_lib_path + "models/abstract/Element.js"
     , DDLayout_settings.DDL_JS.editor_lib_path + "models/cells/Cell.js"
@@ -49,6 +49,7 @@ DDLayout_settings.DDL_JS.ns.js(
     , DDLayout_settings.DDL_JS.editor_lib_path + "views/ContainerRowView.js"
     , DDLayout_settings.DDL_JS.editor_lib_path + "views/ContainerView.js"
     , DDLayout_settings.DDL_JS.editor_lib_path + "views/SpacerView.js"
+    , DDLayout_settings.DDL_JS.editor_lib_path + 'parent-helper.js'
     , DDLayout_settings.DDL_JS.editor_lib_path + "views/LayoutView.js"
     , DDLayout_settings.DDL_JS.editor_lib_path + "views/ThemeSectionRowView.js"
     , DDLayout_settings.DDL_JS.editor_lib_path + "views/UndoRedo.js"
@@ -139,7 +140,7 @@ DDLayout.AdminPage = function($)
             , view_layout = new DDLayout.ViewLayoutManager( layout.get('id'), layout.get('name') );
         DDLayout.parents_watcher = new DDLayout.ParentsWatcher($, self);
         self.instance_layout_view = new DDLayout.views.LayoutView({model:layout});
-        self.saving_saved = new DDLayout.SavingSaved( jQuery('.js-editor-toolbar') );
+        self.saving_saved = new DDLayout.SavingSaved( jQuery('.dd-layouts-breadcrumbs') );
         self.undo_redo = new DDLayout.UndoRedo();
         self.key_handler = new DDLayout.KeyHandler();
         self.breadcrumbs = new DDLayout.Breadcrumbs(layout);
@@ -164,6 +165,8 @@ DDLayout.AdminPage = function($)
 
         self.is_new_layout();
 
+        self.delete_layout();
+
         self._new_cell_target = null;
 
         jQuery(document).ready(self._fix_edit_layout_menu_link);
@@ -187,6 +190,84 @@ DDLayout.AdminPage = function($)
                 self.update_wpml_state(layout.get('id'), true);
             }
         }
+    };
+
+    self.is_layout_assigned = function(){
+        return Toolset.hooks.applyFilters('ddl-is_current_layout_assigned', DDLayout_settings.DDL_JS.is_layout_assigned );
+    };
+    
+    self.delete_layout = function(){
+        var $button = jQuery('.js-trash-layout');
+
+        jQuery(document).on('click', $button.selector, function(event){
+            event.preventDefault();
+            event.stopPropagation();
+
+            if( self.is_layout_assigned() ){
+                self.layout_assigned_dialog( self.instance_layout_view.model );
+                return false;
+            }
+
+            var data = {
+                action:"set_layout_status",
+                status:"trash",
+                'layout-select-trash-nonce': DDLayout_settings.DDL_JS.layout_trash_nonce,
+                layout_id:self.instance_layout_view.model.get('id'),
+                current_page_status:"publish",
+                do_not_reload:"yes"
+            };
+
+            WPV_Toolset.Utils.loader.loadShow( $button, true ).css({
+                position:'absolute',
+                right:'60px',
+                bottom:'2px'
+            });
+
+            WPV_Toolset.Utils.do_ajax_post( data, {
+                success:function(response){
+                    location.href = DDLayout_settings.DDL_JS.trash_redirect
+                },
+                error:function( response ){
+                    
+                },
+                fail:function( response ){
+                    
+                },
+                always:function(){
+                    WPV_Toolset.Utils.loader.loadHide();
+                }
+            });
+        });
+    };
+
+    self.layout_assigned_dialog = function(layout_model){
+
+        var dialog = new DDLayout.ViewLayoutManager.DialogView({
+            title:  layout_model.get('name') + DDLayout_settings.DDL_JS.strings.layout_assigned,
+            modal:false,
+            width: 400,
+            selector: '#ddl-delete-layout-dialog-tpl',
+            template_object: {
+                layout_name: layout_model.get('name'),
+            },
+            buttons: [
+                {
+                    text: DDLayout_settings.DDL_JS.strings.close,
+                    icons: {
+                        secondary: ""
+                    },
+                    click: function () {
+                        jQuery(this).ddldialog("close");
+                    }
+                },
+            ]
+        });
+
+        dialog.$el.on('ddldialogclose', function (event) {
+            dialog.remove();
+        });
+
+        dialog.dialog_open();
     };
 
     self.save_state_changed = function( state ){
@@ -464,8 +545,7 @@ DDLayout.AdminPage = function($)
                 jQuery(".layout-title-input").addClass('new_layout_alert_border');
                 jQuery("#change_layout_name_message").css("display", 'block');
             }
-
-            if(jQuery("#js-dd-layouts-where-used li").length === 0){
+            if(jQuery("#js-print_where_used_links li").length === 0){
                 jQuery(".js-layout-content-assignment-button").addClass('new_layout_alert_border');
             }
         }
@@ -892,3 +972,129 @@ DDLayout.AdminPage.manageDeselectElementName = function( event, args )
 
     return true;
 };
+
+/**
+ * Loads CRED Object and fixes issues with CRED dialog bugs with select2 in $.colorbox
+ * @type {{show: DDLayout.AdminPage.handleCredIssuesEventually.show, hide: DDLayout.AdminPage.handleCredIssuesEventually.hide, init: DDLayout.AdminPage.handleCredIssuesEventually.init}}
+ */
+DDLayout.AdminPage.handleCredIssuesEventually = {
+    registered:false,
+    show:function(){
+        var self = this;
+        Toolset.hooks.addAction('cred-popup-box_show', function(){
+            jQuery('.cred-popup-box').css('z-index', '1000000000000000000000000000000000000000000000');
+            jQuery('.ddl-markup-controls').css('z-index', '-1');
+            jQuery('.ddl-markup-controls').find('div').each(function(){
+                jQuery(this).css('z-index', '-1');
+                jQuery(this).find('input').each(function(){
+                    jQuery(this).css('z-index', '-1')
+                })
+            });
+            if( self.registered === false ){
+                self.fix_option_radio_issue_on();
+                self.registered = true;
+            }
+        });
+    },
+    hide: function(){
+        var self = this;
+        Toolset.hooks.addAction('cred_cred_short_code_dialog_close', function(){
+            jQuery('.cred-popup-box').css('z-index', '1000');
+            jQuery('.ddl-markup-controls').css('z-index', '9999');
+            jQuery('.ddl-markup-controls').find('div').each(function(){
+                jQuery(this).css('z-index', '999999999999');
+                jQuery(this).find('input').each(function(){
+                    jQuery(this).css('z-index', '99999999999999')
+                })
+            });
+            self.fix_option_radio_issue_off();
+        });
+    },
+    fix_option_radio_issue_on:function(){
+        var self = this;
+        jQuery(document).on('change', 'input[value="edit-other-user"], input[value="edit-current-user"]', self.handle_change_user);
+        jQuery(document).on('change', 'input[value="edit-current-post"], input[value="edit-other-post"]', self.handle_change_post);
+    },
+    fix_option_radio_issue_off:function(){
+        var self = this;
+        self.set_defaults();
+        jQuery(document).off('change', 'input[value="edit-other-user"], input[value="edit-current-user"]', self.handle_change_user);
+        jQuery(document).off('change', 'input[value="edit-current-post"], input[value="edit-other-post"]', self.handle_change_post);
+        self.registered = false;
+    },
+    handle_change_user:function (event) {
+        event.stopImmediatePropagation();
+        var $select = jQuery( 'select[name="cred_user_form-edit-shortcode-select-2"]' );
+        var form_id = $select.eq($select.length-1).val();
+        var form_name = jQuery("option:selected", jQuery(this)).text();
+        var loader = jQuery('#cred-user-form-addtional-loader').show();
+        jQuery.ajax({
+            url: ajaxurl + '?action=cred_ajax_Posts&_do_=getUsers&form_id='+form_id,
+            timeout: 10000,
+            type: 'GET',
+            data: '',
+            dataType: 'html',
+            success: function (result)
+            {
+                jQuery('.cred-edit-other-user-more2').show();
+                jQuery('.cred-edit-user-select2').html(result);
+                loader.hide();
+            },
+            error: function ()
+            {
+                loader.hide();
+            }
+        });
+    },
+    handle_change_post:function(event){
+        event.stopImmediatePropagation();
+        var $select = jQuery( 'select[name="cred_form-edit-shortcode-select-2"]' );
+        var form_id = $select.eq($select.length-1).val();
+        var form_name = jQuery("option:selected", jQuery(this)).text();
+        var loader = jQuery('#cred-form-addtional-loader2').show();
+        jQuery.ajax({
+            url: ajaxurl + '?action=cred_ajax_Posts&_do_=getPosts&form_id='+form_id,
+            timeout: 10000,
+            type: 'GET',
+            data: '',
+            dataType: 'html',
+            success: function (result)
+            {
+                jQuery('.cred-edit-other-post-more2').show();
+                jQuery('.cred-edit-post-select2').html(result);
+                loader.hide();
+            },
+            error: function ()
+            {
+                loader.hide();
+            }
+        });
+    },
+    set_defaults:function(){
+        jQuery('input[value="edit-current-post"]').prop('checked', true).trigger('change');
+        jQuery('input[value="edit-current-post"]').prop('checked', true).trigger('change');
+        jQuery('input[value="insert-form"]').prop('checked', true).trigger('change');
+    },
+    init: function(){
+        var self = this;
+
+        Toolset.hooks.addFilter('cred_cred_cred_run', function(cred_cred, cred_settings, cred_utils, cred_gui){
+
+            if( typeof cred_cred !== 'undefined' && cred_cred.hasOwnProperty('posts') ){
+                return cred_cred.posts.call(window);
+            }
+
+            return null;
+        });
+
+        Toolset.hooks.addFilter('cred_cred_aux_reload_button_content_ajax', function( bool ){
+                return false;
+        });
+
+        this.show();
+        this.hide();
+    }
+};
+DDLayout.AdminPage.handleCredIssuesEventually.init();
+
+DDLayout.AdminPage.Rows = {};

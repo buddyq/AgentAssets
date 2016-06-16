@@ -29,6 +29,18 @@ class CredForm {
     public $top_messages = array();
     public $field_messages = array();
     public $preview_messages = array();
+    public $form_id;
+    public $html_form_id;
+    public $_post_ID;
+    public $out_;
+    public $_formHelper;
+    public $_formData;
+    public $_shortcodeParser;
+    public $_form_content;
+    public $_js;
+    public $_content;
+    public $isForm = false;
+    public $isUploadForm = false;
 
     /**
      * @deprecated
@@ -49,10 +61,10 @@ class CredForm {
     );
     public $_validation_errors = array();
 
-    public function __construct($form_id, $form_type, $current_postid, $actionUri, $preview = false) {
+    public function __construct($form_id, $html_form_id, $form_type, $current_postid, $actionUri, $preview = false) {
         $this->form_id = $form_id;
+        $this->html_form_id = $html_form_id;
         $this->form_type = $form_type;
-
         self::$current_postid = $current_postid;
         $this->actionUri = $actionUri;
         $this->preview = $preview;
@@ -60,33 +72,13 @@ class CredForm {
 
         $_files = array();
 
-        //Unuseful $_FILES value
-        /* foreach ($_FILES as $name => $value) {
-          if (is_array($value['name'])) {
-          foreach ($value['name'] as $i => $iname) {
-          if (isset($value['error'][$i]) && $value['error'][$i] == 0) {
-          $_files[$name][] = $iname;
-          } else {
-          $_files[$name][] = "";
-          }
-          }
-          } else {
-          if ($value['error'] == 0) {
-          $_files[$name] = $value['name'];
-          } else {
-          $_files[$name] = "";
-          }
-          }
-          }
-          $req = array_merge($_REQUEST, $_files);
-         */
         $req = $_REQUEST;
         //Fixed https://icanlocalize.basecamphq.com/projects/7393061-toolset/todo_items/191483153/comments#297748160
         $req = stripslashes_deep($req);
         //##########################################################################################################
 
         $this->_request = $req;
-        $this->setControls();
+        //$this->setControls();
         return $this->getForm();
     }
 
@@ -144,6 +136,7 @@ class CredForm {
         if (isset($field['plugin_type'])) {
             $f['plugin_type'] = $field['plugin_type'];
         }
+
         $this->form_properties['fields'][] = $f;
         return $f;
     }
@@ -188,19 +181,6 @@ class CredForm {
     }
 
     //########### CALLBACKS
-
-    public $form_id;
-    public $_post_ID;
-    public $out_;
-    public $_formHelper;
-    public $_formData;
-    public $_shortcodeParser;
-    public $_form_content;
-    public $_js;
-    public $_content;
-    public $isForm = false;
-    public $isUploadForm = false;
-
 // parse form shortcode [credform]
     public function cred_form_shortcode($atts, $content = '') {
         extract(shortcode_atts(array(
@@ -209,7 +189,7 @@ class CredForm {
 
         // return a placeholder instead and store the content in _form_content var
         $this->_form_content = $content;
-        $this->form_id = $this->form_properties['name'];
+        $this->html_form_id = $this->form_properties['name'];
         $this->isForm = true;
 
         if (!empty($class)) {
@@ -227,7 +207,7 @@ class CredForm {
 
         // return a placeholder instead and store the content in _form_content var
         $this->_form_content = $content;
-        $this->form_id = $this->form_properties['name'];
+        $this->html_form_id = $this->form_properties['name'];
         $this->isForm = true;
 
         if (!empty($class)) {
@@ -311,13 +291,17 @@ class CredForm {
             'show_popular' => false
                         ), $atts));
 
+        //result of this use fix_cred_field_shortcode_value_attribute_by_single_quote
+        $value = str_replace("@_cred_rsq_@", "'", $value);
+
         if ($field == 'form_messages') {
-            $post_not_saved_singular = str_replace("%PROBLEMS_UL_LIST", "", $formHelper->getLocalisedMessage('post_not_saved_singular'));
-            $post_not_saved_plural = str_replace("%PROBLEMS_UL_LIST", "", $formHelper->getLocalisedMessage('post_not_saved_plural'));
-            return '<label id="wpt-form-message" 
-                data-message-single="' . esc_js($post_not_saved_singular) . '"
-                data-message-plural="' . esc_js($post_not_saved_plural) . '" 
-                style="display:none;" class="wpt-top-form-error wpt-form-error">test</label><!CRED_ERROR_MESSAGE!>';
+            /* $post_not_saved_singular = str_replace("%PROBLEMS_UL_LIST", "", $formHelper->getLocalisedMessage('post_not_saved_singular'));
+              $post_not_saved_plural = str_replace("%PROBLEMS_UL_LIST", "", $formHelper->getLocalisedMessage('post_not_saved_plural'));
+              return '<label id="wpt-form-message"
+              data-message-single="' . esc_js($post_not_saved_singular) . '"
+              data-message-plural="' . esc_js($post_not_saved_plural) . '"
+              style="display:none;" class="wpt-top-form-error wpt-form-error">test</label><!CRED_ERROR_MESSAGE!>'; */
+            return '<!CRED_ERROR_MESSAGE!>';
         }
         // make boolean
         $escape = false; //(bool)(strtoupper($escape)==='TRUE');
@@ -336,10 +320,13 @@ class CredForm {
                 $field = $this->out_['fields']['post_fields'][$field];
                 $name = $name_orig = $field['slug'];
 
+                if ((isset($value) && empty($value)) && (isset($field['data']['user_default_value']) && !empty($field['data']['user_default_value'])))
+                    $value = $field['data']['user_default_value'];
+
                 if ((!isset($placeholder) || empty($placeholder)) && isset($field['data']['placeholder'])) {
                     $placeholder = $field['data']['placeholder'];
                 }
-                
+
                 if (isset($field['plugin_type_prefix']))
                     $name = /* 'wpcf-' */$field['plugin_type_prefix'] . $name;
 
@@ -407,6 +394,9 @@ class CredForm {
                 $field = $this->out_['fields']['custom_fields'][$field];
                 $name = $name_orig = $field['slug'];
 
+                if ((isset($value) && empty($value)) && (isset($field['data']['user_default_value']) && !empty($field['data']['user_default_value'])))
+                    $value = $field['data']['user_default_value'];
+
                 if (isset($field['plugin_type_prefix']))
                     $name = /* 'wpcf-' */$field['plugin_type_prefix'] . $name;
 
@@ -470,6 +460,10 @@ class CredForm {
             ) {
                 $name = $name_orig = $field;
                 $field = $this->out_['fields']['parents'][$field];
+
+                if ((isset($value) && empty($value)) && (isset($field['data']['user_default_value']) && !empty($field['data']['user_default_value'])))
+                    $value = $field['data']['user_default_value'];
+
                 $potential_parents = CRED_Loader::get('MODEL/Fields')->getPotentialParents($field['data']['post_type'], $this->_post_ID, $max_results, 'title', 'ASC');
                 $field['data']['options'] = array();
 
@@ -506,7 +500,7 @@ class CredForm {
                 }
                 $field['data']['options']['default'] = $default_option;
 
-                $add_opt = array('preset_value' => $value, 'urlparam' => $urlparam, 'max_width' => $max_width, 'max_height' => $max_height, 'class' => $class);
+                $add_opt = array('preset_value' => $value, 'urlparam' => $urlparam, 'make_readonly' => $readonly, 'max_width' => $max_width, 'max_height' => $max_height, 'class' => $class);
                 $ids = $formHelper->translate_field($name, $field, $add_opt);
                 $fieldObj = $formHelper->cred_translate_field($name, $field, $add_opt);
 
@@ -533,7 +527,11 @@ class CredForm {
             ) {
                 $name = $name_orig = $field;
                 $field = $this->out_['fields']['form_fields'][$field];
-                $add_opt = array('preset_value' => $value, 'urlparam' => $urlparam, 'max_width' => $max_width, 'max_height' => $max_height, 'class' => $class, 'placeholder' => $placeholder);
+
+                if ((isset($value) && empty($value)) && (isset($field['data']['user_default_value']) && !empty($field['data']['user_default_value'])))
+                    $value = $field['data']['user_default_value'];
+
+                $add_opt = array('preset_value' => $value, 'urlparam' => $urlparam, 'make_readonly' => $readonly, 'max_width' => $max_width, 'max_height' => $max_height, 'class' => $class, 'placeholder' => $placeholder);
                 $ids = $formHelper->translate_field($name, $field, $add_opt);
                 $fieldObj = $formHelper->cred_translate_field($name, $field, $add_opt);
 
@@ -565,7 +563,11 @@ class CredForm {
             ) {
                 $field = $this->out_['fields']['extra_fields'][$field];
                 $name = $name_orig = $field['slug'];
-                $add_opt = array('preset_value' => $value, 'urlparam' => $urlparam, 'max_width' => $max_width, 'max_height' => $max_height, 'class' => $class, 'placeholder' => $placeholder);
+
+                if ((isset($value) && empty($value)) && (isset($field['data']['user_default_value']) && !empty($field['data']['user_default_value'])))
+                    $value = $field['data']['user_default_value'];
+
+                $add_opt = array('preset_value' => $value, 'urlparam' => $urlparam, 'make_readonly' => $readonly, 'max_width' => $max_width, 'max_height' => $max_height, 'class' => $class, 'placeholder' => $placeholder);
                 $ids = $formHelper->translate_field($name, $field, $add_opt);
                 $fieldObj = $formHelper->cred_translate_field($name, $field, $add_opt);
                 // check which fields are actually used in form
@@ -588,6 +590,10 @@ class CredForm {
             ) {
                 $field = $this->out_['fields']['taxonomies'][$field];
                 $name = $name_orig = $field['name'];
+
+                if ((isset($value) && empty($value)) && (isset($field['data']['user_default_value']) && !empty($field['data']['user_default_value'])))
+                    $value = $field['data']['user_default_value'];
+
                 $single_select = ($single_select === 'true');
                 $add_opt = array('preset_value' => $display, 'is_tax' => true, 'single_select' => $single_select, 'show_popular' => $show_popular, 'placeholder' => $placeholder);
                 $ids = $formHelper->translate_field($name, $field, $add_opt);
@@ -619,7 +625,10 @@ class CredForm {
             }
         } else {
             if (
-                    array_key_exists('taxonomies', $this->out_['fields']) && is_array($this->out_['fields']['taxonomies']) && in_array($taxonomy, array_keys($this->out_['fields']['taxonomies'])) && in_array($type, array('show_popular', 'add_new'))
+                    array_key_exists('taxonomies', $this->out_['fields']) &&
+                    is_array($this->out_['fields']['taxonomies']) &&
+                    in_array($taxonomy, array_keys($this->out_['fields']['taxonomies'])) &&
+                    in_array($type, array('show_popular', 'add_new'))
             ) {
                 if (// auxilliary field type matches taxonomy type
                         ($type == 'show_popular' && !$this->out_['fields']['taxonomies'][$taxonomy]['hierarchical']) ||
@@ -630,23 +639,7 @@ class CredForm {
                     //https://icanlocalize.basecamphq.com/projects/7393061-toolset/todo_items/195150507/comments
                     //added data-label text from value shortcode attribute
                     return '<div class="js-taxonomy-button-placeholder" data-taxonomy="' . $taxonomy . '" data-label="' . $value . '" style="display:none"></div>';
-                    /*
-                      $field=array(
-                      'taxonomy'=>$this->out_['fields']['taxonomies'][$taxonomy],
-                      'type'=>$type,
-                      'master_taxonomy'=>$taxonomy
-                      );
-                      $name=$name_orig=$taxonomy.'_'.$type;
-                      $ids=$formHelper->cred_translate_field($name, $field, array('preset_value'=>$value,'is_tax'=>true));
-                      // check which fields are actually used in form
-                      //$this->_form_fields[$name_orig]=$ids;
-                      $out='';
-                      foreach ($ids as $id)
-                      $out.= "[render_cred_field field='{$id}']";
-                      return $out;
-                     */
                 }
-                //return $this->renderField($ids);
             }
         }
 
@@ -706,7 +699,7 @@ class CredForm {
 
             $passed = wptoolset_form_conditional_check($config);
 
-            wptoolset_form_add_conditional($this->form_id, $config);
+            wptoolset_form_add_conditional($this->html_form_id, $config);
 
             $style = ($passed) ? "" : " style='display:none;'";
             $effect = '';
@@ -1000,12 +993,14 @@ class CredForm {
         else {
             $ids = $formHelper->translate_field($name, $field, array(
                 'preset_value' => $default,
+                'cred_generic' => 1,
                 'placeholder' => $atts['placeholder'],
                 'urlparam' => $atts['urlparam']));
 
             $fieldObj = $formHelper->cred_translate_field($name, $field, array(
                 'class' => $class,
                 'preset_value' => $default,
+                'cred_generic' => 1,
                 'placeholder' => $atts['placeholder'],
                 'urlparam' => $atts['urlparam']));
         }
@@ -1025,12 +1020,8 @@ class CredForm {
         $this->out_['generic_fields'][$name] = $ids;
         if (!empty($atts['class'])) {
             $atts['class'] = esc_attr($atts['class']);
-            /* foreach ($ids as $id)
-              $this->_zebraForm->controls[$id]->set_attributes(array('class'=>$atts['class']),false); */
         }
-        /* $out='';
-          foreach ($ids as $id)
-          $out.= "[render_cred_field field='{$id}']"; */
+
         return $this->renderField($fieldObj);
     }
 
@@ -1039,30 +1030,30 @@ class CredForm {
     /**
      * function used to set controls in order to do not lost filled field values after a failed form submition 
      */
-    private function setControls() {
+    public function setControls() {
         $this->controls = array();
-		$pattern = get_shortcode_regex();
+        $pattern = get_shortcode_regex();
         foreach ($this->_request as $key => $value) {
-			$value = $this->clearControl( $value, $pattern );
+            $value = $this->clearControl($value, $pattern);
             $this->controls[$key] = $value;
         }
         //No need anymore
         unset($this->_request);
     }
-	
-	private function clearControl( $value, $pattern ) {
-		if ( is_array( $value ) ) {
-			foreach ( $value as & $value_entry ) {
-				$value_entry = $this->clearControl( $value_entry, $pattern );
-			}
-		} else if ( is_string( $value ) ) {
-			preg_match_all( '/' . $pattern . '/', $value, $matches, PREG_SET_ORDER );
-			if ( ! empty( $matches ) ) {
-				$value = strip_shortcodes( $value );
-			}
-		}
-		return $value;
-	}
+
+    private function clearControl($value, $pattern) {
+        if (is_array($value)) {
+            foreach ($value as & $value_entry) {
+                $value_entry = $this->clearControl($value_entry, $pattern);
+            }
+        } else if (is_string($value)) {
+            preg_match_all('/' . $pattern . '/', $value, $matches, PREG_SET_ORDER);
+            if (!empty($matches)) {
+                $value = strip_shortcodes($value);
+            }
+        }
+        return $value;
+    }
 
     /**
      * get the current form
@@ -1084,7 +1075,7 @@ class CredForm {
         }
         $this->form_properties['method'] = 'post';
 
-        $this->form_properties['name'] = $this->form_id;
+        $this->form_properties['name'] = $this->html_form_id;
         $this->form_properties['fields'] = array();
 
         return $this;
@@ -1126,7 +1117,8 @@ class CredForm {
             $amp = '?';
             $_tt = '_tt=' . time();
 
-            if (!empty($_SERVER['QUERY_STRING']))
+            if (!empty($_SERVER['QUERY_STRING']) &&
+                    stripos($this->form_properties['action'], $_SERVER['QUERY_STRING']) !== false)
                 $amp = '&';
 
             $this->_form_content = '<form ' . $enctype . ' ' .
@@ -1217,7 +1209,6 @@ class CredForm {
      */
     public function renderField($field, $add2form_content = false) {
         global $post;
-        //echo "<br>{$field['name']}";
 
         if (defined('WPTOOLSET_FORMS_ABSPATH') &&
                 function_exists('wptoolset_form_field')) {
@@ -1226,7 +1217,9 @@ class CredForm {
             require_once WPTOOLSET_FORMS_ABSPATH . '/classes/class.types.php';
             require_once WPTOOLSET_FORMS_ABSPATH . '/classes/class.cred.php';
 
-            $id = $this->form_id;
+            $form_id = $this->form_id;
+            $id = $this->html_form_id;
+
             $field['id'] = $id;
 
             if ($field['type'] == 'messages') {
@@ -1249,21 +1242,6 @@ class CredForm {
                 //$field['type'] = 'credfile';
             }
 
-            /* $validation = array(
-              'validation' => array(
-              'required' => array(
-              'args' => array($field['value'], true),
-              'message' => 'Required'),
-              'maxlength' => array(
-              'args' => array($field['value'], 12),
-              'message' => 'maxlength of 12 exceeded'
-              ),
-              'rangelength' => array(
-              'args' => array($field['value'], 3, 25),
-              'message' => 'input range from 3 to 25'
-              ),
-              )); */
-
             //#############################################################################################################################################################
             //Client-side validation is not using the custom messages provided in CRED forms for CRED custom fields
             //https://icanlocalize.basecamphq.com/projects/7393061-toolset/todo_items/187800735/comments
@@ -1271,38 +1249,18 @@ class CredForm {
             //#############################################################################################################################################################
 
             $mytype = $this->transType($field['type']);
+
             $fieldConfig = new FieldConfig();
             $fieldConfig->setDefaultValue($field['type'], $field);
             $_curr_value = $fieldConfig->getDefaultValue();
+                        
             $fieldConfig->setOptions($field['name'], $field['type'], $field['value'], $field['attr']);
             $fieldConfig->setId($this->form_properties['name'] . "_" . $field['name']);
             $fieldConfig->setName($field['name']);
             $this->cleanAttr($field['attr']);
             $fieldConfig->setAttr($field['attr']);
 
-            //#############################################################################################################################################################
-            //Fix https://icanlocalize.basecamphq.com/projects/7393061-toolset/todo_items/192427784/comments#300129108
-            //losting filled data if using hook validate system            
-            if (isset($this->controls[$field['name']]) && !empty($this->controls[$field['name']])) {
-                $_curr_value = $this->controls[$field['name']];
-            } else {
-                if (isset($field['value']) && !empty($field['value'])) {
-                    $_curr_value = $field['value'];
-                }
-            }
-            //#############################################################################################################################################################
-            if (!$this->is_submit_success &&
-                    ($mytype != 'credfile' &&
-                    $mytype != 'credaudio' &&
-                    $mytype != 'credvideo' &&
-                    $mytype != 'credimage')) {
-                $_curr_value = (isset($this->controls[$field['name']]) && !empty($this->controls[$field['name']])) ? $this->controls[$field['name']] : (!empty($field['value']) ? $field['value'] : $_curr_value);
-            } else {
-                if (isset($field['attr']['preset_value']) &&
-                        !empty($field['attr']['preset_value'])) {
-                    $_curr_value = $field['attr']['preset_value'];
-                }
-            }
+            cred_log("_reset_file_values: " . StaticClass::$_reset_file_values);
 
             $fieldConfig->setValue($_curr_value);
             $fieldConfig->setDescription(!empty($field['description']) ? $field['description'] : "");
@@ -1316,6 +1274,11 @@ class CredForm {
             if (isset($field['attr']) && isset($field['attr']['type'])) {
                 $fieldConfig->setDisplay($field['attr']['type']);
             }
+
+            $forms_model = CRED_Loader::get('MODEL/Forms');
+            $form_settings = $forms_model->getFormCustomField($form_id, 'form_settings');
+            $fieldConfig->setForm_settings($form_settings);
+
             $config = $fieldConfig->createConfig();
 
             // Modified by Srdjan
@@ -1355,18 +1318,11 @@ class CredForm {
 
 
             // Added by Srdjan END            
-            $html = wptoolset_form_field($this->form_id, $config, $_values);
+            $html = wptoolset_form_field($this->html_form_id, $config, $_values);
             if ($add2form_content)
                 $this->_form_content.=$html;
             else
                 return $html;
-
-            /*
-              <input id="cred_form_853_1__cred_cred_wpnonce" type="hidden" user_defined="" value="d9f46d7082" name="_cred_cred_wpnonce">
-              <input id="cred_form_853_1__cred_cred_prefix_form_id" type="hidden" user_defined="" value="853" name="_cred_cred_prefix_form_id">
-              <input id="cred_form_853_1__cred_cred_prefix_form_count" type="hidden" user_defined="" value="1" name="_cred_cred_prefix_form_count">
-              <input id="cred_form_853_1_name_cred_form_853_1" type="hidden" user_defined="" value="cred_form_853_1" name="name_cred_form_853_1">
-             */
         }
     }
 
@@ -1440,8 +1396,18 @@ class CredForm {
      * @return boolean
      */
     function isSubmitted() {
-        foreach ($_REQUEST as $name => $value) {
+        return $this->isAjaxSubmitted() || $this->isFormSubmitted();
+    }
+
+    /**
+     * isFormSubmitted
+     * @return boolean
+     */
+    function isFormSubmitted() {
+        cred_log("isFormSubmitted");
+        foreach ($_POST as $name => $value) {
             if (strpos($name, 'form_submit') !== false) {
+                cred_log(1);
                 return true;
             }
         }
@@ -1450,6 +1416,20 @@ class CredForm {
             // The form was indeed submitted, but no data was passed and no redirection was performed
             // We return true here and handle the error in the Form_Builder::form() method
             return true;
+        }
+        return false;
+    }
+
+    /**
+     * isAjaxSubmitted
+     * @return boolean
+     */
+    function isAjaxSubmitted() {
+        cred_log("isAjaxSubmitted");
+        if ((defined('DOING_AJAX') && DOING_AJAX) ||
+                !empty($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) == 'xmlhttprequest') {
+            cred_log(1);
+            return isset($_POST['action']) && $_POST['action'] == 'cred_ajax_form';
         }
         return false;
     }
@@ -1512,7 +1492,7 @@ class CredForm {
      * @return boolean
      */
     function validate($post_id, $values) {
-        $form_id = $this->form_id;
+        $form_id = $this->html_form_id;
         $valid = true;
         // Loop over fields
         $form_source_data = $this->_formData->getForm()->post_content;
@@ -1688,7 +1668,7 @@ class CredForm {
      * @param type $field_slug
      */
     function add_top_message($message, $field_slug = 'generic') {
-        $form_id = $this->form_id;
+        $form_id = $this->html_form_id;
         if ($message == '') {
             return;
         }
@@ -1709,7 +1689,7 @@ class CredForm {
      * @param type $field_slug
      */
     function add_field_message($message, $field_slug = 'generic') {
-        $form_id = $this->form_id;
+        $form_id = $this->html_form_id;
         if ($message == '') {
             return;
         }
@@ -1722,7 +1702,7 @@ class CredForm {
     }
 
     function add_success_message($message, $field_slug = 'generic') {
-        $form_id = $this->form_id;
+        $form_id = $this->html_form_id;
         if ($message == '') {
             return;
         }
@@ -1739,7 +1719,7 @@ class CredForm {
     }
 
     function getFieldsSuccessMessages() {
-        $form_id = $this->form_id;
+        $form_id = $this->html_form_id;
         //
         $msgs = "";
         if (!isset($this->succ_messages) || (isset($this->succ_messages) && empty($this->succ_messages)))
@@ -1758,7 +1738,7 @@ class CredForm {
      * @return type
      */
     function getFieldsErrorMessages() {
-        $form_id = $this->form_id;
+        $form_id = $this->html_form_id;
         //https://icanlocalize.basecamphq.com/projects/7393061-toolset/todo_items/195892843/comments#309778558
         //Created separated preview message
         $msgs = "";
@@ -1786,7 +1766,7 @@ class CredForm {
      * @return string
      */
     function getFieldsErrorMessagesJs() {
-        $form_id = $this->form_id;
+        $form_id = $this->html_form_id;
         if (!isset($this->field_messages) || (isset($this->field_messages) && empty($this->field_messages)))
             return;
         $field_messages = $this->field_messages[$form_id];
@@ -1795,7 +1775,8 @@ class CredForm {
         foreach ($field_messages as $id_field => $text) {
             if ($id_field != 'generic') {
                 //$js.='if (jQuery(\'[data-wpt-name="' . $id_field . '"]:first\').length) jQuery("#lbl_' . $id_field . '").detach().insertAfter(\'[data-wpt-name="' . $id_field . '"]:first\');';
-                $js.='jQuery(\'[data-wpt-name="' . $id_field . '"]:first\').parent().insertAfter(\'[data-wpt-name="' . $id_field . '"]:first\');';
+                //$js.='jQuery(\'[data-wpt-name="' . $id_field . '"]:first\').parent().insertAfter(\'[data-wpt-name="' . $id_field . '"]:first\');';
+                $js.='jQuery(\'#lbl_' . $id_field . '\').insertBefore(\'[data-wpt-name="' . $id_field . '"]:first\');';
             }
             //$js.='if (jQuery(\'[name="'.$id_field.'"]:first\').length) jQuery("#lbl_'.$id_field.'").detach().insertAfter(\'[name="'.$id_field.'"]:first\');';
             //$js.='if (jQuery(\'[name="'.$id_field.'[0]"]:first\').length) jQuery("#lbl_'.$id_field.'").detach().insertAfter(\'[name="'.$id_field.'[0]"]:first\');';            

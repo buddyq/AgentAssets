@@ -547,56 +547,6 @@ function short_code_variable_callback($index, $cf_key, $function_name, $menu, $s
     <?php
 }
 
-add_filter('wpv_view_settings_save', 'wpv_filter_controls_save');
-function wpv_filter_controls_save($view_settings) { // MAYBE DEPRECATED
-    if (isset($view_settings['filter_controls_enable'])) {
-        // determine which items are checked.
-        $result = array();
-        $enabled = $view_settings['filter_controls_enable'];
-        $skip_next = false;
-        foreach($enabled as $enable) {
-            if (!$skip_next) {
-                if ($enable != '0') {
-                    $result[] = true;
-                    $skip_next = true;
-                } else {
-                    $result[] = false;
-                    $skip_next = false;
-                }
-            } else {
-                $skip_next = false;
-            }
-        }
-        $view_settings['filter_controls_enable']= $result;
-    }
-    return $view_settings;
-}
-
-/***********************
-* Filters general functions
-*******************************/
-// I think that DEPRECATED: there is no wpv_view_settings_save action anymore
-add_filter('wpv_view_settings_save', 'wpv_post_types_defaults_save', 10, 1);
-function wpv_post_types_defaults_save($view_settings) {// TODO this only fires when wpv_view_settings_save which I'm not sure is fired at all
-    // we need to set 0 for the checkboxes that aren't checked and are missing for the $_POST.
-    $defaults = array('post_type_dont_include_current_page' => 0);
-    $view_settings = wpv_parse_args_recursive($view_settings, $defaults);
-    return $view_settings;
-}
-
-// I think that DEPRECATED: there is no wpv_view_settings_save action anymore TODO
-add_filter('wpv_view_settings_save', 'wpv_taxonomy_defaults_save', 10, 1);
-function wpv_taxonomy_defaults_save($view_settings) {
-    global $taxonomy_checkboxes_defaults;
-    // we need to set 0 for the checkboxes that aren't checked and are missing for the $_POST.
-    $defaults = array();
-    foreach($taxonomy_checkboxes_defaults as $key => $value) {
-        $defaults[$key] = 0;
-    }
-    $view_settings = wpv_parse_args_recursive($view_settings, $defaults);
-    return $view_settings;
-}
-
 /**********************
 * Pagination
 ************************/
@@ -610,35 +560,6 @@ if (isset($_GET['wpv-pagination-spinner-media-insert'])) {// DEPRECATED now we u
     // Add button
     add_filter('attachment_fields_to_edit',
             'wpv_pagination_spinner_attachment_fields_to_edit_filter', 10, 2);
-}
-
-/**
- * get the pagination display returned by ajax.
- */
-
-function wpv_ajax_pagination() { // DEPRECATED
-    if (wp_verify_nonce($_POST['wpv_nonce'], 'wpv_pagination_nonce')
-            && !empty($_POST['_wpv_settings'])) {
-        $settings['posts_per_page'] = $_POST['_wpv_settings']['posts_per_page'];
-        if (isset($_POST['_wpv_settings']['include_page_selector_control'])) {
-            $settings['include_page_selector_control'] = $_POST['_wpv_settings']['include_page_selector_control'];
-        }
-        if (isset($_POST['_wpv_settings']['include_prev_next_page_controls'])) {
-            $settings['include_prev_next_page_controls'] = $_POST['_wpv_settings']['include_prev_next_page_controls'];
-        }
-        $settings['pagination'] = $_POST['_wpv_settings']['pagination'];
-        $settings['ajax_pagination'] = $_POST['_wpv_settings']['ajax_pagination'];
-        $settings['rollover'] = $_POST['_wpv_settings']['rollover'];
-
-        $settings = apply_filters('wpv_view_settings_save', $settings);
-
-        $view_settings = apply_filters('wpv_view_settings', $settings);
-        
-        //wpv_pagination_admin($view_settings);
-    }
-    
-    die();
-    
 }
 
 /**

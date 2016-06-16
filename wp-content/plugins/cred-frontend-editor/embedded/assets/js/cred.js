@@ -81,7 +81,7 @@ var _original_cred_autogenerate_password_scaffold;
                     jQuery('.cred_notification_field_only_if_changed').show();
                     jQuery('.cred_notification_field_only_if_changed input[type=checkbox]').removeAttr('disabled');
                     if (jQuery('.when_submitting_form_text').length) {
-                        jQuery('.when_submitting_form_text').html('When a new user is updated by this form');
+                        jQuery('.when_submitting_form_text').html('When a user is updated by this form');
                     }
 
                     if (is_user_form) {
@@ -221,37 +221,38 @@ var _original_cred_autogenerate_password_scaffold;
             if (window.CodeMirror)
             {
                 var $css_ed = $("#cred-extra-css-editor"), $js_ed = $("#cred-extra-js-editor"), height;
-
-                utils.swapEl($css_ed, function () {
-                    CodeMirrorEditors['cred-extra-css-editor'] = CodeMirror.fromTextArea($css_ed[0], {
-                        mode: "css",
-                        tabMode: "indent",
-                        lineWrapping: true,
-                        lineNumbers: true
+                if ($css_ed && $css_ed[0]) {
+                    utils.swapEl($css_ed, function () {
+                        CodeMirrorEditors['cred-extra-css-editor'] = CodeMirror.fromTextArea($css_ed[0], {
+                            mode: "css",
+                            tabMode: "indent",
+                            lineWrapping: true,
+                            lineNumbers: true
+                        });
+                        // needed for scrolling
+                        height = Math.min(5000, Math.max(50, utils.getUserSetting('cred_settings', 'cred-extra-css-editor_size', 300)));
+                        $css_ed.css('resize', 'none').height(height + 'px');
+                        CodeMirrorEditors['cred-extra-css-editor'].setSize(null, height);
+                        aux.makeAreaResizable($css_ed);
                     });
-                    // needed for scrolling
-                    height = Math.min(5000, Math.max(50, utils.getUserSetting('cred_settings', 'cred-extra-css-editor_size', 300)));
-                    $css_ed.css('resize', 'none').height(height + 'px');
-                    CodeMirrorEditors['cred-extra-css-editor'].setSize(null, height);
-                    aux.makeAreaResizable($css_ed);
-                });
-                $css_ed.hide();
-
-                utils.swapEl($js_ed, function () {
-                    CodeMirrorEditors['cred-extra-js-editor'] = CodeMirror.fromTextArea($js_ed[0], {
-                        mode: "javascript",
-                        tabMode: "indent",
-                        lineWrapping: true,
-                        lineNumbers: true
+                    $css_ed.hide();
+                }
+                if ($js_ed && $js_ed[0]) {
+                    utils.swapEl($js_ed, function () {
+                        CodeMirrorEditors['cred-extra-js-editor'] = CodeMirror.fromTextArea($js_ed[0], {
+                            mode: "javascript",
+                            tabMode: "indent",
+                            lineWrapping: true,
+                            lineNumbers: true
+                        });
+                        // needed for scrolling
+                        height = Math.min(5000, Math.max(50, utils.getUserSetting('cred_settings', 'cred-extra-js-editor_size', 300)));
+                        $js_ed.css('resize', 'none').height(height + 'px');
+                        CodeMirrorEditors['cred-extra-js-editor'].setSize(null, height);
+                        aux.makeAreaResizable($js_ed);
                     });
-                    // needed for scrolling
-                    height = Math.min(5000, Math.max(50, utils.getUserSetting('cred_settings', 'cred-extra-js-editor_size', 300)));
-                    $js_ed.css('resize', 'none').height(height + 'px');
-                    CodeMirrorEditors['cred-extra-js-editor'].setSize(null, height);
-                    aux.makeAreaResizable($js_ed);
-                });
-                $js_ed.hide();
-
+                    $js_ed.hide();
+                }
             }
         },
         toggleCodeMirror: function (on)
@@ -560,7 +561,8 @@ var _original_cred_autogenerate_password_scaffold;
             var ag_password_is_checked = $('#cred_autogenerate_password_scaffold');
             if (ag_password_is_checked[0] != undefined)
                 ag_password_is_checked = ag_password_is_checked[0].checked;
-            credView.reloadUserFields(ag_username_is_checked, ag_nickname_is_checked, ag_password_is_checked, role);
+            var type_form = $('#cred_form_type').val();
+            credView.reloadUserFields(ag_username_is_checked, ag_nickname_is_checked, ag_password_is_checked, role, type_form);
         },
         genUserScaffold: function ()
         {
@@ -632,11 +634,23 @@ var _original_cred_autogenerate_password_scaffold;
             else
                 out += "[creduserform class='cred-user-form']" + NL + NL;
             out += PAD + aux.shortcode(resp.form_fields['form_messages']) + NL + NL;
-            out += aux.fieldOutput(resp.user_fields['user_login'], form_id_1, form_name_1, includeWPML, PAD) + NL + NL;
-            out += aux.fieldOutput(resp.user_fields['user_pass'], form_id_1, form_name_1, includeWPML, PAD) + NL + NL;
-            out += aux.fieldOutput(resp.user_fields['user_pass2'], form_id_1, form_name_1, includeWPML, PAD) + NL + NL;
-            out += aux.fieldOutput(resp.user_fields['user_email'], form_id_1, form_name_1, includeWPML, PAD) + NL + NL;
-            out += aux.fieldOutput(resp.user_fields['nickname'], form_id_1, form_name_1, includeWPML, PAD) + NL + NL;
+            // The following fields might not be rendered because they are autogenerated
+            // Avoid the empty extra lines if that is the case
+            if (resp.user_fields['user_login']) {
+                out += aux.fieldOutput(resp.user_fields['user_login'], form_id_1, form_name_1, includeWPML, PAD) + NL + NL;
+            }
+            if (resp.user_fields['user_pass']) {
+                out += aux.fieldOutput(resp.user_fields['user_pass'], form_id_1, form_name_1, includeWPML, PAD) + NL + NL;
+            }
+            if (resp.user_fields['user_pass2']) {
+                out += aux.fieldOutput(resp.user_fields['user_pass2'], form_id_1, form_name_1, includeWPML, PAD) + NL + NL;
+            }
+            if (resp.user_fields['user_email']) {
+                out += aux.fieldOutput(resp.user_fields['user_email'], form_id_1, form_name_1, includeWPML, PAD) + NL + NL;
+            }
+            if (resp.user_fields['nickname']) {
+                out += aux.fieldOutput(resp.user_fields['nickname'], form_id_1, form_name_1, includeWPML, PAD) + NL + NL;
+            }
             //out += aux.fieldOutput(resp.user_fields['user_url'], form_id_1, form_name_1, includeWPML, PAD) + NL + NL;
 
             for (var f in resp.custom_fields) {
@@ -1341,7 +1355,8 @@ var _original_cred_autogenerate_password_scaffold;
         },
         forms: function (useCodeMirror)
         {
-            var doinit = true,
+            var busy = false,
+                    doinit = true,
                     firstLoad = true,
                     $_post = $('#post'),
                     formtypediv = $('#credformtypediv'),
@@ -1358,34 +1373,42 @@ var _original_cred_autogenerate_password_scaffold;
             _credModel = new mvc.Model('_cred', window._credFormData);
             // can use multiple views per same model
             credView = new mvc.View('cred', _credModel, {
-                reloadUserFields: function (ag_username_is_checked, ag_nickname_is_checked, ag_password_is_checked, role) {
-                    aux.update_autogeneration_fields();
-                    loader.show();
-                    $('#cred-scaffold-insert').hide();
-                    $('#cred_autogenerate_username_scaffold').prop("disabled", "disabled");
-                    $('#cred_autogenerate_nickname_scaffold').prop("disabled", "disabled");
-                    $('#cred_autogenerate_password_scaffold').prop("disabled", "disabled");
+                reloadUserFields: function (ag_username_is_checked, ag_nickname_is_checked, ag_password_is_checked, role, type_form) {
+                    if (!busy) {
+                        busy = true;
 
-                    $.ajax({
-                        url: self.route('/Forms/getUserFields'),
-                        timeout: 10000,
-                        type: 'POST',
-                        data: 'role=' + role + '&ag_pass=' + ag_password_is_checked + '&ag_uname=' + ag_username_is_checked + '&ag_nname=' + ag_nickname_is_checked + '&_wpnonce=' + settings._cred_wpnonce,
-                        dataType: 'json',
-                        success: function (resp) {
-                            // load and dispatch event of fields loaded
-                            aux.onLoad(resp);
-                            if (role != null) {
-                                aux.genUserScaffold();
+                        aux.update_autogeneration_fields();
+                        loader.show();
+
+                        $('#cred-scaffold-insert').hide();
+                        $('#cred_autogenerate_username_scaffold').prop("disabled", "disabled");
+                        $('#cred_autogenerate_nickname_scaffold').prop("disabled", "disabled");
+                        $('#cred_autogenerate_password_scaffold').prop("disabled", "disabled");
+
+                        $.ajax({
+                            url: self.route('/Forms/getUserFields'),
+                            timeout: 10000,
+                            type: 'POST',
+                            data: 'role=' + role + '&type_form=' + type_form + '&ag_pass=' + ag_password_is_checked + '&ag_uname=' + ag_username_is_checked + '&ag_nname=' + ag_nickname_is_checked + '&_wpnonce=' + settings._cred_wpnonce,
+                            dataType: 'json',
+                            success: function (resp) {
+                                // load and dispatch event of fields loaded
+                                aux.onLoad(resp);
+                                if (role != null) {
+                                    aux.genUserScaffold();
+                                }
+                                utils.dispatch('cred.fieldsLoaded');
+                                loader.hide();
+                                $('#cred-scaffold-insert').show();
+                                $('#cred_autogenerate_username_scaffold').prop("disabled", false);
+                                $('#cred_autogenerate_nickname_scaffold').prop("disabled", false);
+                                $('#cred_autogenerate_password_scaffold').prop("disabled", false);
+                            },
+                            complete: function () {
+                                busy = false;
                             }
-                            utils.dispatch('cred.fieldsLoaded');
-                            loader.hide();
-                            $('#cred-scaffold-insert').show();
-                            $('#cred_autogenerate_username_scaffold').prop("disabled", false);
-                            $('#cred_autogenerate_nickname_scaffold').prop("disabled", false);
-                            $('#cred_autogenerate_password_scaffold').prop("disabled", false);
-                        }
-                    });
+                        });
+                    }
                 },
                 init: function () {
 
@@ -1845,6 +1868,10 @@ var _original_cred_autogenerate_password_scaffold;
                             $("html, body").animate({scrollTop: 0});
                         }
 
+                        $('#credformcontentdiv').removeClass('closed');
+
+                        aux.check_cred_form_type();
+
                     });
 
                     // handle tooltips with pointers
@@ -2100,13 +2127,14 @@ var _original_cred_autogenerate_password_scaffold;
                         var shortcode;
                         // remove all popups
                         $_post.find('.additional_field_options_popup').remove();
-                        if (data.slug == 'credform')
+                        if (data.slug == 'credform' || data.slug == 'creduserform')
                         {
+                            var prefix = data.slug == 'creduserform' ? 'cred-user-form' : 'cred-form';
                             //shortcode='['+data.slug+']\n[/'+data.slug+']';
                             if ('minimal' == _credModel.get('[form][theme]')) // bypass script and other styles added to form, minimal
-                                shortcode = "[" + data.slug + " class='cred-form cred-keep-original']\n[/" + data.slug + "]";
+                                shortcode = "[" + data.slug + " class='" + prefix + " cred-keep-original']\n[/" + data.slug + "]";
                             else
-                                shortcode = "[" + data.slug + " class='cred-form']\n[/" + data.slug + "]";
+                                shortcode = "[" + data.slug + " class='" + prefix + "']\n[/" + data.slug + "]";
                         }
                         //https://icanlocalize.basecamphq.com/projects/7393061-toolset/todo_items/189585510/comments
                         //hide of additional maxwidth maxheight of image type field
@@ -2538,7 +2566,7 @@ function check_cred_form_type_for_notification() {
             jQuery('.cred_notification_field_only_if_changed').show();
             jQuery('.cred_notification_field_only_if_changed input[type=checkbox]').removeAttr('disabled');
             if (jQuery('.when_submitting_form_text').length) {
-                jQuery('.when_submitting_form_text').html('When a new user is updated by this form');
+                jQuery('.when_submitting_form_text').html('When a user is updated by this form');
             }
         }
     }

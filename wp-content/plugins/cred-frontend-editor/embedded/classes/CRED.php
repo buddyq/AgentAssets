@@ -1,5 +1,6 @@
 <?php
 require "StaticClass.php";
+require "CRED_Generic_Response.php";
 require "CredForm.php";
 require "common/cred_functions.php";
 
@@ -24,19 +25,12 @@ final class CRED_CRED {
     public static $help = array();
     public static $help_link_target = '_blank';
     public static $settingsPage = null;
-    private static $prefix = '_cred_';
-
+    private static $prefix = '_cred_';    
+    
     /*
      * Initialize plugin enviroment
      */
-
-//    public static function item_filter($items) {
-//        $items[] = "ciao";
-//        return $items;
-//    }
-
-    public static function init() {
-
+    public static function init() {          
         add_filter('wpcf_exclude_meta_boxes_on_post_type', array('StaticClass', 'my_cred_exclude'), 10, 1);
 
 //        add_filter('get_items_with_flag', array(__CLASS__, "item_filter"), 10, 1);
@@ -46,19 +40,13 @@ final class CRED_CRED {
         CRED_Loader::load('CLASS/Notification_Manager');
         CRED_Notification_Manager::init();
 
-        /*
-          if (isset($_GET['cred-edit-form'])&&!empty($_GET['cred-edit-form'])) {
-          add_action('the_content', 'try_to_remove_view_shortcode', 0);
-          add_action('the_content', 'try_to_add_view_shortcode', 9);
-          }
-         */
-
         // try to catch user shortcodes (defined by [...]) and solve shortcodes inside shortcodes
         // adding filter with priority before do_shortcode and other WP standard filters
         add_filter('the_content', 'cred_do_shortcode', 9);
 
         // Add the JS
         function frontend_scripts() {
+            //wp_enqueue_script( 'jquery-form-js', CRED_ASSETS_URL . '/js/jquery.form.js', array('jquery'), '3.51.0-2014.06.20', true );
             wp_enqueue_script('script-name', CRED_ASSETS_URL . '/js/frontend.js', array('jquery'), CRED_FE_VERSION, true);
             wp_localize_script('script-name', 'MyAjax', array(
                 // URL to wp-admin/admin-ajax.php to process the request
@@ -73,7 +61,7 @@ final class CRED_CRED {
             add_action('wp_enqueue_scripts', 'frontend_scripts');
 
         // The function that handles the AJAX request
-        function check_post_id_callback() {
+        function check_post_id_callback() {            
             //checks post_id if is not auto-draft means it has been published needs to change it
             //check_ajax_referer( 'my-special-string', 'security' );
             if (!isset($_POST['post_id']) || !isset($_POST['form_id']))
@@ -126,28 +114,11 @@ final class CRED_CRED {
         }
 
         add_action('wp_ajax_check_post_id', 'check_post_id_callback');
-        add_action('wp_ajax_nopriv_check_post_id', 'check_post_id_callback');
+        add_action('wp_ajax_nopriv_check_post_id', 'check_post_id_callback');       
 
         //cred-131#
         //if (!is_admin()) add_filter('cf_fields_value_save', array('CRED_CRED', 'cf_sanitize_values_on_save'));
     }
-
-//    public static function cf_sanitize_values_on_save($value) {
-//        if (current_user_can('unfiltered_html')) {
-//            if (is_array($value)) {
-//                $value = @array_map('wp_filter_post_kses', $value);
-//            } else {
-//                $value = wp_filter_post_kses($value);
-//            }
-//        } else {
-//            if (is_array($value)) {
-//                $value = @array_map('wp_filter_kses', $value);
-//            } else {
-//                $value = wp_filter_kses($value);
-//            }
-//        }
-//        return $value;
-//    }
 
     /**
      * is_embedded if CRED_Admin class does not exist is embedded plugin
@@ -169,7 +140,8 @@ final class CRED_CRED {
         // set up models and db settings
         CRED_Helper::prepareDB();
         // needed by others
-        self::$settingsPage = admin_url('admin.php') . '?page=CRED_Settings';
+        self::$settingsPage = admin_url('admin.php') . '?page=toolset-settings';
+        //self::$settingsPage = admin_url('admin.php') . '?page=CRED_Settings';
         // localize forms, support for WPML
         CRED_Helper::localizeForms();
         // setup custom capabilities
@@ -186,10 +158,6 @@ final class CRED_CRED {
             } else {
                 CRED_Admin::initAdmin();
             }
-//            if ($_GET['a']=='1') {
-//                require_once CRED_CLASSES_PATH . "/CredUserFormCreator.php";
-//                CredUserFormCreator::cred_create_form(time(), 'edit', array('subscriber','author'), false, false, false);
-//            }
         } else {
             // init form processing to check for submits
             CRED_Loader::load('CLASS/Form_Builder');
@@ -241,7 +209,7 @@ final class CRED_CRED {
 //        }
         // integrate with Views
         add_filter('wpv_meta_html_add_form_button', array(__CLASS__, 'addCREDButton'), 20, 2);
-
+        add_filter( 'ddl-meta_html_add_form_button', array(__CLASS__, 'addCREDButton'), 20, 2 );
         //WATCHOUT: remove custom meta boxes from cred forms (to avoid any problems)
         // add custom meta boxes for cred forms
         //add_action('add_meta_boxes_' . CRED_FORMS_CUSTOM_POST_NAME, array(__CLASS__, 'addMetaBoxes'), 20, 1);
@@ -293,7 +261,7 @@ final class CRED_CRED {
         // integrate with Views
         add_filter('wpv_meta_html_add_form_button', array(__CLASS__, 'addCREDButton'), 20, 2);
         // integrate with Layout
-        //add_filter( 'ddl-meta_html_add_form_button', array(__CLASS__, 'addCREDButton'), 20, 2 );
+        add_filter( 'ddl-meta_html_add_form_button', array(__CLASS__, 'addCREDButton'), 20, 2 );
     }
 
     // function to handle the media buttons associated to forms, like  Scaffold,Insert Shortcode, etc..

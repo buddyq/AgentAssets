@@ -24,7 +24,7 @@
                 
                 '%%USER_USERNAME%%' => __('User Username', 'wp-cred'),
                 '%%USER_NICKNAME%%' => __('User Nickname', 'wp-cred'),
-                /*'%%USER_PASSWORD%%' => __('User Password', 'wp-cred'),*/
+                '%%USER_PASSWORD%%' => __('User Password', 'wp-cred'),
                 '%%RESET_PASSWORD_LINK%%' => __('Reset Password Link', 'wp-cred'),
                 '%%USER_EMAIL%%' => __('User Email', 'wp-cred'),
             ), $form, $ii, $notification);

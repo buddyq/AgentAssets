@@ -234,7 +234,7 @@ final class CRED_User_Forms_Model extends CRED_Abstract_Model implements CRED_Si
         }
         // change format here
         $fields = $this->changeFormat(array($field => $fieldvalue));
-        
+
         return $fields[$field];
     }
 
@@ -428,7 +428,7 @@ final class CRED_User_Forms_Model extends CRED_Abstract_Model implements CRED_Si
         return !(wp_delete_post($id, true) === false);
     }
 
-    public function saveForm($form, $fields = array()) {
+    public function saveForm($form, $fields = array(), $from_xml_processor = false, $old_id = "", $old_title = "") {
         global $user_ID;
 
         $new_post = array(
@@ -444,11 +444,23 @@ final class CRED_User_Forms_Model extends CRED_Abstract_Model implements CRED_Si
                 //'post_category' => array(0)
         );
         $post_id = wp_insert_post($new_post);
+
+        if (!empty($old_id) && !empty($old_title)) {
+            $new_post_content = str_replace($old_title . "-" . $old_id, $form->post_title . "-" . $post_id, $form->post_content);
+            $my_post = array(
+                'ID' => $post_id,
+                'post_content' => $new_post_content,
+            );
+            wp_update_post($my_post);
+        }
+
         $this->addFormCustomFields($post_id, $fields);
 
-        $cfp = CRED_Loader::get('CLASS/Form_Translator');
-        $cfp->processAllForms(array($post_id));
-        
+        if (!$from_xml_processor) {
+            $cfp = CRED_Loader::get('CLASS/Form_Translator');
+            $cfp->processAllForms(array($post_id));
+        }
+
         return ($post_id);
     }
 
@@ -510,12 +522,13 @@ final class CRED_User_Forms_Model extends CRED_Abstract_Model implements CRED_Si
     public function cloneForm($form_id, $cloned_form_title = null) {
         $form = $this->getForm($form_id, array('commerce'));
         if ($form) {
+            $old_title = $form->form->post_title;
             if ($cloned_form_title == null || empty($cloned_form_title))
                 $cloned_form_title = $form->form->post_title . ' Copy';
             //$form->form->post_title = preg_replace('/[^\w\-_\. ]/', '', $cloned_form_title);
             $form->form->post_title = sanitize_text_field($cloned_form_title);
             $form->form->ID = '';
-            return $this->saveForm($form->form, $form->fields);
+            return $this->saveForm($form->form, $form->fields, false, $form_id, $old_title);
         }
         return false;
     }
@@ -796,7 +809,7 @@ final class CRED_User_Forms_Model extends CRED_Abstract_Model implements CRED_Si
         $result = wp_delete_user($user_id, $reassign_user_id);
         return ($result !== false);
     }
-
+   
     public function addTemporaryUser($userdata, $usermeta, $fieldsInfo, $removed_fields = null) {
         cred_log(array($userdata, $usermeta, $fieldsInfo, $removed_fields));
         $temp = array();
@@ -812,7 +825,7 @@ final class CRED_User_Forms_Model extends CRED_Abstract_Model implements CRED_Si
             $removed_fields = array();
 
         //$str = md5($userdata['user_email']);
-        $count = "draft_".count($_cred_user_orders);
+        $count = "draft_" . count($_cred_user_orders);
         $_cred_user_orders[$count] = array('userdata' => $userdata,
             'usermeta' => $usermeta,
             'fieldsInfo' => $fieldsInfo,
@@ -840,7 +853,8 @@ final class CRED_User_Forms_Model extends CRED_Abstract_Model implements CRED_Si
             return false;
 
         $data = $_cred_user_orders[$num];
-        unset($_cred_user_orders[$num]);
+        //avoid to delete temporary user because of possible refund
+        //unset($_cred_user_orders[$num]);
 
         if (!empty($_cred_user_orders))
             $_cred_user_orders = StaticClass::encrypt(serialize($_cred_user_orders));
@@ -848,7 +862,7 @@ final class CRED_User_Forms_Model extends CRED_Abstract_Model implements CRED_Si
         update_option("_cred_user_orders", $_cred_user_orders);
 
         cred_log($data);
-        
+
         $new_user_id = $this->addUser($data['userdata'], $data['usermeta'], $data['fieldsInfo'], $data['removed_fields']);
         cred_log($new_user_id);
         if (isset($order_id)) {
@@ -858,7 +872,7 @@ final class CRED_User_Forms_Model extends CRED_Abstract_Model implements CRED_Si
                 $mkey = substr($meta->meta_key, 1, strlen($meta->meta_key));
                 update_user_meta($new_user_id, $mkey, $meta->meta_value);
             }
-            
+
             //update draft_N with the real user
             update_post_meta($order_id, '_cred_post_id', $new_user_id);
         }

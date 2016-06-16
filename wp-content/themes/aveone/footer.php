@@ -8,7 +8,7 @@
  $blog_id = get_current_blog_id();
  switch_to_blog($blog_id);
  $user_email = get_option('admin_email',true);
- 
+
  $user = get_user_by('email',$user_email);
  $user_id = $user->ID;
  restore_current_blog();
@@ -16,34 +16,34 @@
 ?>
 		<!--END #content-->
 		</div>
-    
+
     	<!--END .container-->
-	</div> 
+	</div>
 
       	<!--END .content-->
-	</div> 
+	</div>
 
-     <!--BEGIN .content-bottom--> 
+     <!--BEGIN .content-bottom-->
   <div class="content-bottom">
-  
+
        	<!--END .content-bottom-->
   </div>
-		
+
      <div class="agent-information row">
             <div class="col-sm-6">
                 <div class="agent-info col-sm-12">
                     <div class="col-sm-4 agent-img-container">
-                        <?php 
+                        <?php
                         switch_to_blog($blog_id);
 
                         $current_blog_id = get_current_blog_id();
 
                         $users = get_users(array('blog_id'=>$current_blog_id,'role'=>'administrator'));
-                        
+
                         $admin_email = $users['0']->data->user_email;
                         $user_details = get_user_by('email',$admin_email);
                         $user_id = $users['0']->data->ID;
-                       
+
                         if($user_id == 0 || $user == null)
                         {
                             switch_to_blog(1);
@@ -59,7 +59,7 @@
                         //                         {
                         //                           switch_to_blog(1);
                         //                           $attachment_id_url = wp_get_attachment_image_src($attachment_id,'aveone_agent_img');
-                        //                           if ( is_array($attachment_id_url) ) 
+                        //                           if ( is_array($attachment_id_url) )
                         //                           {
                         //                             $attachment_id_url = $attachment_id_url[0];
                         //                           }
@@ -81,14 +81,14 @@
                         // echo "PROFILE PICTURE: " . $attachment_id_url;
                         // get_image_tag(350,'Agent Image','Agent Name','',$atts['size']);
                       if(!empty($agent_profile_picture))
-                      { 
+                      {
                         echo do_shortcode( '[agentinformation_profile_picture_url size=aveone-agent-img]' );
                       }else
-                      { 
+                      {
                       ?>
                         <img style="height:100px; width:auto;" src="<?php echo plugins_url('medma-site-manager'); ?>/images/dummy_agent_pic.png" alt="Profile Picture"/>
-                      <?php 
-                      } 
+                      <?php
+                      }
                       ?>
                     </div>
                     <div class="agent-contact col-sm-8">
@@ -105,16 +105,16 @@
             <div class="col-sm-6">
                 <div class="logos-container row">
                     <div class="logo col-sm-8">
-                        <?php 
+                        <?php
                         $blog_id = get_current_blog_id();
                         switch_to_blog($blog_id);
                         //$agent_broker_logo = get_user_meta($user_id,'broker_logo',true);
                         $agent_broker_logo = get_template_directory_uri()."/images/kw.jpg";
                         switch_to_blog(1);
-                        //$agent_broker_logo_url = wp_get_attachment_image_src($agent_broker_logo,'full'); 
+                        //$agent_broker_logo_url = wp_get_attachment_image_src($agent_broker_logo,'full');
                         switch_to_blog($blog_id);
                         ?>
-                        
+
                         <a href="http://www.austinportfoliorealestate.com/" title="Click here to go to Austin Portfolio Real Estate website" target="_blank">
                         <img src="<?php echo $agent_broker_logo;//echo aveone_get_option('evl_agent_company_logo');?>" height="60" alt="Austin Portfolio Real Estate">
                         </a>
@@ -134,19 +134,19 @@
                 </div>
             </div>
         </div>
-     
-     
+
+
 		<!--BEGIN .footer-->
 		<div class="footer">
-    
-    
-   	<!--BEGIN .container-->
-	<div class="container container-footer">    
-  
-  
 
-<div class="clearfix"></div> 
-  
+
+   	<!--BEGIN .container-->
+	<div class="container container-footer">
+
+
+
+<div class="clearfix"></div>
+
 <div id="copyright col-sm-12">
 <p class="info col-sm-8">© Copyright — 2015. <i>All Rights Reserved by Austin Portfolio Real Estate<br>Information contained herein believed accurate, but not guaranteed.</i></p>
 <p class="poweredby col-sm-4"><a href="<?php echo network_site_url();?>?ref=<?php echo geT_option('siteurl');?>" title="Need Real Estate websites? Click here!"><span>Property Sites by: </span>AgentAssets.com</a></p>
@@ -161,41 +161,41 @@ var $jx = jQuery.noConflict();
   }).mouseout(function(){
     $jx(this).find("span.edit-post").css('visibility', 'hidden');
   });
-  
+
     $jx("div.type-page").mouseover(function() {
     $jx(this).find("span.edit-page").css('visibility', 'visible');
   }).mouseout(function(){
     $jx(this).find("span.edit-page").css('visibility', 'hidden');
   });
-  
+
       $jx("div.type-attachment").mouseover(function() {
     $jx(this).find("span.edit-post").css('visibility', 'visible');
   }).mouseout(function(){
     $jx(this).find("span.edit-post").css('visibility', 'hidden');
   });
-  
+
   $jx("li.comment").mouseover(function() {
     $jx(this).find("span.edit-comment").css('visibility', 'visible');
   }).mouseout(function(){
     $jx(this).find("span.edit-comment").css('visibility', 'hidden');
   });
-</script> 
+</script>
 
- 
+
 
 <script type="text/javascript">
 //
 //
-// 
+//
 // Animated Buttons
 //
 //
-//      
+//
 var $animated = jQuery.noConflict();
 $animated('.post-more').hover(
        function(){ $animated(this).addClass('animated pulse') },
        function(){ $animated(this).removeClass('animated pulse') }
-)   
+)
 $animated('.read-more').hover(
        function(){ $animated(this).addClass('animated pulse') },
        function(){ $animated(this).removeClass('animated pulse') }
@@ -231,7 +231,7 @@ jQuery(document).ready(function(){
 			jQuery('#slides').find('li.slide-open div').fadeIn();
 		},
 		startingSlide: 1,
-		
+
 		tabWidth: "15%",
                 width: "100%",
 		height: 310
@@ -239,12 +239,12 @@ jQuery(document).ready(function(){
 });
 </script>
 
- 
+
 
 
 
 <script type="text/javascript">
-var $par = jQuery.noConflict(); 
+var $par = jQuery.noConflict();
   $par('#da-slider').cslider({
 					autoplay	: true,
 					bgincrement	: 450,
@@ -273,7 +273,7 @@ targetSlide = $carousel(this).attr('data-to')-1;
 $carousel('#bootstrap-slider').carousel(targetSlide);
 $carousel(this).addClass('active').siblings().removeClass('active');
 });
-    
+
 // $('#carousel-rel a').click(function(q){
 //         console.log('Clicked');
 //         targetSlide = (parseInt($('#carousel-rel a.active').data('to')) + 1) % 3;
@@ -283,23 +283,23 @@ $carousel(this).addClass('active').siblings().removeClass('active');
 </script>
 
 
-<!--END .container-->  
-	</div> 
+<!--END .container-->
+	</div>
 
-		
+
 		<!--END .footer-->
 		</div>
 
-<!--END body-->  
+<!--END body-->
 
 
 
   <?php $aveone_pos_button = aveone_get_option('evl_pos_button','right');
   if ($aveone_pos_button == "disable" || $aveone_pos_button == "") { ?>
-  
+
    <?php } else { ?>
-   
-     <div id="backtotop"><a href="#top" id="top-link"></a></div>   
+
+     <div id="backtotop"><a href="#top" id="top-link"></a></div>
 
 <?php } ?>
 
@@ -307,7 +307,7 @@ $carousel(this).addClass('active').siblings().removeClass('active');
 </div>
 <?php } ?>
 <script type="text/javascript">
-    
+
     jQuery(window).load(function() {
          // The slider being synced must be initialized first
          jQuery('#carousel').flexslider({
@@ -328,10 +328,10 @@ $carousel(this).addClass('active').siblings().removeClass('active');
             slideshow: false,
             sync: "#carousel"
          });
-    }); 
+    });
 
 </script>
-<?php wp_footer(); ?> 
+<?php wp_footer(); ?>
 
 </body>
 <!--END html(kthxbye)-->

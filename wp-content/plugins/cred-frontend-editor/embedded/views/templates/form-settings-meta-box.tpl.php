@@ -18,6 +18,24 @@ $settings = CRED_Helper::mergeArrays(array(
 
     <?php wp_nonce_field('cred-admin-post-page-action', 'cred-admin-post-page-field'); ?>
 
+    <p class='cred-explain-text'><?php _e('AJAX Submit:', 'wp-cred'); ?></p>
+    <select id="cred_form_type" name="_cred[form][use_ajax]">
+        <?php
+        $form_use_ajax = apply_filters('cred_admin_form_use_ajax_options', array(            
+            0 => __('No', 'wp-cred'),
+            1 => __('Yes', 'wp-cred')
+                ), (isset($settings['use_ajax']) ? $settings['use_ajax'] : 0), $form);
+        
+        foreach ($form_use_ajax as $_v => $_l) {
+            if (isset($settings['use_ajax']) && $settings['use_ajax'] == $_v) {
+                ?><option value="<?php echo $_v; ?>" selected="selected"><?php echo $_l; ?></option><?php
+            } else {
+                ?><option value="<?php echo $_v; ?>"><?php echo $_l; ?></option><?php
+            }
+        }
+        ?>
+    </select>
+
     <p class='cred-explain-text'><?php _e('Forms can create new content or edit existing content. Choose what this form will do:', 'wp-cred'); ?></p>
     <select id="cred_form_type" name="_cred[form][type]">
         <?php
@@ -26,7 +44,7 @@ $settings = CRED_Helper::mergeArrays(array(
             "edit" => __('Edit content', 'wp-cred')
                 ), $settings['type'], $form);
         foreach ($form_types as $_v => $_l) {
-            if ($settings['type'] == $_v) {
+            if (isset($settings['type']) && $settings['type'] == $_v) {
                 ?><option value="<?php echo $_v; ?>" selected="selected"><?php echo $_l; ?></option><?php
             } else {
                 ?><option value="<?php echo $_v; ?>"><?php echo $_l; ?></option><?php
@@ -45,7 +63,7 @@ $settings = CRED_Helper::mergeArrays(array(
             "page" => __('Go to a page...', 'wp-cred')
                 ), $settings['action'], $form);
         foreach ($form_actions as $_v => $_l) {
-            if ($settings['action'] == $_v) {
+            if (isset($settings['action']) && $settings['action'] == $_v) {
                 ?><option value="<?php echo $_v; ?>" selected="selected"><?php echo $_l; ?></option><?php
             } else {
                 ?><option value="<?php echo $_v; ?>"><?php echo $_l; ?></option><?php
@@ -68,9 +86,9 @@ $settings = CRED_Helper::mergeArrays(array(
     </span>
 
     <div data-cred-bind="{ action: 'fadeSlide', condition: '_cred[form][action]=message' }">
-        <p class='cred-explain-text'><?php _e('Enter the message to display instead of the form. You can use HTML and shortcodes.', 'wp-cred'); ?></p>
+        <p class='cred-explain-text'><?php _e('Enter the message to display instead of the form. You can use HTML and shortcodes. (but no CRED Forms)', 'wp-cred'); ?></p>
         <?php echo CRED_Helper::getRichEditor('credformactionmessage', '_cred[form][action_message]', $settings['action_message'], array('wpautop' => true, 'teeny' => true, 'editor_height' => 200, 'editor_class' => 'wpcf-wysiwyg')); ?>
-        <!--<textarea id='cred_form_action_message' name='_cred[form][action_message]' style="position:relative; width:95%;"><?php //echo esc_textarea($settings['action_message']);   ?></textarea>-->
+        <!--<textarea id='cred_form_action_message' name='_cred[form][action_message]' style="position:relative; width:95%;"><?php //echo esc_textarea($settings['action_message']);     ?></textarea>-->
         <!-- correct initial value -->
         <script type='text/javascript'>
             /* <![CDATA[ */

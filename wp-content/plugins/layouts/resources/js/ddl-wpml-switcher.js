@@ -10,10 +10,10 @@ DDLayout.WPMLSwitcher  = function($){
     self.post_id = null;
 
     self.init = function(){
-        wp.hooks.addAction('ddl-wpml-init', self.dialog_before_load, 10, 3);
-        wp.hooks.addAction('ddl-wpml-refresh', self.ajax_response_callback, 10, 3);
-        wp.hooks.addAction('ddl-wpml-cleanup', self.clean_up_events, 10);
-        wp.hooks.addFilter('ddl-js-apply-language', self.get_current_language);
+        Toolset.hooks.addAction('ddl-wpml-init', self.dialog_before_load, 10, 3);
+        Toolset.hooks.addAction('ddl-wpml-refresh', self.ajax_response_callback, 10, 3);
+        Toolset.hooks.addAction('ddl-wpml-cleanup', self.clean_up_events, 10);
+        Toolset.hooks.addFilter('ddl-js-apply-language', self.get_current_language);
     };
 
     self.dialog_before_load = function( dialog, post_id, args ){
@@ -72,7 +72,7 @@ DDLayout.WPMLSwitcher  = function($){
 
         $lang_select.on('change', function( event ){
             self.current_language = $(this).val();
-            wp.hooks.doAction('ddl-reload-post-list-by-language', event);
+            Toolset.hooks.doAction('ddl-reload-post-list-by-language', event);
         });
     };
 
@@ -82,4 +82,4 @@ DDLayout.WPMLSwitcher  = function($){
 DDLayout.WPMLSwitcher.builder = function( $ ){
     DDLayout.wpmlSwitcher = new DDLayout.WPMLSwitcher($);
 };
-wp.hooks.addAction('ddl-wpml-language-switcher-build', DDLayout.WPMLSwitcher.builder, 10, 1);
+Toolset.hooks.addAction('ddl-wpml-language-switcher-build', DDLayout.WPMLSwitcher.builder, 10, 1);

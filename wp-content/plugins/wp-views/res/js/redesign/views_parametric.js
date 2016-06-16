@@ -31,34 +31,52 @@ WPV_parametric_local.message.fadeOutShort = 400;
 var WPV_ParametricFilterWindow = function() {
 
 	//some local vars
-	var self = this,
-	buttonAdd = jqp( '.js-button_parametric_filter_create' ),
-	buttonEdit = jqp( '.js-button_parametric_filter_edit' ),
-	proxy = new WPV_ParametricJsonStore(),
+	var self		= this,
+	buttonAdd		= jqp( '.js-button_parametric_filter_create' ),
+	buttonEdit		= jqp( '.js-button_parametric_filter_edit' ),
+	proxy			= new WPV_ParametricJsonStore(),
 	parametricViewModel,
-	dialog = null,
+	dialog			= null,
 	parser,
-	buttons_visible = false;
+	buttons_visible	= false;
 
 	//statics
-	WPV_ParametricFilterWindow.has_error_displayed = false;
-	WPV_ParametricFilterWindow.errorPlaceHolder = null;
-	WPV_ParametricFilterWindow.buttonEdit = buttonEdit;
+	WPV_ParametricFilterWindow.has_error_displayed	= false;
+	WPV_ParametricFilterWindow.errorPlaceHolder		= null;
+	WPV_ParametricFilterWindow.buttonEdit			= buttonEdit;
 
 	//constants
-	self.MAIN_TEMPLATE = '/inc/redesign/templates/wpv-parametric-form.tpl.php';
-	WPV_ParametricFilterWindow.FADE = 'slow';
-	WPV_ParametricFilterWindow.FADE_FAST = 'fast';
+	self.MAIN_TEMPLATE						= '/inc/redesign/templates/wpv-parametric-form.tpl.php';
+	WPV_ParametricFilterWindow.FADE			= 'slow';
+	WPV_ParametricFilterWindow.FADE_FAST	= 'fast';
+	self.WIDTH								= 300;
+	self.HEIGHT								= 300;
 
 	//public members
-	self.editor = icl_editor ? icl_editor : undefined;
-	self.text_area = jqp('#wpv_filter_meta_html_content');
-	self.dialog = null;
+	self.editor		= icl_editor ? icl_editor : undefined;
+	self.text_area	= jqp('#wpv_filter_meta_html_content');
+	self.dialog		= null;
+	
+	/**
+	* Temporary dialog content to be displayed while the actual content is loading.
+	*
+	* It contains a simple spinner in the centre. I decided to implement styling directly, it will not be reused and
+	* it would only bloat views-admin.css (jan).
+	*
+	* @type {HTMLElement}
+	* @since 2.1
+	*/
+	
+	self.dialog_spinner_content = jqp(
+		'<div style="min-height: 150px;">' +
+		'<div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); text-align: center; ">' +
+		'<div class="wpv-spinner ajax-loader"></div>' +
+		'<p>' + wpv_shortcodes_gui_texts.loading_options + '</p>' +
+		'</div>' +
+		'</div>'
+	);
 
 	parser = new ShortCodeParser( self.text_area );
-
-	self.WIDTH = 300;
-	self.HEIGHT = 300;
 
 	self.short_tag_fields = [
 		"field", "values", "display_values", "auto_fill", "auto_fill_default", "auto_fill_sort", // fields filters
@@ -68,10 +86,10 @@ var WPV_ParametricFilterWindow = function() {
 		"type", "url_param"
 	];
 
-	self.is_edit = false;
+	self.is_edit				= false;
 
-	self.short_code_editable = null;
-	self.fieldRawEditable = null;
+	self.short_code_editable	= null;
+	self.fieldRawEditable		= null;
 
 	self.init = function() {
 		self.init_dialogs();
@@ -84,38 +102,51 @@ var WPV_ParametricFilterWindow = function() {
 		var dialog_height = jqp( window ).height() - 100;
 		jqp( 'body' ).append( '<div id="js-parametric-form-dialog-external-container" class="toolset-shortcode-gui-dialog-container wpv-shortcode-gui-dialog-container"></div>' );
 		self.dialog = jqp( "#js-parametric-form-dialog-external-container" ).dialog({
-			autoOpen: false,
-			modal: true,
-			title: WPV_Parametric.dialog_title_create,
-			minWidth: 550,
-			maxHeight: dialog_height,
-			draggable: false,
-			resizable: false,
-			position: { my: "center top+50", at: "center top", of: window },
-			show: { 
-				effect: "blind", 
-				duration: 800 
+			autoOpen:	false,
+			modal:		true,
+			title:		WPV_Parametric.dialog_title_create,
+			minWidth:	550,
+			draggable:	false,
+			resizable:	false,
+			position: 	{
+				my:			"center top+50",
+				at:			"center top",
+				of:			window,
+				collision:	"none"
 			},
-			open: function( event, ui ) {
+			show:		{ 
+				effect:		"blind", 
+				duration:	800 
+			},
+			open:		function( event, ui ) {
 				jqp( 'body' ).addClass( 'modal-open' );
 			},
-			close: function( event, ui ) {
+			beforeClose: function( event, ui ) {
+				ko.cleanNode( jqp( '#js-parametric-form-dialog-container' )[0] );
+			},
+			close:		function( event, ui ) {
 				jqp( 'body' ).removeClass( 'modal-open' );
+				WPV_ParametricFilterWindow.has_error_displayed = false;
+				WPV_ParametricFilterWindow.errorPlaceHolder = null;
+				Advanced_visible.viz = false;
+				self.short_code_editable = null;
+				self.fieldRawEditable = null;
+				self.is_edit = false;
 			},
 			buttons:[
 				{
-					class: 'button-secondary',
-					text: WPV_Parametric.cancel,
-					click: function() {
+					class:	'button-secondary',
+					text:	WPV_Parametric.cancel,
+					click:	function() {
 						jqp( this ).dialog( "close" );
 						WPV_parametric_local.generic_button.codemirror_views.focus();
 					}
 				},
 				{
-					class: 'button-primary',
-					id: 'js_parametric_form_button',
-					text: WPV_Parametric.insert,
-					click: function() {
+					class:	'button-primary',
+					id:		'js_parametric_form_button',
+					text:	WPV_Parametric.insert,
+					click:	function() {
 						
 					}
 				}
@@ -260,28 +291,47 @@ var WPV_ParametricFilterWindow = function() {
 	
 	self.createFilterAction = function() {
 		//on a click event to the button and make ajax call on click
-		buttonAdd.on( 'mouseup', function( e ) {
+		buttonAdd.on( 'click', function( e ) {
 			//build the data object to be sent to the server
 			if ( 
 				! self.move_cursor_if_no_content_within() 
 				&& ! self.editor.cursorWithin( self.text_area, 'wpv-filter-controls', '/wpv-filter-controls' ) 
 			) {
-				WPViews.view_edit_screen.codemirror_panel( codemirror_views_query, WPV_Parametric.place_cursor_inside_wpv_controls, true, 'error' );
+				Toolset.hooks.doAction( 
+					'wpv-action-wpv-add-codemirror-panel', 
+					{ 
+						editor: 'wpv_filter_meta_html_content', 
+						content: WPV_Parametric.place_cursor_inside_wpv_controls, 
+						keep: 'dismissable', 
+						type: 'error' 
+					} 
+				);
 				return false;
 			}
 
 			var sendData = {
-				action:'set_parametric_filter_create',
-				wpv_parametric_create_nonce: WPV_Parametric.wpv_parametric_create_nonce,
-				post_types:self.handleDataRequest().join( ',' )
+				action:							'set_parametric_filter_create',
+				wpv_parametric_create_nonce:	WPV_Parametric.wpv_parametric_create_nonce,
+				post_types:						self.get_relevant_post_types().join( ',' ),
+				query_mode:						Toolset.hooks.applyFilters( 'wpv-filter-wpv-edit-screen-get-query-mode', 'normal' )
 			};
 
-			if ( sendData.post_types ) {
+			if ( 
+				sendData.post_types 
+				|| sendData.query_mode == 'archive'
+			) {
 				proxy.loader.loadShow( jqp( this ).parent().parent() );
-				jqp( this ).prop( 'disabled', true );
 				proxy.ajaxCall( sendData, WPV_Parametric.ajaxurl, 'post', ajaxCreateCallback, [ jqp( this ) ] );
  			} else {
-				WPViews.view_edit_screen.codemirror_panel( codemirror_views_query, WPV_Parametric.select_post_types, true, 'error' );
+				Toolset.hooks.doAction( 
+					'wpv-action-wpv-add-codemirror-panel', 
+					{ 
+						editor:		'wpv_filter_meta_html_content', 
+						content:	WPV_Parametric.select_post_types, 
+						keep:		'dismissable', 
+						type:		'error' 
+					} 
+				);
 			}
 			return false;
 		});
@@ -294,10 +344,11 @@ var WPV_ParametricFilterWindow = function() {
 			/* See WP_Views_plugin::view_parametric_create() in inc/wpv-plugin.class.php and
 			 * Editor_addon_parametric::__construct() in inc/filters/editor-addon-parametric.class.php in order
 			 * to understand where this ajax call is handled. */
-			params.action = 'set_parametric_filter_edit';
-			params.edit_field = obj;
-			params.post_types = self.handleDataRequest().join( ',' );
-			params.wpv_parametric_create_nonce = WPV_Parametric.wpv_parametric_create_nonce;
+			params.action						= 'set_parametric_filter_edit';
+			params.edit_field					= obj;
+			params.post_types					= self.get_relevant_post_types().join( ',' );
+			params.query_mode					= Toolset.hooks.applyFilters( 'wpv-filter-wpv-edit-screen-get-query-mode', 'normal' );
+			params.wpv_parametric_create_nonce	= WPV_Parametric.wpv_parametric_create_nonce;
 			// make the field 'wpcf-' if is a types field
 			// NOTE this is never executed, params.fields is not set at all... addressing this on PHP callback, where we can surely check whether it is a Types field
 			// Also, never trust wpcf- to be the prefix for all Types fields: what about fields under Types control?
@@ -316,20 +367,38 @@ var WPV_ParametricFilterWindow = function() {
 				params.edit_field.relationship = 'relationship';
 			}
 			if ( null != obj ) {
-				if ( params.post_types ) {
+				if ( 
+					params.post_types 
+					|| params.query_mode != 'normal'
+				) {
 					if (
 						params.edit_field.field
 						|| params.edit_field.taxonomy
 						|| params.edit_field.ancestors
 					) {
 						proxy.loader.loadShow( jqp( this ).parent().parent() );
-						jqp( this ).prop( 'disabled', true );
 						proxy.ajaxCall( params, WPV_Parametric.ajaxurl, 'post', ajaxCreateCallback, [ jqp( this ) ] );
 					} else {
-						WPViews.view_edit_screen.codemirror_panel( codemirror_views_query, WPV_Parametric.editing_manual_filter, true, 'error' );
+						Toolset.hooks.doAction( 
+							'wpv-action-wpv-add-codemirror-panel', 
+							{ 
+								editor: 'wpv_filter_meta_html_content', 
+								content: WPV_Parametric.editing_manual_filter, 
+								keep: 'permanent', 
+								type: 'error' 
+							} 
+						);
 					}
 				} else {
-					WPViews.view_edit_screen.codemirror_panel( codemirror_views_query, WPV_Parametric.select_post_types, true, 'error' );
+					Toolset.hooks.doAction( 
+						'wpv-action-wpv-add-codemirror-panel', 
+						{ 
+							editor: 'wpv_filter_meta_html_content', 
+							content: WPV_Parametric.select_post_types, 
+							keep: 'dismissable', 
+							type: 'error' 
+						} 
+					);
 				}
 			} else {
 				//if(  WPV_Parametric.debug ) console.log("problems in getting the shortcode")
@@ -693,7 +762,7 @@ var WPV_ParametricFilterWindow = function() {
 	};
 
 
-	jqp( document ).on( 'mouseup', "#js_parametric_form_button", function( event ) {
+	jqp( document ).on( 'click', "#js_parametric_form_button", function( event ) {
 		var fields = self.setModelDataToBeSent(), sendData, shortcode,
 		form = jqp( '#js-parametric-form' ), 
 		button = jqp( "#js_parametric_form_button" );
@@ -926,45 +995,47 @@ var WPV_ParametricFilterWindow = function() {
 				});
 				
 				if ( field.kind == 'relationship' ) {
-			if ( !field.ancestors || field.ancestors == 0 ) {
-				message = WPV_Parametric.relationship_tree_mandatory;
-				has_problems = true;
-				field_with_problems = '#ancestors';
-				close = true;
-				stay = true;
-			} else {
-				var data = {
-					action: 'validate_post_relationship_tree',
-					id: jqp('.js-post_ID').val(),
-					local_tree: field.ancestors,
-					wpnonce: WPV_Parametric.wpv_parametric_validate_post_relationship_tree
-				};
-				jqp.ajax({
-					async: false,
-					type: "POST",
-					url: WPV_Parametric.ajaxurl,
-					data: data,
-					success: function(response){
-						if ( (typeof(response) !== 'undefined') ){
-							if (response != 'OK') {
-								message = response;
-								has_problems = true;
-								field_with_problems = '#ancestors';
-								close = true;
-								stay = true;
-							}
+					
+					if ( !field.ancestors || field.ancestors == 0 ) {
+						message = WPV_Parametric.relationship_tree_mandatory;
+						has_problems = true;
+						field_with_problems = '#ancestors';
+						close = true;
+						stay = true;
+					} else {
+						var local_tree						= field.ancestors,
+						valid_trees							= [],
+						query_mode							= Toolset.hooks.applyFilters( 'wpv-filter-wpv-edit-screen-get-query-mode', 'normal' ),
+						post_relationship_tree_reference	= Toolset.hooks.applyFilters( 'wpv-filter-wpv-edit-screen-get-post-relationship-tree-reference', {} );
+						if ( query_mode == 'archive' ) {
+							_.each( post_relationship_tree_reference, function( value, key, list ) {
+								valid_trees = _.union( valid_trees, value.split(',') );
+							});
+						} else {
+							var relevant_post_types = self.get_relevant_post_types();
+							_.each( post_relationship_tree_reference, function( value, key, list ) {
+								if ( _.contains( relevant_post_types, key ) ) {
+									valid_trees = _.union( valid_trees, value.split(',') );
+								}
+							});
 						}
-					},
-					error: function (ajaxContext) {
-
-					},
-					complete: function() {
-
+						
+						if ( valid_trees.length == 0 ) {
+							message				= WPV_Parametric.relationship_tree_no_ancestors;
+							has_problems		= true;
+							field_with_problems	= '#ancestors';
+							close				= true;
+							stay				= true;
+						} else if ( ! _.contains( valid_trees, local_tree ) ) {
+							message				= WPV_Parametric.relationship_tree_not_valid;
+							has_problems		= true;
+							field_with_problems	= '#ancestors';
+							close				= true;
+							stay				= true;
+						}
 					}
-				});
-			}
 
-		}
+				}
 
 			}
 			catch(e)
@@ -1012,7 +1083,15 @@ var WPV_ParametricFilterWindow = function() {
 
 				jqp( '.js-wpv-missing-filter-container, .js-wpv-no-filters-container' ).hide();
 
-				WPViews.view_edit_screen.codemirror_panel( codemirror_views_query, args.Data.insert, false, 'success' );
+				Toolset.hooks.doAction( 
+					'wpv-action-wpv-add-codemirror-panel', 
+					{ 
+						editor: 'wpv_filter_meta_html_content', 
+						content: args.Data.insert, 
+						keep: 'temporal', 
+						type: 'success' 
+					} 
+				);
 
 				//tell filters section we created a new filter.
 				var params = {
@@ -1041,23 +1120,36 @@ var WPV_ParametricFilterWindow = function() {
 				});
 
 			} else if( args.Data.error ) {
-				WPViews.view_edit_screen.codemirror_panel( codemirror_views_query, WPV_Parametric.db_insert_problem + args.Data.error, true, 'error' );
+				Toolset.hooks.doAction( 
+					'wpv-action-wpv-add-codemirror-panel', 
+					{ 
+						editor: 'wpv_filter_meta_html_content', 
+						content: WPV_Parametric.db_insert_problem + args.Data.error, 
+						keep: 'permanent', 
+						type: 'error' 
+					} 
+				);
 				console.error( args.Data.error );
 			}
 		} catch( e ) {
 			console.error( e.message );
-			WPViews.view_edit_screen.codemirror_panel( codemirror_views_query, e.message, true, 'error' );
+			Toolset.hooks.doAction( 
+				'wpv-action-wpv-add-codemirror-panel', 
+				{ 
+					editor: 'wpv_filter_meta_html_content', 
+					content: e.message, 
+					keep: 'permanent', 
+					type: 'error' 
+				} 
+			);
 		}
 	};
-
-	self.handleDataRequest = function()
-	{
-		//	var post_types_checks = jqp('input[name="_wpv_settings[post_type][]"]:checked'), post_types = [];
-
-		var post_types_checks = jqp('input.js-wpv-query-post-type:checked'), post_types = [];
-
-		post_types_checks.each(function(i){
-			post_types.push( jqp(this).val() );
+	
+	self.get_relevant_post_types = function() {
+		var post_types_checks = jqp('input.js-wpv-query-post-type:checked'), 
+		post_types = [];
+		post_types_checks.each( function( i ) {
+			post_types.push( jqp( this ).val() );
 		});
 		return post_types;
 	};
@@ -1066,7 +1158,15 @@ var WPV_ParametricFilterWindow = function() {
 		try {
 			var short_code = parser.parse(self.text_area), ret;
 			if ( ! short_code ) {
-				WPViews.view_edit_screen.codemirror_panel( codemirror_views_query, WPV_Parametric.place_cursor_inside_valid_control_shortcodes, true, 'error' );
+				Toolset.hooks.doAction( 
+					'wpv-action-wpv-add-codemirror-panel', 
+					{ 
+						editor: 'wpv_filter_meta_html_content', 
+						content: WPV_Parametric.place_cursor_inside_valid_control_shortcodes, 
+						keep: 'dismissable', 
+						type: 'error' 
+					} 
+				);
 				return null;
 			}
 
@@ -1075,7 +1175,15 @@ var WPV_ParametricFilterWindow = function() {
 			if ( current_place == 'wpv-control' ) {
 				self.short_code_editable = parser.getShortCodeRawString();
 				if ( ~self.short_code_editable.indexOf(']') ) {
-					WPViews.view_edit_screen.codemirror_panel( codemirror_views_query, WPV_Parametric.place_cursor_inside_valid_control_shortcodes, true, 'error' );
+					Toolset.hooks.doAction( 
+						'wpv-action-wpv-add-codemirror-panel', 
+						{ 
+							editor: 'wpv_filter_meta_html_content', 
+							content: WPV_Parametric.place_cursor_inside_valid_control_shortcodes, 
+							keep: 'dismissable', 
+							type: 'error' 
+						} 
+					);
 					return null;
 				} else {
 					ret = parser.getShortCodeObject();
@@ -1084,7 +1192,15 @@ var WPV_ParametricFilterWindow = function() {
 			} else if ( current_place == 'wpv-control-set' ) {
 				self.short_code_editable = parser.getShortCodeRawString();
 				if ( ~self.short_code_editable.indexOf(']') ) {
-					WPViews.view_edit_screen.codemirror_panel( codemirror_views_query, WPV_Parametric.place_cursor_inside_valid_control_shortcodes, true, 'error' );
+					Toolset.hooks.doAction( 
+						'wpv-action-wpv-add-codemirror-panel', 
+						{ 
+							editor: 'wpv_filter_meta_html_content', 
+							content: WPV_Parametric.place_cursor_inside_valid_control_shortcodes, 
+							keep: 'dismissable', 
+							type: 'error' 
+						} 
+					);
 					return null;
 				} else {
 					ret = parser.getShortCodeObject();
@@ -1093,13 +1209,37 @@ var WPV_ParametricFilterWindow = function() {
 			} else if ( current_place == 'wpv-control-item' ) {
 				self.short_code_editable = parser.getShortCodeRawString();
 				if ( ~self.short_code_editable.indexOf(']') ) {
-					WPViews.view_edit_screen.codemirror_panel( codemirror_views_query, WPV_Parametric.place_cursor_inside_valid_control_shortcodes, true, 'error' );
+					Toolset.hooks.doAction( 
+						'wpv-action-wpv-add-codemirror-panel', 
+						{ 
+							editor: 'wpv_filter_meta_html_content', 
+							content: WPV_Parametric.place_cursor_inside_valid_control_shortcodes, 
+							keep: 'dismissable', 
+							type: 'error' 
+						} 
+					);
 				} else {
-					WPViews.view_edit_screen.codemirror_panel( codemirror_views_query, WPV_Parametric.place_cursor_inside_wpv_control_set, true, 'error' );
+					Toolset.hooks.doAction( 
+						'wpv-action-wpv-add-codemirror-panel', 
+						{ 
+							editor: 'wpv_filter_meta_html_content', 
+							content: WPV_Parametric.place_cursor_inside_wpv_control_set, 
+							keep: 'dismissable', 
+							type: 'error' 
+						} 
+					);
 				}
 				return null;
 			} else {
-				WPViews.view_edit_screen.codemirror_panel( codemirror_views_query, WPV_Parametric.place_cursor_inside_valid_control_shortcodes, true, 'error' );
+				Toolset.hooks.doAction( 
+					'wpv-action-wpv-add-codemirror-panel', 
+					{ 
+						editor: 'wpv_filter_meta_html_content', 
+						content: WPV_Parametric.place_cursor_inside_valid_control_shortcodes, 
+						keep: 'dismissable', 
+						type: 'error' 
+					} 
+				);
 				return null;
 			}
 
@@ -1110,62 +1250,56 @@ var WPV_ParametricFilterWindow = function() {
 		return null;
 	};
 	
-	var openDialogCallback = function( data, button ) {
+	self.calculate_dialog_maxWidth = function() {
+		return ( jQuery( window ).width() - 100 );
+	};
+	
+	self.calculate_dialog_maxHeight = function() {
+		return ( jQuery( window ).height() - 100 );
+	};
+	
+	var openDialogCallback = function( data ) {
 		var params = {
-			action:'create_parametric_dialog',
-			wpv_parametric_create_dialog_nonce: WPV_Parametric.wpv_parametric_create_dialog_nonce
+			action:								'create_parametric_dialog',
+			wpv_parametric_create_dialog_nonce:	WPV_Parametric.wpv_parametric_create_dialog_nonce
 		};
+		self.dialog.html( self.dialog_spinner_content ).dialog('open');
 		jqp.post( WPV_Parametric.ajaxurl, params, function( response ) {
 			if ( response ) {
-				self.dialog
-					.html( response )
-					.dialog({
-						open: function( event, ui ) {
-							jqp( 'body' ).addClass( 'modal-open' );
-							var extra_query = '';
-							parametricViewModel = new WPV_ParametricViewModel();
-							ko.applyBindings( parametricViewModel );
-							self.populateFields( parametricViewModel, data );
-							if ( data.edit_field ) {
-								self.is_edit = true;
-								//keep track of previous obj state
-								self.fieldRawEditable = jqp.extend({}, set_default_field( data.edit_field ), true );
-								self.fieldRawEditable.index = data.edit_field.index;
-								self.fieldRawEditable.can_force_zero = data.edit_field.can_force_zero;
-								
-								jqp( this ).dialog( "option", "title", WPV_Parametric.dialog_title_edit );
-								jqp( "#js_parametric_form_button span" ).text( WPV_Parametric.update_input );
-								extra_query = '&field=' + data.edit_field.field;								
-							} else {
-								self.is_edit = false
-								jqp( "#js_parametric_form_button" )
-									.removeClass( 'button-primary' )
-									.addClass( 'button-secondary' )
-									.prop( 'disabled', true );
-							}
-							toggle_fieldset_hidden_viz();
-						},
-						beforeClose: function( event, ui ) {
-							ko.cleanNode( jqp( '#js-parametric-form-dialog-container' )[0] );
-						},
-						close: function( event, ui ) {
-							jqp( 'body' ).removeClass( 'modal-open' );
-							WPV_ParametricFilterWindow.has_error_displayed = false;
-							WPV_ParametricFilterWindow.errorPlaceHolder = null;
-							Advanced_visible.viz = false;
-							self.short_code_editable = null;
-							self.fieldRawEditable = null;
-							self.is_edit = false;
-							button.prop( 'disabled', false );
-						}
-					})
-					.dialog('open');
+				self.dialog.html( response ).dialog({
+					maxHeight:	self.calculate_dialog_maxHeight(),
+					maxWidth:	self.calculate_dialog_maxWidth()
+				});
+				var extra_query = '';
+				parametricViewModel = new WPV_ParametricViewModel();
+				ko.applyBindings( parametricViewModel );
+				self.populateFields( parametricViewModel, data );
+				if ( data.edit_field ) {
+					self.is_edit = true;
+					//keep track of previous obj state
+					self.fieldRawEditable					= jqp.extend({}, set_default_field( data.edit_field ), true );
+					self.fieldRawEditable.index				= data.edit_field.index;
+					self.fieldRawEditable.can_force_zero	= data.edit_field.can_force_zero;
+					
+					self.dialog.dialog( "option", "title", WPV_Parametric.dialog_title_edit );
+					jqp( "#js_parametric_form_button span" ).text( WPV_Parametric.update_input );
+					extra_query = '&field=' + data.edit_field.field;								
+				} else {
+					self.is_edit = false
+					jqp( "#js_parametric_form_button" )
+						.removeClass( 'button-primary' )
+						.addClass( 'button-secondary' )
+						.prop( 'disabled', true );
+				}
+				toggle_fieldset_hidden_viz();
 			}
 		})
-		.fail(function(jqXHR, textStatus, errorThrown){
-			if(  WPV_Parametric.debug ) console.log(jqXHR, textStatus, errorThrown)
+		.fail( function( jqXHR, textStatus, errorThrown ) {
+			if ( WPV_Parametric.debug ) {
+				console.log( jqXHR, textStatus, errorThrown );
+			}
 		})
-		.always(function(){
+		.always( function() {
 			//
 		});
 	};
@@ -1176,27 +1310,37 @@ var WPV_ParametricFilterWindow = function() {
 		});
 	};
 
-	var ajaxCreateCallback = function(args, status, additional_args )
-	{
-		var data = {}, button = additional_args[0];
-
-		if( args.Data && args.Data.error )
-		{
-			WPViews.view_edit_screen.codemirror_panel( codemirror_views_query, args.Data.error, true, 'error' );
+	var ajaxCreateCallback = function( args, status, additional_args ) {
+		if ( 
+			args.Data 
+			&& args.Data.error 
+		) {
+			Toolset.hooks.doAction( 
+				'wpv-action-wpv-add-codemirror-panel', 
+				{ 
+					editor: 'wpv_filter_meta_html_content', 
+					content: args.Data.error, 
+					keep: 'permanent', 
+					type: 'error' 
+				} 
+			);
 			return false;
 		}
-
-		try
-		{
+		try {
 			//open the dialog if we have something to show - a Data object as property of args
-			data = args.Data;
-			openDialogCallback( data, button );
+			openDialogCallback( args.Data );
 
-		}
-		catch(e)
-		{
-			console.error(WPV_Parametric.ajax_error, e.message );
-			WPViews.view_edit_screen.codemirror_panel( codemirror_views_query, WPV_Parametric.data_loading_problem + e.message, true, 'error' );
+		} catch( e ) {
+			console.error( WPV_Parametric.ajax_error, e.message );
+			Toolset.hooks.doAction( 
+				'wpv-action-wpv-add-codemirror-panel', 
+				{ 
+					editor: 'wpv_filter_meta_html_content', 
+					content: WPV_Parametric.data_loading_problem + e.message, 
+					keep: 'permanent', 
+					type: 'error' 
+				} 
+			);
 		}
 	};
 
@@ -1222,7 +1366,21 @@ var WPV_ParametricFilterWindow = function() {
 		});
 		self.populateField( parametricViewModel, 'selectFilter',  self.groups );
 
-		var myval = jqp('.js-flatten-types-relation-tree').val().split(',');
+		var myval = [],
+		query_mode = Toolset.hooks.applyFilters( 'wpv-filter-wpv-edit-screen-get-query-mode', 'normal' ),
+		post_relationship_tree_reference = Toolset.hooks.applyFilters( 'wpv-filter-wpv-edit-screen-get-post-relationship-tree-reference', {} );
+		if ( query_mode == 'archive' ) {
+			_.each( post_relationship_tree_reference, function( value, key, list ) {
+				myval = _.union( myval, value.split(',') );
+			});
+		} else {
+			var relevant_post_types = self.get_relevant_post_types();
+			_.each( post_relationship_tree_reference, function( value, key, list ) {
+				if ( _.contains( relevant_post_types, key ) ) {
+					myval = _.union( myval, value.split(',') );
+				}
+			});
+		}
 		myval.unshift({title:WPV_Parametric.relationship_select_tree,value:0});
 		self.populateField( parametricViewModel, 'ancestors_array_func', myval );
 	};
@@ -1744,6 +1902,15 @@ var WPV_ParametricViewModel = function() {
 		});
 
 	};
+	
+	self.get_relevant_post_types = function() {
+		var post_types_checks = jqp('input.js-wpv-query-post-type:checked'), 
+		post_types = [];
+		post_types_checks.each( function( i ) {
+			post_types.push( jqp( this ).val() );
+		});
+		return post_types;
+	};
 
 
 	self.numeric_operators = ["NUMERIC", "DECIMAL", "SIGNED", "UNSIGNED"];
@@ -1779,11 +1946,26 @@ var WPV_ParametricViewModel = function() {
 	self.can_force_zero = true;
 
 	self.ancestors_array = [ {
-			title: WPV_Parametric.relationship_select_tree,
-			value : 0 } ];
+		title:	WPV_Parametric.relationship_select_tree,
+		value:	0 
+	} ];
 
 	// fill self.ancestors_array
-	var myval = jqp('.js-flatten-types-relation-tree').val().split(',');
+	var myval = [],
+	query_mode = Toolset.hooks.applyFilters( 'wpv-filter-wpv-edit-screen-get-query-mode', 'normal' ),
+	post_relationship_tree_reference = Toolset.hooks.applyFilters( 'wpv-filter-wpv-edit-screen-get-post-relationship-tree-reference', {} );
+	if ( query_mode == 'archive' ) {
+		_.each( post_relationship_tree_reference, function( value, key, list ) {
+			myval = _.union( myval, value.split(',') );
+		});
+	} else {
+		var relevant_post_types = self.get_relevant_post_types();
+		_.each( post_relationship_tree_reference, function( value, key, list ) {
+			if ( _.contains( relevant_post_types, key ) ) {
+				myval = _.union( myval, value.split(',') );
+			}
+		});
+	}
 	for (i = 0, l = myval.length; i < l; i++) {
 		self.ancestors_array.push( {
 				title: myval[ i ],
@@ -1792,7 +1974,21 @@ var WPV_ParametricViewModel = function() {
 
 	// TODO this does the same as above - remove duplicity
 	self.ancestors_array_func = function( data ) {
-		var myinnerval = jqp('.js-flatten-types-relation-tree').val().split(',');
+		var myinnerval = [],
+		query_mode = Toolset.hooks.applyFilters( 'wpv-filter-wpv-edit-screen-get-query-mode', 'normal' ),
+		post_relationship_tree_reference = Toolset.hooks.applyFilters( 'wpv-filter-wpv-edit-screen-get-post-relationship-tree-reference', {} );
+		if ( query_mode == 'archive' ) {
+			_.each( post_relationship_tree_reference, function( value, key, list ) {
+				myinnerval = _.union( myinnerval, value.split(',') );
+			});
+		} else {
+			var relevant_post_types = self.get_relevant_post_types();
+			_.each( post_relationship_tree_reference, function( value, key, list ) {
+				if ( _.contains( relevant_post_types, key ) ) {
+					myinnerval = _.union( myinnerval, value.split(',') );
+				}
+			});
+		}
 		self.ancestors_array = [ {
 				title: WPV_Parametric.relationship_select_tree,
 				value: 0 } ];
@@ -3224,14 +3420,25 @@ var WPV_ParametricGenericButtonUtils = function() {
 		}, 3000);
 	};
 	
+	jQuery( document ).on( 'js_event_wpv_query_filter_created js_event_wpv_query_filter_deleted', function( event, filter ) {
+		if ( filter == 'post_search' ) {
+			WPV_parametric_local.add_search.handle_flags();
+		}
+	});
+	
+	self.handle_flags = function() {
+		WPV_parametric_local.add_search.handle_flags();
+		WPV_parametric_local.add_spinner.handle_flags();
+		WPV_parametric_local.add_reset.handle_flags();
+		WPV_parametric_local.add_submit.handle_flags();
+	};
+	
 	self.init = function() {
 		self.codemirror_views = self.editor.codemirrorGet( 'wpv_filter_meta_html_content' );
 		self.codemirror_views.on( 'change', function() {
-			WPV_parametric_local.add_search.handle_flags();
-			WPV_parametric_local.add_spinner.handle_flags();
-			WPV_parametric_local.add_reset.handle_flags();
-			WPV_parametric_local.add_submit.handle_flags();
+			self.handle_flags();
 		});
+		Toolset.hooks.addAction( 'wpv-action-wpv-edit-screen-parametric-filter-buttons-handle-flags', self.handle_flags );
 	};
 	
 	self.init();
@@ -3268,37 +3475,42 @@ var WPV_ParametricSearchButton = function() {
 	self.init_dialogs = function() {
 		var dialog_height = jqp( window ).height() - 100;
 		self.dialog_insert = jqp( "#js-wpv-parametric-search-dialogs .js-dialog-search-box-button" ).dialog({
-			autoOpen: false,
-			modal: true,
-			title: WPV_Parametric.add_search_shortcode_dialog_title,
-			minWidth: 550,
-			maxHeight: dialog_height,
-			draggable: false,
-			resizable: false,
-			position: { my: "center top+50", at: "center top", of: window },
-			show: { 
-				effect: "blind", 
-				duration: 800 
+			autoOpen:	false,
+			modal:		true,
+			title:		WPV_Parametric.add_search_shortcode_dialog_title,
+			minWidth:	550,
+			maxHeight:	dialog_height,
+			draggable:	false,
+			resizable:	false,
+			position:	{
+				my:			"center top+50",
+				at:			"center top",
+				of:			window,
+				collision:	"none"
 			},
-			open: function( event, ui ) {
+			show:		{ 
+				effect:		"blind", 
+				duration:	800 
+			},
+			open:		function( event, ui ) {
 				jqp( 'body' ).addClass( 'modal-open' );
 			},
-			close: function( event, ui ) {
+			close:		function( event, ui ) {
 				jqp( 'body' ).removeClass( 'modal-open' );
 			},
 			buttons:[
 				{
-					class: 'button-secondary',
-					text: WPV_Parametric.cancel,
-					click: function() {
+					class:	'button-secondary',
+					text:	WPV_Parametric.cancel,
+					click:	function() {
 						jqp( this ).dialog( "close" );
 						WPV_parametric_local.generic_button.codemirror_views.focus();
 					}
 				},
 				{
-					class: 'button-primary js-parametric-add-search-box',
-					text: WPV_Parametric.insert,
-					click: function() {
+					class:	'button-primary js-parametric-add-search-box',
+					text:	WPV_Parametric.insert,
+					click:	function() {
 						var thiz = jqp( '.js-parametric-add-search-box' ),
 						data = {
 							style: jqp( '.js-wpv-search-box-style' ).val(),
@@ -3317,37 +3529,42 @@ var WPV_ParametricSearchButton = function() {
 		});
 		
 		self.dialog_override = jqp( "#js-wpv-parametric-search-dialogs .js-dialog-search-override-button" ).dialog({
-			autoOpen: false,
-			modal: true,
-			title: WPV_Parametric.add_search_shortcode_dialog_title_override,
-			minWidth: 550,
-			maxHeight: dialog_height,
-			draggable: false,
-			resizable: false,
-			position: { my: "center top+50", at: "center top", of: window },
-			show: { 
-				effect: "blind", 
-				duration: 800 
+			autoOpen:	false,
+			modal:		true,
+			title:		WPV_Parametric.add_search_shortcode_dialog_title_override,
+			minWidth:	550,
+			maxHeight:	dialog_height,
+			draggable:	false,
+			resizable:	false,
+			position:	{
+				my:			"center top+50",
+				at:			"center top",
+				of:			window,
+				collision:	"none"
 			},
-			open: function( event, ui ) {
+			show:		{ 
+				effect:		"blind", 
+				duration:	800 
+			},
+			open:		function( event, ui ) {
 				jqp( 'body' ).addClass( 'modal-open' );
 			},
-			close: function( event, ui ) {
+			close:		function( event, ui ) {
 				jqp( 'body' ).removeClass( 'modal-open' );
 			},
 			buttons:[
 				{
-					class: 'button-secondary',
-					text: WPV_Parametric.cancel,
-					click: function() {
+					class:	'button-secondary',
+					text:	WPV_Parametric.cancel,
+					click:	function() {
 						jqp( this ).dialog( "close" );
 						WPV_parametric_local.generic_button.codemirror_views.focus();
 					}
 				},
 				{
-					class: 'button-primary js-parametric-add-search-override',
-					text: WPV_Parametric.insert,
-					click: function() {
+					class:	'button-primary js-parametric-add-search-override',
+					text:	WPV_Parametric.insert,
+					click:	function() {
 						var thiz = jqp( '.js-parametric-add-search-override' ),
 						data = {
 							style: jqp( '.js-wpv-search-override-style' ).val(),
@@ -3424,7 +3641,15 @@ var WPV_ParametricSearchButton = function() {
 			if ( self.has_search( WPV_parametric_local.generic_button.get_text_area_content() ) ) {
 				self.open_override_specific_dialog();
 			} else if ( ! WPV_parametric_local.generic_button.cursorInside() ) {
-				WPViews.view_edit_screen.codemirror_panel( WPV_parametric_local.generic_button.codemirror_views, WPV_Parametric.place_cursor_inside_wpv_controls, true, 'error' );
+				Toolset.hooks.doAction( 
+					'wpv-action-wpv-add-codemirror-panel', 
+					{ 
+						editor: 'wpv_filter_meta_html_content', 
+						content: WPV_Parametric.place_cursor_inside_wpv_controls, 
+						keep: 'dismissable', 
+						type: 'error' 
+					} 
+				);
 				return false;
 			} else if( self.has_filter() ) {
 				self.open_override_specific_dialog();
@@ -3675,7 +3900,15 @@ var WPV_ParametricSpinnerButton = function() {
 				return false;
 			}
 			if ( ! WPV_parametric_local.generic_button.cursorInside() ) {
-				WPViews.view_edit_screen.codemirror_panel( WPV_parametric_local.generic_button.codemirror_views, WPV_Parametric.place_cursor_inside_wpv_controls, true, 'error' );
+				Toolset.hooks.doAction( 
+					'wpv-action-wpv-add-codemirror-panel', 
+					{ 
+						editor: 'wpv_filter_meta_html_content', 
+						content: WPV_Parametric.place_cursor_inside_wpv_controls, 
+						keep: 'dismissable', 
+						type: 'error' 
+					} 
+				);
 				return false;
 			} else {
 				self.openDialog();
@@ -3754,7 +3987,15 @@ var WPV_ParametricSpinnerButton = function() {
 			jqp( '#spinner_shortcode_container_classname, #spinner_shortcode_container_style, #spinner_shortcode_content', '.js-wpv-dialog-spinner-button' ).val( '' );
 			jqp( '#spinner_shortcode_spinner_position', '.js-wpv-dialog-spinner-button' ).val( 'before' );
 		} else {
-			WPViews.view_edit_screen.codemirror_panel( WPV_parametric_local.generic_button.codemirror_views, WPV_Parametric.place_cursor_inside_wpv_filter, true, 'error' );
+			Toolset.hooks.doAction( 
+				'wpv-action-wpv-add-codemirror-panel', 
+				{ 
+					editor: 'wpv_filter_meta_html_content', 
+					content: WPV_Parametric.place_cursor_inside_wpv_filter, 
+					keep: 'dismissable', 
+					type: 'error' 
+				} 
+			);
 		}
 	};
 	
@@ -3867,7 +4108,15 @@ var WPV_ParametricResetButton = function() {
 		button.on('click', function( event ) {
 			event.stopImmediatePropagation();
 			if ( ! WPV_parametric_local.generic_button.cursorInside() ) {
-				WPViews.view_edit_screen.codemirror_panel( WPV_parametric_local.generic_button.codemirror_views, WPV_Parametric.place_cursor_inside_wpv_controls, true, 'error' );
+				Toolset.hooks.doAction( 
+					'wpv-action-wpv-add-codemirror-panel', 
+					{ 
+						editor: 'wpv_filter_meta_html_content', 
+						content: WPV_Parametric.place_cursor_inside_wpv_controls, 
+						keep: 'dismissable', 
+						type: 'error' 
+					} 
+				);
 				return false;
 			} else {
 				self.openDialog();
@@ -3921,7 +4170,15 @@ var WPV_ParametricResetButton = function() {
 			jqp( '#reset_shortcode_label', '.js-wpv-dialog-reset-button' ).val( WPV_Parametric.add_reset_shortcode_dialog_label_default );
 			jqp( '#reset_shortcode_button_tag', '.js-wpv-dialog-reset-button' ).val( 'input' );
 		} else {
-			WPViews.view_edit_screen.codemirror_panel( WPV_parametric_local.generic_button.codemirror_views, WPV_Parametric.place_cursor_inside_wpv_controls, true, 'error' );
+			Toolset.hooks.doAction( 
+				'wpv-action-wpv-add-codemirror-panel', 
+				{ 
+					editor: 'wpv_filter_meta_html_content', 
+					content: WPV_Parametric.place_cursor_inside_wpv_controls, 
+					keep: 'dismissable', 
+					type: 'error' 
+				} 
+			);
 		}
 	};
 	
@@ -4073,7 +4330,15 @@ var WPV_ParametricSubmitButton = function() {
 				return false;
 			}
 			if ( ! WPV_parametric_local.generic_button.cursorInside() ) {
-				WPViews.view_edit_screen.codemirror_panel( WPV_parametric_local.generic_button.codemirror_views, WPV_Parametric.place_cursor_inside_wpv_controls, true, 'error' );
+				Toolset.hooks.doAction( 
+					'wpv-action-wpv-add-codemirror-panel', 
+					{ 
+						editor: 'wpv_filter_meta_html_content', 
+						content: WPV_Parametric.place_cursor_inside_wpv_controls, 
+						keep: 'dismissable', 
+						type: 'error' 
+					} 
+				);
 				return false;
 			}
 			self.openDialog();
@@ -4111,7 +4376,15 @@ var WPV_ParametricSubmitButton = function() {
 			jqp( '#submit_shortcode_label', '.js-wpv-dialog-submit-button' ).val( WPV_Parametric.add_submit_shortcode_dialog_label_default );
 			jqp( '#submit_shortcode_button_tag', '.js-wpv-dialog-submit-button' ).val( 'input' );
 		} else {
-			WPViews.view_edit_screen.codemirror_panel( WPV_parametric_local.generic_button.codemirror_views, WPV_Parametric.place_cursor_inside_wpv_controls, true, 'error' );
+			Toolset.hooks.doAction( 
+				'wpv-action-wpv-add-codemirror-panel', 
+				{ 
+					editor: 'wpv_filter_meta_html_content', 
+					content: WPV_Parametric.place_cursor_inside_wpv_controls, 
+					keep: 'dismissable', 
+					type: 'error' 
+				} 
+			);
 		}
 	};
 	
@@ -4160,7 +4433,15 @@ var WPV_ParametricJsonStore = function() {
 					if ( self.loading ) {
 						self.loader.loadHide();
 					}
-					WPViews.view_edit_screen.codemirror_panel( codemirror_views_query, "Error: " + textStatus + " " + errorThrown, true, 'error' );
+					Toolset.hooks.doAction( 
+						'wpv-action-wpv-add-codemirror-panel', 
+						{ 
+							editor: 'wpv_filter_meta_html_content', 
+							content: "Error: " + textStatus + " " + errorThrown, 
+							keep: 'permanent', 
+							type: 'error' 
+						} 
+					);
 					console.error( "Error: ", textStatus, errorThrown );
 					return false;
 				},
@@ -4183,12 +4464,28 @@ var WPV_ParametricJsonStore = function() {
 						&& data.Data.error 
 					) {
 						//console.error( data.Data.error );
-						WPViews.view_edit_screen.codemirror_panel( codemirror_views_query, data.Data.error, true, 'error' );
+						Toolset.hooks.doAction( 
+							'wpv-action-wpv-add-codemirror-panel', 
+							{ 
+								editor: 'wpv_filter_meta_html_content', 
+								content: data.Data.error, 
+								keep: 'permanent', 
+								type: 'error' 
+							} 
+						);
 					} else if ( 
 						data.Data 
 						&& data.Data.message 
 					) {
-						WPViews.view_edit_screen.codemirror_panel( codemirror_views_query, data.Data.message, true, 'success' );
+						Toolset.hooks.doAction( 
+							'wpv-action-wpv-add-codemirror-panel', 
+							{ 
+								editor: 'wpv_filter_meta_html_content', 
+								content: data.Data.message, 
+								keep: 'temporal', 
+								type: 'success' 
+							} 
+						);
 					} else if ( 
 						data.Data 
 						&& ! data.Data.error
@@ -4200,7 +4497,15 @@ var WPV_ParametricJsonStore = function() {
 							args = [data, textStatus, args];
 							callback.apply( object ? object : self, args ? args : [] );
 						} else {
-							WPViews.view_edit_screen.codemirror_panel( codemirror_views_query, WPV_Parametric.ajax_callback_undefined, true, 'error' );
+							Toolset.hooks.doAction( 
+								'wpv-action-wpv-add-codemirror-panel', 
+								{ 
+									editor: 'wpv_filter_meta_html_content', 
+									content: WPV_Parametric.ajax_callback_undefined, 
+									keep: 'permanent', 
+									type: 'error' 
+								} 
+							);
 						}
 					}
 				},

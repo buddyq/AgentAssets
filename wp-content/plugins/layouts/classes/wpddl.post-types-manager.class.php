@@ -36,6 +36,12 @@ class WPDD_Layouts_PostTypesManager
 
 		add_filter( 'ddl-get_layout_post_types_object', array(&$this, 'get_layout_post_types_object'), 10, 2 );
 
+		add_filter( 'ddl-get_layout_post_types', array(&$this, 'get_layout_post_types'), 10, 1 );
+
+		add_filter( 'ddl-get_post_type_was_batched', array(&$this, 'get_post_type_was_batched'), 10, 2);
+
+		add_filter( 'ddl-post_type_is_in_layout', array(&$this, 'post_type_is_in_layout'), 10, 2 );
+
      //   add_action('wcml_before_sync_product_data', array(&$this, 'fix_woo_product_on_update'), 10, 3);
 		
 		if( is_admin())	{
@@ -53,7 +59,7 @@ class WPDD_Layouts_PostTypesManager
 		}
 		
 		add_action('after_switch_theme', array($this, 'trigger_theme_check'));
-
+        add_action('wp_ajax_ddl_dismiss_layout_integration_notice', array($this, 'dismiss_notice'));
 	}
 
 	public static function getInstance()
@@ -81,17 +87,19 @@ class WPDD_Layouts_PostTypesManager
     }
 	
 	function show_admin_messages () {
-		global $pagenow;
+		global $pagenow, $current_user;
 		
 		$theme = wp_get_theme();
 		
 		$template_check = new WPDDL_Options_Manager('ddl_template_check');
 		$OK = $template_check->get_options('theme-' . $theme->get('Name'));
+                $user_id = $current_user->ID;
+                $dismiss_clicked = get_user_meta($user_id, 'layouts_integration_ignore_notice',true);
 		if (!$OK) {
-			if (!$this->check_theme_has_any_templates()) {
+			if (!$this->check_theme_has_any_templates() && !$dismiss_clicked) {
 				?>
 			
-				<div class="error">
+				<div class="error is-dismissible">
 					<h3><?php _e('Layouts theme integration', 'ddl-layouts'); ?> </h3>
 					<p>
 						<?php 
@@ -100,8 +108,27 @@ class WPDD_Layouts_PostTypesManager
 										   '</a>');
 										   
 						?>
+                                           
 					</p>
+                                        <p> <a class="ddl_dismiss_layout_integration_notice" href="#"><?php _e('Dismiss', 'ddl-layouts'); ?></a></p>
 				</div>
+                                    <script type="text/javascript">
+                                        jQuery('.ddl_dismiss_layout_integration_notice').on('click', function() {
+                                                jQuery(this).closest('.error').fadeOut(500);
+                                                var data = {
+                                                        action : 'ddl_dismiss_layout_integration_notice',
+                                                };
+
+                                                jQuery.ajax({
+                                                        type:'post',
+                                                        url:ajaxurl,
+                                                        data:data,
+                                                        success: function(response){
+                                                        }
+                                                });
+
+                                        });
+                                    </script>
 				
 				<?php
 			} else {
@@ -127,6 +154,13 @@ class WPDD_Layouts_PostTypesManager
 		}
 		
 	}
+        
+    public function dismiss_notice () {
+        global $current_user;
+
+        $user_id = $current_user->ID;
+        add_user_meta($user_id, 'layouts_integration_ignore_notice', true, true);		
+    }
 
     function print_post_type_checkboxes_js(){
 

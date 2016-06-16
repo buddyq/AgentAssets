@@ -111,21 +111,11 @@ function wpv_create_content_summary_for_listing($post_id) {
 	return $summary;
 }
 
-function wpv_create_summary_for_listing($post_id) { // TODO check if e want to use this or previous filter, DEPRECATED for the other NOTE ModuleManager is using one
-	global $WP_Views;
-	$view_settings = $WP_Views->get_view_settings( $post_id );
-
-	$filter_summary = apply_filters('wpv-view-get-summary', '', $post_id, $view_settings);
+function wpv_create_summary_for_listing( $post_id ) {
+	// Used to call the wpv-view-get-summary filter
+	$doing_it_wrong_message = __( 'wpv_create_summary_for_listing is deprecated and should not be used.', 'wpv-views' );
+	_doing_it_wrong( 'wpv_create_summary_for_listing', $doing_it_wrong_message, '2.1' );
 	$summary = '';
-
-	if ($filter_summary == '') {
-		$filter_summary = __('No filters selected.', 'wpv-views');
-	}
-	//$filter_summary = str_replace('<strong>', '', $filter_summary);
-	//$filter_summary = str_replace('</strong>', '', $filter_summary);
-
-	$summary .= $filter_summary;
-
 	return $summary;
 }
 

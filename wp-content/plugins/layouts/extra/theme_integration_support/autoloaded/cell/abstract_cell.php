@@ -8,7 +8,6 @@ abstract class WPDDL_Cell_Abstract_Cell  extends WPDD_layout_cell {
 
 	function __construct( $name, $width, $css_class_name = '', $content = null, $css_id, $tag ) {
 		parent::__construct( $name, $width, $css_class_name, $this->id , $content, $css_id, $tag );
-
 		$this->set_cell_type( $this->id );
 	}
 

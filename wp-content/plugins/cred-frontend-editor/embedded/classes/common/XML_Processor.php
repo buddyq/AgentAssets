@@ -751,6 +751,7 @@ final class CRED_XML_Processor {
                 $fields['form_settings']->post_type = isset($form_data['meta']['form_settings']['post_type']) ? $form_data['meta']['form_settings']['post_type'] : '';
                 $fields['form_settings']->post_status = isset($form_data['meta']['form_settings']['post_status']) ? $form_data['meta']['form_settings']['post_status'] : 'draft';
                 $fields['form_settings']->cred_theme_css = isset($form_data['meta']['form_settings']['cred_theme_css']) ? $form_data['meta']['form_settings']['cred_theme_css'] : 'minimal';
+                $fields['form_settings']->use_ajax = (isset($form_data['meta']['form_settings']['use_ajax']) && $form_data['meta']['form_settings']['use_ajax'] == '1') ? 1 : 0;
 
                 $fields['wizard'] = isset($form_data['meta']['wizard']) ? intval($form_data['meta']['wizard']) : -1;
 
@@ -814,6 +815,7 @@ final class CRED_XML_Processor {
                 $fields['form_settings']->post['post_type'] = isset($form_data['meta']['form_settings']['post']['post_type']) ? $form_data['meta']['form_settings']['post']['post_type'] : '';
                 $fields['form_settings']->post['post_status'] = isset($form_data['meta']['form_settings']['post']['post_status']) ? $form_data['meta']['form_settings']['post']['post_status'] : 'draft';
                 $fields['form_settings']->form['theme'] = isset($form_data['meta']['form_settings']['form']['theme']) ? $form_data['meta']['form_settings']['form']['theme'] : 'minimal';
+                $fields['form_settings']->form['use_ajax'] = (isset($form_data['meta']['form_settings']['form']['use_ajax']) && $form_data['meta']['form_settings']['form']['use_ajax'] == '1') ? 1 : 0;
 
                 $fields['wizard'] = isset($form_data['meta']['wizard']) ? intval($form_data['meta']['wizard']) : -1;
 
@@ -1012,6 +1014,7 @@ final class CRED_XML_Processor {
                 $fields['form_settings']->post_type = isset($form_data['meta']['form_settings']['post_type']) ? $form_data['meta']['form_settings']['post_type'] : '';
                 $fields['form_settings']->post_status = isset($form_data['meta']['form_settings']['post_status']) ? $form_data['meta']['form_settings']['post_status'] : 'draft';
                 $fields['form_settings']->cred_theme_css = isset($form_data['meta']['form_settings']['cred_theme_css']) ? $form_data['meta']['form_settings']['cred_theme_css'] : 'minimal';
+                $fields['form_settings']->use_ajax = (isset($form_data['meta']['form_settings']['use_ajax']) && $form_data['meta']['form_settings']['use_ajax'] == '1') ? 1 : 0;
 
                 $fields['wizard'] = isset($form_data['meta']['wizard']) ? intval($form_data['meta']['wizard']) : -1;
 
@@ -1080,8 +1083,8 @@ final class CRED_XML_Processor {
                 $fields['form_settings']->form['user_role'] = isset($form_data['meta']['form_settings']['form']['user_role']) ? $form_data['meta']['form_settings']['form']['user_role'] : 'subscriber';
                 $fields['form_settings']->post['post_type'] = isset($form_data['meta']['form_settings']['post']['post_type']) ? $form_data['meta']['form_settings']['post']['post_type'] : '';
                 $fields['form_settings']->post['post_status'] = isset($form_data['meta']['form_settings']['post']['post_status']) ? $form_data['meta']['form_settings']['post']['post_status'] : 'draft';
-
                 $fields['form_settings']->form['theme'] = isset($form_data['meta']['form_settings']['form']['theme']) ? $form_data['meta']['form_settings']['form']['theme'] : 'minimal';
+                $fields['form_settings']->form['use_ajax'] = (isset($form_data['meta']['form_settings']['form']['use_ajax']) && $form_data['meta']['form_settings']['form']['use_ajax'] == '1') ? 1 : 0;
 
                 $fields['wizard'] = isset($form_data['meta']['wizard']) ? intval($form_data['meta']['wizard']) : -1;
 
@@ -1265,9 +1268,10 @@ final class CRED_XML_Processor {
         if (isset($data['settings']) && isset($options['overwrite_settings']) && $options['overwrite_settings']) {
             $setmodel = CRED_Loader::get('MODEL/Settings');
             $oldsettings = $setmodel->getSettings();
+
             $newsettings = array();
 
-            $fields = array(
+            $fields = array(                
                 'dont_load_cred_css',
                 'enable_post_expiration',
                 'export_custom_fields',
@@ -1276,6 +1280,7 @@ final class CRED_XML_Processor {
                 'syntax_highlight',
                 'use_bootstrap',
                 'wizard',
+                'allowed_tags'
             );
             foreach ($fields as $key) {
                 $newsettings[$key] = null;
@@ -1341,15 +1346,6 @@ final class CRED_XML_Processor {
             if (!isset($data['form'][0]))
                 $data['form'] = array($data['form']); // make it array
 
-
-
-
-
-
-
-
-
-                
 // create tmp upload dir, to handle imported media attached to forms
             $upload_dir = wp_upload_dir();
             $upload_path = $upload_dir['basedir'];
@@ -1439,6 +1435,7 @@ final class CRED_XML_Processor {
                 'syntax_highlight',
                 'use_bootstrap',
                 'wizard',
+                'allowed_tags'
             );
             foreach ($fields as $key) {
                 $newsettings[$key] = null;
@@ -1916,7 +1913,6 @@ final class CRED_XML_Processor {
                 }
             }
         }
-
 
         if (isset($options['force_duplicate_post_name'])) {
             foreach ($dataresult['form'] as $key => $form_data) {

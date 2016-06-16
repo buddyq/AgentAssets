@@ -256,6 +256,61 @@ class WPV_Content_Template_Embedded extends WPV_Post_Object_Wrapper {
         return WPV_Content_Template_Embedded::query_assigned_posts( $post_types, $output_format, $query );
 
     }
+	
+	public function has_dissident_posts( $post_types = null, $output_format = 'by_post_type' ) {
+
+        if( null == $post_types ) {
+            $post_types = $this->assigned_single_post_types;
+        }
+
+        global $wpdb;
+
+        // Notice the left join, wich will give us also posts without this postmeta (that's also
+        // why the extra check for NULL is needed).
+        $query = "SELECT %s
+            FROM {$wpdb->posts} AS posts LEFT JOIN {$wpdb->postmeta} AS meta
+              ON (
+                posts.ID = meta.post_id
+                AND meta.meta_key = '_views_template'
+              )
+            WHERE
+              posts.post_status != 'auto-draft'
+              AND posts.post_type IN ( %s )
+              AND (
+                meta.meta_value != {$this->id}
+                OR meta.meta_value IS NULL
+              )
+			LIMIT 1
+            ";
+
+        return WPV_Content_Template_Embedded::query_assigned_posts( $post_types, $output_format, $query );
+
+    }
+	
+	public function kill_dissident_posts( $post_types = array() ) {
+		if ( ! empty( $post_types ) ) {
+			global $wpdb;
+			
+			$post_types			= array_map( 'sanitize_text_field', $post_types );
+			$post_types_flat	= '"' . implode( '", "', $post_types ) . '"';
+				
+			$query = "UPDATE {$wpdb->postmeta} AS meta, 
+				{$wpdb->posts} AS posts 
+				SET meta.meta_value = %s 
+				WHERE
+					meta.post_id = posts.ID 
+					AND meta.meta_key = '_views_template' 
+					AND posts.post_type IN ( {$post_types_flat} )";
+			
+			$result = $wpdb->query(
+				$wpdb->prepare(
+					$query,
+					$this->id
+				)
+			);
+
+		}
+	}
 
 
     /**
@@ -570,7 +625,8 @@ class WPV_Content_Template_Embedded extends WPV_Post_Object_Wrapper {
             'post_type' => WPV_Content_Template_Embedded::POST_TYPE,
             'order' => 'ASC',
             'orderby' => 'title',
-            'post_status' => 'publish'
+            'post_status' => 'publish',
+			'posts_per_page' => -1
         );
 
         $args = wp_parse_args( $args, $default_args );
@@ -769,7 +825,14 @@ class WPV_Content_Template_Embedded extends WPV_Post_Object_Wrapper {
      * @since 1.9
      */
     protected function _get_template_extra_css() {
-        return $this->get_postmeta( WPV_Content_Template_Embedded::POSTMETA_TEMPLATE_EXTRA_CSS );
+        $value = $this->get_postmeta( WPV_Content_Template_Embedded::POSTMETA_TEMPLATE_EXTRA_CSS );
+
+        // At least avoid type errors.
+        if( ! is_string( $value ) ) {
+            $value = '';
+        }
+
+        return $value;
     }
 
 
@@ -778,7 +841,14 @@ class WPV_Content_Template_Embedded extends WPV_Post_Object_Wrapper {
      * @since 1.9
      */
     protected function _get_template_extra_js() {
-        return $this->get_postmeta( WPV_Content_Template_Embedded::POSTMETA_TEMPLATE_EXTRA_JS );
+        $value = $this->get_postmeta( WPV_Content_Template_Embedded::POSTMETA_TEMPLATE_EXTRA_JS );
+
+        // At least avoid type errors.
+        if( ! is_string( $value ) ) {
+            $value = '';
+        }
+
+        return $value;
     }
 
 

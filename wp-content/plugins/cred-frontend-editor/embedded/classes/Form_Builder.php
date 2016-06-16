@@ -15,14 +15,7 @@
  */
 class CRED_Form_Builder implements CRED_Friendable, CRED_FriendableStatic {
 
-    // CONSTANTS
-    //const METHOD='POST';                                         // form method POST
-    //const PREFIX='_cred_cred_prefix_';                           // prefix for various hidden auxiliary fields
-    //const NONCE='_cred_cred_wpnonce';                            // nonce field name
-    //const POST_CONTENT_TAG='%__CRED__CRED__POST__CONTENT__%';    // placeholder for post content
-    //const FORM_TAG='%__CRED__CRED__FORM___FORM__%';              //
-    //const DELAY=0;                                               // seconds delay before redirection
-
+    private static $_self_updated_form = false;
     private $_zebraForm = null;                                   // instance of Zebra form, to render frontend forms
     // INSTANCE  properties
     private $_shortcodeParser = null;                             // instance of shortcode parser
@@ -66,11 +59,7 @@ class CRED_Form_Builder implements CRED_Friendable, CRED_FriendableStatic {
      *   Implement Friendable Interface
      */
     private $_____friends_____ = array(/* Friend Instances Hashes as keys Here.. */);
-
-    //private static $_______class_______='CRED_Form_Builder';
-    /*
-     *   /END Implement Friendable Interface
-     */
+    public $disable_progress_bar;
 
     /* =============================== STATIC METHODS ======================================== */
 
@@ -81,10 +70,7 @@ class CRED_Form_Builder implements CRED_Friendable, CRED_FriendableStatic {
 
     // init public function
     public static function init() {
-//        if (!empty($_POST)){
-//        StaticClass::_pre($_POST);
-//        StaticClass::_pre($_FILES);die;}
-        //CRED_Loader::load('CLASS/Form_Helper');
+
         // form helper is a friend of form builder, so they can share access between them
         self::addFriendStatic('StaticClass', array(
             'methods' => array(),
@@ -100,7 +86,6 @@ class CRED_Form_Builder implements CRED_Friendable, CRED_FriendableStatic {
 
     // check for form submissions on init
     public static function _init_() {
-
         // check for cred form submissions
         if (!is_admin()) {
             // reference to the form submission method
@@ -124,6 +109,7 @@ class CRED_Form_Builder implements CRED_Friendable, CRED_FriendableStatic {
                 else
                     $preview = false;
 
+                cred_log(array($form_id, $post_id, $preview, $form_count));
                 // parce and cache form
                 self::getCachedForm($form_id, $post_id, $preview, $form_count);
             }
@@ -152,17 +138,11 @@ class CRED_Form_Builder implements CRED_Friendable, CRED_FriendableStatic {
         ) {
             // parse and cache form
             $fb = new CRED_Form_Builder();
+            $fb->disable_progress_bar = version_compare(CRED_FE_VERSION, '1.3.6.2', '<=');
+            $fb->disable_progress_bar = apply_filters('cred_file_upload_disable_progress_bar', $fb->disable_progress_bar);
+
             $form_post_type = get_post_type($form_id);
             $form = ($form_post_type == CRED_USER_FORMS_CUSTOM_POST_NAME) ? $fb->user_form($form_id, $post_id, $preview, $form_count, $specific_post_id) : $fb->form($form_id, $post_id, $preview, $form_count, $specific_post_id);
-            /* StaticClass::$_staticGlobal['CACHE'][$form_id.'_'.$form_count]=array(
-              'form' =>  $output,
-              'count' => $form_count,
-              'extra' => $this->_formData->getExtra(),
-              'css_to_use' => $this->_formData->getCSS(),
-              'js' => $this->getJS(),
-              'hide_comments' =>  $this->_formData->hasHideComments(),
-              'has_recaptcha' =>  $this->hasRecaptcha()
-              ); */
 
             StaticClass::$_staticGlobal['CACHE'][$form_id . '_' . $form_count] = array(
                 'form' => $form,
@@ -279,6 +259,8 @@ class CRED_Form_Builder implements CRED_Friendable, CRED_FriendableStatic {
 
     // manage form submission / validation and rendering and return rendered html
     public function form($form_id, $post_id = null, $preview = false, $force_form_count = false, $specific_post_id = null) {
+        cred_log("form");
+
         $bypass_form = apply_filters('cred_bypass_process_form_' . $form_id, false, $form_id, $post_id, $preview);
         $bypass_form = apply_filters('cred_bypass_process_form', $bypass_form, $form_id, $post_id, $preview);
 
@@ -297,11 +279,16 @@ class CRED_Form_Builder implements CRED_Friendable, CRED_FriendableStatic {
             return $formHelper->getError($parse);
 
         $zebraForm = $this->_zebraForm;
+        $zebraForm->_formHelper = $formHelper;
+        $zebraForm->_formData = $this->_formData;
         $zebraForm->extra_parameters = $this->_formData->getExtra();
 
         $form_id = $form->getForm()->ID;
         $_fields = $form->getFields();
         $form_type = $_fields['form_settings']->form['type'];
+
+        $form_use_ajax = (isset($_fields['form_settings']->form['use_ajax']) && $_fields['form_settings']->form['use_ajax'] == 1) ? true : false;
+        $is_ajax = (cred_is_ajax_call() && $form_use_ajax);
 
         $prg_id = $this->out_['prg_id'];
         $form_count = $this->out_['count'];
@@ -331,32 +318,19 @@ class CRED_Form_Builder implements CRED_Friendable, CRED_FriendableStatic {
         } else
             $zebraForm->is_submit_success = $this->isSubmitted();
 
-        $this->CRED_build();
-
         // no message to display if not submitted
         $message = false;
-
-        // add notification message from previous submit of same create form (P-R-G pattern)
-        /* if (($n_data=$formHelper->readCookie('_cred_cred_notifications'.$prg_id)))
-          {
-          $formHelper->clearCookie('_cred_cred_notifications'.$prg_id);
-          if (isset($n_data['sent']))
-          {
-          foreach ((array)$n_data['sent'] as $ii)
-          $zebraForm->add_form_message('notification_'.$ii, $formHelper->getLocalisedMessage('notification_was_sent'));
-          }
-          if (isset($n_data['failed']))
-          {
-          foreach ((array)$n_data['failed'] as $ii)
-          $zebraForm->add_form_message('notification_'.$ii, $formHelper->getLocalisedMessage('notification_failed'));
-          }
-          } */
 
         $thisform = array(
             'id' => $form_id,
             'post_type' => $post_type,
-            'form_type' => $form_type
+            'form_type' => $form_type,
+            'form_html_id' => '#cred_form_' . $prg_id
         );
+
+        StaticClass::$_current_post_title = $form->getForm()->post_title;
+        StaticClass::$_current_prefix = "cred-form-";
+        StaticClass::$_current_form_id = $form_id;
 
         //Check dates
         foreach ($_POST as $name => &$value) {
@@ -388,6 +362,7 @@ class CRED_Form_Builder implements CRED_Friendable, CRED_FriendableStatic {
         if (!array_key_exists('post_fields', $this->out_['fields'])) {
             $this->out_['fields']['post_fields'] = array();
         }
+
         //fixed Server side error messages should appear next to the field with the problem
         //https://icanlocalize.basecamphq.com/projects/7393061-toolset/todo_items/186243370/comments
         //https://icanlocalize.basecamphq.com/projects/7393061-toolset/todo_items/196177636/comments
@@ -395,8 +370,52 @@ class CRED_Form_Builder implements CRED_Friendable, CRED_FriendableStatic {
         if (isset($this->out_['fields']['post_fields']) && isset($this->out_['form_fields_info']))
             $formHelper->checkFilesType($this->out_['fields']['post_fields'], $this->out_['form_fields_info'], $zebraForm, $error_files);
         //##########################################################################################                
+
+        StaticClass::$_reset_file_values = ($is_ajax && $form_type == 'new' && $_fields['form_settings']->form['action'] == 'form' && $this->validate($tmp, true));
+        cred_log("_reset_file_values: " . StaticClass::$_reset_file_values);
+
+        $cloned = false;
+        if (isset($_POST) && !empty($_POST)) {
+            $cloned = true;
+            $temp_post = $_POST;
+        }
+
+        cred_log("POST");
+        cred_log($_POST);
+        cred_log("ALL POSTFIELDS");
+        cred_log($this->out_['fields']['post_fields']);
+
+        if (StaticClass::$_reset_file_values) {
+            foreach ($this->out_['fields']['post_fields'] as $k => $v) {
+                $fname = isset($v['plugin_type_prefix']) ? $v['plugin_type_prefix'] . $k : $k;
+                if (isset($_POST[$fname])) {
+                    unset($_POST[$fname]); // = array();
+                }
+            }
+            foreach ($this->out_['fields']['taxonomies'] as $k => $v) {
+                if (isset($_POST[$k])) {
+                    unset($_POST[$k]); // = array();
+                }
+            }
+
+            add_filter('toolset_filter_taxonomyhierarchical_terms', array('StaticClass', 'cred_empty_array'), 1);
+            add_filter('toolset_filter_taxonomy_terms', array('StaticClass', 'cred_empty_array'), 1);
+        }
+
+        $this->CRED_build();
+
+        $validate = $this->validate($error_files);
+        //$validate = (StaticClass::$_reset_file_values) ? true : false;
+
+        if ($cloned) {
+            $_POST = $temp_post;
+        }
+
+        $bypass_form = self::$_self_updated_form;
+
         //if (!$bypass_form && $_zebraForm->validate($post_id, $_zebraForm->form_properties['fields']))
-        if (!$bypass_form && $this->validate($error_files)) {
+        $num_errors = 0;
+        if (!$bypass_form && $validate) {
             if (!$zebraForm->preview) {
                 // save post data
                 $bypass_save_form_data = apply_filters('cred_bypass_save_data_' . $form_id, false, $form_id, $post_id, $thisform);
@@ -406,9 +425,11 @@ class CRED_Form_Builder implements CRED_Friendable, CRED_FriendableStatic {
                     $model = CRED_Loader::get('MODEL/Forms');
                     $attachedData = $model->getAttachedData($post_id);
                     $post_id = $this->CRED_save($post_id);
+                    cred_log($post_id);
                 }
 
                 if (is_wp_error($post_id)) {
+                    $num_errors++;
                     $zebraForm->add_field_message($post_id->get_error_message(), 'Post Name');
                 } else {
                     if (is_int($post_id) && $post_id > 0) {
@@ -443,6 +464,8 @@ class CRED_Form_Builder implements CRED_Friendable, CRED_FriendableStatic {
                         } else {
                             $credaction = $_fields['form_settings']->form['action'];
                         }
+
+                        cred_log($credaction);
                         // do default or custom actions
                         switch ($credaction) {
                             case 'post':
@@ -457,8 +480,8 @@ class CRED_Form_Builder implements CRED_Friendable, CRED_FriendableStatic {
                             default:
                                 if ('form' != $credaction && 'message' != $credaction) {
                                     // add hooks here, to do custom action when custom cred action has been selected
-                                    do_action('cred_custom_success_action_' . $form_id, $credaction, $post_id, $thisform);
-                                    do_action('cred_custom_success_action', $credaction, $post_id, $thisform);
+                                    do_action('cred_custom_success_action_' . $form_id, $credaction, $post_id, $thisform, $is_ajax);
+                                    do_action('cred_custom_success_action', $credaction, $post_id, $thisform, $is_ajax);
                                 }
 
                                 // if previous did not do anything, default to display form
@@ -477,16 +500,25 @@ class CRED_Form_Builder implements CRED_Friendable, CRED_FriendableStatic {
                                         '_target' => $post_id
                                     ));
                                 } else {
-                                    $url = $formHelper->currentURI(array(
-                                        '_tt' => time(),
-                                        '_success' => $prg_id,
-                                        '_target' => $post_id
-                                    ));
+                                    if ($is_ajax && $credaction == 'form') {
+                                        //do nothing
+                                    } else {
+                                        $url = $formHelper->currentURI(array(
+                                            '_tt' => time(),
+                                            '_success' => $prg_id,
+                                            '_target' => $post_id
+                                        ));
+                                    }
                                 }
-                                $url = $url . '#cred_form_' . $prg_id;
-                                // do PRG, redirect now
-                                $formHelper->redirect($url, array("HTTP/1.1 303 See Other"));
-                                exit;  // just in case
+                                if ($is_ajax && $credaction == 'form') {
+                                    //do nothing
+                                } else {
+                                    $url = $url . '#cred_form_' . $prg_id;
+                                    // do PRG, redirect now
+                                    $cred_response = new CRED_Generic_Response(CRED_GENERIC_RESPONSE_RESULT_REDIRECT, $url, $is_ajax, $thisform, $formHelper);
+                                    $cred_response->show();
+                                    exit;  // just in case
+                                }
                                 break;
                         }
 
@@ -500,10 +532,12 @@ class CRED_Form_Builder implements CRED_Friendable, CRED_FriendableStatic {
 
                             if (false !== $url) {
                                 $redirect_delay = $_fields['form_settings']->form['redirect_delay'];
-                                if ($redirect_delay <= 0)
-                                    $formHelper->redirect($url);
-                                else
-                                    $formHelper->redirectDelayed($url, $redirect_delay);
+//                                if ($redirect_delay <= 0)
+//                                    $formHelper->redirect($url);
+//                                else
+//                                    $formHelper->redirectDelayed($url, $redirect_delay);                                
+                                $cred_response = new CRED_Generic_Response(CRED_GENERIC_RESPONSE_RESULT_REDIRECT, $url, $is_ajax, $thisform, $formHelper, $redirect_delay);
+                                $cred_response->show();
                             }
                         }
 
@@ -513,8 +547,7 @@ class CRED_Form_Builder implements CRED_Friendable, CRED_FriendableStatic {
                         // add success message
                         //$zebraForm->add_form_message('data-saved', $formHelper->getLocalisedMessage('post_saved'));
                         $zebraForm->add_success_message($saved_message);
-                    }
-                    else {
+                    } else {
                         if (isset($_FILES) && count($_FILES) > 0) {
                             // TODO check if this wp_list_pluck works with repetitive files... maybe in_array( array(1), $errors_on_files ) does the trick...
                             $errors_on_files = $food_names = wp_list_pluck($_FILES, 'error');
@@ -536,7 +569,10 @@ class CRED_Form_Builder implements CRED_Friendable, CRED_FriendableStatic {
         } else if ($this->isSubmitted()) {
             $form_name = $formHelper->createFormID($form_id, $form_count);
             $top_messages = isset($zebraForm->top_messages[$form_name]) ? $zebraForm->top_messages[$form_name] : array();
+            $num_errors = count($top_messages);
+            cred_log("num_errors " . $num_errors);
             if (empty($method)) {
+                $num_errors++;
                 $not_saved_message = $formHelper->getLocalisedMessage('no_data_submitted');
             } else {
                 //$not_saved_message=$formHelper->getLocalisedMessage('post_not_saved'); // Replaced to new custom error message by Gen
@@ -580,27 +616,30 @@ class CRED_Form_Builder implements CRED_Friendable, CRED_FriendableStatic {
             $zebraForm->add_success_message($saved_message);
         }
 
-//        $msgs = "";
-//        $msg_block = "data-saved";
-//        if (isset($zebraForm->form_messages[$msg_block])&&count($zebraForm->form_messages[$msg_block])>0) {
-//           foreach ($zebraForm->form_messages[$msg_block] as $text) {
-//               $msgs .= "<label class=\"wpt-form-error\">$text</label><div style='clear:both;'></div>";
-//           }
-//        }
+        if ($validate &&
+                !self::$_self_updated_form &&
+                $is_ajax) {
+            self::$_self_updated_form = true;
+            return $this->form($form_id, $post_id, $preview, $force_form_count, $specific_post_id);
+        } else {
+            $msgs = $zebraForm->getFieldsSuccessMessages();
+            $msgs .= $zebraForm->getFieldsErrorMessages();
+            $js = $zebraForm->getFieldsErrorMessagesJs();
 
-        $msgs = $zebraForm->getFieldsSuccessMessages();
-        $msgs .= $zebraForm->getFieldsErrorMessages();
-        $js = $zebraForm->getFieldsErrorMessagesJs();
+            if (false !== $message)
+                $output = $message;
+            else
+                $output = $this->CRED_render($msgs, $js);
 
-        if (false !== $message)
-            $output = $message;
-        else
-            $output = $this->CRED_render($msgs, $js);
-
-        return $output;
+            $cred_response = new CRED_Generic_Response($num_errors > 0 ? CRED_GENERIC_RESPONSE_RESULT_KO : CRED_GENERIC_RESPONSE_RESULT_OK, $output, $is_ajax, $thisform, $formHelper);
+            return $cred_response->show();
+            //return $output;
+        }
     }
 
     public function user_form($form_id, $post_id = null, $preview = false, $force_form_count = false, $specific_post_id = null) {
+        cred_log("user_form");
+
         $bypass_form = apply_filters('cred_bypass_process_form_' . $form_id, false, $form_id, $post_id, $preview);
         $bypass_form = apply_filters('cred_bypass_process_form', $bypass_form, $form_id, $post_id, $preview);
 
@@ -619,6 +658,8 @@ class CRED_Form_Builder implements CRED_Friendable, CRED_FriendableStatic {
             return $formHelper->getError($parse);
 
         $zebraForm = $this->_zebraForm;
+        $zebraForm->_formHelper = $formHelper;
+        $zebraForm->_formData = $this->_formData;
         $zebraForm->extra_parameters = $this->_formData->getExtra();
 
         $form_id = $form->getForm()->ID;
@@ -628,6 +669,9 @@ class CRED_Form_Builder implements CRED_Friendable, CRED_FriendableStatic {
 
         if (empty($user_role))
             $user_role = array('subscriber');
+
+        $form_use_ajax = (isset($_fields['form_settings']->form['use_ajax']) && $_fields['form_settings']->form['use_ajax'] == 1) ? true : false;
+        $is_ajax = (cred_is_ajax_call() && $form_use_ajax);
 
         $prg_id = $this->out_['prg_id'];
         $form_count = $this->out_['count'];
@@ -657,31 +701,14 @@ class CRED_Form_Builder implements CRED_Friendable, CRED_FriendableStatic {
         } else
             $zebraForm->is_submit_success = $this->isSubmitted();
 
-        $this->CRED_User_build();
-
         // no message to display if not submitted
         $message = false;
-
-        // add notification message from previous submit of same create form (P-R-G pattern)
-        /* if (($n_data=$formHelper->readCookie('_cred_cred_notifications'.$prg_id)))
-          {
-          $formHelper->clearCookie('_cred_cred_notifications'.$prg_id);
-          if (isset($n_data['sent']))
-          {
-          foreach ((array)$n_data['sent'] as $ii)
-          $zebraForm->add_form_message('notification_'.$ii, $formHelper->getLocalisedMessage('notification_was_sent'));
-          }
-          if (isset($n_data['failed']))
-          {
-          foreach ((array)$n_data['failed'] as $ii)
-          $zebraForm->add_form_message('notification_'.$ii, $formHelper->getLocalisedMessage('notification_failed'));
-          }
-          } */
 
         $thisform = array(
             'id' => $form_id,
             'post_type' => $post_type,
-            'form_type' => $form_type
+            'form_type' => $form_type,
+            'form_html_id' => '#cred_user_form_' . $prg_id
         );
 
         //Check dates
@@ -721,8 +748,63 @@ class CRED_Form_Builder implements CRED_Friendable, CRED_FriendableStatic {
         if (isset($this->out_['fields']['post_fields']) && isset($this->out_['form_fields_info']))
             $formHelper->checkFilesType($this->out_['fields']['post_fields'], $this->out_['form_fields_info'], $zebraForm, $error_files);
         //##########################################################################################
+
+        StaticClass::$_reset_file_values = ($is_ajax && $form_type == 'new' && $_fields['form_settings']->form['action'] == 'form' && $this->validate($tmp, true));
+        cred_log("_reset_file_values: " . StaticClass::$_reset_file_values);
+
+        $cloned = false;
+        if (isset($_POST) && !empty($_POST)) {
+            $cloned = true;
+            $temp_post = $_POST;
+        }
+
+        cred_log("USER");
+        cred_log($_POST);
+        cred_log("ALL USERFIELDS");
+        cred_log($this->out_['fields']);
+
+        if (StaticClass::$_reset_file_values) {
+            foreach ($this->out_['fields']['user_fields'] as $k => $v) {
+                $fname = isset($v['plugin_type_prefix']) ? $v['plugin_type_prefix'] . $k : $k;
+                if (isset($_POST[$fname])) {
+                    unset($_POST[$fname]); // = array();
+                }
+            }
+            foreach ($this->out_['fields']['post_fields'] as $k => $v) {
+                $fname = isset($v['plugin_type_prefix']) ? $v['plugin_type_prefix'] . $k : $k;
+                if (isset($_POST[$fname])) {
+                    unset($_POST[$fname]); // = array();
+                }
+            }
+            foreach ($this->out_['fields']['form_fields'] as $k => $v) {
+                if ($k == 'form' || $k == 'form_submit' || $k == 'form_message')
+                    continue;
+                $fname = isset($v['plugin_type_prefix']) ? $v['plugin_type_prefix'] . $k : $k;
+                if (isset($_POST[$fname])) {
+                    unset($_POST[$fname]); // = array();
+                }
+            }
+            foreach ($this->out_['fields']['taxonomies'] as $k => $v) {
+                if (isset($_POST[$k])) {
+                    unset($_POST[$k]); // = array();
+                }
+            }
+        }
+
+        $this->CRED_User_build();
+
+        $validate = $this->validate($error_files);
+        //$validate = (StaticClass::$_reset_file_values && $valid) ? true : false;
+
+        if ($cloned) {
+            $_POST = $temp_post;
+        }
+
+        $bypass_form = self::$_self_updated_form;
+
         //if (!$bypass_form && $_zebraForm->validate($post_id, $_zebraForm->form_properties['fields']))
-        if (!$bypass_form && $this->validate($error_files)) {
+        $num_errors = 0;
+        if (!$bypass_form && $validate) {
             if (!$zebraForm->preview) {
                 // save post data
                 $bypass_save_form_data = apply_filters('cred_bypass_save_data_' . $form_id, false, $form_id, $post_id, $thisform);
@@ -732,9 +814,11 @@ class CRED_Form_Builder implements CRED_Friendable, CRED_FriendableStatic {
                     $model = CRED_Loader::get('MODEL/UserForms');
                     $attachedData = $model->getAttachedData($post_id);
                     $user_id = $this->CRED_user_save($user_role, $post_id);
+                    cred_log($user_id);
                 }
 
                 if (is_wp_error($user_id)) {
+                    $num_errors++;
                     $zebraForm->add_field_message($user_id->get_error_message(), 'User Name');
                 } else {
                     if (is_int($user_id) && $user_id > 0 || (is_array($user_id) && isset($user_id['is_commerce']) && $user_id['is_commerce'])) {
@@ -792,8 +876,8 @@ class CRED_Form_Builder implements CRED_Friendable, CRED_FriendableStatic {
                             default:
                                 if ('form' != $credaction && 'message' != $credaction) {
                                     // add hooks here, to do custom action when custom cred action has been selected
-                                    do_action('cred_custom_success_action_' . $form_id, $credaction, $post_id, $thisform);
-                                    do_action('cred_custom_success_action', $credaction, $post_id, $thisform);
+                                    do_action('cred_custom_success_action_' . $form_id, $credaction, $post_id, $thisform, $is_ajax);
+                                    do_action('cred_custom_success_action', $credaction, $post_id, $thisform, $is_ajax);
                                 }
 
                                 // if previous did not do anything, default to display form
@@ -812,16 +896,25 @@ class CRED_Form_Builder implements CRED_Friendable, CRED_FriendableStatic {
                                         '_target' => $post_id
                                     ));
                                 } else {
-                                    $url = $formHelper->currentURI(array(
-                                        '_tt' => time(),
-                                        '_success' => $prg_id,
-                                        '_target' => $post_id
-                                    ));
+                                    if ($is_ajax && $credaction == 'form') {
+                                        //do nothing
+                                    } else {
+                                        $url = $formHelper->currentURI(array(
+                                            '_tt' => time(),
+                                            '_success' => $prg_id,
+                                            '_target' => $post_id
+                                        ));
+                                    }
                                 }
-                                $url = $url . '#cred_form_' . $prg_id;
-                                // do PRG, redirect now
-                                $formHelper->redirect($url, array("HTTP/1.1 303 See Other"));
-                                exit;  // just in case
+                                if ($is_ajax && $credaction == 'form') {
+                                    //do nothing
+                                } else {
+                                    $url = $url . '#cred_form_' . $prg_id;
+                                    // do PRG, redirect now
+                                    $cred_response = new CRED_Generic_Response(CRED_GENERIC_RESPONSE_RESULT_REDIRECT, $url, $is_ajax, $thisform, $formHelper);
+                                    $cred_response->show();
+                                    exit;  // just in case
+                                }
                                 break;
                         }
 
@@ -835,10 +928,12 @@ class CRED_Form_Builder implements CRED_Friendable, CRED_FriendableStatic {
 
                             if (false !== $url) {
                                 $redirect_delay = $_fields['form_settings']->form['redirect_delay'];
-                                if ($redirect_delay <= 0)
-                                    $formHelper->redirect($url);
-                                else
-                                    $formHelper->redirectDelayed($url, $redirect_delay);
+//                                if ($redirect_delay <= 0)
+//                                    $formHelper->redirect($url);
+//                                else
+//                                    $formHelper->redirectDelayed($url, $redirect_delay);                                
+                                $cred_response = new CRED_Generic_Response(CRED_GENERIC_RESPONSE_RESULT_REDIRECT, $url, $is_ajax, $thisform, $formHelper, $redirect_delay);
+                                $cred_response->show();
                             }
                         }
 
@@ -848,8 +943,7 @@ class CRED_Form_Builder implements CRED_Friendable, CRED_FriendableStatic {
                         // add success message
                         //$zebraForm->add_form_message('data-saved', $formHelper->getLocalisedMessage('post_saved'));
                         $zebraForm->add_success_message($saved_message);
-                    }
-                    else {
+                    } else {
                         if (isset($_FILES) && count($_FILES) > 0) {
                             // TODO check if this wp_list_pluck works with repetitive files... maybe in_array( array(1), $errors_on_files ) does the trick...
                             $errors_on_files = $food_names = wp_list_pluck($_FILES, 'error');
@@ -857,23 +951,7 @@ class CRED_Form_Builder implements CRED_Friendable, CRED_FriendableStatic {
                                 //$zebraForm->add_form_message('data-saved', $formHelper->getLocalisedMessage('no_data_submitted'));
                                 $zebraForm->add_field_message($formHelper->getLocalisedMessage('no_data_submitted'));
                             } else {
-                                // else just show the form again, another error happening here
-                                //$zebraForm->add_form_message('data-saved', $formHelper->getLocalisedMessage('post_not_saved'));
-                                //$zebraForm->add_field_message($formHelper->getLocalisedMessage('post_not_saved'));
-//                                    $form_name = $formHelper->createFormID($form_id, $form_count);
-//                                    $field_messages = $zebraForm->field_messages[$form_name];
-//                                    if ( count($field_messages) == 1){
-//                                        $not_saved_message=$formHelper->getLocalisedMessage('post_not_saved_singular');
-//                                    }else{
-//                                        $not_saved_message=$formHelper->getLocalisedMessage('post_not_saved_plural');
-//                                    }
-//                                    $error_list = '<ul>';
-//                                    foreach ($field_messages as $id_field=>$text) {
-//                                            $error_list .= '<li>'. $text .'</li>';
-//                                    }
-//                                    $error_list .= '</ul>';
-//                                    $not_saved_message = str_replace( array('%PROBLEMS_UL_LIST','%NN'), array($error_list, count($field_messages)), $not_saved_message);
-//                                    $zebraForm->add_field_message($not_saved_message);
+                                //do nothing
                             }
                         } else {
                             // else just show the form again
@@ -889,6 +967,8 @@ class CRED_Form_Builder implements CRED_Friendable, CRED_FriendableStatic {
         } else if ($this->isSubmitted()) {
             $form_name = $formHelper->createFormID($form_id, $form_count);
             $top_messages = isset($zebraForm->top_messages[$form_name]) ? $zebraForm->top_messages[$form_name] : array();
+            $num_errors = count($top_messages);
+            cred_log("num_errors " . $num_errors);
             if (empty($method)) {
                 $not_saved_message = $formHelper->getLocalisedMessage('no_data_submitted');
             } else {
@@ -906,18 +986,13 @@ class CRED_Form_Builder implements CRED_Friendable, CRED_FriendableStatic {
                     $error_list .= '<li>' . $text . '</li>';
                 }
                 $error_list .= '</ul>';
-                $not_saved_message = str_replace(array('%PROBLEMS_UL_LIST', '%NN'), array($error_list, count($top_messages)), $not_saved_message);
+
+                $not_saved_message = str_replace(array('%PROBLEMS_UL_LIST', '%NN'), array($error_list, $num_errors), $not_saved_message);
             }
             $not_saved_message = apply_filters('cred_data_not_saved_message_' . $form_id, $not_saved_message, $form_id, $post_id, $preview);
             $not_saved_message = apply_filters('cred_data_not_saved_message', $not_saved_message, $form_id, $post_id, $preview);
             //$zebraForm->add_form_message('data-saved', $not_saved_message);
             $zebraForm->add_field_message($not_saved_message);
-
-//            if ( !empty( $zebraForm->form_errors ) ) {
-//                foreach( $zebraForm->form_errors as $error_element_id => $error_message ) {
-//                    $zebraForm->add_form_message('data-saved', $error_message );
-//                }
-//            }
         } else if (
                 isset($_GET['_success']) &&
                 $_GET['_success'] == $prg_id
@@ -933,24 +1008,26 @@ class CRED_Form_Builder implements CRED_Friendable, CRED_FriendableStatic {
             $zebraForm->add_success_message($saved_message);
         }
 
-//        $msgs = "";
-//        $msg_block = "data-saved";
-//        if (isset($zebraForm->form_messages[$msg_block])&&count($zebraForm->form_messages[$msg_block])>0) {
-//           foreach ($zebraForm->form_messages[$msg_block] as $text) {
-//               $msgs .= "<label class=\"wpt-form-error\">$text</label><div style='clear:both;'></div>";
-//           }
-//        }
+        if ($validate &&
+                !self::$_self_updated_form &&
+                $is_ajax) {
+            self::$_self_updated_form = true;
+            //When is Ajax Calling i need to update post elements and display
+            return $this->user_form($form_id, $post_id, $preview, $force_form_count, $specific_post_id);
+        } else {
+            $msgs = $zebraForm->getFieldsSuccessMessages();
+            $msgs .= $zebraForm->getFieldsErrorMessages();
+            $js = $zebraForm->getFieldsErrorMessagesJs();
 
-        $msgs = $zebraForm->getFieldsSuccessMessages();
-        $msgs .= $zebraForm->getFieldsErrorMessages();
-        $js = $zebraForm->getFieldsErrorMessagesJs();
+            if (false !== $message)
+                $output = $message;
+            else
+                $output = $this->CRED_render($msgs, $js);
 
-        if (false !== $message)
-            $output = $message;
-        else
-            $output = $this->CRED_render($msgs, $js);
-
-        return $output;
+            $cred_response = new CRED_Generic_Response($num_errors > 0 ? CRED_GENERIC_RESPONSE_RESULT_KO : CRED_GENERIC_RESPONSE_RESULT_OK, $output, $is_ajax, $thisform, $formHelper);
+            return $cred_response->show();
+            //return $output;
+        }
     }
 
     var $_current_post = 0;
@@ -1111,7 +1188,7 @@ class CRED_Form_Builder implements CRED_Friendable, CRED_FriendableStatic {
         $prg_form_id = $formHelper->createPrgID($form_id, $form_count);
         $my_form_id = $formHelper->createFormID($form_id, $form_count);
 
-        $this->_zebraForm = new CredForm($my_form_id, $form_type, $post_id, $actionUri, $preview);
+        $this->_zebraForm = new CredForm($form_id, $my_form_id, $form_type, $post_id, $actionUri, $preview);
         $this->_zebraForm->setLanguage(StaticClass::$_staticGlobal['LOCALES']);
 
 
@@ -1237,7 +1314,7 @@ class CRED_Form_Builder implements CRED_Friendable, CRED_FriendableStatic {
         $prg_form_id = $formHelper->createPrgID($form_id, $form_count);
         $my_form_id = $formHelper->createFormID($form_id, $form_count);
 
-        $this->_zebraForm = new CredForm($my_form_id, $form_type, $post_id, $actionUri, $preview);
+        $this->_zebraForm = new CredForm($form_id, $my_form_id, $form_type, $post_id, $actionUri, $preview);
         $this->_zebraForm->setLanguage(StaticClass::$_staticGlobal['LOCALES']);
 
         if ($formHelper->isError($this->_zebraForm)) {
@@ -1282,12 +1359,14 @@ class CRED_Form_Builder implements CRED_Friendable, CRED_FriendableStatic {
         if (isset(StaticClass::$_cred_container_id))
             $this->_content = str_replace("[cred-container-id]", StaticClass::$_cred_container_id, $this->_content);
 
-        //_pre($this->_content);
         if (function_exists('wpv_do_shortcode')) {
             $this->_content = wpv_do_shortcode($this->_content);
         } else {
+
             $this->_content = do_shortcode($this->_content);
         }
+
+
 
         // parse all shortcodes internally
         $shortcodeParser->remove_all_shortcodes();
@@ -1305,6 +1384,8 @@ class CRED_Form_Builder implements CRED_Friendable, CRED_FriendableStatic {
           $this->_attributes);
           else
           $zebraForm->form_properties['attributes']=$this->_attributes; */
+
+        StaticClass::fix_cred_field_shortcode_value_attribute_by_single_quote($zebraForm->_form_content);
 
         // render any external third-party shortcodes first (enables using shortcodes as values to cred shortcodes)
         $zebraForm->_form_content = do_shortcode($zebraForm->_form_content);
@@ -1479,6 +1560,8 @@ class CRED_Form_Builder implements CRED_Friendable, CRED_FriendableStatic {
         // render any external third-party shortcodes first (enables using shortcodes as values to cred shortcodes)
         $zebraForm->_form_content = do_shortcode($zebraForm->_form_content);
 
+        StaticClass::fix_cred_field_shortcode_value_attribute_by_single_quote($zebraForm->_form_content);
+
         // build shortcodes, (backwards compatibility, render first old shortcode format with dashes)
         $shortcodeParser->add_shortcode('cred-field', array(&$zebraForm, 'cred_field_shortcodes'));
         $shortcodeParser->add_shortcode('cred-generic-field', array(&$zebraForm, 'cred_generic_field_shortcodes'));
@@ -1602,7 +1685,9 @@ class CRED_Form_Builder implements CRED_Friendable, CRED_FriendableStatic {
     }
 
     // validate form
-    private function validate(&$error_files) {
+    private function validate(&$error_files, $disable_hooks = false) {
+        cred_log("validate");
+
         // reference to the form submission method
         global ${'_' . StaticClass::METHOD};
         $method = & ${'_' . StaticClass::METHOD};
@@ -1613,6 +1698,8 @@ class CRED_Form_Builder implements CRED_Friendable, CRED_FriendableStatic {
 
         $result = false;
         $more_result = true;
+
+        cred_log($zebraForm->isSubmitted());
         if ($zebraForm->isSubmitted()) {
             $result = empty($error_files);
             // verify that some data got passed
@@ -1639,50 +1726,7 @@ class CRED_Form_Builder implements CRED_Friendable, CRED_FriendableStatic {
                 }
             }
 
-//            if (isset($_POST['_recaptcha'])) {
-//                //add check control to cred form if has recaptcha
-//                if
-//                (
-//                        (isset($_POST["recaptcha_challenge_field"]) && !empty($_POST["recaptcha_challenge_field"])) &&
-//                        (isset($_POST["recaptcha_response_field"]) && !empty($_POST["recaptcha_response_field"]))
-//                ) {
-//                    require_once ( WPTOOLSET_FORMS_ABSPATH . "/js/recaptcha-php-1.11/recaptchalib.php");
-//                    $settings_model = CRED_Loader::get('MODEL/Settings');
-//                    $settings = $settings_model->getSettings();
-//                    $publickey = $settings['recaptcha']['public_key'];
-//                    $privatekey = $settings['recaptcha']['private_key'];
-//
-//                    if (empty($privatekey) || empty($publickey)) {
-//                        //$zebraForm->add_form_error('security', $formHelper->getLocalisedMessage('no_recaptcha_keys'));
-//                        $zebraForm->add_top_message($formHelper->getLocalisedMessage('no_recaptcha_keys'));
-//                        $zebraForm->add_field_message($formHelper->getLocalisedMessage('no_recaptcha_keys'));
-//                        $result = false;
-//                        //return $result;
-//                    } else {
-//
-//                        $rcfield = (!empty($_POST["recaptcha_challenge_field"])) ? sanitize_text_field($_POST["recaptcha_challenge_field"]) : "";
-//                        $rrfield = (!empty($_POST["recaptcha_response_field"])) ? sanitize_text_field($_POST["recaptcha_response_field"]) : "";
-//                        $resp = recaptcha_check_answer($privatekey, $_SERVER["REMOTE_ADDR"], $rcfield, $rrfield);
-//
-//                        if (!$resp->is_valid) {
-//                            //$zebraForm->add_form_error('security', $formHelper->getLocalisedMessage('enter_valid_captcha'));
-//                            $zebraForm->add_top_message($formHelper->getLocalisedMessage('enter_valid_captcha'));
-//                            $zebraForm->add_field_message($formHelper->getLocalisedMessage('enter_valid_captcha'));
-//                            $result = false;
-//                            //return $result;
-//                        }
-//                    }
-//                } else {
-//                    if (empty($_POST['recaptcha_response_field'])) {
-//                        $zebraForm->add_top_message($formHelper->getLocalisedMessage('enter_valid_captcha'));
-//                        $zebraForm->add_field_message($formHelper->getLocalisedMessage('enter_valid_captcha'));
-//                        $result = false;
-//                        //return $result;
-//                    }
-//                }
-//            }
-
-            if (isset($_POST['_recaptcha'])) {
+            if (!$disable_hooks && isset($_POST['_recaptcha'])) {
                 if
                 (
                         (isset($_POST["g-recaptcha-response"]) && !empty($_POST["g-recaptcha-response"]))
@@ -1695,20 +1739,61 @@ class CRED_Form_Builder implements CRED_Friendable, CRED_FriendableStatic {
                     $publickey = $settings['recaptcha']['public_key'];
                     $privatekey = $settings['recaptcha']['private_key'];
 
+                    $secretKey = $settings['recaptcha']['private_key'];
+                    $ip = $_SERVER['REMOTE_ADDR'];
+
                     if (empty($privatekey) || empty($publickey)) {
                         //$zebraForm->add_form_error('security', $formHelper->getLocalisedMessage('no_recaptcha_keys'));
                         $zebraForm->add_top_message($formHelper->getLocalisedMessage('no_recaptcha_keys'));
                         $zebraForm->add_field_message($formHelper->getLocalisedMessage('no_recaptcha_keys'));
                         $result = false;
+                        cred_log("captcha error");
+                        cred_log("captcha " . $captcha);
+                        cred_log("$privatekey");
+                        cred_log("$publickey");
                         //return $result;
                     } else {
 
-                        $secretKey = $settings['recaptcha']['private_key'];
-                        $ip = $_SERVER['REMOTE_ADDR'];
+                        $params = array();
+                        $params['secret'] = $secretKey; // Secret key
+                        if (!empty($_POST) && isset($_POST['g-recaptcha-response'])) {
+                            $params['response'] = urlencode($_POST['g-recaptcha-response']);
+                        }
+                        $params['remoteip'] = $_SERVER['REMOTE_ADDR'];
 
-                        $response = file_get_contents("https://www.google.com/recaptcha/api/siteverify?secret=" . $secretKey . "&response=" . $captcha . "&remoteip=" . $ip);
-                        $responseKeys = json_decode($response, true);
-                        if (intval($responseKeys["success"]) !== 1) {
+                        $params_string = http_build_query($params);
+                        $requestURL = 'https://www.google.com/recaptcha/api/siteverify?' . $params_string;
+
+                        cred_log($requestURL);
+
+                        //Try to use curl_init
+                        if (function_exists('curl_init')) {
+                            // Get cURL resource
+                            $curl = curl_init();
+
+                            // Set some options
+                            curl_setopt_array($curl, array(
+                                CURLOPT_RETURNTRANSFER => 1,
+                                CURLOPT_URL => $requestURL,
+                            ));
+
+                            // Send the request
+                            $response = curl_exec($curl);
+                            // Close request to clear up some resources
+                            curl_close($curl);
+                        }
+
+                        //Try file_get_contents
+                        if (!isset($response) || empty($response)) {
+                            $response = file_get_contents($requestURL);
+                        }
+                        $response = json_decode($response, true);
+                        cred_log($response);
+
+                        //$response = file_get_contents("https://www.google.com/recaptcha/api/siteverify?secret=" . $secretKey . "&response=" . $captcha . "&remoteip=" . $ip);
+                        //$responseKeys = json_decode($response, true);
+                        //if (intval($responseKeys["success"]) !== 1) {
+                        if ($response["success"] !== true) {
                             //$zebraForm->add_form_error('security', $formHelper->getLocalisedMessage('enter_valid_captcha'));
                             $zebraForm->add_top_message($formHelper->getLocalisedMessage('enter_valid_captcha'));
                             $zebraForm->add_field_message($formHelper->getLocalisedMessage('enter_valid_captcha'));
@@ -1720,6 +1805,8 @@ class CRED_Form_Builder implements CRED_Friendable, CRED_FriendableStatic {
                     $zebraForm->add_top_message($formHelper->getLocalisedMessage('enter_valid_captcha'));
                     $zebraForm->add_field_message($formHelper->getLocalisedMessage('enter_valid_captcha'));
                     $result = false;
+                    cred_log("captcha error");
+                    cred_log("enter_valid_captcha");
                 }
             }
 
@@ -1749,23 +1836,42 @@ class CRED_Form_Builder implements CRED_Friendable, CRED_FriendableStatic {
                     $zebraForm->add_top_message(__('Password fields are required', 'wp-cred'));
                     $result = false;
                 } else {
-                    if (isset($_POST['user_pass']) && isset($_POST['user_pass2']) && $_POST['user_pass'] != $_POST['user_pass2']) {
+                    if (isset($_POST['user_pass']) && isset($_POST['user_pass2']) &&
+                            $_POST['user_pass'] != $_POST['user_pass2']) {
                         $zebraForm->add_top_message(__('Password fields do not match', 'wp-cred'));
-                        //$zebraForm->add_field_message('Password: Has to match with the Repeat Password field', 'user_pass');
-                        //$zebraForm->add_field_message('Repeat Password: Has to match with the Password field', 'user_pass2');
+                        $zebraForm->add_field_message(__('Password fields do not match', 'wp-cred'), 'user_pass2');
                         $result = false;
                     }
                 }
 
                 if ($form_type == 'edit') {
                     $user_id_to_edit = $_POST[StaticClass::PREFIX . 'post_id'];
-
                     $_user = new WP_User($user_id_to_edit);
+                    
+                    if (isset($_POST['user_email']) && 
+                            $_POST['user_email'] != $_user->data->user_email && 
+                            email_exists($_POST['user_email'])) {
+                        $zebraForm->add_top_message(__('Sorry, that email address is already used!', 'wp-cred'));
+                        $zebraForm->add_field_message(__('Sorry, that email address is already used!', 'wp-cred'), 'user_email');
+                        $result = false;
+                    }
+                    
                     $user_role_to_edit = strtolower($_user->roles[0]);
                     $user_role_can_edit = json_decode($_fields['form_settings']->form['user_role'], true);
                     if (!empty($user_role_can_edit) && !in_array($user_role_to_edit, $user_role_can_edit)) {
                         $msg = __('You can edit only users with following roles', 'wp-cred');
                         $zebraForm->add_top_message($msg . ': <b>' . implode(", ", $user_role_can_edit) . '</b>');
+                        $result = false;
+                    }
+                } else {
+                    if (isset($_POST['user_email']) && email_exists($_POST['user_email'])) {
+                        $zebraForm->add_top_message(__('Sorry, that email address is already used!', 'wp-cred'));
+                        $zebraForm->add_field_message(__('Sorry, that email address is already used!', 'wp-cred'), 'user_email');
+                        $result = false;
+                    }
+                    if (isset($_POST['user_login']) && username_exists($_POST['user_login'])) {
+                        $zebraForm->add_top_message(__('Sorry, that username is already used!', 'wp-cred'));
+                        $zebraForm->add_field_message(__('Sorry, that username is already used!', 'wp-cred'), 'user_login');
                         $result = false;
                     }
                 }
@@ -1782,9 +1888,11 @@ class CRED_Form_Builder implements CRED_Friendable, CRED_FriendableStatic {
             $errors = array();
             //From CRED 1.2.6
             $form_slug = $form->getForm()->post_name;
-            list($fields, $errors) = apply_filters('cred_form_validate_form_' . $form_slug, array($fields, $errors), $thisform);
-            list($fields, $errors) = apply_filters('cred_form_validate_' . $form_id, array($fields, $errors), $thisform);
-            list($fields, $errors) = apply_filters('cred_form_validate', array($fields, $errors), $thisform);
+            if (!$disable_hooks) {
+                list($fields, $errors) = apply_filters('cred_form_validate_form_' . $form_slug, array($fields, $errors), $thisform);
+                list($fields, $errors) = apply_filters('cred_form_validate_' . $form_id, array($fields, $errors), $thisform);
+                list($fields, $errors) = apply_filters('cred_form_validate', array($fields, $errors), $thisform);
+            }
 
             if (!empty($errors)) {
                 //Added result to fix conditional elements of this todo
@@ -1862,10 +1970,17 @@ class CRED_Form_Builder implements CRED_Friendable, CRED_FriendableStatic {
                 }
             }
             $last_result = $zebraForm->validate($this->_post_ID, /* $formHelper->get_form_field_values() */ $zebraForm->form_properties['fields']);
+
+            cred_log("VALIDATION RESULT");
+            cred_log(array($more_result, $result, $last_result));
+
             if (!$more_result || !$result || !$last_result)
                 return false;
             return true;
         }
+
+        cred_log($result);
+
         return $result;
     }
 
@@ -1961,7 +2076,12 @@ class CRED_Form_Builder implements CRED_Friendable, CRED_FriendableStatic {
         if (count($error_files) > 0) {
             $all_ok = false;
         } else {
-            $all_ok = $formHelper->CRED_uploadAttachments($post_id, $fields, $files, $extra_files, $trackNotification);
+            $all_ok = true;
+            if ($this->disable_progress_bar)
+                $all_ok = $formHelper->CRED_uploadAttachments($post_id, $fields, $files, $extra_files, $trackNotification);
+            else {
+                $formHelper->CRED_uploadFeaturedImage($post_id);
+            }
         }
 
         if ($all_ok) {
@@ -1985,7 +2105,8 @@ class CRED_Form_Builder implements CRED_Friendable, CRED_FriendableStatic {
 
             //cred_log(array('fields'=>$fields, 'info'=>$fieldsInfo, 'removed'=>$removed_fields));
             if (is_int($new_post_id) && $new_post_id > 0) {
-                $formHelper->attachUploads($new_post_id, $fields, $files, $extra_files);
+                if ($this->disable_progress_bar)
+                    $formHelper->attachUploads($new_post_id, $fields, $files, $extra_files);
                 // save notification data (pre-formatted)
                 if ($trackNotification)
                     $out_['notification_data'] = $formHelper->trackData(null, true);
@@ -2088,7 +2209,12 @@ class CRED_Form_Builder implements CRED_Friendable, CRED_FriendableStatic {
         if (count($error_files) > 0) {
             $all_ok = false;
         } else {
-            $all_ok = $formHelper->CRED_uploadAttachments($user_id, $fields, $files, $extra_files, $trackNotification);
+            $all_ok = true;
+            if ($this->disable_progress_bar) {
+                $all_ok = $formHelper->CRED_uploadAttachments($user_id, $fields, $files, $extra_files, $trackNotification);
+            } else {
+                $formHelper->CRED_uploadFeaturedImage($user_id);
+            }
         }
 
         if ($all_ok) {
@@ -2105,25 +2231,13 @@ class CRED_Form_Builder implements CRED_Friendable, CRED_FriendableStatic {
             //TODO: check if cred commerce is actived
             $cred_commerce = get_post_meta($form_id, '_cred_commerce', true);
             $cred_commerce_actived = defined('CRED_COMMERCE_VERSION');
-            if ($cred_commerce_actived && isset($cred_commerce) && isset($cred_commerce['enable']) && $cred_commerce['enable'] == 1) {
-                $_err = false;
-                if (isset($user['user_email']) && email_exists($user['user_email'])) {
-                    $_err = true;
-                    $WP_Error = new WP_Error();
-                    $WP_Error->add('user_email', __('Sorry, that email address is already used!', 'wp-cred'));
-                    $new_user_id = $WP_Error;
-                }
-                if (isset($user['username']) && username_exists($user['username'])) {
-                    $_err = true;
-                    $WP_Error = new WP_Error();
-                    $WP_Error->add('nickname', __('Sorry, that username is already used!', 'wp-cred'));
-                    $new_user_id = $WP_Error;
-                }
+            if ($cred_commerce_actived &&
+                    isset($cred_commerce) &&
+                    isset($cred_commerce['enable']) &&
+                    $cred_commerce['enable'] == 1) {
 
-                if (!$_err) {
-                    $new_user_id = $model->addTemporaryUser($user, $fields, $fieldsInfo, $removed_fields);
-                    cred_log($new_user_id);
-                }
+                $new_user_id = $model->addTemporaryUser($user, $fields, $fieldsInfo, $removed_fields);
+                cred_log($new_user_id);
             } else {
                 if ($form_type == 'edit' && isset($user_id)) {
                     $new_user_id = $model->updateUser($user, $fields, $fieldsInfo, $removed_fields);
@@ -2134,7 +2248,8 @@ class CRED_Form_Builder implements CRED_Friendable, CRED_FriendableStatic {
 
             //cred_log(array('fields'=>$fields, 'info'=>$fieldsInfo, 'removed'=>$removed_fields));
             if (is_int($new_user_id) && $new_user_id > 0) {
-                $formHelper->attachUploads($new_user_id, $fields, $files, $extra_files);
+                if ($this->disable_progress_bar)
+                    $formHelper->attachUploads($new_user_id, $fields, $files, $extra_files);
                 // save notification data (pre-formatted)
                 if ($trackNotification)
                     $out_['notification_data'] = $formHelper->trackData(null, true);
@@ -2220,6 +2335,8 @@ class CRED_Form_Builder implements CRED_Friendable, CRED_FriendableStatic {
     }
 
     public function extraBodyNotificationCodes($codes, $form_id, $post_id) {
+        cred_log("extraBodyNotificationCodes");
+        cred_log($this->out_['notification_data']);
         $form = $this->_formData;
         if ($form_id == $form->getForm()->ID) {
             $codes['%%FORM_DATA%%'] = isset($this->out_['notification_data']) ? $this->out_['notification_data'] : '';

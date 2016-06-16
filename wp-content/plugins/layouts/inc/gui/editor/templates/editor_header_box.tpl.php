@@ -15,8 +15,8 @@
 			<!--<span class="js-layout-title dd-layout-title"></span>-->
         <div id="titlediv" class="js-title-div">
             <div id="titlewrap">
-                 <input name="layout-title-input" id="title" class="js-layout-title dd-layout-title layout-title-input" value="<?php echo esc_attr(get_the_title($post->ID)); ?>"/>
-		 <span id="change_layout_name_message"><?php _e('Please enter a name for this layout','ddl-layouts'); ?></span>
+                <span id="change_layout_name_message"><?php _e('Please enter a name for this layout','ddl-layouts'); ?></span>
+                <input name="layout-title-input" id="title" class="js-layout-title dd-layout-title layout-title-input" value="<?php echo esc_attr(get_the_title($post->ID)); ?>"/>
             </div>
         </div>
 
@@ -26,10 +26,11 @@
             <span id="edit-slug-buttons"><a href="#post_name" class="edit-slug button button-small hide-if-no-js js-edit-slug"><?php _e( 'Edit', 'ddl-layouts' ); ?></a></span>
             <span id="edit-slug-buttons-active" class="js-edit-slug-buttons-active"><a href="#" class="save button button-small js-edit-slug-save">OK</a> <a class="cancel js-cancel-edit-slug" href="#">Cancel</a></span>
          <!--   <i class="icon-gear fa fa-cog edit-layout-settings js-edit-layout-settings" title="<?php _e( 'Set parent layout', 'ddl-layouts' ); ?>"></i> -->
-            <span id="edit-layout-button"><a href="#post_name" class="button button-small hide-if-no-js js-edit-layout-settings"><?php _e( 'Set parent layout', 'ddl-layouts' ); ?></a></span>
+            <button type="button" class="button button-small hide-if-no-js js-trash-layout trash-layout"><i class="fa fa-trash-o" aria-hidden="true"></i><!--<span>Move to trash<span>--></button>
         </div>
 	</div>
     <input id="toolset-edit-data" type="hidden" value="<?php echo $post->ID; ?>" data-plugin="layouts" />
+    <div class="toolset-video-box-wrap"></div>
 </div>
 
 <script type="text/html" id="ddl-layout-not-assigned-to-any">
@@ -74,9 +75,11 @@
 
                             <#
                                 _.each(item.posts, function(post){
+                                if( post.link ) {
                                 #>
                                 <li><a href="{{{post.link}}}" target="_blank">{{{post.post_title}}}</a></li>
                                 <#
+                                    }
                                     });
                                     #>
 
@@ -87,9 +90,11 @@
 
                                         <#
                                             _.each(item.types, function(post){
+                                            if( post.link ) {
                                             #>
                                             <li><a href="{{{post.link}}}" target="_blank">{{{post.singular}}}</a></li>
                                             <#
+                                                }
                                                 });
                                                 #>
 
@@ -101,10 +106,11 @@
 
                                                     <#
                                                         _.each(item.loops, function(post){
-
+                                                        if( post.href ) {
                                                         #>
                                                         <li><a href="{{{post.href}}}" target="_blank">{{{post.title}}}</a></li>
                                                         <#
+                                                            }
                                                             });
                                                             #>
                                                             <#

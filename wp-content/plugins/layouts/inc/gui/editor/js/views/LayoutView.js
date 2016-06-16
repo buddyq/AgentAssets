@@ -10,7 +10,7 @@ DDLayout.views.LayoutView = Backbone.View.extend({
 
         self.mouseY = 0;
         self.detect_scroll = true;
-
+        self.rendered = false;
         self.detect_mouse();
 
         self.removed_message_displayed = false;
@@ -39,6 +39,8 @@ DDLayout.views.LayoutView = Backbone.View.extend({
 		self.$el.data('view', self);
 
 		self.rows_view = null;
+
+        self.parent_helper = new DDLayout.ParentHelper(self.model, self.eventDispatcher);
 
 		self.listenTo(self.eventDispatcher, "save_layout_to_server", self.saveLayout, self );
 		self.listenTo(self.eventDispatcher, 'clear_drop_failed', self.clearDropFailed, self );
@@ -72,7 +74,9 @@ DDLayout.views.LayoutView = Backbone.View.extend({
 		return self;
 	},
     detect_mouse:function(){
+
         var self = this;
+
         jQuery( document ).on( "mousemove", function( event ) {
             if( jQuery(event.toElement).closest('#colorbox').is('div') || jQuery(event.toElement).closest('#cboxOverlay').is('div') ){
                 self.detect_scroll = false;
@@ -89,6 +93,7 @@ DDLayout.views.LayoutView = Backbone.View.extend({
 
         if( 'child-layout' === model.get('cell_type') ){
             this.hide_where_used_box();
+            this.parent_helper.set_default_visible();
         }
     },
     cell_removed_callback:function( model, options){
@@ -97,6 +102,7 @@ DDLayout.views.LayoutView = Backbone.View.extend({
 
         if( 'child-layout' == model.get('cell_type') ){
             this.show_where_used_box();
+            this.parent_helper.set_invisible();
         }
     },
     hide_where_used_box:function()
@@ -110,18 +116,27 @@ DDLayout.views.LayoutView = Backbone.View.extend({
 
         });
     },
+    adjustHeights:function(){
+        var self = this;
+        jQuery('body').addClass('noscroll');
+        self.$el.css( 'min-height', self.$el.height() );
+    },
 	beforeRender:function(option)
 	{
 		var self = this;
+        self.adjustHeights();
 
 		jQuery(window).scroll(function(){
             if( self.detect_scroll ){
                 self.scroll_position =  window.pageYOffset;
+            } else {
+                self.scroll_position = self.mouseY;
             }
 		});
 
 		self.show_div_after_self = false;
 
+        self.parent_helper.init();
         self.maybe_display_removed_message();
 	},
     maybe_display_removed_message:function(){
@@ -184,13 +199,11 @@ DDLayout.views.LayoutView = Backbone.View.extend({
 			}
 
 			self.rows_view = new DDLayout.views.RowsView( options );
-            self.do_scroll();
 
 			if( DDLayout.ddl_admin_page === undefined )
 			{
 				self.show_div_after_self = true;
 				jQuery( "> div", self.rows_view.$el ).hide();
-
 			}
 
 			if( self.options.invisibility === true )
@@ -210,7 +223,7 @@ DDLayout.views.LayoutView = Backbone.View.extend({
 	{
 		var self = this;
 
-        //self.do_scroll();
+        self.do_scroll();
 
 		if( self.show_div_after_self )
 		{
@@ -239,10 +252,29 @@ DDLayout.views.LayoutView = Backbone.View.extend({
                 var save_params = option.save_params;
                 option.ajax_save.call(self, save_params);
         }
+
+        jQuery('body').removeClass('noscroll');
+
+        self.rendered = true;
+
 	},
     do_scroll:function(){
-        var self = this;
-        if( self.scroll_position > 0 ) window.scrollTo( 0, self.mouseY > self.scroll_position ? self.mouseY : self.scroll_position );
+
+        if( !Toolset.hooks.applyFilters('ddl-creation-dialog-opened', false) ){
+            return;
+        }
+
+        var self = this,
+            adjust = parseInt( jQuery('#wpbody-content').css('padding-bottom') ),
+            scroll = self.scroll_position + adjust + 50;
+
+        if( self.scroll_position > 0 ){
+            _.defer( function(){
+                window.scrollTo( 0, scroll);
+            }, self);
+        }
+
+        Toolset.hooks.removeFilter('ddl-creation-dialog-opened');
     },
 	dropCellFails:	function () {
 
@@ -453,7 +485,7 @@ DDLayout.views.LayoutView = Backbone.View.extend({
             self.eventDispatcher.trigger('layout-model-trigger-save', jQuery('#layout-slug').val() );
         }
 
-        var preferred_editor = wp.hooks.applyFilters( 'ddl-preferred-editor', false );
+        var preferred_editor = Toolset.hooks.applyFilters( 'ddl-preferred-editor', false );
         if( preferred_editor ){
             save_params.preferred_editor = preferred_editor;
         }

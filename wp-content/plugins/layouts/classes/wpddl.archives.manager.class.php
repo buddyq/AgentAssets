@@ -4,6 +4,8 @@ class  WPDD_layout_post_loop_cell_manager
     private static $instance;
     private $layouts_options;
     const OPTION_BLOG = 'layouts_home-blog-page';
+    const OPTION_STATIC_BLOG = 'layouts_home-static-blog-page';
+    const OPTION_HOME = 'layouts_home-home-page';
     const OPTION_SEARCH = 'layouts_search-page';
     const OPTION_YEAR = 'layouts_year-page';
     const OPTION_MONTH = 'layouts_month-page';
@@ -26,6 +28,7 @@ class  WPDD_layout_post_loop_cell_manager
         add_filter('dd_layouts_register_cell_factory', array(&$this, 'dd_layouts_register_loop_cell_factory'));
         add_filter( 'ddl_get_change_dialog_html', array(&$this, 'add_dialog_change_use_html'), 11, 5 );
         add_filter('ddl-rules_for_post_types_archive_rewrite', array(&$this, 'rules_for_post_types_archive_rewrite'), 10, 2 );
+        add_filter( 'ddl-get_layout_loops', array(&$this, 'get_layout_loops'), 10, 1 );
     }
 
     public static function getInstance()
@@ -59,15 +62,31 @@ class  WPDD_layout_post_loop_cell_manager
 
     private function _get_default_archive_loops()
     {
+        
+        
         $loops = array(
-            self::OPTION_BLOG => __('Home/Blog', 'ddl-layouts'),
             self::OPTION_SEARCH => __('Search results', 'ddl-layouts'),
             self::OPTION_AUTHOR => __('Author archives', 'ddl-layouts'),
             self::OPTION_YEAR => __('Year archives', 'ddl-layouts'),
             self::OPTION_MONTH => __('Month archives', 'ddl-layouts'),
             self::OPTION_DAY => __('Day archives', 'ddl-layouts'),
-
         );
+        
+        $frontpage_id = get_option('page_on_front');
+        $page_for_posts = get_option( 'page_for_posts' );
+        
+        if(!$frontpage_id && !$page_for_posts){
+            $loops[self::OPTION_BLOG] =  __('Blog/Home', 'ddl-layouts');
+        } else if(!$frontpage_id && $page_for_posts){
+            $loops[self::OPTION_STATIC_BLOG] =  __('Blog', 'ddl-layouts');
+        } else if($frontpage_id && !$page_for_posts){
+            $loops[self::OPTION_HOME] =  __('Home', 'ddl-layouts');
+        } else {
+            $loops[self::OPTION_STATIC_BLOG] =  __('Blog', 'ddl-layouts');
+            $loops[self::OPTION_HOME] =  __('Home', 'ddl-layouts');
+        }
+        
+        
         return $loops;
     }
 
@@ -138,7 +157,6 @@ class  WPDD_layout_post_loop_cell_manager
     public function display_loops($current = false, $id_string = "", $show_ui = true)
     {
         $loops = $this->get_loops_to_display();
-
         ob_start();
         if (sizeof($loops) > 0) {
             include WPDDL_GUI_ABSPATH . 'editor/templates/select-wordpress-archives.box.tpl.php';
@@ -380,6 +398,20 @@ class  WPDD_layout_post_loop_cell_manager
                 'type' => 'archives',
                 'types' => __('Archives', 'ddl-layouts')
             );
+        } elseif (self::OPTION_HOME === $loop) {
+            $ret = array(
+                'href' => get_bloginfo('url') . '?p='.get_option('page_on_front'),
+                'title' => __('Home', 'ddl-layouts'),
+                'type' => 'archives',
+                'types' => __('Archives', 'ddl-layouts')
+            );
+        } elseif (self::OPTION_STATIC_BLOG === $loop) {
+            $ret = array(
+                'href' => get_bloginfo('url') . '?p='.get_option( 'page_for_posts' ),
+                'title' => __('Blog', 'ddl-layouts'),
+                'type' => 'archives',
+                'types' => __('Archives', 'ddl-layouts')
+            );
         } else if ($loop == self::OPTION_SEARCH) {
             $ret = array(
                 'href' => isset( $url_array['path'] ) ? get_bloginfo('url') . '/index.php?s=' : get_bloginfo('url') . '?s=',
@@ -490,8 +522,16 @@ class  WPDD_layout_post_loop_cell_manager
         /**
          * Woocommerce shop page
          */
-
-        if ( $slug === 'product' && in_array( 'woocommerce/woocommerce.php', apply_filters( 'active_plugins', get_option( 'active_plugins' ) ) ) ){
+        $get_woocommerce_permalinks = get_option( 'woocommerce_permalinks' );
+        
+        if (is_array($get_woocommerce_permalinks) && array_key_exists('product_base', $get_woocommerce_permalinks)) {
+            $product_base = $get_woocommerce_permalinks['product_base'];
+        } else {
+            $product_base = false;
+        }
+        
+        
+        if ( ($slug === 'product' || $product_base) && in_array( 'woocommerce/woocommerce.php', apply_filters( 'active_plugins', get_option( 'active_plugins' ) ) ) ){
             $uri_comp = 'shop';
         }
 

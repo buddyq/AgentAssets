@@ -45,7 +45,7 @@ DDLayout.views.CellView = DDLayout.views.abstract.ElementView.extend({
 			self.listenTo(self.eventDispatcher, 'move_selected_cell_right', self._move_selected_cell_right, self);
 
 			self.listenTo(self.eventDispatcher, 'deselect_element', self._deselectElement, self );
-			self.listenTo(self.eventDispatcher,'sortable_row_initialized', self._onCsutomSortableInitialized, self);
+			//self.listenTo(self.eventDispatcher,'sortable_row_initialized', self._onCsutomSortableInitialized, self);
 
 		}
 		catch( e )
@@ -153,8 +153,12 @@ DDLayout.views.CellView = DDLayout.views.abstract.ElementView.extend({
 			open: true,
 			closeButton:false,
             escKey:false,
+			onOpen:function(){
+                DDLayout.ddl_admin_page.is_creation_dialog_box = true;
+				DDLayout.ddl_admin_page.instance_layout_view.model.creating_cell = true;
+			},
             onLoad:function(){
-                DDLayout.ddl_admin_page.instance_layout_view.model.creating_cell = true;
+                
             },
 			onComplete: function() {
 				jQuery(document).trigger('focus_search_input');

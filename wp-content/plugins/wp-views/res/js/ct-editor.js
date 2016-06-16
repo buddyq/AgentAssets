@@ -2245,11 +2245,36 @@ WPViews.CTEditScreen = function( $ ) {
         WPV_Toolset.Utils.setConfirmUnload(self.vm.isAnyUpdateNeeded, show_error_messages_for_unsaved_sections, self.l10n.editor.confirm_unload);
     };
 
+    /**
+     *  wpv_filter_wpv_shortcodes_gui_exclude_content_template_callback
+     *
+     *  Callback function for 'wpv-filter-wpv-shortcodes-gui-*-exclude-content-template' filter
+     *  Returns the ID of currently editing content template, as an array.
+     *  So it is not presented as a self-pointing CT for views short codes (i.e. wpv-post-body)
+     */
+    self.wpv_filter_wpv_shortcodes_gui_exclude_content_template_callback = function( excluded_cts ) {
+        excluded_cts.push( self.ct_data.id );
+        return excluded_cts;
+    }
 
     // ----------------------------------------------------------------------------
     // Init
     // ----------------------------------------------------------------------------
 
+    /**
+     * Check if current used editor is the default editor or any third party editor
+     * like Visual Composer
+     *
+     * @since 2.2
+     */
+    self.no_third_party_editor = function() {
+        if(
+            typeof wpv_ct_editor_choice === "undefined"
+            || wpv_ct_editor_choice == "basic"
+        ) return true;
+
+        return false;
+    }
 
     /**
      * Initialize the edit page script.
@@ -2262,7 +2287,8 @@ WPViews.CTEditScreen = function( $ ) {
         //noinspection JSUnresolvedVariable
         self.l10n = wpv_ct_editor_l10n;
 
-        self.init_editors();
+        if( self.no_third_party_editor() )
+            self.init_editors();
 
         // Read additional data for specific sections.
         // Note: this is not passed via ct_data, because the data is gathered only when sections
@@ -2277,6 +2303,9 @@ WPViews.CTEditScreen = function( $ ) {
         self.ct_data = wpv_ct_editor_ct_data;
         self.vm = new self.ViewModel(self.ct_data, section_data);
 
+        // Add 'wpv-filter-wpv-shortcodes-gui-wpv_post_body-exclude-content-template' filter
+        Toolset.hooks.addFilter( 'wpv-filter-wpv-shortcodes-gui-wpv_post_body-exclude-content-template', self.wpv_filter_wpv_shortcodes_gui_exclude_content_template_callback );
+
         self.update_nonce = self.ct_data.update_nonce;
         self.trash_nonce = self.ct_data.trash_nonce;
 
@@ -2287,7 +2316,8 @@ WPViews.CTEditScreen = function( $ ) {
 
         // Fill CodeMirror editors with data (has to be performed after Knockout bindings
         // have been applied and the sections displayed)
-        self.fill_editors();
+        if( self.no_third_party_editor() )
+            self.fill_editors();
 
         self.init_action_bar();
 

@@ -476,8 +476,9 @@ function wpv_admin_export_data( $download = true ) {
     }
 
     // Get settings
-    global $WPV_settings;
-	$settings_array = $WPV_settings->get();
+	// @todo that series of database calls scream refactor
+	$stored_settings = WPV_Settings::get_instance();
+	$settings_array = $stored_settings->get();
     if ( ! empty( $settings_array ) ) {
 		global $wpdb;
 		$wpv_settings_to_export = array();
@@ -502,7 +503,7 @@ function wpv_admin_export_data( $download = true ) {
 				&& is_array( $option_value )
 			) {
 				$sanitized_option_value = array();
-				foreach ( $WPV_settings[$option_name] as $candidate_value ) {
+				foreach ( $settings_array[$option_name] as $candidate_value ) {
 					$sanitized_key = str_replace( '::', '-_paamayim_-', $candidate_value );
 					$sanitized_option_value[$sanitized_key] = $candidate_value;
 				}
@@ -511,7 +512,7 @@ function wpv_admin_export_data( $download = true ) {
 				'wpv_framework_keys' == $option_name 
 				&& is_array( $option_value )
 			) {
-				foreach ( $WPV_settings['wpv_framework_keys'] as $framework_id => $framework_keys ) {
+				foreach ( $settings_array['wpv_framework_keys'] as $framework_id => $framework_keys ) {
 					if ( 
 						is_array( $framework_keys ) 
 						&& ! empty( $framework_keys )
@@ -523,8 +524,13 @@ function wpv_admin_export_data( $download = true ) {
 						$wpv_settings_to_export['wpv_framework_keys'][$framework_id] = $sanitized_framework_keys;
 					}
 				}
+			} else if (
+				'wpv_post_types_for_archive_loop' == $option_name 
+				&& is_array( $option_value )
+			) {
+				$wpv_settings_to_export[ $option_name ] = json_encode( $option_value );
 			} else {
-				$wpv_settings_to_export[$option_name] = $option_value;
+				$wpv_settings_to_export[ $option_name ] = $option_value;
 			}
         }
         $data['settings'] = $wpv_settings_to_export;

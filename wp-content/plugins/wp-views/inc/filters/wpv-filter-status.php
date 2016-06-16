@@ -15,32 +15,35 @@ WPV_Status_Filter::on_load();
 *
 * Views Status Filter Class
 *
-* @since 1.7.0
+* @since 1.7
+* @since 2.1	Added to WordPress Archives
+* @since 2.1	Include this file only when editing a View or WordPress Archive, or when doing AJAX
 */
 
 class WPV_Status_Filter {
 
     static function on_load() {
-        add_action( 'init', array( 'WPV_Status_Filter', 'init' ) );
-		add_action( 'admin_init', array( 'WPV_Status_Filter', 'admin_init' ) );
+        add_action( 'init',			array( 'WPV_Status_Filter', 'init' ) );
+		add_action( 'admin_init',	array( 'WPV_Status_Filter', 'admin_init' ) );
     }
 
     static function init() {
-		
+		wp_register_script( 'views-filter-status-js', ( WPV_URL . "/res/js/filters/views_filter_status.js" ), array( 'views-filters-js'), WPV_VERSION, true );
     }
 	
 	static function admin_init() {
-		// Register filter in lists and dialogs
-		add_filter( 'wpv_filters_add_filter', array( 'WPV_Status_Filter', 'wpv_filters_add_filter_post_status' ), 1, 1 );
-		add_action( 'wpv_add_filter_list_item', array( 'WPV_Status_Filter', 'wpv_add_filter_post_status_list_item' ), 1, 1 );
-		// AJAX calbacks
-		add_action( 'wp_ajax_wpv_filter_post_status_update', array( 'WPV_Status_Filter', 'wpv_filter_post_status_update_callback' ) );
-			// TODO This might not be needed here, maybe for summary filter
-			add_action( 'wp_ajax_wpv_filter_status_sumary_update', array( 'WPV_Status_Filter', 'wpv_filter_post_status_sumary_update_callback' ) );
-		add_action( 'wp_ajax_wpv_filter_post_status_delete', array( 'WPV_Status_Filter', 'wpv_filter_post_status_delete_callback' ) );
-		add_filter( 'wpv-view-get-summary', array( 'WPV_Status_Filter', 'wpv_post_status_summary_filter' ), 5, 3 );
-		// Register scripts
-		add_action( 'admin_enqueue_scripts', array( 'WPV_Status_Filter','admin_enqueue_scripts' ), 20 );
+		// Register filters in dialogs
+		add_filter( 'wpv_filters_add_filter',					array( 'WPV_Status_Filter', 'wpv_filters_add_filter_post_status' ), 1, 1 );
+		add_filter( 'wpv_filters_add_archive_filter',			array( 'WPV_Status_Filter', 'wpv_filters_add_archive_filter_post_status' ), 1, 1 );
+		// Register filters in lists
+		add_action( 'wpv_add_filter_list_item',					array( 'WPV_Status_Filter', 'wpv_add_filter_post_status_list_item' ), 1, 1 );
+		// Update and delete
+		add_action( 'wp_ajax_wpv_filter_post_status_update',	array( 'WPV_Status_Filter', 'wpv_filter_post_status_update_callback' ) );
+		add_action( 'wp_ajax_wpv_filter_post_status_delete',	array( 'WPV_Status_Filter', 'wpv_filter_post_status_delete_callback' ) );
+		// Scripts
+		add_action( 'admin_enqueue_scripts',					array( 'WPV_Status_Filter','admin_enqueue_scripts' ), 20 );
+		// TODO This might not be needed here, maybe for summary filter
+		//add_action( 'wp_ajax_wpv_filter_status_sumary_update', array( 'WPV_Status_Filter', 'wpv_filter_post_status_sumary_update_callback' ) );
     }
 	
 	/**
@@ -52,10 +55,7 @@ class WPV_Status_Filter {
 	*/
 	
 	static function admin_enqueue_scripts( $hook ) {
-		wp_register_script( 'views-filter-status-js', ( WPV_URL . "/res/js/redesign/views_filter_status.js" ), array( 'views-filters-js'), WPV_VERSION, true );
-		if ( isset( $_GET['page'] ) && $_GET['page'] == 'views-editor' ) {
-			wp_enqueue_script( 'views-filter-status-js' );
-		}
+		wp_enqueue_script( 'views-filter-status-js' );
 	}
 	
 	/**
@@ -70,10 +70,30 @@ class WPV_Status_Filter {
 	
 	static function wpv_filters_add_filter_post_status( $filters ) {
 		$filters['post_status'] = array(
-			'name' => __( 'Post status', 'wpv-views' ),
-			'present' => 'post_status',
-			'callback' => array( 'WPV_Status_Filter', 'wpv_add_new_filter_status_list_item' ),
-			'group' => __( 'Post filters', 'wpv-views' )
+			'name'		=> __( 'Post status', 'wpv-views' ),
+			'present'	=> 'post_status',
+			'callback'	=> array( 'WPV_Status_Filter', 'wpv_add_new_filter_status_list_item' ),
+			'group'		=> __( 'Post filters', 'wpv-views' )
+		);
+		return $filters;
+	}
+	
+	/**
+	* wpv_filters_add_archive_filter_post_status
+	*
+	* Register the status filter in the popup dialog on WPAs.
+	*
+	* @param $filters
+	*
+	* @since 2.1
+	*/
+	
+	static function wpv_filters_add_archive_filter_post_status( $filters ) {
+		$filters['post_status'] = array(
+			'name'		=> __( 'Post status', 'wpv-views' ),
+			'present'	=> 'post_status',
+			'callback'	=> array( 'WPV_Status_Filter', 'wpv_add_new_archive_filter_status_list_item' ),
+			'group'		=> __( 'Post filters', 'wpv-views' )
 		);
 		return $filters;
 	}
@@ -88,7 +108,24 @@ class WPV_Status_Filter {
 	
 	static function wpv_add_new_filter_status_list_item() {
 		$args = array(
-			'post_status' => array()
+			'view-query-mode'	=> 'normal',
+			'post_status'		=> array()
+		);
+		WPV_Status_Filter::wpv_add_filter_post_status_list_item( $args );
+	}
+	
+	/**
+	* wpv_add_new_archive_filter_status_list_item
+	*
+	* Register the status filter in the filters list on WPAs.
+	*
+	* @since 2.1
+	*/
+	
+	static function wpv_add_new_archive_filter_status_list_item() {
+		$args = array(
+			'view-query-mode'	=> 'archive',
+			'post_status'		=> array()
 		);
 		WPV_Status_Filter::wpv_add_filter_post_status_list_item( $args );
 	}
@@ -222,7 +259,7 @@ class WPV_Status_Filter {
 	/**
 	* Update status filter summary callback
 	*/
-	
+	/*
 	static function wpv_filter_post_status_sumary_update_callback() {
 		$nonce = $_POST["wpnonce"];
 		if ( ! wp_verify_nonce( $nonce, 'wpv_view_filter_post_status_nonce' ) ) {
@@ -235,6 +272,7 @@ class WPV_Status_Filter {
 		echo wpv_get_filter_status_summary_txt( $filter_status );
 		die();
 	}
+	*/
 	
 	/**
 	* wpv_filter_post_status_delete_callback
@@ -287,25 +325,6 @@ class WPV_Status_Filter {
 	}
 	
 	/**
-	* wpv_post_status_summary_filter
-	
-	* Show the status filter on the View summary
-	*
-	* @since unknown
-	*/
-    
-	static function wpv_post_status_summary_filter( $summary, $post_id, $view_settings ) {
-		if( isset( $view_settings['query_type'] ) && $view_settings['query_type'][0] == 'posts' && isset( $view_settings['post_status'] ) ) {			
-			$result = wpv_get_filter_status_summary_txt( $view_settings, true );
-			if ( $result != '' && $summary != '' ) {
-				$summary .= '<br />';
-			}
-			$summary .= $result;
-		}
-		return $summary;
-	}
-	
-	/**
 	* wpv_render_status_options
 	*
 	* Render status filter options
@@ -316,18 +335,18 @@ class WPV_Status_Filter {
 	*/
 	
 	static function wpv_render_post_status_options( $view_settings = array() ) {
-                // WordPress default statuses
+        // WordPress default statuses
 		$wp_statuses = array( 'publish', 'pending', 'draft', 'auto-draft', 'future', 'private', 'inherit', 'trash' );
                 
-                // All the statuses at this WordPress instance
-                $all_statuses = get_post_stati();
-                
-                // Maintain the order of the default statuses and add custom ones after them
-                $custom_statuses = array_diff( $all_statuses, $wp_statuses );
-                $statuses = array_merge( $wp_statuses, $custom_statuses );
+		// All the statuses at this WordPress instance
+		$all_statuses = get_post_stati();
+		
+		// Maintain the order of the default statuses and add custom ones after them
+		$custom_statuses = array_diff( $all_statuses, $wp_statuses );
+		$statuses = array_merge( $wp_statuses, $custom_statuses );
 
-                // Finally, include "any" as the last option
-                $statuses[] = 'any';
+		// Finally, include "any" as the last option
+		$statuses[] = 'any';
                 
 		$selected = ( isset( $view_settings['post_status'] ) &&  is_array( $view_settings['post_status'] ) ) ? $view_settings['post_status'] : array() ;
 		?>

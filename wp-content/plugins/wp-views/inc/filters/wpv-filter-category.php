@@ -15,11 +15,13 @@ WPV_Taxonomy_Filter::on_load();
 *
 * Views Taxonomy Filter Class
 *
-* @since 1.7.0
+* @since 1.7
 * @since 1.12.1	Changes in the filter modes for the posts filter and the taxonomy filter
 * 		FROM PAGE becomes current_post_or_parent_post_view and tracks $WP_Views->get_current_page()
 * 		top_current_post tracks $WP_Views->get_top_current_page()
 * 		FROM PARENT VIEW becomes becomes current_taxonomy_view
+* @since 2.1	Added to WordPress Archives
+* @since 2.1	Include this file only when editing a View or WordPress Archive, or when doing AJAX
 */
 
 class WPV_Taxonomy_Filter {
@@ -30,29 +32,35 @@ class WPV_Taxonomy_Filter {
     }
 
     static function init() {
-		
-    }
-	
-	static function admin_init() {
-		// Register filters in lists and dialogs
-		add_filter( 'wpv_filters_add_filter', array( 'WPV_Taxonomy_Filter', 'wpv_filters_add_filter_taxonomy' ), 20, 2 );
-		add_action( 'wpv_add_filter_list_item', array( 'WPV_Taxonomy_Filter', 'wpv_add_filter_taxonomy_list_item' ), 1, 1 );
-		//AJAX callbakcks
-		add_action( 'wp_ajax_wpv_filter_taxonomy_update', array( 'WPV_Taxonomy_Filter', 'wpv_filter_taxonomy_update_callback' ) );
-			// TODO This might not be needed here, maybe for summary filter
-			add_action( 'wp_ajax_wpv_filter_taxonomy_sumary_update', array( 'WPV_Taxonomy_Filter', 'wpv_filter_taxonomy_sumary_update_callback' ) );
-		add_action( 'wp_ajax_wpv_filter_taxonomy_delete', array( 'WPV_Taxonomy_Filter', 'wpv_filter_taxonomy_delete_callback' ) );
-		add_filter( 'wpv-view-get-summary', array( 'WPV_Taxonomy_Filter', 'wpv_taxonomy_summary_filter' ), 6, 3 );
-		// Register scripts
-		wp_register_script( 'views-filter-category-js', ( WPV_URL . "/res/js/redesign/views_filter_category.js" ), array( 'views-filters-js'), WPV_VERSION, true );
+		wp_register_script( 'views-filter-category-js', ( WPV_URL . "/res/js/filters/views_filter_category.js" ), array( 'views-filters-js', 'underscore' ), WPV_VERSION, true );
 		$filter_texts = array(
 			'dialog_title'		=> __( 'Delete taxonomy filters', 'wpv-views' ),
 			'cancel'			=> __( 'Cancel', 'wpv-views' ),
 			'edit_filters'		=> __( 'Edit the taxonomy filters', 'wpv-views' ),
-			'delete_filters'	=> __( 'Delete all taxonomy filters', 'wpv-views' )
+			'delete_filters'	=> __( 'Delete all taxonomy filters', 'wpv-views' ),
+			'post'				=> array(
+									
+								),
+			'archive'			=> array(
+									'disable_post_taxonomy_filter'	=> __( 'This filter will not be applied to Taxonomy Archives matching the filtered taxonomies: %s', 'wpv-views' ),
+								),
 		);
 		wp_localize_script( 'views-filter-category-js', 'wpv_category_filter_texts', $filter_texts );
-		add_action( 'admin_enqueue_scripts', array( 'WPV_Taxonomy_Filter','admin_enqueue_scripts' ), 20 );
+    }
+	
+	static function admin_init() {
+		// Register filters in dialogs
+		add_filter( 'wpv_filters_add_filter',						array( 'WPV_Taxonomy_Filter', 'wpv_filters_add_filter_taxonomy' ), 20, 2 );
+		add_filter( 'wpv_filters_add_archive_filter',				array( 'WPV_Taxonomy_Filter', 'wpv_filters_add_archive_filter_taxonomy' ), 20, 1 );
+		// Register filters in lists
+		add_action( 'wpv_add_filter_list_item',						array( 'WPV_Taxonomy_Filter', 'wpv_add_filter_taxonomy_list_item' ), 1, 1 );
+		// Update and delete
+		add_action( 'wp_ajax_wpv_filter_taxonomy_update',			array( 'WPV_Taxonomy_Filter', 'wpv_filter_taxonomy_update_callback' ) );
+		add_action( 'wp_ajax_wpv_filter_taxonomy_delete',			array( 'WPV_Taxonomy_Filter', 'wpv_filter_taxonomy_delete_callback' ) );
+		// Scripts
+		add_action( 'admin_enqueue_scripts',						array( 'WPV_Taxonomy_Filter','admin_enqueue_scripts' ), 20 );
+		// TODO This might not be needed here, maybe for summary filter
+		//add_action( 'wp_ajax_wpv_filter_taxonomy_sumary_update',	array( 'WPV_Taxonomy_Filter', 'wpv_filter_taxonomy_sumary_update_callback' ) );
 	}
 	
 	/**
@@ -64,9 +72,7 @@ class WPV_Taxonomy_Filter {
 	*/
 	
 	static function admin_enqueue_scripts( $hook ) {
-		if ( isset( $_GET['page'] ) && $_GET['page'] == 'views-editor' ) {
-			wp_enqueue_script( 'views-filter-category-js' );
-		}
+		wp_enqueue_script( 'views-filter-category-js' );
 	}
 	
 	/**
@@ -105,6 +111,40 @@ class WPV_Taxonomy_Filter {
 	}
 	
 	/**
+	* wpv_filters_add_archive_filter_taxonomy
+	*
+	* Register the taxonomy filter in the popup dialog
+	*
+	* @param $filters
+	*
+	* @since 2.1
+	*/
+
+	static function wpv_filters_add_archive_filter_taxonomy( $filters ) {
+		$taxonomies_valid = get_taxonomies( '', 'objects' );
+		$exclude_tax_slugs = array();
+		$exclude_tax_slugs = apply_filters( 'wpv_admin_exclude_tax_slugs', $exclude_tax_slugs );
+		foreach ( $taxonomies_valid as $category_slug => $category ) {
+			if ( in_array( $category_slug, $exclude_tax_slugs ) ) {
+				continue;
+			}
+			if ( ! $category->show_ui ) {
+				continue; // Only show taxonomies with show_ui set to TRUE
+			}
+			$taxonomy = $category->name;
+			$name = ( $taxonomy == 'category' ) ? 'post_category' : 'tax_input[' . $taxonomy . ']';
+			$filters[$name] = array(
+				'name'		=> $category->label,
+				'present'	=> 'tax_' . $taxonomy . '_relationship',
+				'callback'	=> array( 'WPV_Taxonomy_Filter', 'wpv_add_new_archive_filter_taxonomy_list_item' ),
+				'args'		=> $category,
+				'group'		=> __( 'Taxonomies', 'wpv-views' )
+			);
+		}
+		return $filters;
+	}
+	
+	/**
 	* wpv_add_new_filter_taxonomy_list_item
 	*
 	* Register the taxonomy filter in the filters list
@@ -117,7 +157,27 @@ class WPV_Taxonomy_Filter {
 	static function wpv_add_new_filter_taxonomy_list_item( $args ) {
 		$relationship_name = ( $args->name == 'category' ) ? 'tax_category_relationship' : 'tax_' . $args->name . '_relationship';
 		$new_tax_filter_settings = array(
-			$relationship_name => 'IN',
+			'view-query-mode'	=> 'normal',
+			$relationship_name	=> 'IN',
+		);
+		WPV_Taxonomy_Filter::wpv_add_filter_taxonomy_list_item( $new_tax_filter_settings );
+	}
+	
+	/**
+	* wpv_add_new_archive_filter_taxonomy_list_item
+	*
+	* Register the taxonomy filter in the filters list
+	*
+	* @param $args
+	*
+	* @since 2.1
+	*/
+
+	static function wpv_add_new_archive_filter_taxonomy_list_item( $args ) {
+		$relationship_name = ( $args->name == 'category' ) ? 'tax_category_relationship' : 'tax_' . $args->name . '_relationship';
+		$new_tax_filter_settings = array(
+			'view-query-mode'	=> 'archive',
+			$relationship_name	=> 'IN',
 		);
 		WPV_Taxonomy_Filter::wpv_add_filter_taxonomy_list_item( $new_tax_filter_settings );
 	}
@@ -229,6 +289,11 @@ class WPV_Taxonomy_Filter {
 		$type = ( $category->name == 'category' ) ? 'post_category' : 'tax_input[' . $category->name . ']';
 		$taxonomy = $category->name;
 		$taxonomy_name = $category->label;
+		
+		if ( ! isset( $view_settings['view-query-mode'] ) ) {
+			$view_settings['view-query-mode'] = 'normal';
+		}
+		
 		if ( ! isset($view_settings['tax_' . $taxonomy . '_relationship'] ) ) {
 			$view_settings['tax_' . $taxonomy . '_relationship'] = 'IN';
 		}
@@ -250,6 +315,7 @@ class WPV_Taxonomy_Filter {
 		if ( ! isset( $view_settings['taxonomy-' . $taxonomy . '-framework'] ) ) {
 			$view_settings['taxonomy-' . $taxonomy . '-framework'] = '';
 		}
+		
 		ob_start();
 		?>
 			<div class="wpv-filter-multiple-element js-wpv-filter-multiple-element js-wpv-filter-taxonomy-multiple-element js-wpv-filter-row-taxonomy-<?php echo esc_attr( $taxonomy ); ?> js-wpv-filter-row-tax-<?php echo esc_attr( $type ); ?>" data-taxonomy="<?php echo esc_attr( $taxonomy ); ?>">
@@ -274,11 +340,33 @@ class WPV_Taxonomy_Filter {
 						<option value="IN" <?php selected( $view_settings['tax_' . $taxonomy . '_relationship'], 'IN' ); ?>><?php _e('Any of the following', 'wpv-views'); ?></option>
 						<option value="NOT IN" <?php selected( $view_settings['tax_' . $taxonomy . '_relationship'], 'NOT IN' ); ?>><?php _e('No one of the following', 'wpv-views'); ?></option>
 						<option value="AND" <?php selected( $view_settings['tax_' . $taxonomy . '_relationship'], 'AND' ); ?>><?php _e('All of the following', 'wpv-views'); ?></option>
+						<?php
+						if ( $view_settings['view-query-mode'] == 'normal' ) {
+						?>
 						<option value="top_current_post" <?php selected( $view_settings['tax_' . $taxonomy . '_relationship'], 'top_current_post' ); ?>><?php _e('Set by the page where this View is shown', 'wpv-views'); ?></option>
+						<?php
+						}
+						if ( $view_settings['view-query-mode'] == 'normal' ) {
+						?>
 						<option value="current_post_or_parent_post_view" <?php selected( in_array( $view_settings['tax_' . $taxonomy . '_relationship'], array( 'FROM PAGE', 'current_post_or_parent_post_view' ) ) ); ?>><?php _e('Set by the current post in the loop', 'wpv-views'); ?></option>
+						<?php
+						}
+						if ( $view_settings['view-query-mode'] == 'normal' ) {
+						?>
 						<option value="FROM ARCHIVE" <?php selected( $view_settings['tax_' . $taxonomy . '_relationship'], 'FROM ARCHIVE' ); ?>><?php _e('Set by the current archive page', 'wpv-views'); ?></option>
+						<?php
+						}
+						if ( $view_settings['view-query-mode'] == 'normal' ) {
+						?>
 						<option value="current_taxonomy_view" <?php selected( in_array( $view_settings['tax_' . $taxonomy . '_relationship'], array( 'FROM PARENT VIEW', 'current_taxonomy_view' ) ) ); ?>><?php _e('Set by the parent Taxonomy View', 'wpv-views'); ?></option>
+						<?php
+						}
+						if ( $view_settings['view-query-mode'] == 'normal' ) {
+						?>
 						<option value="FROM ATTRIBUTE" <?php selected( $view_settings['tax_' . $taxonomy . '_relationship'], 'FROM ATTRIBUTE' ); ?>><?php _e('Set by one View shortcode attribute', 'wpv-views'); ?></option>
+						<?php
+						}
+						?>
 						<option value="FROM URL" <?php selected( $view_settings['tax_' . $taxonomy . '_relationship'], 'FROM URL' ); ?>><?php _e('Set by one URL parameter', 'wpv-views'); ?></option>
 						<?php
 						if ( $WP_Views_fapi->framework_valid ) {
@@ -476,16 +564,20 @@ class WPV_Taxonomy_Filter {
 			}
 		}
 		$summary .= $result;
+		
+		$parametric_search_hints = wpv_get_parametric_search_hints_data( $view_id );
+		
 		$data = array(
-			'id' => $view_id,
-			'message' => __( 'Taxonomy filter saved', 'wpv-views' ),
-			'summary' => $summary
+			'id'			=> $view_id,
+			'message'		=> __( 'Taxonomy filter saved', 'wpv-views' ),
+			'summary'		=> $summary,
+			'parametric'	=> $parametric_search_hints
 		);
 		wp_send_json_success( $data );
 	}
 
 	
-
+	/*
 	static function wpv_filter_taxonomy_sumary_update_callback() {
 		parse_str($_POST['filter_taxonomy'], $view_settings);
 		$summary = __('Select posts with taxonomy: ', 'wpv-views');
@@ -520,6 +612,7 @@ class WPV_Taxonomy_Filter {
 		echo $summary;
 		die();
 	}
+	*/
 
 	/**
 	* wpv_filter_taxonomy_delete_callback
@@ -559,7 +652,6 @@ class WPV_Taxonomy_Filter {
 			wp_send_json_error( $data );
 		}
 		$view_array = get_post_meta( $_POST["id"], '_wpv_settings', true );
-		$len = isset( $view_array['filter_controls_field_name'] ) ? count( $view_array['filter_controls_field_name'] ) : 0;
 		$taxonomies = is_array( $_POST['taxonomy'] ) ? $_POST['taxonomy'] : array( $_POST['taxonomy'] );
 		foreach ( $taxonomies as $taxonomy ) {
 			$to_delete = array(
@@ -579,44 +671,32 @@ class WPV_Taxonomy_Filter {
 					unset( $view_array[$index] );
 				}
 			}
-			$splice = false;
-			for ( $i = 0; $i < $len; $i++ ) {
-				if( strpos( $view_array['filter_controls_field_name'][$i], $taxonomy ) !== false ) {
-					$splice = $i;
-				}
-			}
-			if ( $splice !== false ) {
-				foreach ( Editor_addon_parametric::$prm_db_fields as $dbf ) {
-					array_splice( $view_array[$dbf], $splice, 1 );
+			if ( isset( $view_array['filter_controls_field_name'] ) ) {
+				foreach ( $view_array['filter_controls_field_name'] as $i => $tax ) {
+					$splice = false;
+					if( strpos( $tax, $taxonomy ) !== false ) {
+						$splice = $i;
+					}
+
+					if ( $splice !== false ) {
+						foreach ( Editor_addon_parametric::$prm_db_fields as $dbf ) {
+							unset( $view_array[$dbf][$splice] );
+						}
+					}
 				}
 			}
 		}
 		update_post_meta( $_POST["id"], '_wpv_settings', $view_array );
 		do_action( 'wpv_action_wpv_save_item', $_POST["id"] );
+		
+		$parametric_search_hints = wpv_get_parametric_search_hints_data( $_POST["id"] );
+		
 		$data = array(
-			'id' => $_POST["id"],
-			'message' => __( 'Taxonomy filter deleted', 'wpv-views' )
+			'id'			=> $_POST["id"],
+			'parametric'	=> $parametric_search_hints,
+			'message'		=> __( 'Taxonomy filter deleted', 'wpv-views' )
 		);
 		wp_send_json_success( $data );
-	}
-
-
-	/**
-	* wpv_taxonomy_summary_filter
-	
-	* Show the taxonomy filter on the View summary
-	*
-	* @since unknown
-	*/
-
-	static function wpv_taxonomy_summary_filter( $summary, $post_id, $view_settings ) {
-		$result = '';
-		$result = wpv_get_filter_taxonomy_summary_txt( $view_settings );
-		if ( $result != '' && $summary != '' ) {
-			$summary .= '<br />';
-		}
-		$summary .= $result;
-		return $summary;
 	}
 	
 }

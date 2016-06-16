@@ -641,6 +641,23 @@ function wpv_render_wpa_listing_dialog_templates_arrangeby_usage() {
 					?></label>
 					<input type="text" id="wpv-create-wpa-for-archive-loop-title" value="" class="large-text js-wpv-create-wpa-for-archive-loop-title" placeholder="<?php echo esc_attr( __('WordPress Archive name','wpv-views') ) ?>" />
 				</p>
+				<h3><?php _e( 'What kind of Archive do you want to create?', 'wpv-views' ); ?></h3>
+				<ul>
+					<li>
+						<p>
+							<input type="radio" name="wpv_wpa_usage_purpose" class="js-wpv-usage-purpose js-wpv-usage-purpose-all" id="wpv_wpa_usage_purpose_all" value="all" checked="checked" />
+							<label for="wpv_wpa_usage_purpose_all"><?php _e('Display all the items','wpv-views'); ?></label>
+							<span class="wpv-helper-text"><?php _e('Output all the items returned from the query section.', 'wpv-views'); ?></span>
+						</p>
+					</li>
+					<li>
+						<p>
+							<input type="radio" name="wpv_wpa_usage_purpose" class="js-wpv-usage-purpose js-wpv-usage-purpose-parametric" id="wpv_wpa_purpose_parametric" value="parametric" />
+							<label for="wpv_wpa_purpose_parametric"><?php _e('Display the items as a parametric search','wpv-views'); ?></label>
+							<span class="wpv-helper-text"><?php _e('Visitors will be able to search through your content using different search criteria.', 'wpv-views'); ?></span>
+						</p>
+					</li>
+				</ul>
 				<div class="js-wpv-error-container"></div>
 			</div>
 		</div>
@@ -678,35 +695,35 @@ function wpv_render_view_listing_dialog_templates() {
 				<ul>
 					<li>
 						<p>
-							<input type="radio" name="view_purpose" class="js-view-purpose" id="view_purpose_all" value="all" />
+							<input type="radio" name="view_purpose" class="js-wpv-purpose" id="view_purpose_all" value="all" />
 							<label for="view_purpose_all"><?php _e('Display all results','wpv-views'); ?></label>
 							<span class="wpv-helper-text"><?php _e('The View will output all the results returned from the query section.', 'wpv-views'); ?></span>
 						</p>
 					</li>
 					<li>
 						<p>
-							<input type="radio" name="view_purpose" class="js-view-purpose" id="view_purpose_pagination" value="pagination" />
+							<input type="radio" name="view_purpose" class="js-wpv-purpose" id="view_purpose_pagination" value="pagination" />
 							<label for="view_purpose_pagination"><?php _e('Display the results with pagination','wpv-views'); ?></label>
 							<span class="wpv-helper-text"><?php _e('The View will display the query results in pages.', 'wpv-views'); ?></span>
 						</p>
 					</li>
 					<li>
 						<p>
-							<input type="radio" name="view_purpose" class="js-view-purpose" id="view_purpose_slider" value="slider" />
+							<input type="radio" name="view_purpose" class="js-wpv-purpose" id="view_purpose_slider" value="slider" />
 							<label for="view_purpose_slider"><?php _e('Display the results as a slider','wpv-views'); ?></label>
 							<span class="wpv-helper-text"><?php _e('The View will display the query results as slides.', 'wpv-views'); ?></span>
 						</p>
 					</li>
 					<li>
 						<p>
-							<input type="radio" name="view_purpose" class="js-view-purpose" id="view_purpose_parametric" value="parametric" />
+							<input type="radio" name="view_purpose" class="js-wpv-purpose" id="view_purpose_parametric" value="parametric" />
 							<label for="view_purpose_parametric"><?php _e('Display the results as a parametric search','wpv-views'); ?></label>
 							<span class="wpv-helper-text"><?php _e('Visitors will be able to search through your content using different search criteria.', 'wpv-views'); ?></span>
 						</p>
 					</li>
 					<li>
 						<p>
-							<input type="radio" name="view_purpose" class="js-view-purpose" id="view_purpose_full" value="full" />
+							<input type="radio" name="view_purpose" class="js-wpv-purpose" id="view_purpose_full" value="full" />
 							<label for="view_purpose_full"><?php _e('Full custom display mode','wpv-views'); ?></label>
 							<span class="wpv-helper-text"><?php _e('See all the View controls open and set up things manually..', 'wpv-views'); ?></span>
 						</p>

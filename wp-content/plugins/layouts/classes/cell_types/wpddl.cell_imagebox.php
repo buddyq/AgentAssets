@@ -187,7 +187,7 @@ if (!class_exists('Layouts_cell_imagebox')) {
 
                         <?php if( apply_filters('ddl-display_image_box_cell_preview', true) ):?>
                         <#
-                            if( wp.hooks.applyFilters( 'ddl-display_image_box_cell_preview', content && content.box_image ) ){
+                            if( Toolset.hooks.applyFilters( 'ddl-display_image_box_cell_preview', content && content.box_image ) ){
                                 var parms = {
                                     org_w: content.box_image_org_w,
                                     org_h: content.box_image_org_h,
@@ -209,8 +209,7 @@ if (!class_exists('Layouts_cell_imagebox')) {
                                 <# } else {
                                     var img = DDLayout.ImageBoxCell.prototype.returnImagePreviewAsHtmlString.call(this, parms);
                                     #>
-
-                                        <div class="ddl-image-box-preview-image" style="min-height:{{img.h+5}}px">
+                                        <div class="ddl-image-box-preview-image" style="min-height:{{parseFloat(img.h)+5}}px">
                                         <# print( img.img ); #>
                                         </div>
 

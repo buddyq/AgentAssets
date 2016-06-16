@@ -8,7 +8,6 @@ class WPDD_layout_cell_text extends WPDD_layout_cell {
 
 	function __construct($name, $width, $css_class_name = '', $content = null, $css_id, $tag, $unique_id) {
 		parent::__construct($name, $width, $css_class_name, 'cell-text-template', $content, $css_id, $tag, $unique_id);
-
 		$this->set_cell_type('cell-text');
 	}
 
@@ -86,14 +85,15 @@ class WPDD_layout_cell_text extends WPDD_layout_cell {
 						  'VISUAL');
 		}
 	}
-
-
 }
 
 class WPDD_layout_cell_text_factory extends WPDD_layout_cell_factory{
 
 	public function __construct() {
-		add_filter('gform_display_add_form_button', array($this, 'add_gf_support'));
+		if( isset($_GET['page']) and $_GET['page'] == 'dd_layouts_edit' ){
+            add_filter( 'cred-register_cred_editor_scripts_and_styles', array(&$this, '__return_true'), 10, 1 );
+            add_filter('gform_display_add_form_button', array($this, 'add_gf_support'));
+        }
 	}
 	
 	public function add_gf_support($value) {
@@ -102,6 +102,14 @@ class WPDD_layout_cell_text_factory extends WPDD_layout_cell_factory{
 		}
 		return $value;
 	}
+
+    public function __return_true( $bool ){
+        return true;
+    }
+
+    public function __return_false( $bool ){
+        return false;
+    }
 
 	public function build($name, $width, $css_class_name = '', $content = null, $css_id, $tag, $unique_id) {
 		return new WPDD_layout_cell_text($name, $width, $css_class_name, $content, $css_id, $tag, $unique_id);
@@ -149,6 +157,7 @@ class WPDD_layout_cell_text_factory extends WPDD_layout_cell_factory{
 	}
 
 	public function enqueue_editor_scripts() {
+		wp_enqueue_script('cred_cred');
 		wp_enqueue_script('page');
 		wp_enqueue_script('editor');
 		add_thickbox();
@@ -161,6 +170,10 @@ class WPDD_layout_cell_text_factory extends WPDD_layout_cell_factory{
         }
 		wp_register_script('text_cell_js', WPDDL_RELPATH . '/inc/gui/editor/js/text-cell.js', $deps, WPDDL_VERSION, true);
 		wp_enqueue_script('text_cell_js');
+    }
+
+    public function enqueue_editor_styles(){
+        wp_enqueue_style('cred_cred_style');
     }
 	
 	private function _dialog_template() {
@@ -259,10 +272,15 @@ class WPDD_layout_cell_text_factory extends WPDD_layout_cell_factory{
             'wpautop' => true, /* Also as TinyMCE setting */
         );
         add_filter( 'tiny_mce_before_init', array( $this, 'configure_tinymce_editor' ), 999 );
+		add_action('media_buttons', array(&$this, 'add_cred_media_button'), 30);
 
         wp_editor( '', 'celltexteditor', $options );
         remove_filter( 'user_can_richedit', array( __CLASS__, '__true' ), 100 );
         
+    }
+
+    function add_cred_media_button(){
+        echo apply_filters( 'ddl-meta_html_add_form_button', '', '#celltexteditor' );
     }
 
     function do_codemirror() {
@@ -277,7 +295,7 @@ class WPDD_layout_cell_text_factory extends WPDD_layout_cell_factory{
                 </li>
                 <?php
                 do_action( 'wpv_views_fields_button', 'visual-editor-html-editor' );
-             //   do_action( 'wpv_cred_forms_button', 'visual-editor-html-editor' );
+                echo apply_filters( 'ddl-meta_html_add_form_button', '', 'visual-editor-html-editor' );
                 ?>
            </ul>
         </div>

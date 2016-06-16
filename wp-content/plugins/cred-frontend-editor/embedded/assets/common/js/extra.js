@@ -51,8 +51,14 @@ if (window[thisExportName]) return;
                 origin:['top','left'],
                 easing:'expoEaseOut',
                 speed:'slow'
-                });
-        else $(this).show();
+                }, function (event) {
+                var class_name = $(this).prop('class');
+                Toolset.hooks.doAction( class_name.split(' ')[0] + '_show');
+            });
+        else $(this).show(400, function (event) {
+            var class_name = $(this).prop('class');
+            Toolset.hooks.doAction( class_name.split(' ')[0] + '_show');
+        });
     };
 
     $.fn.__hide=function()
@@ -65,8 +71,14 @@ if (window[thisExportName]) return;
                 origin:['top','left'],
                 easing:'expoEaseOut',
                 speed:'slow'
+            }, function (event) {
+                var class_name = $(this).prop('class');
+                Toolset.hooks.doAction( class_name.split(' ')[0] + '_hide');
             });
-        else $(this).hide();
+        else $(this).hide(400, function (event) {
+            var class_name = $(this).prop('class');
+            Toolset.hooks.doAction( class_name.split(' ')[0] + '_hide');
+        });
     };
 
     /* Ajax File Download Plugin */

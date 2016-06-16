@@ -167,6 +167,9 @@ class WP_Views_Integration_API {
 		add_filter( 'wpv_filter_extend_framework_options_for_users',				array( $this, 'extend_view_settings_as_array_options_for_filters' ), 10 );
 		add_filter( 'wpv_filter_extend_framework_options_for_usermeta_field',		array( $this, 'extend_view_settings_as_array_options_for_filters' ), 10 );
 		
+		// API
+		add_filter( 'wpv_filter_framework_has_valid_framework',						array( $this, 'has_valid_framework' ) );
+		
     }
 	
 	/**
@@ -1262,6 +1265,17 @@ class WP_Views_Integration_API {
 			}
 		}
 		return $return;
+	}
+	
+	/**
+	* --------------------------------
+	* API
+	* --------------------------------
+	*/
+	
+	function has_valid_framework( $status ) {
+		$status = $this->framework_valid;
+		return $status;
 	}
 	
 }

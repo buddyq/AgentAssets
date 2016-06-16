@@ -270,13 +270,13 @@ WPViews.WPAListingScreen = function( $ ) {
 		self.dialog_create_or_change_usage = 'create';
 		
 		self.dialog_create_wpa.dialog( 'open' ).dialog({
-            width: 850,
-			title: wpa_listing_texts.dialog_create_dialog_title,
-            maxHeight: dialog_height,
-			maxWidth: dialog_width,
-            draggable: false,
-            resizable: false,
-			position: { my: "center top+50", at: "center top", of: window }
+            width:		850,
+			title:		wpa_listing_texts.dialog_create_dialog_title,
+            maxHeight:	dialog_height,
+			maxWidth:	dialog_width,
+            draggable:	false,
+            resizable:	false,
+			position:	{ my: "center top+50", at: "center top", of: window }
         });
 		
 		self.dialog_create_wpa.html( self.shortcodeDialogSpinnerContent );
@@ -330,16 +330,17 @@ WPViews.WPAListingScreen = function( $ ) {
 			title = title.replace( /\'/gi, '' );
 			title = WPV_Toolset.Utils._strip_tags_and_preserve_text( _.unescape( title ) );
 			data = {
-				action: 'wpv_wp_archive_create_new',
-				form: $('#wpv-create-archive-view-form').serialize(),
-				title: title,
-				wpnonce : $('#work_views_listing').val()
+				action:		'wpv_wp_archive_create_new',
+				form:		$('#wpv-create-archive-view-form').serialize(),
+				title:		title,
+				purpose:	$( '.js-wpv-purpose:checked' ).val(),
+				wpnonce:	$('#work_views_listing').val()
 			};
 		} else if ( self.dialog_create_or_change_usage == 'change' ) {
 			data = {
-				action: 'wpv_wp_archive_change_usage',
-				form: $('#wpv-create-archive-view-form').serialize(),
-				wpnonce : $('#work_views_listing').attr('value')
+				action:		'wpv_wp_archive_change_usage',
+				form:		$('#wpv-create-archive-view-form').serialize(),
+				wpnonce:	$('#work_views_listing').attr('value')
 			};
 		}
         $.ajax({
@@ -430,9 +431,10 @@ WPViews.WPAListingScreen = function( $ ) {
 		thiz_container = thiz.closest( '.ui-dialog' ),
         thiz_message_container = thiz_container.find( '.js-wpv-error-container' ),
 		data = {
-            action: 'wpv_create_wpa_for_archive_loop',
-			loop: self.creating_archive_loop,
-            wpnonce : $('#work_views_listing').val()
+            action:		'wpv_create_wpa_for_archive_loop',
+			loop:		self.creating_archive_loop,
+			purpose:	$( '.js-wpv-usage-purpose:checked' ).val(),
+            wpnonce:	$('#work_views_listing').val()
         },
 		title = $( '.js-wpv-create-wpa-for-archive-loop-title' ).val();
 		
@@ -837,10 +839,10 @@ WPViews.WPAListingScreen = function( $ ) {
 		$( 'body' ).append( '<div id="js-wpv-create-wpa-form-dialog" class="toolset-shortcode-gui-dialog-container wpv-shortcode-gui-dialog-container js-wpv-shortcode-gui-dialog-container"></div>' );
 		
 		self.dialog_create_wpa = $( "#js-wpv-create-wpa-form-dialog" ).dialog({
-			autoOpen: false,
-			modal: true,
-			title: wpa_listing_texts.dialog_create_dialog_title,
-			minWidth: 600,
+			autoOpen:	false,
+			modal:		true,
+			title:		wpa_listing_texts.dialog_create_dialog_title,
+			minWidth:	600,
 			show: { 
 				effect: "blind", 
 				duration: 800 
@@ -919,6 +921,8 @@ WPViews.WPAListingScreen = function( $ ) {
 				$( 'body' ).addClass( 'modal-open' );
 				$( '.js-wpv-create-wpa-for-archive-loop-hint' ).html( self.creating_archive_loop_title );
 				$( '.js-wpv-create-wpa-for-archive-loop-title' ).val( self.creating_archive_loop_title );
+				$( '.js-wpv-usage-purpose' ).prop( 'checked', false );
+				$( '.js-wpv-usage-purpose-all' ).prop( 'checked', true );
                 var error_container = $('.wpv-shortcode-gui-content-wrapper').find('.js-wpv-error-container');
                 error_container.html('');
 			},

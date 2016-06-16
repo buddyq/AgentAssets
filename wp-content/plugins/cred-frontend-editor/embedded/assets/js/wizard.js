@@ -54,8 +54,7 @@
             {
                 $button.removeClass('button-primary').addClass('button-secondary');
             }
-        }
-        else
+        } else
         {
             if ($button.hasClass('button-secondary'))
             {
@@ -105,14 +104,12 @@
                                             wizardNextB.removeAttr('disabled');
                                             checkClassButton(wizardNextB);
                                         }
-                                    }
-                                    else
+                                    } else
                                     {
                                         clearInterval(_tim);
                                     }
                                 }, 500);
-                            }
-                            else
+                            } else
                             {
                                 self.steps[self.step - 1].completed = true;
                                 self.completed_step = self.step;
@@ -143,7 +140,7 @@
                                     {
                                         var $el = $('select[name="_cred[form][type]"]'), val = $.trim($el.val());
                                         var is_user_form = $('#cred_form_user_role').length;
-                                        
+
                                         if (is_user_form) {
                                             var $el2 = $('select[name="_cred[form][user_role][]"]'), val2 = $.trim($el2.val());
                                         }
@@ -156,14 +153,12 @@
                                             wizardNextB.removeAttr('disabled');
                                             checkClassButton(wizardNextB);
                                         }
-                                    }
-                                    else
+                                    } else
                                     {
                                         clearInterval(_tim);
                                     }
                                 }, 500);
-                            }
-                            else
+                            } else
                             {
                                 self.steps[self.step - 1].completed = true;
                                 self.completed_step = self.step;
@@ -201,14 +196,12 @@
                                             wizardNextB.removeAttr('disabled');
                                             checkClassButton(wizardNextB);
                                         }
-                                    }
-                                    else
+                                    } else
                                     {
                                         clearInterval(_tim);
                                     }
                                 }, 500);
-                            }
-                            else
+                            } else
                             {
                                 self.steps[self.step - 1].completed = true;
                                 self.completed_step = self.step;
@@ -244,14 +237,12 @@
                                             wizardNextB.removeAttr('disabled');
                                             checkClassButton(wizardNextB);
                                         }
-                                    }
-                                    else
+                                    } else
                                     {
                                         clearInterval(_tim);
                                     }
                                 }, 500);
-                            }
-                            else
+                            } else
                             {
                                 self.steps[self.step - 1].completed = true;
                                 self.completed_step = self.step;
@@ -304,8 +295,7 @@
                                 }
                             });
                         }
-                    }
-                    else
+                    } else
                     {
                         // save this step
                         if (cred.doCheck(self.step))
@@ -313,10 +303,23 @@
                             var wizard_step = self.completed_step;
                             if (self.completed_step == self.steps.length)
                                 wizard_step = -1;
+
+                            if (tinyMCE)
+                                tinyMCE.triggerSave();
+
                             var action_message = '';
                             if (tinyMCE && tinyMCE.get('credformactionmessage') && tinyMCE.get('credformactionmessage').getContent() != '') {
                                 action_message = '&_cred[form][action_message]=' + tinyMCE.get('credformactionmessage').getContent();
                             }
+
+                            for (var i = 0; i <= 20; i++) {
+                                if ($('#credmailbody' + i) && $('#credmailbody' + i).length) {
+                                    if (tinyMCE && tinyMCE.get('credmailbody' + i) && tinyMCE.get('credmailbody' + i).getContent() != '') {
+                                        action_message += '&_cred[notification][notifications][' + i + '][mail][body]=' + tinyMCE.get('credmailbody' + i).getContent();
+                                    }
+                                }
+                            }
+
                             $.ajax({
                                 url: document.location,
                                 data: serialize('#post') + '&_cred[wizard]=' + wizard_step + action_message,

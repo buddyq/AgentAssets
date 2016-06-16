@@ -64,12 +64,12 @@ final class WPV_WordPress_Archive extends WPV_WordPress_Archive_Embedded {
         if ( $is_layouts_loop ) {
             $loop_settings_default[ WPV_View_Base::LOOP_SETTINGS_META_HTML ] = str_replace(
                 "[/wpv-items-found]",
-                "[wpv-archive-pager-prev-page]\n"
-                . "\t\t[wpml-string context=\"wpv-views\"]Older posts[/wpml-string]\n"
-                . "\t[/wpv-archive-pager-prev-page]\n"
-                . "\t[wpv-archive-pager-next-page]\n"
-                . "\t\t[wpml-string context=\"wpv-views\"]Newer posts[/wpml-string]\n"
-                . "\t[/wpv-archive-pager-next-page]\n"
+                "[wpv-pager-archive-prev-page]\n"
+                . "\t\t[wpml-string context=\"wpv-views\"]Previous[/wpml-string]\n"
+                . "\t[/wpv-pager-archive-prev-page]\n"
+                . "\t[wpv-pager-archive-next-page]\n"
+                . "\t\t[wpml-string context=\"wpv-views\"]Next[/wpml-string]\n"
+                . "\t[/wpv-pager-archive-next-page]\n"
                 . "\t[/wpv-items-found]",
                 $loop_settings_default[ WPV_View_Base::LOOP_SETTINGS_META_HTML ]
             );

@@ -10,13 +10,14 @@ class Editor_addon_parametric extends Editor_addon_generic {
 	public $media_button_class = null;
 
 	public static $prm_db_fields = array(
-			'filter_controls_field_name',
-			'filter_controls_mode',
-			'filter_controls_label',
-			'filter_controls_type',
-			'filter_controls_values',
-			'filter_controls_enable',
-			'filter_controls_param' );
+		'filter_controls_field_name',
+		'filter_controls_mode',
+		'filter_controls_label',
+		'filter_controls_type',
+		'filter_controls_values',
+		'filter_controls_enable',
+		'filter_controls_param' 
+	);
 
 	//FIXME: part of the fix for retrocompatibility 2 url_params
 	private static $tmp_settings = null;
@@ -29,15 +30,14 @@ class Editor_addon_parametric extends Editor_addon_generic {
 		$this->media_button_class = $media_button_class;
 
 		/*Data Store Call*/
-		add_action( 'wp_ajax_set_' . $this->name, array( $this, 'send_data_to_parametric_form' ) );
-		add_action( 'wp_ajax_get_' . $this->name, array( $this, 'get_data_from_parametric_form' ) );
-		add_action( 'wp_ajax_create_parametric_dialog', array( $this, 'create_parametric_dialog' ) );
-		add_action( 'wp_ajax_validate_post_relationship_tree', array( $this, 'validate_post_relationship_tree' ) );
-		add_action( 'admin_init', array( $this, 'register_assets' ) );
-		add_action( 'admin_enqueue_scripts', array( $this, 'parametric_enqueue_scripts' ) );
-		add_action( 'admin_head', array( $this, 'admin_head' ) );
-		add_action( 'wp_ajax_wpv_suggest_auto_fill_default', array( $this, 'wpv_suggest_auto_fill_default' ) );
-		add_action( 'wp_ajax_nopriv_wpv_suggest_auto_fill_default', array( $this, 'wpv_suggest_auto_fill_default' ) );
+		add_action( 'wp_ajax_set_' . $this->name,					array( $this, 'send_data_to_parametric_form' ) );
+		add_action( 'wp_ajax_get_' . $this->name,					array( $this, 'get_data_from_parametric_form' ) );
+		add_action( 'wp_ajax_create_parametric_dialog',				array( $this, 'create_parametric_dialog' ) );
+		add_action( 'admin_init',									array( $this, 'register_assets' ) );
+		add_action( 'admin_enqueue_scripts',						array( $this, 'parametric_enqueue_scripts' ) );
+		add_action( 'admin_head',									array( $this, 'admin_head' ) );
+		add_action( 'wp_ajax_wpv_suggest_auto_fill_default',		array( $this, 'wpv_suggest_auto_fill_default' ) );
+		add_action( 'wp_ajax_nopriv_wpv_suggest_auto_fill_default',	array( $this, 'wpv_suggest_auto_fill_default' ) );
 	}
 
 
@@ -133,52 +133,6 @@ class Editor_addon_parametric extends Editor_addon_generic {
 		die();
 	}
 
-
-	public function validate_post_relationship_tree() {
-		if ( ! current_user_can( 'manage_options' ) ) {
-			echo __( 'You do not have permissions for that.', 'wpv-views' );
-			die();
-		}
-		if ( !wp_verify_nonce( $_POST['wpnonce'], 'wpv_parametric_validate_post_relationship_tree' ) ) {
-			die( "Security check" );
-		}
-
-		$return = '';
-		if ( $_POST['local_tree'] == 'tree' ) {
-			$return = 'OK';
-		} else {
-			$view_settings = get_post_meta( $_POST['id'], '_wpv_settings', true );
-			$returned_post_types = $view_settings['post_type'];
-			$multi_post_relations = wpv_recursive_post_hierarchy( $returned_post_types );
-			$flatten_post_relations = wpv_recursive_flatten_post_relationships( $multi_post_relations );
-
-			if ( strlen( $flatten_post_relations ) > 0 ) {
-				$current_used_tree = explode( ',', $_POST['local_tree'] );
-				$relations_tree = wpv_get_all_post_relationship_options( $flatten_post_relations );
-				$trees_are_valid = true;
-
-				foreach ( $current_used_tree as $current_tree ) {
-					if ( !in_array( $current_tree, $relations_tree ) ) {
-						$trees_are_valid = false;
-					}
-				}
-
-				if ( $trees_are_valid ) {
-					$return = 'OK';
-				} else {
-					$return = __( 'Types ancestors tree not valid.', 'wpv-views' );
-					$return .= ' ' . __( 'Please follow the tip hint below. ', 'wpv-views' );
-					// $return .= '<ul><li><code>' . implode( '</code></li><li><code>', $relations_tree ) .'</code></li></ul>';
-				}
-			} else {
-				$return = __( 'The post types selected in this View do not have Types ancestors', 'wpv-views' );
-			}
-		}
-		echo $return;
-		die();
-	}
-
-
 	public function create_parametric_dialog() {
 		if ( ! current_user_can( 'manage_options' ) ) {
 			echo __( sprintf( 'There are security problems. You do not have permissions for that %s', __METHOD__), 'wpv-views' );
@@ -212,7 +166,7 @@ class Editor_addon_parametric extends Editor_addon_generic {
 		wp_register_script( 
 			'wpv-parametric-admin-script' ,
 			WPV_URL . '/res/js/redesign/views_parametric.js',
-			array( 'jquery', 'jquery-ui-dialog', 'toolset-utils', 'icl_editor-script', 'toolset-codemirror-script', 'knockout-sortable' ),
+			array( 'jquery', 'jquery-ui-dialog', 'toolset-utils', 'toolset-event-manager', 'underscore', 'icl_editor-script', 'views-codemirror-conf-script', 'knockout-sortable' ),
 			WPV_VERSION 
 		);
 		if ( ! self::$is_localized ) {
@@ -228,7 +182,6 @@ class Editor_addon_parametric extends Editor_addon_generic {
 					'wpv_view_filter_search_nonce' => wp_create_nonce( 'wpv_view_filter_post_search_nonce' ),
 					'wpv_view_filter_search_delete_nonce' => wp_create_nonce( "wpv_view_filter_post_search_delete_nonce" ),
 					'wpv_view_filters_add_filter_nonce' => wp_create_nonce('wpv_view_filters_add_filter_nonce'),
-					'wpv_parametric_validate_post_relationship_tree' => wp_create_nonce('wpv_parametric_validate_post_relationship_tree'),
 					'view_id' => $this->view_id,
 					'is_wpml_active' => self::is_wpml_active(),
 					'view_purpose' => $this->get_view_type(),
@@ -242,6 +195,9 @@ class Editor_addon_parametric extends Editor_addon_generic {
 					'something_bad' => __("Something bad happened with shortcode building, check the console", 'wpv-views'),
 					'field_mandatory' => __('The value for "Refer to this field as" is mandatory, please provide one.', 'wpv-views'),
 					'relationship_tree_mandatory' => __('Please make a valid tree selection.'),
+					
+					'relationship_tree_no_ancestors' => __( 'The post types displayed do not have Types ancestors', 'wpv-views' ),
+					'relationship_tree_not_valid' => __( 'Types ancestors tree not valid.', 'wpv-views' ),
 
 					'basic_field_mandatory' => __('This field can not be left empty', 'wpv-views'),// MAYBE DEPRECATED
 
@@ -346,7 +302,10 @@ class Editor_addon_parametric extends Editor_addon_generic {
 		if ( 
 			$pagenow == 'admin.php' 
 			&& isset( $_GET['page'] ) 
-			&& $_GET['page'] == 'views-editor' 
+			&& (
+				$_GET['page'] == 'views-editor' 
+				|| $_GET['page'] == 'view-archives-editor' 
+			)
 		) {
 			wp_enqueue_script( 'knockout2' );
 			wp_enqueue_script( 'knockout-sortable' );
@@ -369,7 +328,10 @@ class Editor_addon_parametric extends Editor_addon_generic {
 		if ( 
 			$pagenow == 'admin.php' 
 			&& isset( $_GET['page'] ) 
-			&& $_GET['page'] == 'views-editor' 
+			&& (
+				$_GET['page'] == 'views-editor' 
+				|| $_GET['page'] == 'view-archives-editor' 
+			)
 		) {
 			//append the button
 			add_action( 'wpv_parametric_search_buttons', array( $this, 'add_parametric_search_buttons' ) );
@@ -404,8 +366,8 @@ class Editor_addon_parametric extends Editor_addon_generic {
 	 */
 	public function getPostTypesTaxonomies( $object_types, $out = 'objects' )
 	{
-		if( is_array( $object_types ) )	{
-			$taxonomies = $this->getTaxonomiesFromPostTypes( $object_types  );
+		if ( is_array( $object_types ) )	{
+			$taxonomies = $this->getTaxonomiesFromPostTypes( $object_types );
 
 			//Clean up the array from values we do not want
 			$exclude = array();
@@ -423,6 +385,24 @@ class Editor_addon_parametric extends Editor_addon_generic {
 		} else {
 			return array( 'error' => __( sprintf( 'Parameter should be an array %s', __METHOD__ ), 'wpv-views' ) );
 		}
+	}
+	
+	public function getAllTaxonomies( $out = 'objects' ) {
+		$taxonomies = get_taxonomies( '', 'objects' );
+
+		//Clean up the array from values we do not want
+		$exclude = array();
+		$exclude = apply_filters( 'wpv_admin_exclude_tax_slugs', $exclude );
+		foreach ( $taxonomies as $category_slug => $category ) {
+			if ( in_array( $category_slug, $exclude ) || !$category->show_ui ) {
+				unset( $taxonomies[ $category_slug ] );
+			}
+		}
+		//	$excluded = self::wpv_filter_excludes( $this->view_id, $taxonomies );
+		//	$exclude = array_merge($exclude, $excluded);
+		//	$newArr = array_diff($taxonomies, $exclude);
+
+		return  $taxonomies;
 	}
 
 
@@ -669,11 +649,12 @@ class Editor_addon_parametric extends Editor_addon_generic {
 	 * @return array
 	 */
 	private function getCustomFieldsPropertiesArray( $fields ) {
-		if( is_array( $fields ) ) {
+		if ( is_array( $fields ) ) {
 			$ret = array();
-			foreach( $fields as $field ) {
-				if( !array_key_exists( $field, $ret ) )
-				 $ret[ $field ] = $this->getCustomFieldProperties($field);
+			foreach ( $fields as $field ) {
+				if ( ! array_key_exists( $field, $ret ) ) {
+					$ret[ $field ] = $this->getCustomFieldProperties( $field );
+				}
 			}
 		} else {
 			$ret = array( 'error' => __( sprintf( 'Argument should be an array %s', __METHOD__ ), 'wpv-views') );
@@ -685,8 +666,23 @@ class Editor_addon_parametric extends Editor_addon_generic {
 
 	private function wpv_get_other_parametric_filters( $settings ) {
 		$ret = array();
-		$returned_post_types = isset( $settings['post_type'] ) ? $settings['post_type'] : array();
-		$existing_real_parents = array_keys( wpv_recursive_post_hierarchy( $returned_post_types, 4 ) );
+		if (
+			isset( $settings['view-query-mode'] ) 
+			&& $settings['view-query-mode'] != 'normal'
+		) {
+			$relationships = get_option( 'wpcf_post_relationship', array() );
+			$types_children = array();
+			if ( is_array( $relationships ) ) {
+				foreach ( $relationships as $has => $belongs ) {
+					$types_children = array_merge( $types_children, array_keys( $belongs ) );
+				}
+			}
+			$existing_real_parents = array_keys( wpv_recursive_post_hierarchy( $types_children, 4 ) );
+		} else {
+			$returned_post_types = isset( $settings['post_type'] ) ? $settings['post_type'] : array();
+			$existing_real_parents = array_keys( wpv_recursive_post_hierarchy( $returned_post_types, 4 ) );
+		}
+		
 		if ( !empty( $existing_real_parents ) ) {
 			$ret['relationship'] = 'relationship';
 		}
@@ -924,15 +920,13 @@ class Editor_addon_parametric extends Editor_addon_generic {
 	 * @access public
 	 * @return void
 	 */
-	public function send_data_to_parametric_form()
-	{
+	public function send_data_to_parametric_form() {
 		if ( ! current_user_can( 'manage_options' ) ) {
 			$send = array( 'error' =>  __( sprintf( 'Permission problem: you do not have permissions for that. %s', __METHOD__ ), 'wpv-views') );
-		} else if( 
+		} else if ( 
 			$_POST 
 			&& wp_verify_nonce( $_POST['wpv_parametric_create_nonce'], 'wpv_parametric_create_nonce' ) 
 		) {
-			global $WP_Views;
 			$this->view_id = intval( $_POST['view_id'] );
 			$send = array();
 			$edit = false;
@@ -956,44 +950,46 @@ class Editor_addon_parametric extends Editor_addon_generic {
 
 			} else {
 
-				$post_types = $_POST['post_types'] ? explode(',', $_POST['post_types'] ) : array();
+				$query_mode = isset( $_POST['query_mode'] ) ? sanitize_text_field( $_POST['query_mode'] ) : 'normal';
+				$post_types = isset( $_POST['post_types'] ) ? explode(',', $_POST['post_types'] ) : array();
 				$post_types = array_map( 'sanitize_text_field', $post_types );
-				$metas = $WP_Views->get_meta_keys();// @todo switch to use the getPostTypesMetas() method at some point
-				$taxes = $this->getPostTypesTaxonomies( $post_types );
+				$metas = apply_filters( 'wpv_filter_wpv_get_postmeta_keys', array() );// @todo switch to use the getPostTypesMetas() method at some point
+				if ( 'normal' == $query_mode ) {
+					$taxes = $this->getPostTypesTaxonomies( $post_types );
+				} else {
+					$taxes = $this->getAllTaxonomies();
+				}
 				$types = $this->getCustomFieldsPropertiesArray( $metas );
 				$other_filters = $this->wpv_get_other_parametric_filters( $settings );
 
-				if( isset( $metas['error'] ) ) {
+				if ( isset( $metas['error'] ) ) {
 					$send['error'] = $metas['error'];
-				} elseif( isset( $taxes['error'] ) ) {
+				} elseif ( isset( $taxes['error'] ) ) {
 					$send['error'] = $taxes['error'];
-				} elseif( isset( $types['error'] ) ) {
+				} elseif ( isset( $types['error'] ) ) {
 					$send['error'] = $types['error'];
 				} else {
-					$sendm = $this->buildJsonArray( array($metas, $types ), $settings );
-					$sendt = $this->buildJsonArray( array($taxes, $types ), $settings );
+					$sendm = $this->buildJsonArray( array( $metas, $types ), $settings );
+					$sendt = $this->buildJsonArray( array( $taxes, $types ), $settings );
 					if ( empty( $other_filters ) ) {
 						$sendof = false;
 					} else {
-						$sendof = $this->buildJsonArray( array($other_filters, $types ), $settings );
+						$sendof = $this->buildJsonArray( array( $other_filters, $types ), $settings );
 					}
 
-					if( isset( $sendm['error'] ) )	{
+					if ( isset( $sendm['error'] ) )	{
 						$send['error'] = $sendm['error'];
-					} else if( isset( $sendt['error'] ) ) {
+					} else if ( isset( $sendt['error'] ) ) {
 						$send['error'] = $sendt['error'];
 					} else {
-
-						if( $sendof ) {
+						if ( $sendof ) {
 							$send['basic_filters'] = $sendof;
 						}
-
-						if( $sendt ) {
+						if ( $sendt ) {
 							$send['taxonomy'] = $sendt;
 						}
-
-						if( $sendm ) {
-							foreach( $sendm as $key => $s) {
+						if ( $sendm ) {
+							foreach ( $sendm as $key => $s) {
 								$send[ $s['group'] ][ $key ] = $s;
 							}
 						}

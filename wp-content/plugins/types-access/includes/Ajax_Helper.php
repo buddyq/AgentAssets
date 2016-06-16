@@ -381,7 +381,10 @@ final class Access_Ajax_Helper
 				$output = Access_Admin_Edit::otg_access_get_permission_table_for_custom_roles();
 				break;
 			default;
-				
+				$extra_tabs = apply_filters( 'types-access-tab', array() );
+				if ( isset( $extra_tabs[ $section ] ) ) {
+					$output .= Access_Admin_Edit::otg_access_get_permission_table_for_third_party( $section );
+				}
 				break;
 		}
 

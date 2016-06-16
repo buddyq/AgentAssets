@@ -133,7 +133,6 @@ final class CRED_Posts_Controller extends CRED_Abstract_Controller {
     }
 
     public function deletePost($get, $post) {
-        cred_log($get);
         global $current_user;
 
         /* $return_codes=array(
@@ -183,36 +182,22 @@ final class CRED_Posts_Controller extends CRED_Abstract_Controller {
             if ($action && in_array($action, array('delete', 'trash'))) {
 
                 if (isset($get['redirect']) && is_numeric($get['redirect'])) {
-                    cred_log("...");
                     $p = get_post($get['redirect']);
-                    cred_log($p);
                     if ($p)
                         $redirect_url = '"' . get_permalink($p->ID) . '"';
                 }
-
-                cred_log("1");
-                cred_log($redirect_url);
 
                 if ((!$redirect_url || !isset($redirect_url) || $redirect_url == 'false') &&
                         array_key_exists('_cred_url', $get) && !empty($get['_cred_url']))
                     $redirect_url = urldecode($get['_cred_url']);
 
-                cred_log("2");
-                cred_log($redirect_url);
-
                 if ($redirect_url)
                     $redirect_url = apply_filters('cred_redirect_after_delete_action', $redirect_url, $post_id);
-
-                cred_log("3");
-                cred_log($redirect_url);
 
                 if ($redirect_url)
                     $redirect_url = '"' . preg_replace("/\"/","", $redirect_url) . '"';
                 else
                     $redirect_url = 'false';
-
-                cred_log("4");
-                cred_log($redirect_url);
                 
                 $fm = CRED_Loader::get('MODEL/Forms');
                 if ($get['cred_action'] == 'delete')
@@ -228,12 +213,7 @@ final class CRED_Posts_Controller extends CRED_Abstract_Controller {
             }
             //echo json_encode($result); 
 
-            cred_log("result ".json_encode($result));
-
             if ($result) {               
-                cred_log("A");
-                cred_log(array_key_exists('_cred_link_id', $get));
-                
                 if (array_key_exists('_cred_link_id', $get))
                     $jsfuncs['parent._cred_cred_delete_post_handler'] = array('false', '"' . urldecode($get['_cred_link_id']) . '"', $redirect_url, '101');
                 else
@@ -241,9 +221,6 @@ final class CRED_Posts_Controller extends CRED_Abstract_Controller {
                 //$jsfuncs['alert']=array("'".esc_js(__('Post deleted','wp-cred'))."'");
             }
             else {
-                cred_log("B");
-                cred_log(array_key_exists('_cred_link_id', $get));
-                
                 if (array_key_exists('_cred_link_id', $get))
                     $jsfuncs['parent._cred_cred_delete_post_handler'] = array('false', '"' . urldecode($get['_cred_link_id']) . '"', $redirect_url, '202');
                 else

@@ -1,6 +1,6 @@
 <?php
 
-require WPV_PATH_EMBEDDED . '/inc/wpv-filter-query.php';
+// @todo check whethwe we can move this out of here
 require WPV_PATH_EMBEDDED . '/inc/listing/listing.php';
 
 
@@ -8,60 +8,94 @@ class WP_Views {
 
 	function __construct() {
 		
-		$this->view_ids = array();
-		$this->current_view = null;
-		$this->CCK_types = array();// @deprecated maybe
-		$this->widget_view_id = 0;
-		$this->view_depth = 0;
-		$this->view_count = array();
-		$this->set_view_counts = array();
-		$this->view_shortcode_attributes = array();
-		$this->view_used_ids = array();
-		$this->rendering_views_form_in_progress = false;
+		$this->view_ids								= array();
+		$this->current_view							= null;
+		$this->CCK_types 							= array();// @deprecated maybe
+		$this->widget_view_id						= 0;
+		$this->view_depth							= 0;
+		$this->view_count							= array();
+		$this->set_view_counts						= array();
+		$this->view_shortcode_attributes			= array();
+		$this->view_used_ids						= array();
+		$this->rendering_views_form_in_progress		= false;
 
-		$this->post_query = null;
-		$this->post_query_stack = array();// @deprecated maybe
-		$this->top_current_page = null;
-		$this->current_page = array();
+		$this->post_query							= null;
+		$this->post_query_stack						= array();// @deprecated maybe
+		$this->top_current_page						= null;
+		$this->current_page							= array();
 
-		$this->taxonomy_data = array();
-		$this->parent_taxonomy = 0;
+		$this->taxonomy_data						= array();
+		$this->parent_taxonomy						= 0;
 
-		$this->users_data = array();
-		$this->parent_user = 0;
+		$this->users_data							= array();
+		$this->parent_user							= 0;
 
-		$this->variables = array();
+		$this->variables							= array();
 
-		$this->force_disable_dependant_parametric_search = false;
-		$this->returned_ids_for_parametric_search = array();
+		$this->force_disable_dependant_parametric_search	= false;
+		$this->returned_ids_for_parametric_search			= array();
 		
-		add_action( 'after_setup_theme', array( $this, 'before_init' ), 999 );
+		add_action( 'after_setup_theme',								array( $this, 'before_init' ), 999 );
 		
-		add_action( 'init', array( $this, 'init' ) );
-		add_action( 'widgets_init', array( $this, 'widgets_init' ) );
+		add_action( 'init',												array( $this, 'init' ) );
+		add_action( 'widgets_init',										array( $this, 'widgets_init' ) );
 		
-		add_action( 'init', array( $this, 'wpv_register_assets' ) );
+		add_action( 'init',												array( $this, 'wpv_register_assets' ) );
 		
 		// API
 		add_filter( 'wpv_filter_wpv_get_current_view',					array( $this, 'wpv_get_current_view' ) );
 		
+		// @todo move tis to a proper API file...
+		add_filter( 'wpv_filter_wpv_get_object_unique_hash',			array( $this, 'wpv_get_object_unique_hash' ), 10, 2 );
 		add_filter( 'wpv_filter_wpv_get_view_unique_hash',				array( $this, 'wpv_get_view_unique_hash' ) );
 		
+		// @todo move tis to a proper API file...
+		add_filter( 'wpv_filter_wpv_get_object_settings',				array( $this, 'wpv_get_view_settings' ), 10, 2 );
 		add_filter( 'wpv_filter_wpv_get_view_settings',					array( $this, 'wpv_get_view_settings' ), 10, 2 );
+		add_filter( 'wpv_filter_wpv_get_object_layout_settings',		array( $this, 'wpv_get_view_layout_settings' ), 10, 2 );
 		add_filter( 'wpv_filter_wpv_get_view_layout_settings',			array( $this, 'wpv_get_view_layout_settings' ), 10, 2 );
 		
 		add_filter( 'wpv_filter_wpv_get_view_shortcodes_attributes',	array( $this, 'wpv_get_view_shortcodes_attributes' ) );
+		add_action( 'wpv_filter_wpv_set_view_shortcodes_attributes',	array( $this, 'set_view_shortcode_attributes' ) );
 		
 		add_filter( 'wpv_filter_wpv_get_max_pages',						array( $this, 'wpv_get_max_pages' ) );
+		add_filter( 'wpv_filter_wpv_get_current_page_number',			array( $this, 'wpv_get_current_page_number' ) );
 		
 		add_filter( 'wpv_filter_wpv_get_top_current_post',				array( $this, 'wpv_get_top_current_post' ) );
+		add_action( 'wpv_action_wpv_set_top_current_post',				array( $this, 'wpv_set_top_current_post' ) );
+		
 		add_filter( 'wpv_filter_wpv_get_current_post',					array( $this, 'wpv_get_current_post' ) );
+		add_action( 'wpv_action_wpv_set_current_post',					array( $this, 'wpv_set_current_post' ) );
+		
 		add_filter( 'wpv_filter_wpv_get_parent_view_taxonomy',			array( $this, 'wpv_get_parent_view_taxonomy' ) );
+		add_action( 'wpv_action_wpv_set_parent_view_taxonomy',			array( $this, 'wpv_set_parent_view_taxonomy' ) );
+		
 		add_filter( 'wpv_filter_wpv_get_parent_view_user',				array( $this, 'wpv_get_parent_view_user' ) );
+		add_action( 'wpv_action_wpv_set_parent_view_user',				array( $this, 'wpv_set_parent_view_user' ) );
 		
 		add_filter( 'wpv_filter_wpv_get_widget_view_id',				array( $this, 'wpv_get_widget_view_id' ) );
+		add_action( 'wpv_action_wpv_set_widget_view_id',				array( $this, 'wpv_set_widget_view_id' ) );
 		
+		add_filter( 'wpv_filter_wpv_get_force_disable_dps',				array( $this, 'wpv_get_force_disable_dps' ) );
 		add_action( 'wpv_action_wpv_force_disable_dps',					array( $this, 'wpv_force_disable_dps' ) );
+		
+		add_filter( 'wpv_filter_wpv_get_postmeta_keys',					array( $this, 'wpv_get_postmeta_keys' ), 10, 2 );
+		add_filter( 'wpv_filter_wpv_get_termmeta_keys',					array( $this, 'wpv_get_termmeta_keys' ), 10, 2 );
+		add_filter( 'wpv_filter_wpv_get_usermeta_keys',					array( $this, 'wpv_get_usermeta_keys' ), 10, 2 );
+		
+		add_filter( 'wpv_filter_wpv_get_rendered_views_ids',			array( $this, 'wpv_get_rendered_views_ids' ) );
+		
+		add_filter( 'wpv_filter_wpv_get_post_query',					array( $this, 'wpv_get_post_query' ) );
+		add_filter( 'wpv_filter_wpv_get_taxonomy_query',				array( $this, 'wpv_get_taxonomy_query' ) );
+		add_filter( 'wpv_filter_wpv_get_user_query',					array( $this, 'wpv_get_user_query' ) );
+		
+		add_filter( 'wpv_filter_wpv_get_taxonomy_found_count',			array( $this, 'wpv_get_taxonomy_found_count' ) );
+		add_filter( 'wpv_filter_wpv_get_users_found_count',				array( $this, 'wpv_get_users_found_count' ) );
+		
+		add_filter( 'wpv_filter_wpv_is_rendering_form_view',			array( $this, 'wpv_is_rendering_form_view' ) );
+		
+		// PUBLIC API
+		add_filter( 'wpv_filter_public_wpv_get_view_shortcodes_attributes',		array( $this, 'wpv_get_view_shortcodes_attributes' ) );
         
 	}
 
@@ -93,8 +127,6 @@ class WP_Views {
 		add_action( 'admin_enqueue_scripts', array( $this,'wpv_admin_enqueue_scripts' ) );
 		add_action( 'wp_enqueue_scripts', array( $this, 'wpv_frontend_enqueue_scripts' ) );
 		
-		add_action( 'wp_ajax_wpv_pagination', 'wpv_ajax_pagination' );// @deprecated - maybe - to check and delete
-
 		/*
 		* ----------------------------
 		* AJAX calls for date filters
@@ -175,15 +207,13 @@ class WP_Views {
 				|| ( 
 					'admin.php' == $pagenow 
 					&& isset( $_GET['page'] ) 
-					&& 'dd_layouts_edit' == $_GET['page'] 
+					&& ( 'dd_layouts_edit' == $_GET['page'] || 'ct-editor' == $_GET['page'] )
 				) 
 			) {
-				add_action( 'admin_head', array( $this, 'add_dialog_to_editors' ) );
+				add_action( 'admin_head', array($this, 'add_dialog_to_editors') );
+			} else if ( 'admin-ajax.php' == $pagenow ) {
+				add_action( 'admin_init', array( $this, 'maybe_add_dialog_to_editor_in_ajax' ) );
 			}
-
-            if ( $pagenow === 'admin-ajax.php') {
-                add_action( 'admin_init', array( $this, 'maybe_add_dialog_to_editor_in_ajax' ) );
-            }
 
 		}
 
@@ -277,13 +307,13 @@ class WP_Views {
 	*/
 	function wpv_woocommerce_product_add_to_cart_url( $add_to_cart_url, $wc_prod_object ) {
 		if ( 
-			strpos( $add_to_cart_url, 'wpv-ajax-pagination' ) !== false
-			|| ( 
-				defined( 'DOING_AJAX' )
-				&& DOING_AJAX
-				&& isset( $_REQUEST['action'] )
-				&& $_REQUEST['action'] == 'wpv_update_parametric_search'
-			) 
+			defined( 'DOING_AJAX' )
+			&& DOING_AJAX
+			&& isset( $_REQUEST['action'] )
+			&& (
+				$_REQUEST['action'] == 'wpv_get_view_query_results' 
+				|| $_REQUEST['action'] == 'wpv_get_archive_query_results'
+			)
 		) {
 			$parsed = array();
 			$parsed = parse_url( $add_to_cart_url );
@@ -334,13 +364,13 @@ class WP_Views {
 		if ( preg_match( "|action='(.*?)'|", $form_tag, $matches ) ) {
 			$form_action = $matches[1];
 			if ( 
-				strpos( $form_action, 'wpv-ajax-pagination' ) !== false
-				|| ( 
-					defined( 'DOING_AJAX' )
-					&& DOING_AJAX
-					&& isset( $_REQUEST['action'] )
-					&& $_REQUEST['action'] == 'wpv_update_parametric_search'
-				) 
+				defined( 'DOING_AJAX' )
+				&& DOING_AJAX
+				&& isset( $_REQUEST['action'] )
+				&& (
+					$_REQUEST['action'] == 'wpv_get_view_query_results' 
+					|| $_REQUEST['action'] == 'wpv_get_archive_query_results'
+				)
 			) {
 				$base_url = "action='" . esc_url( wp_get_referer() ) . "'";
 				$form_tag = preg_replace( "|action='(.*?)'|", $base_url, $form_tag );
@@ -609,10 +639,12 @@ class WP_Views {
 
 
 	/**
-	 * Process the View form shortcode.
-	 *
-	 * eg. [wpv-form-view name='my-view' target_id='xx']
-	 */
+	* Process the View form shortcode.
+	*
+	* eg. [wpv-form-view name='my-view' target_id='xx']
+	*
+	* @todo Switch .js-wpv-filter-data-for-this-form into a form data attribute that we can init on document.ready and refresh when neeeded
+	*/
 	function short_tag_wpv_view_form( $atts ) {
 		global $sitepress;
 
@@ -635,17 +667,26 @@ class WP_Views {
 			return sprintf( '<!- %s ->', __( 'View not found', 'wpv-views' ) );
 		}
 
-		if ( empty( $target_id ) || $target_id == 'self' ) {
+		if ( 
+			empty( $target_id ) 
+			|| $target_id == 'self' 
+		) {
 			$target_id = 'self';
 			$url = $_SERVER['REQUEST_URI'];
+			// @todo review this, we might do the same than on wpv-filter-embedded.php:
+			/*
+			* $view_settings			= apply_filters( 'wpv_filter_wpv_get_view_settings', array() );
+			* $pagination_permalinks	= apply_filters( 'wpv_filter_wpv_get_pagination_permalinks', array(), $view_settings, $view_id );
+			* $url						= $pagination_permalinks['first'];
+			*/
 			if ( 
-				strpos( $url, 'wpv-ajax-pagination' ) !== false
-				|| ( 
-					defined('DOING_AJAX')
-					&& DOING_AJAX
-					&& isset( $_REQUEST['action'] )
-					&& $_REQUEST['action'] == 'wpv_update_parametric_search'
-				) 
+				defined('DOING_AJAX')
+				&& DOING_AJAX
+				&& isset( $_REQUEST['action'] )
+				&& (
+					$_REQUEST['action'] == 'wpv_get_view_query_results' 
+					|| $_REQUEST['action'] == 'wpv_get_archive_query_results'
+				)
 			) {
 				if ( wp_get_referer() ) {
 					$url = wp_get_referer();
@@ -681,7 +722,7 @@ class WP_Views {
             $cached_filter_index = get_option( 'wpv_transient_viewform_index', array() );
             $is_cached = isset( $cached_filter_index[$cache_id] ) && $cached_filter_index[$cache_id];
             
-            if( $is_cached ) {
+            if ( $is_cached ) {
                 
                 $trasient = 'wpv_transient_viewform_'.$cache_id.'_'.$target_id; // strlen() <= 45
                 $cached_filter = get_transient( $trasient );
@@ -756,7 +797,7 @@ class WP_Views {
 				if ( $dps_enabled ) {
 					$form_class[] = 'js-wpv-dps-enabled';
 				}
-				wpv_filter_extend_query_for_parametric_and_counters( array(), $view_settings, $id );
+				do_action( 'wpv_action_extend_query_for_parametric_and_counters', array(), $view_settings, $id );
 			} else {
 				// Set the force value
 				$this->set_force_disable_dependant_parametric_search( true );
@@ -820,37 +861,176 @@ class WP_Views {
 			
 			$view_attrs = $atts;
 			
-			$sort_id = '';
-			$sort_dir = '';
+			$sort_orderby		= '';
+			$sort_order			= '';
+			$sort_orderby_as	= '';
 			if ( $view_settings['query_type'][0] == 'posts' ) {
-				$sort_id = $view_settings['orderby'];
-				$sort_dir = strtolower( $view_settings['order'] );
+				$sort_orderby = $view_settings['orderby'];
+				$sort_order = strtolower( $view_settings['order'] );
+				$sort_orderby_as = strtolower( $view_settings['orderby_as'] );
 			}
 			if ( $view_settings['query_type'][0] == 'taxonomy' ) {
-				$sort_id = $view_settings['taxonomy_orderby'];
-				$sort_dir = strtolower( $view_settings['taxonomy_order'] );
+				$sort_orderby = $view_settings['taxonomy_orderby'];
+				$sort_order = strtolower( $view_settings['taxonomy_order'] );
+				$sort_orderby_as = strtolower( $view_settings['taxonomy_orderby_as'] );
 			}
 			if ( $view_settings['query_type'][0] == 'users' ) {
-				$sort_id = $view_settings['users_orderby'];
-				$sort_dir = strtolower( $view_settings['users_order'] );
+				$sort_orderby = $view_settings['users_orderby'];
+				$sort_order = strtolower( $view_settings['users_order'] );
+				$sort_orderby_as = strtolower( $view_settings['users_orderby_as'] );
 			}
-
+			
 			if (
-				isset( $_GET['wpv_sort_orderby'] ) 
-				&& esc_attr( $_GET['wpv_sort_orderby'] ) != '' 
-				&& isset( $_GET['wpv_view_count'] ) 
+				isset( $_GET['wpv_view_count'] ) 
 				&& esc_attr( $_GET['wpv_view_count'] ) == $this->get_view_count()
 			) {
-				$sort_id = esc_attr( $_GET['wpv_sort_orderby'] );
+				if (
+					isset( $_GET['wpv_sort_orderby'] ) 
+					&& esc_attr( $_GET['wpv_sort_orderby'] ) != '' 
+				) {
+					$sort_orderby = esc_attr( $_GET['wpv_sort_orderby'] );
+				}
+				if (
+					isset( $_GET['wpv_sort_order'] ) 
+					&& esc_attr( $_GET['wpv_sort_order'] ) != '' 
+				) {
+					$sort_order = esc_attr( $_GET['wpv_sort_order'] );
+				}
+				if (
+					isset( $_GET['wpv_sort_orderby_as'] ) 
+					&& esc_attr( $_GET['wpv_sort_orderby_as'] ) != '' 
+				) {
+					$sort_orderby_as = esc_attr( $_GET['wpv_sort_orderby_as'] );
+				}
 			}
-			if (
-				isset( $_GET['wpv_sort_order'] ) 
-				&& esc_attr( $_GET['wpv_sort_order'] ) != '' 
-				&& isset( $_GET['wpv_view_count'] ) 
-				&& esc_attr( $_GET['wpv_view_count'] ) == $this->get_view_count()
+			
+			// @todo Switch .js-wpv-filter-data-for-this-form into a form data attribute that we can init on document.ready and refresh when neeeded
+			// @note Mind that this could be served from cache, so we better have a caching cleaering mechanism that runs only once...
+			
+			$parametric_data = array(
+				'query'				=> 'normal',
+				'id'				=> $id,
+				'view_id'			=> $id,
+				'widget_id'			=> $this->get_widget_view_id(),
+				'view_hash'			=> $this->get_view_count(),
+				'action'			=> $url,
+				'sort'				=> array(
+									'orderby'		=> $sort_orderby,
+									'order'			=> $sort_order,
+									'orderby_as'	=> $sort_orderby_as,
+									),
+				'orderby'			=> $sort_orderby,
+				'order'				=> $sort_order,
+				'orderby_as'		=> $sort_orderby_as,
+				'ajax_form'			=> '',// 'disabled'|'enabled'
+				'ajax_results'		=> '',// 'disabled'|'onsubmit'|'enabled'
+				'effect'			=> 'fade',
+				'prebefore'			=> $ajax_pre_before,
+				'before'			=> $ajax_before,
+				'after'				=> $ajax_after
+			);
+			
+			$view_attrs_to_keep = $view_attrs;
+			if ( isset( $view_attrs_to_keep['name'] ) ) {
+				unset( $view_attrs_to_keep['name'] );
+			}
+			if ( isset( $view_attrs_to_keep['target_id'] ) ) {
+				unset( $view_attrs_to_keep['target_id'] );
+			}
+			
+			$parametric_data['attributes'] = $view_attrs_to_keep;
+			
+			$view_auxiliar_requires = array(
+				'current_post_id'	=> 0,
+				'parent_post_id'	=> 0,
+				'parent_term_id'	=> 0,
+				'parent_user_id'	=> 0
+			);
+			
+			/**
+			* wpv_filter_requires_current_page
+			*
+			* Whether the current View requires the current page for any filter
+			*
+			* @param $requires_current_page boolean
+			* @param $view_settings
+			*
+			* @since unknown
+			*/
+			$requires_current_page = apply_filters('wpv_filter_requires_current_page', false, $view_settings);
+			if ( 
+				$requires_current_page 
+				|| $target_id == 'self'
 			) {
-				$sort_dir = esc_attr( $_GET['wpv_sort_order'] );
+				$current_post = $this->get_top_current_page();
+				if (
+					$current_post 
+					&& isset( $current_post->ID ) 
+				) {
+					$view_auxiliar_requires['current_post_id'] = $current_post->ID;
+				}
 			}
+			
+			/**
+			* wpv_filter_requires_parent_post
+			*
+			* Whether the current View is nested and requires the parent term for any filter
+			*
+			* @param $requires_parent_term boolean
+			* @param $view_settings
+			*
+			* @since unknown
+			*/
+			$requires_parent_post = apply_filters( 'wpv_filter_requires_parent_post', false, $view_settings );
+			if ( $requires_parent_post ) {
+				$current_post = $this->get_current_page();
+				if (
+					$current_post 
+					&& isset( $current_post->ID ) 
+				) {
+					$view_auxiliar_requires['parent_post_id'] = $current_post->ID;
+				}
+			}
+			
+			/**
+			* wpv_filter_requires_parent_term
+			*
+			* Whether the current View is nested and requires the parent term for any filter
+			*
+			* @param $requires_parent_term boolean
+			* @param $view_settings
+			*
+			* @since unknown
+			*/
+			$requires_parent_term = apply_filters( 'wpv_filter_requires_parent_term', false, $view_settings );
+			if ( $requires_parent_term ) {
+				$parent_term_id = $this->get_parent_view_taxonomy();
+				if ( $parent_term_id ) {
+					$view_auxiliar_requires['parent_term_id'] = $parent_term_id;
+				}
+			}
+			
+			/**
+			* wpv_filter_requires_parent_user
+			*
+			* Whether the current View is nested and requires the parent user for any filter
+			*
+			* @param $requires_parent_user boolean
+			* @param $view_settings
+			*
+			* @since unknown
+			*/
+			$requires_parent_user = apply_filters( 'wpv_filter_requires_parent_user', false, $view_settings );
+			if ( $requires_parent_user ) {
+				$parent_user_id = $this->get_parent_view_user();
+				if ( $parent_user_id ) {
+					$view_auxiliar_requires['parent_user_id'] = $parent_user_id;
+				}
+			}
+			
+			$parametric_data['environment'] = $view_auxiliar_requires;
+			
+			$parametric_data = apply_filters( 'wpv_filter_wpv_get_parametric_settings', $parametric_data, $view_settings );
 
 			$out .= '<form'
 				. ' autocomplete="off"'
@@ -862,8 +1042,12 @@ class WP_Views {
 				. ' data-viewid="' . $id . '"'
 				. ' data-viewhash="' . base64_encode( json_encode( $view_attrs ) ) . '"'
 				. ' data-viewwidgetid="' . intval( $this->get_widget_view_id() ) . '"'
-				. ' data-orderby="' . $sort_id . '"'
-				. ' data-order="' . $sort_dir . '"'
+				. ' data-orderby="' . $sort_orderby . '"'
+				. ' data-order="' . $sort_order . '"'
+				. ' data-orderbyas="' . $sort_orderby_as . '"'
+				. ' data-parametric="' . esc_js( wp_json_encode( $parametric_data ) ) . '"'
+				. ' data-attributes="' . esc_js( wp_json_encode( $view_attrs_to_keep ) ) . '"'
+				. ' data-environment="' . esc_js( wp_json_encode( $view_auxiliar_requires ) ) . '"'
 				. '>';
 
 			$out .= '<input'
@@ -878,30 +1062,20 @@ class WP_Views {
 				. ' data-ajaxafter="' . $ajax_after . '"'
 				. ' />';
 
-			// Set a hidden input for the View attributes, so we can pass them if needed
-			if ( isset( $view_attrs['name'] ) ) {
-				unset( $view_attrs['name'] );
-			}
-			if ( isset( $view_attrs['target_id'] ) ) {
-				unset( $view_attrs['target_id'] );
-			}
-			if ( !empty( $view_attrs ) && is_array( $view_attrs ) ) {
-				$att_data = '';
-				foreach ( $view_attrs as $att_key => $att_val ) {
-					$att_data .= ' data-' . $att_key . '="' . esc_attr( $att_val ) . '"';
-				}
-				$out .= '<input type="hidden" class="js-wpv-view-attributes"' . $att_data . ' />';
-			}
-
 			// add hidden inputs for any url parameters.
 			// We need these for when the form is submitted.
 			$url_query = parse_url( $url, PHP_URL_QUERY );
 			if ( $url_query != '' ) {
-				$query_parts = explode( '&', $url_query );
-				foreach( $query_parts as $param ) {
-					$item = explode( '=', $param );
-					if ( strpos( $item[0], 'wpv_' ) !== 0 ) {
-						$out .= '<input id="wpv_param_' . $item[0] . '" type="hidden" name="' . $item[0] . '" value="' . $item[1] . '" />' . "\n";
+				$url_query_args = wp_parse_args( $url_query );
+				foreach ( $url_query_args as $url_key => $url_value ) {
+					if ( strpos( $url_key, 'wpv_' ) !== 0 ) {
+						if ( is_array( $url_value ) ) {
+							foreach ( $url_value as $url_value_counter => $url_value_item ) {
+								$out .= '<input id="wpv_param_' . esc_attr( $url_key . '_' . $url_value_counter ) . '" type="hidden" name="' . esc_attr( $url_key ) . '[]" value="' . esc_attr( $url_value_item ) . '" />';
+							}
+						} else if ( is_string( $url_value ) ) {
+							$out .= '<input id="wpv_param_' . esc_attr( $url_key ) . '" type="hidden" name="' . esc_attr( $url_key ) . '" value="' . esc_attr( $url_value ) . '" />';
+						}
 					}
 				}
 			}
@@ -926,91 +1100,6 @@ class WP_Views {
 
 			$out .= wpv_do_shortcode( $fixmatches );
 			
-			$requires_current_page = false;
-			/**
-			* wpv_filter_requires_current_page
-			*
-			* Whether the current View requires the current page for any filter
-			*
-			* @param $requires_current_page boolean
-			* @param $view_settings
-			*
-			* @since unknown
-			*/
-			$requires_current_page = apply_filters('wpv_filter_requires_current_page', $requires_current_page, $view_settings);
-			if ( 
-				$requires_current_page 
-				|| $target_id == 'self'
-			) {
-				$current_post = $this->get_top_current_page();
-				if (
-					$current_post 
-					&& isset( $current_post->ID ) 
-				) {
-					$out .= '<input class="wpv_aux_current_post_id wpv_aux_current_post_id-' . esc_attr( $this->get_view_count() ) . '" type="hidden" name="wpv_aux_current_post_id" value="' . esc_attr( $current_post->ID ) . '" class="js-wpv-keep-on-clear" />';
-				}
-			}
-			
-			$requires_parent_post = false;
-			/**
-			* wpv_filter_requires_parent_post
-			*
-			* Whether the current View is nested and requires the parent term for any filter
-			*
-			* @param $requires_parent_term boolean
-			* @param $view_settings
-			*
-			* @since unknown
-			*/
-			$requires_parent_post = apply_filters( 'wpv_filter_requires_parent_post', $requires_parent_post, $view_settings );
-			if ( $requires_parent_post ) {
-				$current_post = $this->get_current_page();
-				if (
-					$current_post 
-					&& isset( $current_post->ID ) 
-				) {
-					$out .= '<input class="wpv_aux_parent_post_id wpv_aux_parent_post_id-' . esc_attr( $view_count) . '" type="hidden" name="wpv_aux_parent_post_id" value="' . esc_attr( $current_post->ID ) . '" class="js-wpv-keep-on-clear" />';
-				}
-			}
-			
-			$requires_parent_term = false;
-			/**
-			* wpv_filter_requires_parent_term
-			*
-			* Whether the current View is nested and requires the parent term for any filter
-			*
-			* @param $requires_parent_term boolean
-			* @param $view_settings
-			*
-			* @since unknown
-			*/
-			$requires_parent_term = apply_filters( 'wpv_filter_requires_parent_term', $requires_parent_term, $view_settings );
-			if ( $requires_parent_term ) {
-				$parent_term_id = $this->get_parent_view_taxonomy();
-				if ( $parent_term_id ) {
-					$out .= '<input class="wpv_aux_parent_term_id wpv_aux_parent_term_id-' . esc_attr( $this->get_view_count() ) . '" type="hidden" name="wpv_aux_parent_term_id" value="' . esc_attr( $parent_term_id ) . '" class="js-wpv-keep-on-clear" />';
-				}
-			}
-			
-			$requires_parent_user = false;
-			/**
-			* wpv_filter_requires_parent_user
-			*
-			* Whether the current View is nested and requires the parent user for any filter
-			*
-			* @param $requires_parent_user boolean
-			* @param $view_settings
-			*
-			* @since unknown
-			*/
-			$requires_parent_user = apply_filters( 'wpv_filter_requires_parent_user', $requires_parent_user, $view_settings );
-			if ( $requires_parent_user ) {
-				$parent_user_id = $this->get_parent_view_user();
-				if ( $parent_user_id ) {
-					$out .= '<input class="wpv_aux_parent_user_id wpv_aux_parent_user_id-' . esc_attr( $this->get_view_count() ) . '" type="hidden" name="wpv_aux_parent_user_id" value="' . esc_attr( $parent_user_id ) . '" class="js-wpv-keep-on-clear" />';
-				}
-			}
-			
 			$out .= '</form>';
 
 			$this->current_view = array_pop( $this->view_ids );
@@ -1023,11 +1112,11 @@ class WP_Views {
             if( $is_cacheable ) {
 
                 // Update Views Filter Content Cache
-                $trasient = 'wpv_transient_viewform_'.$cache_id;
+                $trasient = 'wpv_transient_viewform_' . $cache_id;
                 $is_stored = set_transient( $trasient, $out, DAY_IN_SECONDS );
 
                 // Update Views Filter Index
-                if( $is_stored === true ) {
+                if ( $is_stored === true ) {
                     $cached_filter_index = get_option( 'wpv_transient_viewform_index', array() );
                     $cached_filter_index = $cached_filter_index === false ? array() : $cached_filter_index;
                     $cached_filter_index[$cache_id] = true;
@@ -1182,6 +1271,10 @@ class WP_Views {
         
         return $id;
     }
+	
+	function wpv_is_rendering_form_view( $false ) {
+		return $this->rendering_views_form();
+	}
     
 	function rendering_views_form() {
 		return $this->rendering_views_form_in_progress;
@@ -1200,6 +1293,17 @@ class WP_Views {
 		}
 		return $current_post;
 	}
+	
+	function wpv_set_current_post( $current_post ) {
+		$post_exists = ( isset( $current_post ) && $current_post instanceof WP_Post );
+		if (
+			isset( $current_post ) 
+			&& $current_post instanceof WP_Post
+		) {
+			
+		}
+		array_push( $this->current_page, clone $current_post );
+	}
 
 	function wpv_get_view_shortcodes_attributes( $attributes = false ) {
 		$attributes = $this->get_view_shortcodes_attributes();
@@ -1209,6 +1313,24 @@ class WP_Views {
 	function get_view_shortcodes_attributes() {
 		$aux_array = $this->view_shortcode_attributes;
 		return end( $aux_array );
+	}
+	
+	/**
+	* set_view_shortcode_attributes
+	*
+	* Sets the shortcode attributess for the current View.
+	*
+	* Note that calling this twice on the same View will have undesired effects. Use with caution.
+	* - Shortcode attributes are pushed into an array when a View is about to be rendered.
+	* - Shortcode attributes are poped from that array after the View has been rendered.
+	* - This way, several nested Views can have their attributes stored and in sync with the currently rendered one.
+	* - Pushing twice for the same View mwans that only the last set is used, and the sync for nested Views is broken.
+	*
+	* This method is useful when doing AJAX cals, where you know that no View is being loaded, but you need to fake the View shortcode attributes to calculate its hash.
+	*/
+	
+	function set_view_shortcode_attributes( $attributes ) {
+		array_push( $this->view_shortcode_attributes, $attributes );
 	}
 
 
@@ -1237,6 +1359,10 @@ class WP_Views {
 		$top_current_post = $this->get_top_current_page();
 		return $top_current_post;
 	}
+	
+	function wpv_set_top_current_post( $top_current_post ) {
+		$this->top_current_page = $top_current_post;
+	}
 
 	function wpv_get_current_view( $current_view = null ) {
 		$current_view = $this->get_current_view();
@@ -1249,6 +1375,23 @@ class WP_Views {
 	function get_current_view() {
 		return $this->current_view;
 	}
+	
+	
+	function wpv_get_object_unique_hash( $hash = '', $view_settings = array() ) {
+		$view_settings['view-query-mode'] = isset( $view_settings['view-query-mode'] ) ? $view_settings['view-query-mode']  : 'normal';
+		switch ( $view_settings['view-query-mode'] ) {
+			case 'archive':
+			case 'layouts-loop':
+				$hash = apply_filters( 'wpv_filter_wpv_get_archive_unique_hash', '' );
+				break;
+			case 'normal':
+			default:
+				$hash = apply_filters( 'wpv_filter_wpv_get_view_unique_hash', '' );
+				break;
+		}
+		return $hash;
+	}
+	
 
 	function wpv_get_view_unique_hash( $view_unique_hash = '' ) {
 		$view_unique_hash = $this->get_view_count();
@@ -1368,8 +1511,10 @@ class WP_Views {
 		if ( ! empty( $attr_suffix ) ) {
 			$attr_suffix = '-' . $attr_suffix;
 		}
+		
+		$return = $this->current_view . $attr_suffix;
 
-		return $this->current_view . $attr_suffix;
+		return (string) $return;
 	}
 
 
@@ -1956,7 +2101,7 @@ class WP_Views {
 
 					$WPVDebug->clean_index();
 					
-					$pagination_data = wpv_get_view_pagination_data( $view_settings );
+					$pagination_data = apply_filters( 'wpv_filter_wpv_get_pagination_settings', array(), $view_settings );
 					if ( $pagination_data['effect'] == 'infinite' ) {
 						$loop = '<!-- WPV_Infinite_Scroll --><!-- WPV_Infinite_Scroll_Insert -->' . $loop . '<!-- WPV_Infinite_Scroll -->';
 					}
@@ -2134,8 +2279,9 @@ class WP_Views {
 	
 	function maybe_add_dialog_to_editor_in_ajax() {
 		global $post;
-		if ( 
-			! isset( $_POST['post_id'] )
+		if (
+			apply_filters( 'wpv_filter_dialog_for_editors_requires_post', true )
+			&& ! isset( $_POST['post_id'] )
 			&& is_null( $post ) 
 		) {
 			return;
@@ -2169,8 +2315,10 @@ class WP_Views {
 				return;
 			}
 		}
+
+		if( is_null( $post ) && isset( $_POST['post_id'] ) )
+			$post = get_post( $_POST['post_id'] );
 		
-		$post = is_null( $post ) ? get_post( $_POST['post_id'] ) : $post;
 		$this->add_dialog_to_editors();
 	}
 	
@@ -2184,7 +2332,7 @@ class WP_Views {
 	function add_dialog_to_editors() {
 		global $post;
 
-		if ( is_object( $post ) === false ) {
+		if( apply_filters( 'wpv_filter_dialog_for_editors_requires_post', true ) === true && is_object( $post ) === false ) {
 			return;
 		}
 
@@ -2252,6 +2400,11 @@ class WP_Views {
 			}
 		}
 		return $views_available;
+	}
+	
+	function wpv_get_postmeta_keys( $keys, $limit = 512 ) {
+		$keys = $this->get_meta_keys( $limit );
+		return $keys;
 	}
 
     /**
@@ -2333,11 +2486,11 @@ class WP_Views {
         if ( $is_visible ) {
             $predicate_function_name = 'custom_field_is_visible';
             $wpv_filter_keys_limit = 'wpv_filter_wpv_get_postmeta_keys_limit';
-            $wpv_filter_keys_result = 'wpv_filter_wpv_get_postmeta_keys';
+            $wpv_filter_keys_result = 'wpv_filter_wpv_get_postmeta_keys_result';
         } else {
             $predicate_function_name = 'custom_field_is_hidden';
             $wpv_filter_keys_limit = 'wpv_filter_wpv_get_hidden_postmeta_keys_limit';
-            $wpv_filter_keys_result = 'wpv_filter_wpv_get_hidden_postmeta_keys';
+            $wpv_filter_keys_result = 'wpv_filter_wpv_get_hidden_postmeta_keys_result';
         }
         
         $cf_keys = array();
@@ -2452,6 +2605,11 @@ class WP_Views {
         
     }
 	
+	function wpv_get_usermeta_keys( $keys, $limit = 512 ) {
+		$keys = $this->get_usermeta_keys( $limit );
+		return $keys;
+	}
+	
 	/**
 	* Get visible usermeta field keys
 	*
@@ -2552,11 +2710,11 @@ class WP_Views {
         if ( $is_visible ) {
             $predicate_function_name = 'usermeta_field_is_visible';
             $wpv_filter_keys_limit = 'wpv_filter_wpv_get_usermeta_keys_limit';
-            $wpv_filter_keys_result = 'wpv_filter_wpv_get_usermeta_keys';
+            $wpv_filter_keys_result = 'wpv_filter_wpv_get_usermeta_keys_result';
         } else {
             $predicate_function_name = 'usermeta_field_is_hidden';
             $wpv_filter_keys_limit = 'wpv_filter_wpv_get_hidden_usermeta_keys_limit';
-            $wpv_filter_keys_result = 'wpv_filter_wpv_get_hidden_usermeta_keys';
+            $wpv_filter_keys_result = 'wpv_filter_wpv_get_hidden_usermeta_keys_result';
         }
         
         $cf_keys = array();
@@ -2663,6 +2821,11 @@ class WP_Views {
         
     }
 	
+	function wpv_get_termmeta_keys( $keys, $limit = 512 ) {
+		$keys = $this->get_termmeta_keys( $limit );
+		return $keys;
+	}
+	
 	/**
 	* Get visible termmeta field keys and hidden termmeta field keys declared as such
 	*
@@ -2739,11 +2902,11 @@ class WP_Views {
         if ( $is_visible ) {
             $predicate_function_name = 'termmeta_field_is_visible';
             $wpv_filter_keys_limit = 'wpv_filter_wpv_get_termmeta_keys_limit';
-            $wpv_filter_keys_result = 'wpv_filter_wpv_get_termmeta_keys';
+            $wpv_filter_keys_result = 'wpv_filter_wpv_get_termmeta_keys_result';
         } else {
             $predicate_function_name = 'termmeta_field_is_hidden';
             $wpv_filter_keys_limit = 'wpv_filter_wpv_get_hidden_termmeta_keys_limit';
-            $wpv_filter_keys_result = 'wpv_filter_wpv_get_hidden_termmeta_keys';
+            $wpv_filter_keys_result = 'wpv_filter_wpv_get_hidden_termmeta_keys_result';
         }
         
         $termmeta_keys = array();
@@ -2932,7 +3095,7 @@ class WP_Views {
 				if (
 					isset( $_GET['wpv_paged'] ) 
 					&& isset( $_GET['wpv_view_count'] ) 
-					&& esc_attr( $_GET['wpv_view_count'] ) == $this->get_view_count()
+					&& esc_attr( $_GET['wpv_view_count'] ) == apply_filters( 'wpv_filter_wpv_get_object_unique_hash', '', $view_settings )
 				) {
 					// @todo check this against the View hash too!
 					$page = (int) $_GET['wpv_paged'];
@@ -2976,7 +3139,7 @@ class WP_Views {
 				if (
 					isset( $_GET['wpv_paged'] ) 
 					&& isset( $_GET['wpv_view_count'] ) 
-					&& esc_attr( $_GET['wpv_view_count'] ) == $this->get_view_count()
+					&& esc_attr( $_GET['wpv_view_count'] ) == apply_filters( 'wpv_filter_wpv_get_object_unique_hash', '', $view_settings )
 				) {
 					$page = (int) $_GET['wpv_paged'];
 				}
@@ -3008,6 +3171,12 @@ class WP_Views {
 		$view = WPV_View_Base::get_instance( $view_id );
 		return $view->query_type;
 	}
+	
+	
+	function wpv_get_current_page_number( $page = 1 ) {
+		$page = $this->get_current_page_number();
+		return $page;
+	}
 
 
 	function get_current_page_number() {
@@ -3028,7 +3197,7 @@ class WP_Views {
 			$query_type == 'posts'
 			&& $this->post_query
 		) {
-			return intval( $this->post_query->query_vars['paged'] );
+			return ( ! empty( $this->post_query->query_vars['paged'] ) ) ? (int) $this->post_query->query_vars['paged'] : 1;
 		} else {
 			return 1;
 		}
@@ -3065,6 +3234,10 @@ class WP_Views {
 		return 1;
 	}
 
+	function wpv_get_taxonomy_found_count( $count = 0 ) {
+		$count = $this->get_taxonomy_found_count();
+		return $count;
+	}
 
 	function get_taxonomy_found_count() {
 		if ( isset( $this->taxonomy_data['item_count'] ) ) {
@@ -3072,6 +3245,11 @@ class WP_Views {
 		} else {
 			return 0;
 		}
+	}
+	
+	function wpv_get_users_found_count( $count = 0 ) {
+		$count = $this->get_users_found_count();
+		return $count;
 	}
 
 
@@ -3095,6 +3273,10 @@ class WP_Views {
 		}
 		return $parent_taxonomy;
 	}
+	
+	function wpv_set_parent_view_taxonomy( $parent_taxonomy ) {
+		$this->parent_taxonomy = $parent_taxonomy;
+	}
 
 	function get_parent_view_user() {
 		return $this->parent_user;
@@ -3107,18 +3289,28 @@ class WP_Views {
 		}
 		return $parent_user;
 	}
-
-	function set_widget_view_id( $id ) {
-		$this->widget_view_id = $id;
+	
+	function wpv_set_parent_view_user( $parent_user ) {
+		$this->parent_user = $parent_user;
 	}
+
+	
 
 	function wpv_get_widget_view_id( $widget_view_id = 0 ) {
 		$widget_view_id = $this->get_widget_view_id();
 		return $widget_view_id;
 	}
+	
+	function wpv_set_widget_view_id( $widget_view_id ) {
+		$this->widget_view_id = $widget_view_id;
+	}
 
 	function get_widget_view_id() {
 		return $this->widget_view_id;
+	}
+	
+	function set_widget_view_id( $widget_view_id ) {
+		$this->widget_view_id = $widget_view_id;
 	}
 
 
@@ -3138,7 +3330,10 @@ class WP_Views {
 		return null;
 	}
 
-
+	/**
+	* This might be deprecated, but does not hurt
+	* Maybe add a _doing_it_wrong call_user_func
+	*/
 	function get_view_shortcode_params( $view_id ) {
 		$settings = $this->get_view_settings( $view_id );
 
@@ -3410,9 +3605,12 @@ class WP_Views {
 			WPV_URL_EMBEDDED . '/res/js/views_codemirror_conf.js', 
 			array( 
 				'jquery', 
+				'toolset-event-manager',
 				'toolset-codemirror-script', 
 				'toolset-meta-html-codemirror-overlay-script', 
-				'toolset-meta-html-codemirror-xml-script', 'toolset-meta-html-codemirror-css-script', 'toolset-meta-html-codemirror-js-script', 
+				'toolset-meta-html-codemirror-xml-script', 
+				'toolset-meta-html-codemirror-css-script', 
+				'toolset-meta-html-codemirror-js-script', 
 				'toolset-meta-html-codemirror-utils-search-cursor', 
 				'toolset-meta-html-codemirror-utils-panel' 
 			), 
@@ -3432,9 +3630,9 @@ class WP_Views {
 				'wpv_dont_show_it_again' => __( "Got it! Don't show this message again", 'wpv-views'),
 				'wpv_close' => __( 'Close', 'wpv-views') );
 		wp_localize_script( 'views-utils-script', 'wpv_help_box_texts', $help_box_translations );
-		
+
 		// Shortcodes GUI script
-		wp_register_script( 'views-shortcodes-gui-script', WPV_URL_EMBEDDED . '/res/js/views_shortcodes_gui.js', array( 'jquery', 'suggest', 'jquery-ui-dialog', 'jquery-ui-tabs', 'views-utils-script', 'quicktags', 'icl_editor-script', 'underscore' ), WPV_VERSION );
+		wp_register_script( 'views-shortcodes-gui-script', WPV_URL_EMBEDDED . '/res/js/views_shortcodes_gui.js', array( 'jquery', 'suggest', 'jquery-ui-dialog', 'jquery-ui-tabs', 'views-utils-script', 'quicktags', 'icl_editor-script', 'underscore', 'toolset-event-manager' ), WPV_VERSION );
 		$shortcodes_gui_translations = array(
 			'wpv_insert_shortcode'						=> __( 'Insert shortcode', 'wpv-views'),
 			'wpv_create_shortcode'						=> __( 'Create shortcode', 'wpv-views' ),
@@ -3548,30 +3746,7 @@ class WP_Views {
 		// 		- wp-mediaelement
 		// 		- wp-playlist
 		wp_register_script( 'views-pagination-script', WPV_URL_EMBEDDED_FRONTEND . '/res/js/wpv-pagination-embedded.js', array( 'jquery', 'jquery-ui-datepicker', 'wp-mediaelement', 'wp-playlist', 'underscore' ), WPV_VERSION, true );
-		// Determine AJAX URL
-		$ajax_url = trailingslashit( home_url() );
-		$permalink_structure = get_option( 'permalink_structure' );
-		if ( 
-			$permalink_structure != ''
-			&& strpos( $ajax_url, '?' ) === false // This happens on WPML when using the language as URL parameter
-		) {
-			$ajax_url .= 'wpv-ajax-pagination/';
-		} else {
-			$ajax_url = plugins_url( 'wpv-ajax-pagination-default.php', __FILE__ );
-		}
-		// Workaround for IIS servers - See: https://icanlocalize.basecamphq.com/projects/7393061-toolset/todo_items/166116657/comments
-		if ( 
-			isset( $_SERVER ['SERVER_SOFTWARE'] ) 
-			&& ( strpos( strtolower ( $_SERVER ['SERVER_SOFTWARE'] ), 'iis' ) !== false ) 
-		) {
-			$ajax_url = plugins_url( 'wpv-ajax-pagination-default.php', __FILE__ );
-		}
-		$ajax_url_safe = plugins_url( 'wpv-ajax-pagination-default.php', __FILE__ );
-		// Only check is_ssl() because the pagination URL must have the same origin as the frontend page requesting it
-		if ( is_ssl() ) {
-			$ajax_url = str_replace( 'http://', 'https://', $ajax_url );
-			$ajax_url_safe = str_replace( 'http://', 'https://', $ajax_url_safe );
-		}
+		
 		$calendar_image = WPV_URL_EMBEDDED_FRONTEND . '/res/img/calendar.gif';
 		$calendar_image = apply_filters( 'wpv_filter_wpv_calendar_image', $calendar_image );
 		$calendar_image = apply_filters( 'wptoolset_filter_wptoolset_calendar_image', $calendar_image );
@@ -3595,8 +3770,6 @@ class WP_Views {
 		$resize_debounce_tolerance = apply_filters( 'wpv_filter_wpv_resize_debounce_tolerance', 100 );
 		$wpv_pagination_localization = array(
 			'front_ajaxurl'				=> admin_url( 'admin-ajax.php', null ),
-			'ajax_pagination_url'		=> $ajax_url,
-			'ajax_pagination_url_safe'	=> $ajax_url_safe,
 			'calendar_image'			=> $calendar_image,
 			'calendar_text'				=> esc_js( __( 'Select date', 'wpv-views') ),
 			'datepicker_min_date'		=> $datepicker_min_date,
@@ -3752,6 +3925,10 @@ class WP_Views {
 		}
 
 	}
+	
+	function wpv_get_force_disable_dps( $status = false ) {
+		return $this->get_force_disable_dependant_parametric_search();
+	}
 
 
 	function get_force_disable_dependant_parametric_search() {
@@ -3816,6 +3993,22 @@ class WP_Views {
 		$view_settings = $this->get_view_settings( $view_id );
 
 	}
+	
+	function wpv_get_rendered_views_ids( $used_ids = array() ) {
+		return $this->view_used_ids;
+	}
+	
+	function wpv_get_post_query( $query = null ) {
+		return $this->post_query;
+	}
+	
+	function wpv_get_taxonomy_query( $query = array() ) {
+		return $this->taxonomy_data;
+	}
+	
+	function wpv_get_user_query( $query = array() ) {
+		return $this->users_data;
+	}
 
 }
 
@@ -3845,8 +4038,8 @@ function wpv_views_plugin_plugin_row_meta( $plugin_meta, $plugin_file, $plugin_d
 	if ( $plugin_file == $this_plugin ) {
 		$plugin_meta[] = sprintf(
 				'<a href="%s" target="_blank">%s</a>',
-				'https://wp-types.com/version/views-2-0/?utm_source=viewsplugin&utm_campaign=views&utm_medium=release-notes-plugin-row&utm_term=Views 2.0 release notes',
-				__( 'Views 2.0 release notes', 'wpv-views' ) 
+				'https://wp-types.com/version/views-2-1/?utm_source=viewsplugin&utm_campaign=views&utm_medium=release-notes-plugin-row&utm_term=Views 2.1 release notes',
+				__( 'Views 2.1 release notes', 'wpv-views' ) 
 			);
 	}
 	return $plugin_meta;
@@ -4157,16 +4350,28 @@ function get_view_allowed_url_parameters( $view_id ) {
 	}
 	global $WP_Views;
 	$view_settings = $WP_Views->get_view_settings( $view_id );
-	if ( 
+	$query_type = '';
+	
+	if (
 		is_array( $view_settings ) 
 		&& isset( $view_settings['view-query-mode'] )
-		&& $view_settings['view-query-mode'] == 'normal'
-		&& isset( $view_settings['query_type'][0] )
 	) {
-		$query_type = $view_settings['query_type'][0];
-		$attributes = apply_filters( 'wpv_filter_register_url_parameters_for_' . $query_type, $attributes, $view_settings );
-		// Post View
-		if ( $view_settings['query_type'][0] == 'posts' ) {
+		switch ( $view_settings['view-query-mode'] ) {
+			case 'normal':
+				if ( isset( $view_settings['query_type'][0] ) ) {
+					$query_type = $view_settings['query_type'][0];
+				}
+				break;
+			default:
+				$query_type = 'posts';
+				break;
+		}
+	}
+	
+	$attributes = apply_filters( 'wpv_filter_register_url_parameters_for_' . $query_type, $attributes, $view_settings );
+	
+	switch ( $query_type ) {
+		case 'posts':
 			foreach ( $view_settings as $key => $value ) {
 				// Taxonomy
 				if ( 
@@ -4207,10 +4412,8 @@ function get_view_allowed_url_parameters( $view_id ) {
 					);
 				}
 			}
-		}
-		
-		// Taxonomy View
-		if ( $view_settings['query_type'][0] == 'taxonomy' ) {
+			break;
+		case 'taxonomy':
 			foreach ( $view_settings as $key => $value ) {
 				// Termmeta fields
 				if ( 
@@ -4232,10 +4435,8 @@ function get_view_allowed_url_parameters( $view_id ) {
 					);
 				}
 			}
-		}
-
-		// User View
-		if ( $view_settings['query_type'][0] == 'users' ) {
+			break;
+		case 'users':
 			foreach ( $view_settings as $key => $value ) {
 				// Usermeta fields
 				if ( 
@@ -4257,7 +4458,7 @@ function get_view_allowed_url_parameters( $view_id ) {
 					);
 				}
 			}
-		}
+			break;
 	}
 
 	return $attributes;

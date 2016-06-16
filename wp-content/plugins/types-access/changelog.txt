@@ -1,4 +1,13 @@
-2.0
+2.1 AKA Access Denied
+* Added an API to register custom tabs in the Access Control admin page.
+* Separated the Types fields and CRED forms settings into their own tabs on the Access Control admin page.
+* Improved the admin screen headers by using h1 tags, as suggested by WordPress.
+* Fixed the Access Control tab invalidation, so when modifying something that affects other tabs, those tabs need to be recreated.
+* Fixed a problem that was hidding the button to apply a post revision.
+* Fixed a problem when checking arbitrary user permissions using user_can().
+* Fixed a problem when setting combinations of capabilities for managing taxonomies.
+
+2.0 AKA Access Granted
 * Added Access to the new shared Toolset admin menu, and Export / Import page.
 * Revamped the Access Control admin page with tabs and AJAX reload.
 * Improved the dialog to insert the Access shortcode.

@@ -15,6 +15,11 @@
     <td class="select-listed-item">
         <input disabled type="checkbox" name="items[]" class="js-selected-items" value="{{ ddl.ID }}"/>
     </td>
+    <td class="post-id page-id column-id">
+        <strong><a class="row-id" href="admin.php?page=dd_layouts_edit&layout_id={{{ ddl.ID }}}&action=edit"
+                   title="">{{{
+            ddl.ID }}}</a></strong>
+    </td>
     <td class="post-title page-title column-title" style="padding-left:{{{ 16 * indent }}}px">
         <# if(ddl.post_status == 'publish' ){ #>
             <strong><a class="row-title" href="admin.php?page=dd_layouts_edit&layout_id={{{ ddl.ID }}}&action=edit"

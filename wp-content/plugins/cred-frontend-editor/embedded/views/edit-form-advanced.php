@@ -116,6 +116,7 @@ wp_nonce_field( 'closedpostboxes', 'closedpostboxesnonce', false );
 </div>
 </div><!-- /titlediv -->
 <?php } ?>
+    <div id="toolset-video-box-wrap cred-not-hide"></div>
 </div><!-- /post-body-content -->
 
 <div id="postbox-container-1" class="postbox-container"><?php CRED_Loader::do_meta_boxes(null, 'side', $post); ?></div>

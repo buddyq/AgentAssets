@@ -20,8 +20,14 @@ class Toolset_Addon_Maps_Views {
 	static $stored_options	= array();
 
 	function __construct() {
+		
+		self::$stored_options =		get_option( self::option_name, array() );
+		
 		add_action( 'init',			array( $this, 'init' ) );
 		add_action( 'admin_init',	array( $this, 'admin_init' ) );
+		
+		// API filters
+		add_filter( 'toolset_filter_toolset_maps_get_api_key', array( $this, 'toolset_filter_toolset_maps_get_api_key' ) );
 		
 		$this->enqueue_marker_clusterer_script = false;
 	}
@@ -29,7 +35,6 @@ class Toolset_Addon_Maps_Views {
 	function init() {
 		
 		self::$is_wpv_embedded =	apply_filters( 'toolset_is_views_embedded_available', false );
-		self::$stored_options =		get_option( self::option_name, array() );
 
 		// Shortcodes
 		add_shortcode( 'wpv-map-render',	array( $this, 'wpv_map_render_shortcode' ) );
@@ -38,8 +43,6 @@ class Toolset_Addon_Maps_Views {
 		add_filter( 'the_content',								array( $this, 'wpv_map_run_shortcodes' ), 8 );
 		add_filter( 'wpv_filter_wpv_the_content_suppressed',	array( $this, 'wpv_map_run_shortcodes' ), 8 );
 		add_filter( 'wpv-pre-do-shortcode',						array( $this, 'wpv_map_run_shortcodes' ), 8 );
-		// API filters
-		add_filter( 'toolset_filter_toolset_maps_get_api_key', array( $this, 'toolset_filter_toolset_maps_get_api_key' ) );
 
 	}
 

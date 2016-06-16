@@ -61,11 +61,13 @@ class WPDD_layout {
             $target->set_context($context);
         }
 
+        do_action('ddl-before_layout_render', $this, $target);
         $target->push_current_layout($this);
         foreach($this->rows as $row) {
             $row->frontend_render($target);
         }
         $target->pop_current_layout($this);
+        do_action('ddl-after_layout_render', $this, $target);
     }
 
     function set_name($name) {
@@ -780,6 +782,26 @@ class WPDD_layout_cell extends WPDD_layout_element {
         $target->cell_end_callback($this->get_tag());
 
         do_action( 'ddl_after_cell_end_callback', $this, $target );
+    }
+    
+    function content_content_contains( $strings = array() ){
+
+        $bool = false;
+
+        $content = $this->get('content');
+
+        if( null === $content ) return $bool;
+
+        $search = apply_filters( 'ddl-content_content_contains_search_strings', $strings, $strings, $this );
+
+        foreach( $search as $check ){
+            if( strpos($content, $check) !== false ){
+                $bool = true;
+                break;
+            }
+        }
+
+        return apply_filters( 'ddl-content_content_contains', $bool, $strings, $this );
     }
 
     function frontend_render_cell_content($target) {

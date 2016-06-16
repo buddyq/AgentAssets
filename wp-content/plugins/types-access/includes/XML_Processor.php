@@ -376,6 +376,9 @@ final class Access_XML_Processor
 			if ( $data_key == 'taxonomies' && isset($data_value['item']) && is_array($data_value['item']) && count($data_value['item']) > 0 ){
 				$new_settings['taxonomies'] = array();
 				for ( $i=0, $lim = count($data_value['item']); $i<$lim; $i++){
+					if ( !isset($data_value['item'][$i]['item_name']) ){
+						continue;
+					}
 					$key = 	$data_value['item'][$i]['item_name'];
 					$new_settings['taxonomies'][$key] = array();
 					$new_settings['taxonomies'][$key]['mode'] = $data_value['item'][$i]['item_mode'];
@@ -956,9 +959,16 @@ final class Access_XML_Processor
 				if (isset($options['access-overwrite-existing-settings'])){
 					remove_role($role);
 				}
-				$role_name = $role_info['name'];
+				$role_name = '';
+				if ( isset($role_info['name']) ){
+					$role_name = $role_info['name'];
+				}
 				if ( isset($role_info['title'])){
 					$role_name = $role_info['title'];	
+				}
+
+				if ( empty($role_name) ){
+					continue;
 				}
 				$capabilities = $role_info['capabilities'];
 				$success = add_role($role, $role_name, $capabilities);	

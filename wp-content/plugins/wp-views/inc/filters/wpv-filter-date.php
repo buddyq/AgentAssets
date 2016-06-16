@@ -15,7 +15,9 @@ WPV_Date_Filter::on_load();
 *
 * Views Date Filter Class
 *
-* @since 1.8.0
+* @since 1.8
+* @since 2.1	Added to WordPress Archives
+* @since 2.1	Include this file only when editing a View or WordPress Archive, or when doing AJAX
 */
 
 class WPV_Date_Filter {
@@ -26,59 +28,70 @@ class WPV_Date_Filter {
 	
 	static function on_load() {
         self::$date_operator = array(
-			'single' => array(
-				'=' => __( 'equal to', 'wpv-views' ),
-				'!=' => __( 'different from', 'wpv-views' ),
-				'<' => __( 'before', 'wpv-views' ),
-				'<=' => __( 'before or equal to', 'wpv-views' ),
-				'>' => __( 'after', 'wpv-views' ),
-				'>=' => __( 'after or equal to', 'wpv-views' )
+			'single'	=> array(
+				'='		=> __( 'equal to', 'wpv-views' ),
+				'!='	=> __( 'different from', 'wpv-views' ),
+				'<'		=> __( 'before', 'wpv-views' ),
+				'<='	=> __( 'before or equal to', 'wpv-views' ),
+				'>'		=> __( 'after', 'wpv-views' ),
+				'>='	=> __( 'after or equal to', 'wpv-views' )
 			),
-			'group' => array(
-				'IN' => __( 'in any of those', 'wpv-views' ),
-				'NOT IN' => __( 'not in any of those', 'wpv-views' ),
-				'BETWEEN' => __( 'between those', 'wpv-views' ),
-				'NOT BETWEEN' => __( 'not between those', 'wpv-views' )
+			'group'		=> array(
+				'IN'			=> __( 'in any of those', 'wpv-views' ),
+				'NOT IN'		=> __( 'not in any of those', 'wpv-views' ),
+				'BETWEEN'		=> __( 'between those', 'wpv-views' ),
+				'NOT BETWEEN'	=> __( 'not between those', 'wpv-views' )
 			),
 		);
 		self::$date_options = array(
-			'year' => __( 'Year', 'wpv-views' ),
-			'month' => __( 'Month', 'wpv-views' ),
-			'week' => __( 'Week', 'wpv-views' ),
-			'day' => __( 'Day', 'wpv-views' ),
-			'dayofyear' => __( 'Day of the year', 'wpv-views' ),
-			'dayofweek' => __( 'Day of the week', 'wpv-views' ),
-			'hour' => __( 'Hour', 'wpv-views' ),
-			'minute' => __( 'Minute', 'wpv-views' ),
-			'second' => __( 'Second', 'wpv-views' )
+			'year'		=> __( 'Year', 'wpv-views' ),
+			'month'		=> __( 'Month', 'wpv-views' ),
+			'week'		=> __( 'Week', 'wpv-views' ),
+			'day'		=> __( 'Day', 'wpv-views' ),
+			'dayofyear'	=> __( 'Day of the year', 'wpv-views' ),
+			'dayofweek'	=> __( 'Day of the week', 'wpv-views' ),
+			'hour'		=> __( 'Hour', 'wpv-views' ),
+			'minute'	=> __( 'Minute', 'wpv-views' ),
+			'second'	=> __( 'Second', 'wpv-views' )
 		);
 		self::$date_columns = array(
-			'post_date' => __( 'published date', 'wpv-views' ),
-			'post_date_gmt' => __( 'published date GMT', 'wpv-views' ),
-			'post_modified' => __( 'modified date', 'wpv-views' ),
-			'post_modified_gmt' => __( 'modified date GMT', 'wpv-views' )
+			'post_date'			=> __( 'published date', 'wpv-views' ),
+			'post_date_gmt'		=> __( 'published date GMT', 'wpv-views' ),
+			'post_modified'		=> __( 'modified date', 'wpv-views' ),
+			'post_modified_gmt'	=> __( 'modified date GMT', 'wpv-views' )
 		);
-		add_action( 'init', array( 'WPV_Date_Filter', 'init' ) );
-		add_action( 'admin_init', array( 'WPV_Date_Filter', 'admin_init' ) );
+		add_action( 'init',			array( 'WPV_Date_Filter', 'init' ) );
+		add_action( 'admin_init',	array( 'WPV_Date_Filter', 'admin_init' ) );
     }
 
     static function init() {
-		
+		wp_register_script( 'views-filter-date-js', ( WPV_URL . "/res/js/filters/views_filter_date.js" ), array( 'views-filters-js', 'underscore' ), WPV_VERSION, true );
+		$date_strings = array(
+			'post'		=> array(
+								
+							),
+			'archive'	=> array(
+								'disable_post_date_filter'	=> __( 'This filter will not be applied to date based archive: Year archives, Month archives and Day archives', 'wpv-views' ),
+							),
+		);
+		wp_localize_script( 'views-filter-date-js', 'wpv_date_strings', $date_strings );
     }
 	
 	static function admin_init() {
-		// Register filter in lists and dialogs
-		add_filter( 'wpv_filters_add_filter', array( 'WPV_Date_Filter', 'wpv_filters_add_filter_post_date' ), 1, 1 );
-		add_action( 'wpv_add_filter_list_item', array( 'WPV_Date_Filter', 'wpv_add_filter_post_date_list_item' ), 1, 1 );
-		// AJAX calbacks
-		add_action( 'wp_ajax_wpv_filter_post_date_update', array( 'WPV_Date_Filter', 'wpv_filter_post_date_update_callback' ) );
-			// TODO This might not be needed here, maybe for summary filter
-			add_action( 'wp_ajax_wpv_filter_date_sumary_update', array( 'WPV_Date_Filter', 'wpv_filter_post_date_sumary_update_callback' ) );
-		add_action( 'wp_ajax_wpv_filter_post_date_delete', array( 'WPV_Date_Filter', 'wpv_filter_post_date_delete_callback' ) );
-		add_filter( 'wpv-view-get-summary', array( 'WPV_Date_Filter', 'wpv_post_date_summary_filter' ), 5, 3 );
-		add_action( 'wp_ajax_wpv_filter_post_date_add_condition', array( 'WPV_Date_Filter', 'wpv_filter_post_date_add_condition' ) );
-		// Register scripts
-		add_action( 'admin_enqueue_scripts', array( 'WPV_Date_Filter','admin_enqueue_scripts' ), 20 );
+		// Register filters in dialogs
+		add_filter( 'wpv_filters_add_filter',						array( 'WPV_Date_Filter', 'wpv_filters_add_filter_post_date' ), 1, 1 );
+		add_filter( 'wpv_filters_add_archive_filter',				array( 'WPV_Date_Filter', 'wpv_filters_add_archive_filter_post_date' ), 1, 1 );
+		// Register filters in lists
+		add_action( 'wpv_add_filter_list_item',						array( 'WPV_Date_Filter', 'wpv_add_filter_post_date_list_item' ), 1, 1 );
+		// Update and delete
+		add_action( 'wp_ajax_wpv_filter_post_date_update',			array( 'WPV_Date_Filter', 'wpv_filter_post_date_update_callback' ) );
+		add_action( 'wp_ajax_wpv_filter_post_date_delete',			array( 'WPV_Date_Filter', 'wpv_filter_post_date_delete_callback' ) );
+		// Add new condition
+		add_action( 'wp_ajax_wpv_filter_post_date_add_condition',	array( 'WPV_Date_Filter', 'wpv_filter_post_date_add_condition' ) );
+		// Scripts
+		add_action( 'admin_enqueue_scripts',						array( 'WPV_Date_Filter','admin_enqueue_scripts' ), 20 );
+		// TODO This might not be needed here, maybe for summary filter
+		//add_action( 'wp_ajax_wpv_filter_date_sumary_update', array( 'WPV_Date_Filter', 'wpv_filter_post_date_sumary_update_callback' ) );
 	}
 	
 	/**
@@ -90,10 +103,7 @@ class WPV_Date_Filter {
 	*/
 	
 	static function admin_enqueue_scripts( $hook ) {
-		wp_register_script( 'views-filter-date-js', ( WPV_URL . "/res/js/redesign/views_filter_date.js" ), array( 'views-filters-js'), WPV_VERSION, true );
-		if ( isset( $_GET['page'] ) && $_GET['page'] == 'views-editor' ) {
-			wp_enqueue_script( 'views-filter-date-js' );
-		}
+		wp_enqueue_script( 'views-filter-date-js' );
 	}
 	
 	/**
@@ -108,10 +118,30 @@ class WPV_Date_Filter {
 	
 	static function wpv_filters_add_filter_post_date( $filters ) {
 		$filters['post_date'] = array(
-			'name' => __( 'Post date', 'wpv-views' ),
-			'present' => 'date_filter',
-			'callback' => array( 'WPV_Date_Filter', 'wpv_add_new_filter_post_date_list_item' ),
-			'group' => __( 'Post filters', 'wpv-views' )
+			'name'		=> __( 'Post date', 'wpv-views' ),
+			'present'	=> 'date_filter',
+			'callback'	=> array( 'WPV_Date_Filter', 'wpv_add_new_filter_post_date_list_item' ),
+			'group'		=> __( 'Post filters', 'wpv-views' )
+		);
+		return $filters;
+	}
+	
+	/**
+	* wpv_filters_add_archive_filter_post_date
+	*
+	* Register the date filter in the popup dialog on WPAs.
+	*
+	* @param $filters
+	*
+	* @since 2.1
+	*/
+	
+	static function wpv_filters_add_archive_filter_post_date( $filters ) {
+		$filters['post_date'] = array(
+			'name'		=> __( 'Post date', 'wpv-views' ),
+			'present'	=> 'date_filter',
+			'callback'	=> array( 'WPV_Date_Filter', 'wpv_add_new_archive_filter_post_date_list_item' ),
+			'group'		=> __( 'Post filters', 'wpv-views' )
 		);
 		return $filters;
 	}
@@ -126,22 +156,57 @@ class WPV_Date_Filter {
 
 	static function wpv_add_new_filter_post_date_list_item() {
 		$args = array(
-			'date_filter' => array( 
-				'date_relation' => 'AND',
-				'date_conditions' => array(
-					'date_condition_0' => array(
-						'date_operator' => '=',
-						'date_column' => 'post_date',
-						'date_multiple_selected' => 'year',
-						'year' => '',
-						'month' => '',
-						'week' => '',
-						'day' => '',
-						'dayofyear' => '',
-						'dayofweek' => '',
-						'hour' => '',
-						'minute' => '',
-						'second' => ''
+			'view-query-mode'	=> 'normal',
+			'date_filter'		=> array( 
+				'date_relation'		=> 'AND',
+				'date_conditions'	=> array(
+					'date_condition_0'	=> array(
+						'date_operator'				=> '=',
+						'date_column'				=> 'post_date',
+						'date_multiple_selected'	=> 'year',
+						'year'						=> '',
+						'month'						=> '',
+						'week'						=> '',
+						'day'						=> '',
+						'dayofyear'					=> '',
+						'dayofweek'					=> '',
+						'hour'						=> '',
+						'minute'					=> '',
+						'second'					=> ''
+					)
+				)
+			)
+		);
+		WPV_Date_Filter::wpv_add_filter_post_date_list_item( $args );
+	}
+	
+	/**
+	* wpv_add_new_archive_filter_post_date_list_item
+	*
+	* Register the date filter in the filters list on WPAs.
+	*
+	* @since 2.1
+	*/
+	
+	static function wpv_add_new_archive_filter_post_date_list_item() {
+		$args = array(
+			'view-query-mode'	=> 'archive',
+			'date_filter'		=> array( 
+				'date_relation'		=> 'AND',
+				'date_conditions'	=> array(
+					'date_condition_0'	=> array(
+						'date_operator'				=> '=',
+						'date_column'				=> 'post_date',
+						'date_multiple_selected'	=> 'year',
+						'year'						=> '',
+						'month'						=> '',
+						'week'						=> '',
+						'day'						=> '',
+						'dayofyear'					=> '',
+						'dayofweek'					=> '',
+						'hour'						=> '',
+						'minute'					=> '',
+						'second'					=> ''
 					)
 				)
 			)
@@ -329,9 +394,8 @@ class WPV_Date_Filter {
 	/**
 	* Update date filter summary callback
 	*/
-
+	/*
 	static function wpv_filter_post_date_sumary_update_callback() {
-		/*
 		$nonce = $_POST["wpnonce"];
 		if ( ! wp_verify_nonce( $nonce, 'wpv_view_filter_author_nonce' ) ) {
 			die( "Security check" );
@@ -339,9 +403,9 @@ class WPV_Date_Filter {
 		parse_str( $_POST['filter_author'], $filter_author );
 		$filter_author['author_mode'] = $filter_author['author_mode'][0];
 		echo wpv_get_filter_post_date_summary_txt( $filter_author );
-		*/
 		die();
 	}
+	*/
 	
 	/**
 	* wpv_filter_post_date_delete_callback
@@ -394,29 +458,6 @@ class WPV_Date_Filter {
 	}
 
 	/**
-	* wpv_post_date_summary_filter
-	
-	* Show the date filter on the View summary
-	*
-	* @since 1.8.0
-	*/
-
-	static function wpv_post_date_summary_filter( $summary, $post_id, $view_settings ) {
-		if ( 
-			isset( $view_settings['query_type'] ) 
-			&& $view_settings['query_type'][0] == 'posts' 
-			&& isset( $view_settings['date_filter'] ) 
-		) {
-			$result = wpv_get_filter_post_date_summary_txt( $view_settings );
-			if ( $result != '' && $summary != '' ) {
-				$summary .= '<br />';
-			}
-			$summary .= $result;
-		}
-		return $summary;
-	}
-
-	/**
 	* wpv_render_post_date_options
 	*
 	* Render date filter options
@@ -428,22 +469,23 @@ class WPV_Date_Filter {
 
 	static function wpv_render_post_date_options( $view_settings = array() ) {
 		$defaults = array(
-			'date_filter' => array( 
-				'date_relation' => 'AND',
-				'date_conditions' => array(
-					'date_condition_0' => array(
-						'date_operator' => '=',
-						'date_column' => 'post_date',
-						'date_multiple_selected' => 'year',
-						'year' => '',
-						'month' => '',
-						'week' => '',
-						'day' => '',
-						'dayofyear' => '',
-						'dayofweek' => '',
-						'hour' => '',
-						'minute' => '',
-						'second' => ''
+			'view-query-mode'	=> 'normal',
+			'date_filter'		=> array( 
+				'date_relation'		=> 'AND',
+				'date_conditions'		=> array(
+					'date_condition_0'		=> array(
+						'date_operator'				=> '=',
+						'date_column'				=> 'post_date',
+						'date_multiple_selected'	=> 'year',
+						'year'						=> '',
+						'month'						=> '',
+						'week'						=> '',
+						'day'						=> '',
+						'dayofyear'					=> '',
+						'dayofweek'					=> '',
+						'hour'						=> '',
+						'minute'					=> '',
+						'second'					=> ''
 					)
 				)
 			)
@@ -466,7 +508,7 @@ class WPV_Date_Filter {
 		}
 		//$view_settings = wp_parse_args( $view_settings, $defaults );
 		foreach ( $view_settings['date_filter']['date_conditions'] as $date_condition ) {
-			WPV_Date_Filter::wpv_render_post_date_condition( $date_condition );
+			WPV_Date_Filter::wpv_render_post_date_condition( $date_condition, $view_settings['view-query-mode'] );
 		}
 		?>
 		<p>
@@ -491,12 +533,14 @@ class WPV_Date_Filter {
 	*
 	* Render date filter options
 	*
-	* @param $view_settings
+	* @param $date_condition
+	* @param $query_mode
 	*
-	* @since 1.8.0
+	* @since 1.8
+	* @since 2.1	Add the $query_mode parameter so it works on WordPress Archives
 	*/
 	
-	static function wpv_render_post_date_condition( $date_condition ) {
+	static function wpv_render_post_date_condition( $date_condition, $query_mode = 'normal' ) {
 		if (
 			is_array( $date_condition )
 			&& isset ( $date_condition['date_operator'] )
@@ -550,7 +594,7 @@ class WPV_Date_Filter {
 								</td>
 								<td>
 									<?php
-									echo WPV_Date_Filter::wpv_get_date_origin_dropdown( $this_function_value['function'] );
+									echo WPV_Date_Filter::wpv_get_date_origin_dropdown( $this_function_value['function'], $query_mode );
 									?>
 								</td>
 								<td>
@@ -586,7 +630,7 @@ class WPV_Date_Filter {
 							?>
 							<div class="wpv-filter-date-condition-group-item js-wpv-filter-date-condition-combo-value js-wpv-filter-date-condition-group-value" style="margin:5px 0;">
 							<?php
-							echo WPV_Date_Filter::wpv_get_date_origin_dropdown( $this_option_function_and_value['function'] );
+							echo WPV_Date_Filter::wpv_get_date_origin_dropdown( $this_option_function_and_value['function'], $query_mode );
 							$extra_classname = '';
 							if ( $this_option_function_and_value['function'] == 'current_one' ) {
 								$extra_classname = ' hidden';
@@ -613,10 +657,11 @@ class WPV_Date_Filter {
 	*
 	* Display the date origin dropdown
 	*
-	* @since 1.8.0
+	* @since 1.8
+	* @since 2.1	Add a $query_mode parameter to make it work on WordPress Archives
 	*/
 	
-	static function wpv_get_date_origin_dropdown( $selected = 'constant' ) {
+	static function wpv_get_date_origin_dropdown( $selected = 'constant', $query_mode = 'normal' ) {
 		$extra_values_options = array(
 			'current_one' => __( 'CURRENT_ONE', 'wpv-views' ),
 			'future_one' => __( 'FUTURE_ONE', 'wpv-views' ),
@@ -624,7 +669,9 @@ class WPV_Date_Filter {
 		);
 		$origins = '<select class="js-wpv-element-not-serialize js-wpv-filter-date-origin" name="wpv-date-condition-origin" autocomplete="off">';
 		$origins .= '<option data-group="basic" value="constant" ' . selected( $selected, 'constant', false ) . '>' . __( 'Constant', 'wpv-views' ) . '</option>';
-		$origins .= '<option data-group="basic" value="attribute" ' . selected( $selected, 'attribute', false ) . '>' . __( 'Shortcode attribute', 'wpv-views' ) . '</option>';
+		if ( 'normal' == $query_mode ) {
+			$origins .= '<option data-group="basic" value="attribute" ' . selected( $selected, 'attribute', false ) . '>' . __( 'Shortcode attribute', 'wpv-views' ) . '</option>';
+		}
 		$origins .= '<option data-group="basic" value="url" ' . selected( $selected, 'url', false ) . '>' . __( 'URL parameter' , 'wpv-views' ) . '</option>';
 		foreach ( $extra_values_options as $extra_key => $extra_value) {
 			$origins .= '<option data-group="generic" value="' . esc_attr( $extra_key ) . '" ' . selected( $selected, $extra_key, false ) . '>' . $extra_value . '</option>';
@@ -643,21 +690,23 @@ class WPV_Date_Filter {
 	
 	static function wpv_filter_post_date_add_condition() {
 		// @todo add nonce here
+		// @todo separate between Views and WPAs
+		$query_mode = isset( $_POST['query_mode'] ) ? sanitize_text_field( $_POST['query_mode'] ) : 'normal';
 		$default_conditions = array(
-			'date_operator' => '=',
-			'date_column' => 'post_date',
-			'date_multiple_selected' => 'year',
-			'year' => '',
-			'month' => '',
-			'week' => '',
-			'day' => '',
-			'dayofyear' => '',
-			'dayofweek' => '',
-			'hour' => '',
-			'minute' => '',
-			'second' => ''
+			'date_operator'				=> '=',
+			'date_column'				=> 'post_date',
+			'date_multiple_selected'	=> 'year',
+			'year'						=> '',
+			'month'						=> '',
+			'week'						=> '',
+			'day'						=> '',
+			'dayofyear'					=> '',
+			'dayofweek'					=> '',
+			'hour'						=> '',
+			'minute'					=> '',
+			'second'					=> ''
 		);
-		WPV_Date_Filter::wpv_render_post_date_condition( $default_conditions );
+		WPV_Date_Filter::wpv_render_post_date_condition( $default_conditions, $query_mode );
 		die();
 	}
 	

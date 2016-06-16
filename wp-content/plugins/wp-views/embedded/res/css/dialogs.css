@@ -379,7 +379,7 @@
 		padding: 1px 10px;
 	}
 	
-		.wpv-dialog-pagination-wizard-item-extra input {
+		.wpv-dialog-pagination-wizard-item-extra input[type="text"] {
 			float: right;
 		}
 

@@ -285,6 +285,10 @@ DDLayout.models.cells.Layout = DDLayout.models.abstract.Element.extend({
         return DDLayout.models.abstract.Element.prototype.toJSON.call(this);
 	},
 	
+	is_parent:function(){
+		return this.has_cell_of_type('child-layout');
+	},
+	
 	get_parent_width: function ( row ) {
 		
 		var rows = this.get('Rows');

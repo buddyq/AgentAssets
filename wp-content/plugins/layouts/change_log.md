@@ -1,3 +1,34 @@
+Version 1.7
+
+  - Feature: Change default parent layout directly from Layout edit page, by clicking on "set parent layout" button
+  - Feature: New Layouts shortcode to check if a Toolset plugin is active
+  - Feature: New Layouts shortcode to check current user role
+  - Feature: Separated archive for Home and Blog (in case when static pages option is enabled from Reading setting)
+  - Feature: Added the possibility to turn on/off integrations cells based on conditions
+  - User-interface: Improved editor usability by controlling scroll behaviour after render action takes place
+  - User-interface: Added the possibility to bulk assign layout for an entire post type upon creation or to assign it only to the post type future entries or to the current entry only
+  - User-interface: Added the possibility to set a default parent layout in "Set parent layout" dialog for current layout
+  - User-interface: Added the possibility to set the current layout as the default parent and a way to display if current layout is the default parent
+  - User-interface: Reviewed dialogs usability and made them compliant with Wordpress design
+  - User-interface: Added Toolset video help displayed in strategic time and place if the user needs help
+  - User-interface: Added new column to display layouts IDs in Layouts listing page
+  - User-interface: Messages about Views requirement for all Views cells updated
+  - User-interface: Message about theme integration is now dismissible
+  - User-interface: Added delete layout button in Layouts editor - if the layout is assigned can't be deleted and the user is warned
+  - Compatibility: CRED button to insert CRED forms and form links shortcodes in Visual Editor and Content Template cells
+  - Compatibility: Full native compatibility with Beaver builder
+  - Compatibility: Only group of users with administrator permissions are allowed to add CRED cells to layout
+  - Bug-fix: Fixed an issue with content template exclusion, so that when editing a Content Template, the current one should be avoided.
+  - Bug-fix: Fixed problem with assigning layout when we don't have any template file
+  - Bug-fix: Issue with image box cell height is fixed
+  - Bug-fix: Fixed problem with iFrame loading animation for CRED and Views cells
+  - Bug-fix: Fixed problem with showing content preview for Content Template cell
+  - Bug-fix: Couple of bug fixes related with save_post hooks.
+  - Bug-fix: Fixed missing widget_id argument for 3rd party widgets, when used via Single Widget Cell
+  - Bug-fix: Fixed WPML double language switcher in Layouts editor page
+  - Bug-fix: Fixing cells prefixing and doubling rows issue when using Thrive Builder with Layouts.
+-------------------------------------------------------------------------------------------------------------------
+
 Version 1.6
 
   - Feature: New direct create layouts process

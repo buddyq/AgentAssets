@@ -324,6 +324,7 @@ function mism_clone_blog($clone_from_blog_id, $clone_to_blog_id)
         'admin_email',
         'upload_path',
         'upload_url_path',
+        '',
         $new_table_prefix . 'user_roles' //preserve the roles
         //add your own keys to preserve here
     );
@@ -361,6 +362,12 @@ function mism_clone_blog($clone_from_blog_id, $clone_to_blog_id)
 
     $sql = "UPDATE `" . $new_table_prefix . "options` SET option_name='" . $new_table_prefix . "user_roles' WHERE option_id='88'";
     $wpdb->query($sql);
+
+    $drop_options = array(
+        'revslider_table_version' // fix revslider tables updating bug
+    );
+    $drop_options_list =  "('" . join("','", $drop_options) . "')";
+    $wpdb->query("DELETE FROM {$new_blog_options_table} WHERE option_name IN {$drop_options_list}");
 
     # Updated for Contact Form Cloning Patch regarding Admin Email
     // $sql = "UPDATE `" . $new_table_prefix . "postmeta` SET meta_value = REPLACE (meta_value, '{ADMINEMAIL}', '".get_option('admin_email')."') WHERE meta_value LIKE '%{ADMINEMAIL}%'";

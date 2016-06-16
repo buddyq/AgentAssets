@@ -32,8 +32,7 @@ class login_wid extends WP_Widget {
 
 
 	public function form( $instance ) {
-		$wid_title = '';
-		$wid_title = $instance[ 'wid_title' ];
+		$wid_title = isset($instance[ 'wid_title' ]) ? $instance[ 'wid_title' ] : '';
 		?>
 		<p><label for="<?php echo $this->get_field_id('wid_title'); ?>"><?php _e('Title:'); ?> </label>
 		<input class="widefat" id="<?php echo $this->get_field_id('wid_title'); ?>" name="<?php echo $this->get_field_name('wid_title'); ?>" type="text" value="<?php echo $wid_title; ?>" />

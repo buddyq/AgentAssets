@@ -165,6 +165,7 @@ function aveone_media() {
             // Custom CSS for Customizer
 
             require_once( get_template_directory() . '/custom-css.php' );
+            wp_enqueue_style('dynamic-css', admin_url('admin-ajax.php') . '?action=aveone_dynamic_css');
             wp_add_inline_style('maincss', $aveone_css_data);
         } else {
 

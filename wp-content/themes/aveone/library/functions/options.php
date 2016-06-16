@@ -962,7 +962,9 @@ function aveone_customizer_register( $wp_customize ) {
                  */
                 
                  //sanitize everything else
-                
+                if (!isset($options[$setting]['id'])) {
+                    $options[$setting]['id'] = $setting;
+                }
                 switch($options[$setting]['id'])
                 {
                    

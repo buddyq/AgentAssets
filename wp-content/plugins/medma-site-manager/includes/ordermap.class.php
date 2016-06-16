@@ -100,7 +100,13 @@ class OrderMap {
     }
 
     public static function getUserBlogsDetailed($user_id) {
-        $map = self::getUserBlogsMap($user_id);
+        return self::getAllBlogsDetails('`user_id` = %d', array($user_id));
+    }
+
+    public static function getAllBlogsDetails($condition = '', $params = array()) {
+        global $wpdb;
+        $where = empty($condition) ? '' : ' WHERE '.$condition;
+        $map = $wpdb->get_results($wpdb->prepare('SELECT * FROM `'.self::tableName().'` '.$where, $params));
         $blogs = array();
         foreach($map as $blogMapInfo) {
             $blog = get_blog_details($blogMapInfo->site_id);

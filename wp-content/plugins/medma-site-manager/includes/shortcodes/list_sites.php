@@ -70,7 +70,9 @@ function mism_list_sites($atts)
                     $html .= '<td data-title="Days Left">'.$blog->days_left.'</td>';
                     $html .= '<td data-title="Action">';
                     if (0 != $blog->deleted) {
-                        $html .= 'This site is no longer available.<br/>After moderation it will be dropped.';
+                        $time = getNextRemovingSitesTime('Y-m-d H:i');
+                        $html .= 'This site was deleted. You can restore it <br/>until the end of the next day ('.$time['string'].')<br/> before it is removed completely.<br/>';
+                        $html .= '<input data-site-name="' . $blog->blogname . '" data-id="' . $blog->userblog_id . '" class="listblog_restore button" data-sending-label="Rstoring..." type="submit" name="restore_site" value="Restore"/>';
                     } else {
                         // $html .= '<input class="listblog_edit" type="submit" name="edit_site" value="Edit"/>';
                         $html .= '<input data-site-name="' . $blog->blogname . '" data-id="' . $blog->userblog_id . '" class="listblog_delete button" data-sending-label="Deleting..." type="submit" name="delete_site" value="Delete"/>';

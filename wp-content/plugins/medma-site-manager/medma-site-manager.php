@@ -80,7 +80,7 @@ function add_scripts_to_footer()
             });
 
             jQuery('.listblog_extend').click(function(){
-                var msg = 'Validity of your site <strong>%s</strong> will be extended for <strong>%d</strong> months at cost of your one spare site.';
+                var msg = '<strong>%s</strong> will be renewed for <strong>%d</strong> using one of your remaining site credits.';
                 msg = msg.replace('%s', jQuery(this).attr('data-site-name')).replace('%d', jQuery(this).attr('data-duration'));
                 var el = this;
                 alertify.confirm(msg, function() {
@@ -100,6 +100,31 @@ function add_scripts_to_footer()
                         }
                     }, 'json');
                 }).set('title', 'Extending site');
+            });
+
+            jQuery('.listblog_pricing').click(function(){
+                var msg = 'Sorry, you have no spare sites left. Please <a href="/pricing">obtain a new site package</a> to extend your site\'s <strong>%s</strong> validity.';
+                msg = msg.replace('%s', jQuery(this).attr('data-site-name')).replace('%d', jQuery(this).attr('data-duration'));
+
+                alertify.alert(msg).set('title', 'Information');
+            });
+
+            jQuery('.listblog_restore').click(function(){
+                var data = {
+                    'action' : 'restore_site',
+                    'blog_id': jQuery(this).attr('data-id')
+                };
+                alertify.message('Processing request');
+                jQuery.post('<?php echo admin_url('admin-ajax.php')?>', data, function( response) {
+                    if (typeof(response.result) === 'undefined') {
+                        alertify.error('Bad response!');
+                    } else if ('error' == response.result) {
+                        alertify.error(response.message);
+                    } else {
+                        alertify.success('Site restored successfully!');
+                        location.reload();
+                    }
+                }, 'json');
             });
 
             jQuery('.listblog_pricing').click(function() {
@@ -266,4 +291,23 @@ function getExternalDomainByBlogId($id)
     $sql = "SELECT domain FROM `{$wpdb->base_prefix}domain_mapping` WHERE blog_id='".$id."'";
     $results = $wpdb->get_results($sql,OBJECT);
     return $results[0]->domain;
+}
+
+function getNextRemovingSitesTime($format = 'H:i') {
+    $ret = array(
+        'timestamp' => 0,
+        'string' => '',
+        'hours_left' => 0,
+    );
+    $hours_delta = 1;
+
+    $s_next_day = date('Y-m-d', strtotime('+1 day')).' 00:00:00';
+    $d_next_day = DateTime::createFromFormat('Y-m-d H:i:s', $s_next_day);
+    $t_next_day = $d_next_day->getTimestamp();
+
+    $ret['timestamp'] = $t_next_day + ($hours_delta * 3600);
+    $ret['string'] = date($format, $ret['timestamp']);
+    $ret['hours_left'] = (int)(((float)($ret['timestamp'] - time())) / 3600);
+
+    return $ret;
 }

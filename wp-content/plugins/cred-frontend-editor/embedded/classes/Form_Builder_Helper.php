@@ -2963,16 +2963,14 @@ class CRED_Form_Builder_Helper implements CRED_Friendly, CRED_FriendlyStatic {
                 //cred_log($postData->fields[$name_orig]);
                 if (is_array($postData->fields[$name_orig]) && count($postData->fields[$name_orig]) > 1) {
                     if (isset($field['data']['repetitive']) &&
-                            $field['data']['repetitive'] == 1 &&
-                            !isset($data_value[0][0]) &&
-                            $field['type'] == 'skype') {
-                        $data_value = array($data_value);
+                            $field['data']['repetitive'] == 1) {
+                        $data_value = $postData->fields[$name_orig];
                     }
                 } else {
                     $data_value = $postData->fields[$name_orig][0];
                     //checkboxes needs to be different from from db
                     if ($field['type'] == 'checkboxes') {
-                        if (isset($postData->fields[$name_orig]) && 
+                        if (isset($postData->fields[$name_orig]) &&
                                 isset($postData->fields[$name_orig][0]) && is_array($postData->fields[$name_orig][0])) {
                             $data_value = array();
                             foreach ($postData->fields[$name_orig][0] as $key => $value) {
@@ -2981,16 +2979,6 @@ class CRED_Form_Builder_Helper implements CRED_Friendly, CRED_FriendlyStatic {
                         }
                     }
                 }
-//            } elseif ($preset_value &&
-//                    null !== $preset_value &&
-//                    is_string($preset_value) &&
-//                    !empty($preset_value)) {
-//
-//                $data_value = cred_translate(
-//                        'Value: ' . $preset_value, $preset_value, 'cred-form-' . $form->getForm()->post_title . '-' . $form->getForm()->ID
-//                );
-//
-//                $additional_options['preset_value'] = $placeholder;
             }
             // allow field to get value through url parameter
             elseif (is_string($urlparam) && !empty($urlparam) && isset($_GET[$urlparam])) {
@@ -3151,7 +3139,7 @@ class CRED_Form_Builder_Helper implements CRED_Friendly, CRED_FriendlyStatic {
                         $format = $zebraForm->getDateFormat();
                         $format .= " h:i:s";
                     }
-                    $attributes = array_merge($additional_options, array('format' => $format, 'readonly_element' => false));
+                    $attributes = array_merge($additional_options, array('format' => $format, 'readonly_element' => false, 'repetitive' => isset($field['data']['repetitive']) ? $field['data']['repetitive'] : 0));
                     if (
                             isset($data_value) &&
                             !empty($data_value) /* &&
@@ -3338,17 +3326,15 @@ class CRED_Form_Builder_Helper implements CRED_Friendly, CRED_FriendlyStatic {
                     break;
 
                 case 'checkbox':
-                    
                     $save_empty = isset($field['data']['save_empty']) ? $field['data']['save_empty'] : false;
                     //If save empty and $_POST is set but checkbox is not set data value 0
-                    if ($data_value==1 && 
-                            $save_empty=='no' && 
-                            isset($_POST) && !empty($_POST)
-                            && !isset($_POST[$name_orig]))
+                    if ($data_value == 1 &&
+                            $save_empty == 'no' &&
+                            isset($_POST) && !empty($_POST) && !isset($_POST[$name_orig]))
                         $data_value = 0;
-                    
+
                     $type = 'checkbox';
-                                        
+
                     $value = $field['data']['set_value'];
                     $attributes = array();
                     if (isset($data_value) && $data_value == $value)
@@ -3424,15 +3410,19 @@ class CRED_Form_Builder_Helper implements CRED_Friendly, CRED_FriendlyStatic {
                     $type = 'skype';
                     //if for some reason i receive data_value as array but it is not repetitive i need to get as not array of array
                     //if (isset($field['data']['repetitive']) && $field['data']['repetitive'] == 1)
-                    if (isset($data_value[0]))
+                    if (isset($field['data']['repetitive']) && $field['data']['repetitive'] == 0 && isset($data_value[0]))
                         $data_value = $data_value[0];
 
                     if (isset($data_value)) {
                         if (is_string($data_value))
                             $data_value = array('skypename' => $data_value, 'style' => '');
                         $value = $data_value;
-                    } else
-                        $value = array('skypename' => '', 'style' => '');
+                    } else {
+                        if (isset($field['data']['repetitive']) && $field['data']['repetitive'] == 0)
+                            $value = $data_value;
+                        else
+                            $value = array('skypename' => '', 'style' => '');
+                    }
 
                     $attributes = array(
                         'ajax_url' => admin_url('admin-ajax.php'),

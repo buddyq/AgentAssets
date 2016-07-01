@@ -3,6 +3,14 @@ Toolset CRED, by OnTheGoSystems
 
 Changelog:
 
+1.7.1
+
+- Fixed an issue where images present in the repeating fields were not shown in the Post Editing forms on the front-end.
+  https://wp-types.com/forums/topic/no-repeating-images-shown-in-cred/
+
+- Fixed an issue with CRED User Editing forms where it was not editing the logged-in user by default, if the user attribute was not added.
+
+
 1.7
 
 - Added a new feature that enables submission of CRED forms via AJAX.

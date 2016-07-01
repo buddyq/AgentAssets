@@ -4,7 +4,7 @@
   Plugin Name: Toolset CRED
   Plugin URI: https://wp-types.com/home/toolset-components/#cred
   Description: Create Edit Delete Wordpress content (ie. posts, pages, custom posts) from the front end using fully customizable forms
-  Version: 1.7
+  Version: 1.7.1
   Author: OnTheGoSystems
   Author URI: http://www.onthegosystems.com/
   License: GPLv2
@@ -33,7 +33,7 @@ if (defined('CRED_FE_VERSION'))
 // TODO use WP Cache object to cache queries(in base model) and templates(in loader DONE)
 /* removed */
 // current version
-define('CRED_FE_VERSION', '1.7');
+define('CRED_FE_VERSION', '1.7.1');
 // configuration constants
 define('CRED_NAME', 'CRED');
 define('CRED_CAPABILITY', 'manage_options');

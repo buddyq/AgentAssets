@@ -2154,7 +2154,10 @@ final class CRED_Helper {
                     return '<strong>' . __('No user form specified', 'wp-cred') . '</strong>';
 
                 if ($user_id === false || empty($user_id) || !isset($user_id) || !is_numeric($user_id)) {
-                    return '<strong>' . __('No user specified', 'wp-cred') . '</strong>';
+					$user_id = get_current_user_id();
+					if ($user_id == 0) {
+						return __('No user specified', 'wp-cred');
+					}
                 }
                 
                 // localise the ID not used for user
@@ -2207,7 +2210,7 @@ final class CRED_Helper {
 
                 $user = get_user_by("ID", $user_id);
                 if (!isset($user->data))
-                    return 'Error user_id';
+                    return __( 'Invalid user', 'wp-cred' );
 
                 $user = $user->data;
 
@@ -2324,7 +2327,7 @@ final class CRED_Helper {
                 if ($form_type == 'edit') {
                     $user = new WP_User($user_id);
                     if (!isset($user) || $user->ID == 0 || empty($user->data))
-                        return '<strong>' . __('User selected does not exists', 'wp-cred') . '</strong>';
+                        return __('Invalid user', 'wp-cred');
                 } else {
                     $user_id = false;
                 }
@@ -2833,10 +2836,11 @@ final class CRED_Helper {
 
                 $type = "edit";
                 if (empty($user)) {
-                    if (is_numeric($params['form']))
+                    if (is_numeric($params['form'])) {
                         $form = get_post($params['form']);
-                    else
+                    } else {
                         $form = get_page_by_title(html_entity_decode($params['form']), OBJECT, CRED_USER_FORMS_CUSTOM_POST_NAME);
+					}
                     if (isset($form)) {
                         require_once 'FormData.php';
                         $formData = new FormData($form->ID, CRED_USER_FORMS_CUSTOM_POST_NAME, false);
@@ -2850,10 +2854,9 @@ final class CRED_Helper {
                     if (empty($user)) {
                         $user_id = get_current_user_id();
                         if ($user_id == 0) {
-                            $out = __('You are currently not logged in.', 'wp-cred');
+                            $out = __('No user specified', 'wp-cred');
                         } else {
-                            $params['post'] = $user_id;
-                            $out = self::cred_user_form($params['form'], $user);
+                            $out = self::cred_user_form($params['form'], $user_id);
                         }
                     } else
                         $out = self::cred_user_form($params['form'], $user);

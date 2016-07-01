@@ -40,6 +40,10 @@ function mism_list_sites($atts)
                 restore_current_blog();
             }
 
+            $counter_details = PackageCounter::getCounterDetailsByOrderId($order->id);
+
+            $html .= MedmaHelper::getConsumedSitesMessageBox($counter_details);
+
 			$html .= '<table>';
             $html .= '<h3>'.$atts['title'].'</h3>';
             

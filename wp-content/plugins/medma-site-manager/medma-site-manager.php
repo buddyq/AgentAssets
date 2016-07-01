@@ -14,13 +14,18 @@
 # Files Added
 include 'XML-API/xmlapi.php';
 
+require_once 'includes/medmahelper.class.php';
 require_once 'includes/ordermap.class.php';
 require_once 'includes/ordermodel.class.php';
 require_once 'includes/packagecounter.class.php';
+require_once 'includes/medmagroupmodel.class.php';
+require_once 'includes/medmathememanager.class.php';
 
 require_once 'includes/post-types.php';
 
 require_once 'includes/metaboxes.php';
+
+require_once 'includes/medmaclonefactory.php';
 
 require_once 'includes/shortcodes/create_new_site.php';
 require_once 'includes/shortcodes/list_sites.php';
@@ -28,6 +33,7 @@ require_once 'includes/shortcodes/list_packages.php';
 require_once 'includes/shortcodes/package_status.php';
 
 require_once 'includes/settings/package-settings.php';
+require_once 'includes/settings/medma-manager-admin.php';
 
 require_once 'includes/ajax_action_callbacks.php';
 

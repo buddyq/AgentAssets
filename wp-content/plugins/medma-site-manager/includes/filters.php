@@ -1,6 +1,11 @@
 <?php
 
+//multisite logic
 add_filter('wpmu_drop_tables', 'wpmi_drop_tables', 10, 2);
+
+//themes
+add_filter('all_themes', 'medma_all_themes_filter');
+add_filter('wp_prepare_themes_for_js', 'medma_all_themes_filter');
 
 function wpmi_drop_tables($tables, $blog_id) {
     /** @var wpdb */
@@ -13,4 +18,16 @@ function wpmi_drop_tables($tables, $blog_id) {
         }
     }
     return $tables;
+}
+
+function medma_all_themes_filter($themes) {
+    if (!is_super_admin()) {
+        foreach($themes as $theme_system_id => $theme) {
+            if (!MedmaThemeManager::checkAccess($theme_system_id)) {
+                unset($themes[$theme_system_id]);
+            }
+        }
+    }
+
+    return $themes;
 }

@@ -99,6 +99,6 @@ function restore_site_callback() {
 function check_sites_for_removing() {
 	$blogs = OrderMap::getAllBlogsDetails();
 	foreach($blogs as $blog) {
-
+		//step 1 -
 	}
 }

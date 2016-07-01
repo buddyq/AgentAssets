@@ -65,7 +65,7 @@ function mism_create_new_site($atts)
 
                     if (is_numeric($blog_id)) {
                         # Process for cloning of primary blog created by admin to the new blog
-                        mism_clone_blog($specified_blog_id, $blog_id);
+                        mism_clone_blog($specified_blog_id, $blog_id, $domain);
 
                         # Process of copying files of primary blog created by admin to the new blog
                         MISM_Files::copy_files($specified_blog_id, $blog_id);
@@ -193,7 +193,8 @@ function mism_create_new_site($atts)
         // This is where we need to control themes. This gets all admin themese, however not all themes should be available to all users.
         $themes = get_blogs_of_user('1');    # Admin
 
-        if ($counter_details->site_allowed > $counter_details->site_consumed) {
+        $html .= MedmaHelper::getConsumedSitesMessageBox($counter_details);
+        /*if ($counter_details->site_allowed > $counter_details->site_consumed) {
             $html .= '<div class="avia_message_box avia-color-blue avia-size-large avia-icon_select-yes avia-border-  avia-builder-el-1  el_after_av_notification  el_before_av_notification ">';
             $html .= '<span class="avia_message_box_title">Note</span>';
             $html .= '<div class="avia_message_box_content">';
@@ -219,7 +220,7 @@ function mism_create_new_site($atts)
             $html .= '<p>You have consumed all the sites allowed by your current package. Please <a href="/pricing/" title="View Pricing">upgrade</a> your package.</p>';
             $html .= '</div>';
             $html .= '</div>';
-        }
+        }*/
 
         $html .= '<form id="create-site-form" method="POST">';
 
@@ -227,8 +228,10 @@ function mism_create_new_site($atts)
 
         $html .= '<label>Template: </label>';
         $html .= '<select name="template">';
+
         foreach ($themes AS $theme) {
-            if ($theme->userblog_id > 1 && $theme->site_id == 1) {
+            if ($theme->userblog_id > 1 && $theme->site_id == 1
+                && MedmaThemeManager::checkAccess(get_blog_option($theme->userblog_id, 'stylesheet'))) {
                 $html .= '<option value="' . $theme->userblog_id . '">' . $theme->blogname . '</option>';
             }
         }
@@ -294,7 +297,7 @@ function getSubdomainName($domain)
  * @param int $clone_from_blog_id the blog id which we are going to clone
  * @param int $clone_to_blog_id the blog id in which we are cloning
  */
-function mism_clone_blog($clone_from_blog_id, $clone_to_blog_id)
+function mism_clone_blog($clone_from_blog_id, $clone_to_blog_id, $domain)
 {
 
     global $wpdb;
@@ -349,7 +352,7 @@ function mism_clone_blog($clone_from_blog_id, $clone_to_blog_id)
     //we have got the data which we need to update again later
     //now for each table, let us clone
     foreach ($tables as $table) {
-        mism_clone_table($old_table_prefix . $table, $new_table_prefix . $table);
+        medma_clone_table($old_table_prefix . $table, $new_table_prefix . $table);
     }
 
     //update the preserved options to the options table of the clonned blog
@@ -363,37 +366,75 @@ function mism_clone_blog($clone_from_blog_id, $clone_to_blog_id)
     $sql = "UPDATE `" . $new_table_prefix . "options` SET option_name='" . $new_table_prefix . "user_roles' WHERE option_id='88'";
     $wpdb->query($sql);
 
-    $drop_options = array(
-        'revslider_table_version' // fix revslider tables updating bug
-    );
-    $drop_options_list =  "('" . join("','", $drop_options) . "')";
-    $wpdb->query("DELETE FROM {$new_blog_options_table} WHERE option_name IN {$drop_options_list}");
 
     # Updated for Contact Form Cloning Patch regarding Admin Email
     // $sql = "UPDATE `" . $new_table_prefix . "postmeta` SET meta_value = REPLACE (meta_value, '{ADMINEMAIL}', '".get_option('admin_email')."') WHERE meta_value LIKE '%{ADMINEMAIL}%'";
     //    $sql = "ALTER TABLE `" . $new_table_prefix . "posts` MODIFY ID BIGINT PRIMARY KEY AUTO_INCREMENT";
     //    $wpdb->query($sql);
 
-}
 
-function mism_clone_table($old_table, $new_table)
-{
-    /** @var wpdb */
-    global $wpdb;
+    // revslider data migration
+    $drop_options = array();
 
-    $create_sql = $wpdb->get_var('SHOW CREATE TABLE `' . $old_table . '`', 1);
-    if (!is_null($create_sql) && false !== $wpdb->query('DROP TABLE IF EXISTS `' . $new_table . '`')) {
-        $create_sql = str_replace($old_table, $new_table, $create_sql);
-        if (false !== $wpdb->query($create_sql)) {
-            if (false === $wpdb->query('INSERT INTO `' . $new_table . '` SELECT * FROM `' . $old_table . '`')) {
-                throw new Exception('Can\'t cope rows from ' . $old_table . ' to ' . $new_table);
-            }
-        } else {
-            throw new Exception('Can\'t create table ' . $new_table . '<br/><br/>' . $create_sql);
-        }
+    switch_to_blog($clone_from_blog_id);
+    $wp_upload_info = wp_upload_dir();
+    $from_dir = str_replace(' ', "\\ ", trailingslashit($wp_upload_info['basedir']));
+    // Switch to Destination site and get uploads info
+    switch_to_blog($clone_to_blog_id);
+    $wp_upload_info = wp_upload_dir();
+    $to_dir = str_replace(' ', "\\ ", trailingslashit($wp_upload_info['basedir']));
+    $from_dir = str_replace($_SERVER['DOCUMENT_ROOT'], '', $from_dir);
+    $to_dir = str_replace($_SERVER['DOCUMENT_ROOT'], '', $to_dir);
+
+
+    $checkRevsliderTables = $wpdb->query('SHOW TABLES LIKE "'.$wpdb->get_blog_prefix($clone_from_blog_id) .'revslider_css"');
+    $result = (1 === $checkRevsliderTables);
+    if ($result) {
+        $status = medma_clone_factory($clone_from_blog_id, $clone_to_blog_id, array(
+            'db' => array(
+                'tables' => array(
+                    'revslider_css',
+                    'revslider_layer_animations',
+                    'revslider_navigations',
+                    'revslider_sliders' /* => array(
+                        'row_filter' => 'mcf_replaceFilename',
+                        'columns' => array('params'),
+                    )*/,
+                    'revslider_slides' /* => array(
+                        'row_filter' => 'mcf_replaceFilename',
+                        'columns' => array('params', 'layers', 'settings'),
+                    )*/,
+                    'revslider_static_slides' /* => array(
+                        'row_filter' => 'mcf_replaceFilename',
+                        'columns' => array('params', 'layers'),
+                    )*/,
+                ),
+                'params' => array(
+                    'replace' => array(
+                        'path' => array(
+                            'search' =>  str_replace('/', '\/', $from_dir),
+                            'replace' => str_replace('/', '\/', $to_dir),
+                        ),
+                        'domain' => array(
+                            'search' => str_replace('http://', '', get_blog_option($clone_from_blog_id, 'siteurl')),
+                            'replace' => $domain,
+                        ),
+                        'localfix' => array( //todo remove for production
+                            'search' => 'athena.agentassets.com',
+                            'replace' => $domain,
+                        )
+                    ),
+                ),
+            ),
+        ));
     } else {
-        throw new Exception('Can\'t load table metadata ' . $old_table);
+        $drop_options = array(
+            'revslider_table_version' // fix revslider tables updating bug
+        );
     }
+
+    $drop_options_list =  "('" . join("','", $drop_options) . "')";
+    $wpdb->query("DELETE FROM {$new_blog_options_table} WHERE option_name IN {$drop_options_list}");
 }
 
 class MISM_Files

@@ -119,7 +119,7 @@
                             <tr>
                                 <td colspan=2>
                                     <label class='cred-label'><input type='radio' checked='checked' class='cred-advanced-options-radio cred-radio-10' name='cred-user-edit-what-to-edit' value='edit-current-user' />
-                                        <span><?php _e('Edit current user (in Loop)', 'wp-cred'); ?></span></label>
+                                        <span><?php _e('Edit current logged in user', 'wp-cred'); ?></span></label>
                                 </td>
                             </tr>
 

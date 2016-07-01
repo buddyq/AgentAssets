@@ -1251,9 +1251,17 @@ class CredForm {
             $mytype = $this->transType($field['type']);
 
             $fieldConfig = new FieldConfig();
-            $fieldConfig->setDefaultValue($field['type'], $field);
-            $_curr_value = $fieldConfig->getDefaultValue();
-                        
+            
+            //TODO: remove from here and add to 'date' setDefaultValue for repetitive date is enought to get field['value']          
+            if ($field['type'] == 'date' &&
+                    isset($field['attr']['repetitive']) && $field['attr']['repetitive'] == 1) {
+                $fieldConfig->setDefaultValue('default', $field);
+                $_curr_value = $fieldConfig->getDefaultValue();
+            } else {
+                $fieldConfig->setDefaultValue($field['type'], $field);
+                $_curr_value = $fieldConfig->getDefaultValue();
+            }
+
             $fieldConfig->setOptions($field['name'], $field['type'], $field['value'], $field['attr']);
             $fieldConfig->setId($this->form_properties['name'] . "_" . $field['name']);
             $fieldConfig->setName($field['name']);

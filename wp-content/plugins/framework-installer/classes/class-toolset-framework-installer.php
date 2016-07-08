@@ -3096,10 +3096,14 @@ class Toolset_Framework_Installer {
 
     	return $google_analytics_arguments;
     }
-    function wpvdemo_filter_tutorial_shortdescription_func($tut_shortdescription,$location,$linktext) {
+    function wpvdemo_filter_tutorial_shortdescription_func( $tut_shortdescription, $location, $linktext ) {
 
     	//Bypass empty description
-    	$tut_shortdescription= trim($tut_shortdescription);
+    	if (!( is_string( $tut_shortdescription ) )) {
+    		$tut_shortdescription = '';
+    		return  $tut_shortdescription;
+    	}
+    	$tut_shortdescription= trim( $tut_shortdescription );
     	
     	//Check if text has URL otherwise bypass
     	$haslink = strstr($tut_shortdescription, 'href');

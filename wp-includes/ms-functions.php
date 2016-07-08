@@ -1177,54 +1177,12 @@ function newblog_notify_siteadmin( $blog_id, $deprecated = '' ) {
 	$blogname = get_option( 'blogname' );
 	$siteurl = site_url();
 	restore_current_blog();
-  $user = wp_get_current_user();
-  $user_name = $user->user_login;
-  $user_id = $user->ID;
-  $user_email = $user->user_email;
-  $display_name = $user->display_name;
 
-	$msg = sprintf( __( '
-	<style>
-	.odd{
-	  background-color:#CADFEC;
-	}
-	.even{
-	  background-color:#E8FFFE;
-	}
-	</style>
-	<h1><em>New Site Created</em></h1>
-	<table width="400">
-  	<tr class="odd">
-  	  <td style="padding:5px;">Username:</td>
-  	  <td style="padding:5px;">%1s</td>
-  	</tr>
-  	<tr class="even">
-  	  <td style="padding:5px;">User ID:</td>
-  	  <td style="padding:5px;">%2s</td>
-  	</tr>
-  	<tr class="odd">
-  	  <td style="padding:5px;">Display Name:</td>
-  	  <td style="padding:5px;">%3s</td>
-  	</tr>
-  	<tr class="even">
-  	  <td style="padding:5px;">User Email:</td>
-  	  <td style="padding:5px;">%4s</td>
-  	</tr>
-  	<tr class="odd">
-  	  <td style="padding:5px;">Site name:</td>
-  	  <td style="padding:5px;">%5s</td>
-  	</tr>
-  	<tr class="even">
-  	  <td style="padding:5px;">Site URL:</td>
-  	  <td style="padding:5px;">%6s</td>
-  	</tr>
-  	<tr class="odd">
-  	  <td style="padding:5px;">From IP:</td>
-  	  <td style="padding:5px;">%7s</td>
-  	</tr>
-	</table>
-	<p><strong>Disable these notifications: <em>%7s</em></strong></p>
-  ' ), $user_name, $user_id, $display_name ,$user_email, $blogname, $siteurl, wp_unslash( $_SERVER['REMOTE_ADDR'] ), $options_site_url);
+	$msg = sprintf( __( 'New Site: %1$s
+URL: %2$s
+Remote IP: %3$s
+
+Disable these notifications: %4$s' ), $blogname, $siteurl, wp_unslash( $_SERVER['REMOTE_ADDR'] ), $options_site_url);
 	/**
 	 * Filter the message body of the new site activation email sent
 	 * to the network administrator.
@@ -1262,9 +1220,10 @@ function newuser_notify_siteadmin( $user_id ) {
 	$user = get_userdata( $user_id );
 
 	$options_site_url = esc_url(network_admin_url('settings.php'));
-	$msg = sprintf(__('<p>New User: %1$s</p>
-<p>Remote IP: %2$s</p>
-<p>Disable these notifications: %3$s</p>'), $user->user_login, wp_unslash( $_SERVER['REMOTE_ADDR'] ), $options_site_url);
+	$msg = sprintf(__('New User: %1$s
+Remote IP: %2$s
+
+Disable these notifications: %3$s'), $user->user_login, wp_unslash( $_SERVER['REMOTE_ADDR'] ), $options_site_url);
 
 	/**
 	 * Filter the message body of the new user activation email sent

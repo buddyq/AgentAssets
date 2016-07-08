@@ -350,6 +350,22 @@ function wpvdemo_import_cred($baseurl, $settings) {
 			
 			if (false === $result || is_wp_error ( $result ))
 				return (false === $result) ? __ ( 'Error during CRED import', 'wpvdemo' ) : $result->get_error_message ( $result->get_error_code () );
+			
+				//Call filter for sites requiring import of CRED User Forms
+				$sites_requiring_cred_user_forms = apply_filters( 'wpvdemo_import_cred_user_forms',array() );
+				if (in_array( $cred_evaluate_shortname , $sites_requiring_cred_user_forms ) ) {
+					//Import CRED User forms for this site
+					$cred_user_form_export_file = $baseurl . '/cred_user_forms.xml';
+					
+					// Parse remote XML
+					$cred_user_form_exported_data = wpv_remote_xml_get ( $cred_user_form_export_file );
+					if (! ( $cred_user_form_exported_data ) ) {
+						return false;
+					}
+					
+					//Call CRED User form Import functions API
+					$cred_user_form_result = cred_user_import_xml_from_string( $cred_user_form_exported_data );
+				}			
 		}
 	}
 	

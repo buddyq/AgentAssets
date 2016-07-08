@@ -4,7 +4,7 @@
  * USE THIS API TO PREVENT HARD-CODING SPECIAL SITE HANDLING PROCEDURES INSIDE CORE IMPORT FILES.  
  */
 
-/** DONE-ADDING MULTILINGUAL SUPPORT TO SITES -START */
+/** OK DOKI-ADDING MULTILINGUAL SUPPORT TO SITES -START */
 /** Sites with multilingual versions */
 add_filter('wpdemo_sites_with_multilingual','wpdemo_sites_with_multilingual_func',10,2);
 function wpdemo_sites_with_multilingual_func($output_array,$return_format) {
@@ -39,7 +39,7 @@ function wpdemo_sites_with_multilingual_func($output_array,$return_format) {
 
 }
 
-/** DONE-Customize different refsites needs of WPML plugins */
+/** OK DOKI-Customize different refsites needs of WPML plugins */
 add_filter('wpvdemo_wpml_plugin_requirements','wpvdemo_wpml_plugin_requirements_func',10,2);
 function wpvdemo_wpml_plugin_requirements_func($the_wpml_plugins,$get_path) {
 	global $wpvdemo_bootstrap_estate_original_version;
@@ -94,7 +94,7 @@ function wpvdemo_wpml_plugin_requirements_func($the_wpml_plugins,$get_path) {
 
 /** ADDING MULTILINGUAL SUPPORT TO SITES -END */
 	
-/** DONE-Sites that require importing of WooCommerce product category images */
+/** OK DOKI-Sites that require importing of WooCommerce product category images */
 add_filter('wpvdemo_do_import_wc_product_cat','wpvdemo_do_import_wc_product_func',10,2);
 function wpvdemo_do_import_wc_product_func($xml_filename,$site_short_name) {
 	
@@ -114,7 +114,7 @@ function wpvdemo_do_import_wc_product_func($xml_filename,$site_short_name) {
 	return $xml_filename;
 }
 
-/** DONE-Old Bootstrap sites with import support */
+/** OK DOKI-Old Bootstrap sites with import support */
 add_filter('wpdemo_old_bootstrap_sites','wpvdemo_old_bootstrap_sites_func',10,1);
 function wpvdemo_old_bootstrap_sites_func($site_shortnames) {
 	global $wpvdemo_bootstrap_estate_original_version;
@@ -149,7 +149,7 @@ function wpvdemo_old_bootstrap_sites_func($site_shortnames) {
 	return $site_shortnames;	
 }
 
-/** DONE-Old Bootstrap sites with WooCommerce import support */
+/** OK DOKI-Old Bootstrap sites with WooCommerce import support */
 add_filter('wpdemo_old_bootstrap_sites_with_ecommerce','wpdemo_old_bootstrap_sites_with_ecommerce_func',10,1);
 function wpdemo_old_bootstrap_sites_with_ecommerce_func($site_shortnames) {
 
@@ -187,7 +187,7 @@ function wpdemo_old_bootstrap_sites_with_ecommerce_func($site_shortnames) {
 	return $site_shortnames;
 }
 
-/** DONE-Filter sites with imported Access user roles */
+/** OK DOKI-Filter sites with imported Access user roles */
 add_filter('wpvdemo_import_user_roles','wpvdemo_import_user_roles_func',10,2);
 function wpvdemo_import_user_roles_func($data_array,$shortnames) {
 	global $wpvdemo_bootstrap_estate_original_version;
@@ -197,7 +197,9 @@ function wpvdemo_import_user_roles_func($data_array,$shortnames) {
 				'cl' => 'classifieds_user_roles.xml',
 				'tcl'=> 'classifieds_user_roles.xml',
 				'bre'=> 'bootstrap_estate_user_roles.xml',
-				'rel'=> 'bootstrap_estate_layouts_user_roles.xml'
+				'rel'=> 'bootstrap_estate_layouts_user_roles.xml',
+				'ctt'=> 'cred_tutorials_user_roles.xml',
+				'ctc'=> 'cred_tutorials_demo_user_roles.xml'
 				);
 		
 		if (is_bool($wpvdemo_bootstrap_estate_original_version)) {
@@ -210,7 +212,7 @@ function wpvdemo_import_user_roles_func($data_array,$shortnames) {
 	return $data_array;
 }
 
-/** DONE-Filter sites that needs configuration of CRED notification settings after import */
+/** OK DOKI-Filter sites that needs configuration of CRED notification settings after import */
 add_filter('wpvdemo_config_crednotification','wpvdemo_config_crednotification_func',10,2);
 function wpvdemo_config_crednotification_func($bool,$shortnames) {
 
@@ -226,7 +228,7 @@ function wpvdemo_config_crednotification_func($bool,$shortnames) {
 	return $bool;
 }
 
-/** DONE-Filter sites that needs import of CRED custom fields */
+/** OK DOKI-Filter sites that needs import of CRED custom fields */
 add_filter('wpvdemo_import_cred_custom_fields','wpvdemo_import_cred_custom_fields_func',10,2);
 function wpvdemo_import_cred_custom_fields_func($bool,$shortnames) {
 
@@ -242,7 +244,7 @@ function wpvdemo_import_cred_custom_fields_func($bool,$shortnames) {
 	return $bool;
 }
 
-/** DONE-Filter sites that needs to turn off wizard for WooCommerce Views */
+/** OK DOKI-Filter sites that needs to turn off wizard for WooCommerce Views */
 add_filter('wpvdemo_turnoff_wcviews_wizard','wpvdemo_turnoff_wcviews_wizard_func',10,2);
 function wpvdemo_turnoff_wcviews_wizard_func($bool,$shortnames) {
 
@@ -255,7 +257,7 @@ function wpvdemo_turnoff_wcviews_wizard_func($bool,$shortnames) {
 	return $bool;
 }
 
-/** DONE-Filter sites that needs to turn off admin notices for WooCommerce Views */
+/** OK DOKI-Filter sites that needs to turn off admin notices for WooCommerce Views */
 add_filter('wpvdemo_turnoff_wc_adminnotices','wpvdemo_turnoff_wc_adminnotices_func',10,2);
 function wpvdemo_turnoff_wc_adminnotices_func($bool,$shortnames) {
 
@@ -276,7 +278,7 @@ function wpvdemo_turnoff_wc_adminnotices_func($bool,$shortnames) {
 	return $bool;
 }
 
-/** DONE-Filter sites that needs manual fix of Views taxonomies */
+/** OK DOKI-Filter sites that needs manual fix of Views taxonomies */
 add_filter('wpvdemo_manual_fix_views_taxonomies','wpvdemo_manual_fix_views_taxonomies_func',10,2);
 function wpvdemo_manual_fix_views_taxonomies_func($bool,$shortnames) {
 	global $wpvdemo_bootstrap_estate_original_version;
@@ -299,7 +301,7 @@ function wpvdemo_manual_fix_views_taxonomies_func($bool,$shortnames) {
 	return $bool;
 }
 
-/** DONE-Filter sites that needs manual fix of home URL */
+/** OK DOKI-Filter sites that needs manual fix of home URL */
 add_filter('wpvdemo_manual_update_home_url','wpvdemo_manual_update_home_url_func',10,2);
 function wpvdemo_manual_update_home_url_func($bool,$shortnames) {
 
@@ -314,7 +316,7 @@ function wpvdemo_manual_update_home_url_func($bool,$shortnames) {
 	return $bool;
 }
 
-/** DONE-Filter sites that needs manual fix of image URLs */
+/** OK DOKI-Filter sites that needs manual fix of image URLs */
 add_filter('wpvdemo_manual_fix_of_image_urls','wpvdemo_manual_fix_of_image_urls_func',10,2);
 function wpvdemo_manual_fix_of_image_urls_func($bool,$shortnames) {
 
@@ -329,7 +331,7 @@ function wpvdemo_manual_fix_of_image_urls_func($bool,$shortnames) {
 	return $bool;
 }
 
-/** DONE-Filter sites that needs to have empty sidebar widgets */
+/** OK DOKI-Filter sites that needs to have empty sidebar widgets */
 add_filter('wpvdemo_manual_empty_sidebar_widgets','wpvdemo_manual_empty_sidebar_widgets_func',10,2);
 function wpvdemo_manual_empty_sidebar_widgets_func($bool,$shortnames) {
 
@@ -342,7 +344,7 @@ function wpvdemo_manual_empty_sidebar_widgets_func($bool,$shortnames) {
 	return $bool;
 }
 
-/** DONE-Filter sites that needs to have auto add header menu */
+/** OK DOKI-Filter sites that needs to have auto add header menu */
 add_filter('wpvdemo_manual_autoaddheadermenu','wpvdemo_manual_autoaddheadermenu_func',10,2);
 function wpvdemo_manual_autoaddheadermenu_func($bool,$shortnames) {
 
@@ -355,7 +357,7 @@ function wpvdemo_manual_autoaddheadermenu_func($bool,$shortnames) {
 	return $bool;
 }
 
-/** DONE-Filter sites that needs to have special pages configuration */
+/** OK DOKI-Filter sites that needs to have special pages configuration */
 add_filter('wpvdemo_manual_special_wc_pages_configuration','wpvdemo_manual_special_wc_pages_configuration_func',10,2);
 function wpvdemo_manual_special_wc_pages_configuration_func($bool,$shortnames) {
 
@@ -372,7 +374,7 @@ function wpvdemo_manual_special_wc_pages_configuration_func($bool,$shortnames) {
 	return $bool;
 }
 
-/** DONE-Filter permalink structure */
+/** OK DOKI-Filter permalink structure */
 add_filter('wpvdemo_filter_permalink_structure_orig_bootstrap','wpvdemo_filter_permalink_structure_orig_bootstrap_func',10,2);
 function wpvdemo_filter_permalink_structure_orig_bootstrap_func($permalink_structure,$shortnames) {
 
@@ -389,7 +391,7 @@ function wpvdemo_filter_permalink_structure_orig_bootstrap_func($permalink_struc
 	return $permalink_structure;
 }
 
-/** DONE-Array of legacy sites */
+/** OK DOKI-Array of legacy sites */
 add_filter('wpvdemo_legacy_sites','wpvdemo_legacy_sites_func',10,2);
 function wpvdemo_legacy_sites_func($bool,$shortname) {
 
@@ -406,7 +408,7 @@ function wpvdemo_legacy_sites_func($bool,$shortname) {
 	return $bool;
 }
 
-/** DONE-Filter sites requiring manual fix of product comparison functionality in WooCommerce */
+/** OK DOKI-Filter sites requiring manual fix of product comparison functionality in WooCommerce */
 add_filter('wpvdemo_manual_fix_product_comparison','wpvdemo_manual_fix_product_comparison_func',10,2);
 function wpvdemo_manual_fix_product_comparison_func($bool,$shortname) {
 	
@@ -421,7 +423,7 @@ function wpvdemo_manual_fix_product_comparison_func($bool,$shortname) {
 /**
  * START -REFERENCE SITE MERGING CONFIGURATIONS
  */
-/** DONE-Merge My Company sites into one presentation in manage sites */
+/** OK DOKI-Merge My Company sites into one presentation in manage sites */
 add_filter('wpvdemo_merge_refsites','wpvdemo_merge_refsites_company_sites',10,1);
 function wpvdemo_merge_refsites_company_sites($aux_array) {
 	
@@ -437,7 +439,7 @@ function wpvdemo_merge_refsites_company_sites($aux_array) {
 	return $aux_array;
 }
 
-/** DONE-Merge BootCommerce sites into one presentation in manage sites */
+/** OK DOKI-Merge BootCommerce sites into one presentation in manage sites */
 add_filter('wpvdemo_merge_refsites','wpvdemo_merge_refsites_bootcommerce_sites',15,1);
 function wpvdemo_merge_refsites_bootcommerce_sites($aux_array) {
 
@@ -453,7 +455,7 @@ function wpvdemo_merge_refsites_bootcommerce_sites($aux_array) {
 	return $aux_array;
 }
 
-/** DONE-Merge Classifieds sites into one presentation in manage sites */
+/** OK DOKI-Merge Classifieds sites into one presentation in manage sites */
 add_filter('wpvdemo_merge_refsites','wpvdemo_merge_refsites_classifieds_sites',20,1);
 function wpvdemo_merge_refsites_classifieds_sites($aux_array) {
 
@@ -469,7 +471,7 @@ function wpvdemo_merge_refsites_classifieds_sites($aux_array) {
 	return $aux_array;
 }
 
-/** DONE- Merge Bootstrap estate sites into one presentation in manage sites */
+/** OK DOKI- Merge Bootstrap estate sites into one presentation in manage sites */
 add_filter('wpvdemo_merge_refsites','wpvdemo_merge_refsites_bootstrapestate_sites',25,1);
 function wpvdemo_merge_refsites_bootstrapestate_sites($aux_array) {
 
@@ -485,7 +487,7 @@ function wpvdemo_merge_refsites_bootstrapestate_sites($aux_array) {
 	return $aux_array;
 }
 
-/** Merge Magazine sites into one presentation in manage sites */
+/** OK DOKI Magazine sites into one presentation in manage sites */
 add_filter('wpvdemo_merge_refsites','wpvdemo_merge_refsites_magazine_sites',30,1);
 function wpvdemo_merge_refsites_magazine_sites($aux_array) {
 
@@ -501,7 +503,7 @@ function wpvdemo_merge_refsites_magazine_sites($aux_array) {
 	return $aux_array;
 }
 
-/** DONE-Filter merged site installation in Discover WP multisite */
+/** OK DOKI-Filter merged site installation in Discover WP multisite */
 /** Used in Discover-WP Live Registration Plugin */
 add_filter('wpvdemo_get_merged_site_equivalent','wpvdemo_get_merged_site_equivalent_func',10,2);
 function wpvdemo_get_merged_site_equivalent_func($site_shortname,$flip) {
@@ -530,7 +532,7 @@ function wpvdemo_get_merged_site_equivalent_func($site_shortname,$flip) {
 /**
  * END -REFERENCE SITE MERGING CONFIGURATIONS
  */
-/** DONE-Filter sites requiring CRED Commerce */
+/** OK DOKI-Filter sites requiring CRED Commerce */
 add_filter('wpvdemo_import_cred_commerce_settings','wpvdemo_import_cred_commerce_settings_func',10,1);
 function wpvdemo_import_cred_commerce_settings_func($shortnames_array) {
 	if (is_array($shortnames_array)) {
@@ -539,7 +541,7 @@ function wpvdemo_import_cred_commerce_settings_func($shortnames_array) {
 	return $shortnames_array;
 }
 
-/** DONE-Filter sites requiring activation of Types/Views full version for modules import */
+/** OK DOKI-Filter sites requiring activation of Types/Views full version for modules import */
 add_filter('wpvdemo_special_types_views_fullactivation','wpvdemo_special_types_views_fullactivation_func',10,1);
 function wpvdemo_special_types_views_fullactivation_func($shortnames_array) {
 	global $wpvdemo_bootstrap_estate_original_version;
@@ -559,7 +561,7 @@ function wpvdemo_special_types_views_fullactivation_func($shortnames_array) {
 	return $shortnames_array;
 }
 
-/** DONE-Filter ecommerce sites that we need to delete any unneeded WooCommerce options during plugin activation */
+/** OK DOKI-Filter ecommerce sites that we need to delete any unneeded WooCommerce options during plugin activation */
 add_filter('wpvdemo_deletewc_unneededoptions','wpvdemo_deletewc_unneededoptions_func',10,1);
 function wpvdemo_deletewc_unneededoptions_func($shortnames_array) {
 	if (is_array($shortnames_array)) {
@@ -568,7 +570,7 @@ function wpvdemo_deletewc_unneededoptions_func($shortnames_array) {
 	return $shortnames_array;
 }
 	
-/** DONE-Filter ecommerce sites that registering of color taxonomy */
+/** OK DOKI-Filter ecommerce sites that registering of color taxonomy */
 add_filter('wpvdemo_wc_create_color_taxonomy','wpvdemo_wc_create_color_taxonomy_func',10,1);	
 function wpvdemo_wc_create_color_taxonomy_func($site_ids) {
 	if (is_array($site_ids)) {
@@ -577,7 +579,7 @@ function wpvdemo_wc_create_color_taxonomy_func($site_ids) {
 	return $site_ids;
 }
 
-/** DONE-sites that needs to have WC Views admin notices disabled after import */
+/** OK DOKI-sites that needs to have WC Views admin notices disabled after import */
 add_filter('wpvdemo_disable_wcviews_admin_notice','wpvdemo_disable_wcviews_admin_notice_func',10,1);
 function wpvdemo_disable_wcviews_admin_notice_func($sites) {
 	if (is_array($sites)) {
@@ -588,7 +590,7 @@ function wpvdemo_disable_wcviews_admin_notice_func($sites) {
 	}
 	return $sites;
 }
-/** DONE-Filter sites that are using special plugins but already network activated in Discover WP multisite */
+/** OK DOKI-Filter sites that are using special plugins but already network activated in Discover WP multisite */
 add_filter('wpvdemo_sites_already_network_activated','wpvdemo_sites_already_network_activated_func',10,1);
 function wpvdemo_sites_already_network_activated_func($sites) {
 	
@@ -600,7 +602,7 @@ function wpvdemo_sites_already_network_activated_func($sites) {
 	
 	return $sites;
 }
-/** DONE-Filter sites with plugins required already network activated */
+/** OK DOKI-Filter sites with plugins required already network activated */
 add_filter('wpvdemo_discoversite_already_network_activated','wpvdemo_site_already_network_activated_func',10,1);
 function wpvdemo_site_already_network_activated_func($sites) {
 
@@ -619,7 +621,7 @@ function wpvdemo_site_already_network_activated_func($sites) {
 
 	return $sites;
 }
-/** DONE-Filter plugins in Discover-WP that are already network activated */
+/** OK DOKI-Filter plugins in Discover-WP that are already network activated */
 add_filter('wpvdemo_plugins_already_network_activated','wpvdemo_plugins_already_network_activated_func',10,2);
 function wpvdemo_plugins_already_network_activated_func($network_activated_plugins,$ret_format) {
 
@@ -664,7 +666,7 @@ function wpvdemo_plugins_already_network_activated_func($network_activated_plugi
 	return $network_activated_plugins;
 }
 
-/** DONE-Filter sites requiring an update on WPML string packages after import */
+/** OK DOKI-Filter sites requiring an update on WPML string packages after import */
 /** Typically are Layouts sites with multilingual implementation */
 add_filter('wpvdemo_wpml_string_packages_update','wpvdemo_wpml_string_packages_update_func',10,1);
 function wpvdemo_wpml_string_packages_update_func($sites) {
@@ -682,7 +684,7 @@ function wpvdemo_wpml_string_packages_update_func($sites) {
 	return $sites;
 }
 /** POST IMPORT HOOKS SIMPLIFIED */
-/** DONE-Filter sites requiring manual search and replace of image URLs after import */
+/** OK DOKI-Filter sites requiring manual search and replace of image URLs after import */
 /** For sites with hardcoded multisite urls from the refsites inside the post_content*/
 add_filter('wpvdemo_postimport_replace_urls','wpvdemo_postimport_replace_urls_func',10,1);
 function wpvdemo_postimport_replace_urls_func($sites) {
@@ -697,13 +699,16 @@ function wpvdemo_postimport_replace_urls_func($sites) {
 					 'bootstrap-estate-layouts',
 					  /** WOOCOMMERCE TUTORIALS */
 					 'woocommerce-tutorial',
-					 'woocommerce-tutorial-demo'
+					 'woocommerce-tutorial-demo',
+					  /** CRED TUTORIALS */
+					  'cred-tutorials',
+					  'cred-tutorials-demo'					 
 				);
 	}
 
 	return $sites;
 }
-/** DONE-Filter sites requiring ICL adl settings to be imported */
+/** OK DOKI-Filter sites requiring ICL adl settings to be imported */
 add_filter('wpvdemo_site_requires_icladlsettings','wpvdemo_site_requires_icladlsettings_func',10,1);
 function wpvdemo_site_requires_icladlsettings_func($sites) {
 	global $wpvdemo_bootstrap_estate_original_version;
@@ -730,7 +735,7 @@ function wpvdemo_site_requires_icladlsettings_func($sites) {
 
 	return $sites;
 }
-/** DONE-Filter sites requiring discussion settings to be imported */
+/** OK DOKI-Filter sites requiring discussion settings to be imported */
 add_filter('wpvdemo_site_requires_discussion_settings','wpvdemo_site_requires_discussion_settings_func',10,1);
 function wpvdemo_site_requires_discussion_settings_func($sites) {
 
@@ -738,13 +743,15 @@ function wpvdemo_site_requires_discussion_settings_func($sites) {
 
 		$sites=array(
 				'views-tutorial',
-				'views-tutorial-demo'
+				'views-tutorial-demo',
+				'cred-tutorials',
+				'cred-tutorials-demo'				
 		);
 	}
 
 	return $sites;
 }
-/** DONE-Filter sites requiring reading settings to be imported */
+/** OK DOKI-Filter sites requiring reading settings to be imported */
 add_filter('wpvdemo_site_requires_reading_settings','wpvdemo_site_requires_reading_settings_func',10,1);
 function wpvdemo_site_requires_reading_settings_func($sites) {
 
@@ -752,13 +759,15 @@ function wpvdemo_site_requires_reading_settings_func($sites) {
 
 		$sites=array(
 				'woocommerce-tutorial-demo',
-				'woocommerce-tutorial'
+				'woocommerce-tutorial',
+				'cred-tutorials',
+				'cred-tutorials-demo'				
 		);
 	}
 
 	return $sites;
 }
-/** DONE-Filter sites requiring Log out link adjustments */
+/** OK DOKI-Filter sites requiring Log out link adjustments */
 add_filter('wpvdemo_update_bcl_logout_link','wpvdemo_update_bcl_logout_link_func',10,1);
 function wpvdemo_update_bcl_logout_link_func($sites) {
 
@@ -772,7 +781,7 @@ function wpvdemo_update_bcl_logout_link_func($sites) {
 
 	return $sites;
 }
-/** DONE-Filter sites requiring WooCommerce My Account page adjustments */
+/** OK DOKI-Filter sites requiring WooCommerce My Account page adjustments */
 add_filter('wpvdemo_classifieds_layouts_my_account_page','wpvdemo_classifieds_layouts_my_account_page_func',10,1);
 function wpvdemo_classifieds_layouts_my_account_page_func($sites) {
 
@@ -786,7 +795,7 @@ function wpvdemo_classifieds_layouts_my_account_page_func($sites) {
 
 	return $sites;
 }
-/** DONE-Filter sites requiring search and replace of no image default */
+/** OK DOKI-Filter sites requiring search and replace of no image default */
 add_filter('wpvdemo_search_replace_noimage_classifieds','wpvdemo_search_replace_noimage_classifieds_func',10,1);
 function wpvdemo_search_replace_noimage_classifieds_func($sites) {
 
@@ -800,7 +809,7 @@ function wpvdemo_search_replace_noimage_classifieds_func($sites) {
 
 	return $sites;
 }
-/** DONE-Filter sites requiring search and replace hostnames inside Toolset Layouts content */
+/** OK DOKI-Filter sites requiring search and replace hostnames inside Toolset Layouts content */
 add_filter('wpvdemo_search_replace_hostnames_inside_layouts','wpvdemo_search_replace_hostnames_inside_layouts_func',10,1);
 function wpvdemo_search_replace_hostnames_inside_layouts_func($sites) {
 
@@ -817,7 +826,7 @@ function wpvdemo_search_replace_hostnames_inside_layouts_func($sites) {
 
 	return $sites;
 }
-/** DONE-Filter sites requiring update of attachments */
+/** OK DOKI-Filter sites requiring update of attachments */
 add_filter('wpvdemo_simple_refsite_update_attachments','wpvdemo_simple_refsite_update_attachments_func',10,1);
 function wpvdemo_simple_refsite_update_attachments_func($sites) {
 
@@ -837,7 +846,7 @@ function wpvdemo_simple_refsite_update_attachments_func($sites) {
 
 	return $sites;
 }
-/** DONE-Filter sites requiring update of WooCommerce attributes */
+/** OK DOKI-Filter sites requiring update of WooCommerce attributes */
 add_filter('wpvdemo_bootcommerce_layouts_attributes','wpvdemo_bootcommerce_layouts_attributes_func',10,1);
 function wpvdemo_bootcommerce_layouts_attributes_func($sites) {
 
@@ -853,7 +862,7 @@ function wpvdemo_bootcommerce_layouts_attributes_func($sites) {
 
 	return $sites;
 }
-/** DONE-Filter sites requiring regeneration of thumbnails after import */
+/** OK DOKI-Filter sites requiring regeneration of thumbnails after import */
 add_filter('wpvdemo_required_thumbnail_regeneration','wpvdemo_required_thumbnail_regeneration_func',10,1);
 function wpvdemo_required_thumbnail_regeneration_func($sites) {
 	global $wpvdemo_bootstrap_estate_original_version;
@@ -881,7 +890,7 @@ function wpvdemo_required_thumbnail_regeneration_func($sites) {
 	}
 	return $sites;
 }
-/** DONE-Filter default processes that should be displayed on import processes*/
+/** OK DOKI-Filter default processes that should be displayed on import processes*/
 /** Should match array keys used in refsite_custom_import_process_steps() function */
 add_filter('wpvdemo_default_import_processes','wpvdemo_default_import_processes_func',10,1);
 function wpvdemo_default_import_processes_func($import_process_steps) {
@@ -898,7 +907,7 @@ function wpvdemo_default_import_processes_func($import_process_steps) {
 	}
 	return $import_process_steps;
 }
-/** DONE-Filter inactive import processes*/
+/** OK DOKI-Filter inactive import processes*/
 /** Should match array keys used in refsite_custom_import_process_steps() function */
 add_filter('wpvdemo_inactive_import_processes','wpvdemo_inactive_import_processes_func',10,1);
 function wpvdemo_inactive_import_processes_func($inactive_processes) {
@@ -910,13 +919,13 @@ function wpvdemo_inactive_import_processes_func($inactive_processes) {
 	}
 	return $inactive_processes;
 }
-/** DONE-Filter sites requiring CRED*/
+/** OK DOKI-Filter sites requiring CRED*/
 /** This is quick version of querying sites with CRED without using wp_remote_get */
 add_filter('wpvdemo_refsites_require_cred','wpvdemo_refsites_require_cred_func',10,1);
 function wpvdemo_refsites_require_cred_func($sites) {
 	global $wpvdemo_bootstrap_estate_original_version;
 	if (is_array($sites)) {
-		$sites = array(8,30,50,53,56,57,59,64);
+		$sites = array(8,30,50,53,56,57,59,64,66,67);
 		
 		if (is_bool($wpvdemo_bootstrap_estate_original_version)) {
 			if ($wpvdemo_bootstrap_estate_original_version) {
@@ -929,13 +938,13 @@ function wpvdemo_refsites_require_cred_func($sites) {
 	
 	return $sites;
 }
-/** DONE-Filter sites requiring Access*/
+/** OK DOKI-Filter sites requiring Access*/
 /** This is quick version of querying sites with Access without using wp_remote_get */
 add_filter('wpvdemo_refsites_require_access','wpvdemo_refsites_require_access_func',10,1);
 function wpvdemo_refsites_require_access_func($sites) {
 	global $wpvdemo_bootstrap_estate_original_version;
 	if (is_array($sites)) {
-		$sites = array(8,53,57,64);
+		$sites = array(8,53,57,64,66,67);
 		
 		if (is_bool($wpvdemo_bootstrap_estate_original_version)) {
 			if ($wpvdemo_bootstrap_estate_original_version) {
@@ -947,7 +956,7 @@ function wpvdemo_refsites_require_access_func($sites) {
 
 	return $sites;
 }
-/** DONE-Filter sites requiring module manager*/
+/** OK DOKI-Filter sites requiring module manager*/
 /** This is quick version of querying sites with module manager modules for import without using wp_remote_get */
 add_filter('wpvdemo_refsites_has_modules_to_import','wpvdemo_refsites_has_modules_to_import_func',10,1);
 function wpvdemo_refsites_has_modules_to_import_func($sites) {
@@ -957,7 +966,7 @@ function wpvdemo_refsites_has_modules_to_import_func($sites) {
 
 	return $sites;
 }
-/** DONE-Filter sites requiring Layouts*/
+/** OK DOKI-Filter sites requiring Layouts*/
 /** This is quick version of querying sites with Layouts for import without using wp_remote_get */
 add_filter('wpvdemo_refsites_require_layouts','wpvdemo_refsites_require_layouts_func',10,1);
 function wpvdemo_refsites_require_layouts_func($sites) {
@@ -967,7 +976,7 @@ function wpvdemo_refsites_require_layouts_func($sites) {
 
 	return $sites;
 }
-/** DONE-Filter plugins without pages*/
+/** OK DOKI-Filter plugins without pages*/
 add_filter('wpvdemo_plugins_without_page','wpvdemo_plugins_without_page_func',10,1);
 function wpvdemo_plugins_without_page_func($the_plugins_passed) {
 	global $wpvdemo_bootstrap_estate_original_version;
@@ -1036,7 +1045,7 @@ function wpvdemo_plugins_without_page_func($the_plugins_passed) {
 	return $the_plugins_passed;
 }
 
-/** DONE-Filter refsite sequence*/
+/** OK DOKI-Filter refsite sequence*/
 add_filter('wpvdemo_refsites_order_sequence','wpvdemo_refsites_order_sequence_func',10,2);
 function wpvdemo_refsites_order_sequence_func($sequence,$refsite_objects) {
 
@@ -1055,28 +1064,32 @@ function wpvdemo_refsites_order_sequence_func($sequence,$refsite_objects) {
 						'wt'  => 3,
 						//WooCommerce tutorial complete
 						'wtd' => 4,
+						//CRED tutorial - training
+						'ctt' => 5,
+						//CRED tutorial - complete
+						'ctc' => 6,						
 						//Company site
-						'rtv' => 5,
+						'rtv' => 7,
 						//Company site with Layouts
-						'rtl' => 6,
+						'rtl' => 8,
 						//WooCommerce with Views
-						'bc'  => 7,
+						'bc'  => 9,
 						//WooCommerce with layouts
-						'bcl' => 8,
+						'bcl' => 10,
 						//Classifieds with Views
-						'cl'  => 9,
+						'cl'  => 11,
 						//Classifieds with Layouts
-						'tcl' => 10,
+						'tcl' => 12,
 						//Real estate
-						'bre' => 11,
+						'bre' => 13,
 						//Real estate layouts
-						'rel' => 12,
+						'rel' => 14,
 						//Magazine with layouts
-						'bm'  => 13,
+						'bm'  => 15,
 						//Magazine with Views
-						'bmv' => 14,
+						'bmv' => 16,
 						//Blank site
-						'tbs' => 15
+						'tbs' => 17
 				);
 				if (isset($sorting_sequence_setting_array[$refsite_shortname])) {
 					$sequence= $sorting_sequence_setting_array[$refsite_shortname];
@@ -1088,7 +1101,7 @@ function wpvdemo_refsites_order_sequence_func($sequence,$refsite_objects) {
 	
 	return $sequence;
 }
-/** DONE-Manual parametric adjustments if needed */
+/** OK DOKI-Manual parametric adjustments if needed */
 add_filter('wpvdemo_site_requires_parametric_filter_adjustment','wpvdemo_site_requires_parametric_filter_adjustment_func',10,1);
 function wpvdemo_site_requires_parametric_filter_adjustment_func($sites) {
 	if (is_array($sites)) {
@@ -1123,7 +1136,7 @@ function wpvdemo_site_requires_parametric_filter_adjustment_func($sites) {
 
 	return $sites;
 }
-/** DONE-Filter sites requiring update of Layouts WooCommerce shop page */
+/** OK DOKI-Filter sites requiring update of Layouts WooCommerce shop page */
 add_filter('wpvdemo_update_wc_shoppage_layouts','wpvdemo_update_wc_shoppage_layouts_func',10,1);
 function wpvdemo_update_wc_shoppage_layouts_func($sites) {
 
@@ -1136,7 +1149,7 @@ function wpvdemo_update_wc_shoppage_layouts_func($sites) {
 
 	return $sites;
 }
-/** DONE-Sites with large set of multilingual strings*/
+/** OK DOKI-Sites with large set of multilingual strings*/
 add_filter('wpvdemo_large_sites_standalone','wpvdemo_large_sites_standalone_func',10,1);
 function wpvdemo_large_sites_standalone_func($sites) {
 	global $wpvdemo_bootstrap_estate_original_version;
@@ -1163,7 +1176,7 @@ function wpvdemo_large_sites_standalone_func($sites) {
 
 	return $sites;
 }
-/** DONE-Ensure premium product translated slug is 'premium' for styling consistency */
+/** OK DOKI-Ensure premium product translated slug is 'premium' for styling consistency */
 /** Use WordPress core API filter: 'wp_unique_post_slug' */
 add_filter( 'wp_unique_post_slug', 'wpvdemo_filter_premium_slug_classifieds_layouts',10,6 );
 function wpvdemo_filter_premium_slug_classifieds_layouts($the_slug, $the_post_ID, $the_post_status, $the_post_type, $the_post_parent, $the_original_slug) {
@@ -1195,7 +1208,7 @@ function wpvdemo_filter_premium_slug_classifieds_layouts($the_slug, $the_post_ID
 	
 	return $the_slug;
 }
-/** DONE-Search and replace detailed CRED context inside its own CRED post body */
+/** OK DOKI-Search and replace detailed CRED context inside its own CRED post body */
 /** Example: cred-form-Add Apartment-262 created by:
  * 
  */
@@ -1220,4 +1233,13 @@ function wpvdemo_search_replace_detailed_context_credbody_func($sites) {
 	}
 
 	return $sites;
+}
+
+/** OK DOKI-Filter sites requiring CRED User Forms */
+add_filter('wpvdemo_import_cred_user_forms','wpvdemo_import_cred_user_forms_func',10,1);
+function wpvdemo_import_cred_user_forms_func($shortnames_array) {
+	if (is_array($shortnames_array)) {
+		$shortnames_array=array( 'ctc' );
+	}
+	return $shortnames_array;
 }

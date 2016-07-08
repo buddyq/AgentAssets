@@ -100,7 +100,6 @@ function medma_manager_theme_admin() {
             </div>
         </form>
     </div>
-
     <?php
 }
 

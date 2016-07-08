@@ -4,10 +4,12 @@ add_shortcode('cu_register_form','cu_register_form');
 
 function cu_register_form()
 {
+    $group_code = (!empty($_POST['micu_code'])) ? $_POST['micu_code']
+        : (!empty($_GET['group_code']) ? $_GET['group_code'] : '');
+
     if(isset($_POST['submit']))
     {
         if (apply_filters('register_cu_form_captcha', true)) {
-
 
             global $wpdb;
             $username = $_POST['micu_username'];
@@ -21,15 +23,18 @@ function cu_register_form()
             $twitter = $_POST['micu_twitter'];
             $facebook = $_POST['micu_facebook'];
             $googleplus = $_POST['micu_googleplus'];
+
+            /*
             $billing_address_1 = $_POST['micu_billing_address_1'];
             $billing_address_2 = $_POST['micu_billing_address_2'];
             $billing_city = $_POST['micu_billing_city'];
             $billing_state = $_POST['micu_billing_state'];
             $billing_zip = $_POST['micu_billing_zip'];
             $billing_email = $_POST['micu_billing_email'];
+            */
 
             $return_url = $_POST['micu_return_url'];
-            remove_action('wpmu_new_user', newuser_notify_siteadmin, 999);
+            remove_action('wpmu_new_user', 'newuser_notify_siteadmin', 999);
             # User Created
             $user_id = wpmu_create_user($username, $password, $email);
             if (isset($user_id) && $user_id > 0) {
@@ -169,6 +174,9 @@ function cu_register_form()
                     */
 
                 );
+
+                MedmaGroupModel::addRelatedUserByCode($user_id, $group_code);
+
                 do_action('medma_custom_admin_user_notification', $user_data_list);
                 ?>
                 <div
@@ -377,6 +385,20 @@ function cu_register_form()
         $html .= '<p class=" first_form  form_element form_element_half" id="element_micu_googleplus">';
         $html .= '<label for="micu_googleplus">'.__('Google+','micu').' </label>';
         $html .= '<input name="micu_googleplus" class="text_input" type="text" id="micu_googleplus" value="">';
+        $html .= '</p>';
+
+        $html .= '</fieldset>';
+
+        $html .= '<div class="av-special-heading av-special-heading-h3 meta-heading   avia-builder-el-4  el_after_av_textblock  el_before_av_contact ">';
+        $html .= '<h3 class="av-special-heading-tag" itemprop="headline">'.__('Invitation','micu').'</h3>';
+        $html .= '<div class="special-heading-border"><div class="special-heading-inner-border"></div></div>';
+        $html .= '</div>';
+
+        $html .= '<fieldset>';
+
+        $html .= '<p class="first_form  form_element form_element_half" id="element_micu_group_code">';
+        $html .= '<label for="micu_group_code">'.__('Group Code (Enter if you have one)','micu').'</label>';
+        $html .= '<input name="micu_group_code" class="text_input is_empty" type="text" id="micu_group_code" value="'.$group_code.'">';
         $html .= '</p>';
 
         $html .= '</fieldset>';

@@ -33,6 +33,7 @@ require_once 'includes/shortcodes/list_packages.php';
 require_once 'includes/shortcodes/package_status.php';
 require_once 'includes/shortcodes/medma_groups_info.php';
 require_once 'includes/shortcodes/medma_groups_admin.php';
+require_once 'includes/shortcodes/medma_group_assign_code.php';
 
 require_once 'includes/settings/package-settings.php';
 require_once 'includes/settings/medma-manager-admin.php';

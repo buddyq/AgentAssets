@@ -1,6 +1,8 @@
 <?php
 
 class MedmaGroupModel {
+    const REGISTRATION_PAGE_POST_ID = 18;
+
     public static function tableName() {
         global $wpdb;
         return $wpdb->base_prefix . 'medma_group';
@@ -104,6 +106,7 @@ class MedmaGroupModel {
                     'id' => $user->ID,
                     'email' => $user->user_email,
                     'login' => $user->user_login,
+                    'name'  => $user->display_name,
                     'is_group_admin' => $relationIndex[$user->ID]->is_admin,
                 );
             }
@@ -123,6 +126,12 @@ class MedmaGroupModel {
             'user_id' => $user_id,
             'is_admin' => $is_admin,
         ));
+    }
+
+    public static function removeRelatedUsers($group_id, $user_ids) {
+        global $wpdb;
+        return $wpdb->query('DELETE FROM `'.$wpdb->base_prefix. 'medma_group_user`'
+            .'WHERE group_id = '.(int)$group_id.' user_id IN ('.implode(', ', $user_ids)). ')';
     }
 
     public static function getRelatedThemes($group_id) {
@@ -146,11 +155,56 @@ class MedmaGroupModel {
         ));
     }
 
+    public static function removeRelatedThemes($group_id, $theme_ids) {
+        global $wpdb;
+        return $wpdb->query('DELETE FROM `'.$wpdb->base_prefix. 'medma_group_theme`'
+            .'WHERE group_id = '.(int)$group_id.' theme_id IN ('.implode(', ', $theme_ids)). ')';
+    }
+
+    public static function getAdminGroups($user_id) {
+        $admin_groups = array();
+        $primary_admin_groups_result = MedmaGroupModel::findAll('primaryadmin_id = %d', array($user_id));
+        foreach($primary_admin_groups_result as $group) {
+            $admin_groups[$group->id] = $group;
+        }
+
+        global $wpdb;
+        $admin_groups_result = $wpdb->get_results('SELECT * FROM `'.MedmaGroupModel::tableName() . '` mg'
+            .' INNER JOIN `'.$wpdb->base_prefix.'medma_group_user` mgu ON mg.id = mgu.group_id AND'
+            .' mgu.user_id = ' . $user_id . ' AND mgu.is_admin = 1');
+
+        foreach($admin_groups_result as $group) {
+            $admin_groups[$group->id] = $group;
+        }
+
+        return $admin_groups;
+    }
+
     public static function generateCode() {
         $code = md5(time());
         $code[4] = '-';
         $code[9] = '-';
 
         return substr($code,0 ,16);
+    }
+
+    public static function sendInvitation($email, $code, $group_name) {
+        $link = MedmaGroupModel::getCodeLink($code);
+        return wp_mail($email, 'Group Invitation', 'Greetings! You have been invited to join the "'.$group_name.'" group on agentassets.com.<br/>'
+            .'Please follow the link to register and enjoy the group\'s features in your site creation:<br/>'
+            .'<a href="'.$link.'">'.$link.'</a>');
+    }
+
+    public static function getCodeLink($code) {
+        return add_query_arg('group_code', $code, get_permalink(REGISTRATION_PAGE_POST_ID));
+    }
+
+    public static function addRelatedUserByCode($user_id, $code) {
+        $status = false;
+        $group = self::findOne('code = %s', array($code));
+        if ($group) {
+            $status = self::addRelatedUser($group->id, $user_id);
+        }
+        return $status;
     }
 }

@@ -27,13 +27,14 @@ function cu_edit_profile_form()
         $facebook = $_POST['micu_facebook'];
         $designation = $_POST['micu_designation'];
         $googleplus = $_POST['micu_googleplus'];
+        /*
         $billing_address_1 = $_POST['micu_billing_address_1'];
         $billing_address_2 = $_POST['micu_billing_address_2'];
         $billing_city = $_POST['micu_billing_city'];
         $billing_state = $_POST['micu_billing_state'];
         $billing_zip = $_POST['micu_billing_zip'];
         $billing_email = $_POST['micu_billing_email'];
-        
+        */
         $return_url = $_POST['micu_return_url'];
             
         # Profile Picture Upload
@@ -145,12 +146,14 @@ function cu_edit_profile_form()
         update_user_meta($user_id, 'facebook', $facebook );
         update_user_meta($user_id, 'googleplus', $googleplus );
         update_user_meta($user_id, 'designation', $designation );
+        /*
         update_user_meta($user_id, 'billing_address_1', $billing_address_1 );
         update_user_meta($user_id, 'billing_address_2', $billing_address_2 );
         update_user_meta($user_id, 'billing_city', $billing_city );
         update_user_meta($user_id, 'billing_state', $billing_state );
         update_user_meta($user_id, 'billing_zip', $billing_zip );
         update_user_meta($user_id, 'billing_email', $billing_email );
+        */
     }
     
     
@@ -187,13 +190,14 @@ function cu_edit_profile_form()
         $designation = get_user_meta($user_id, 'designation', true);
         $brokerName = get_user_meta($user_id, 'broker', true);
         $brokerWebsite = get_user_meta($user_id, 'broker_website', true);
+        /*
         $billingAddress1 = get_user_meta($user_id, 'billing_address_1', true);
         $billingAddress2 = get_user_meta($user_id, 'billing_address_2', true);
         $billingCity = get_user_meta($user_id, 'billing_city', true);
         $billingState = get_user_meta($user_id, 'billing_state', true);
         $billingZip = get_user_meta($user_id, 'billing_zip', true);
         $billingEmail = get_user_meta($user_id, 'billing_email', true);
-        
+        */
         $edit_form_return_url = get_option('msm_edit_return_url');
         
         $html .= '<form id="micu_signup_form" class="micu_ajax_form el_after_av_heading  avia-builder-el-last  " method="post" novalidate="novalidate" enctype="multipart/form-data" action="'.$edit_form_return_url.'">';
@@ -384,6 +388,7 @@ function cu_edit_profile_form()
         if($brokerName==""){
             $brokerName = 'N/A';
         }
+        /*
         $billingAddress1 = get_user_meta($user_id, 'billing_address_1', true);
         if($billingAddress1==""){
             $billingAddress1 = 'N/A';
@@ -408,7 +413,7 @@ function cu_edit_profile_form()
         if($billingEmail==""){
             $billingEmail = 'N/A';
         }
-        
+        */
         $html .= '<div id="micu_signup_form" class="micu_ajax_form el_after_av_heading  avia-builder-el-last  ">';
 
         # USER INFORMATION
@@ -508,10 +513,13 @@ function cu_edit_profile_form()
         $html .= '<span><img class="broker_logo_edit_view" src="'.$broker_pic.'" alt="broker_logo" width="150px" height="150px"/></span>';
         $html .= '</td>';
         $html .= '</tr>';
-        
+
+        /*
         $html .= '</tbody>';
         $html .= '</table>';
+        */
 
+        /*
         # BILLING INFORMATION
         $html .= '<table>';
         $html .= '<thead class="site-list-container">';
@@ -579,7 +587,7 @@ function cu_edit_profile_form()
         $html .= '<span>'.$billingEmail.'</span>';
         $html .= '</td>';
         $html .= '</tr>';
-        
+        */
         $html .= '<tr>';
         $html .= '<td colspan="2" align="right">';
         $html .= '<a class="button" href="?form=edit">'.__('Edit Profile','micu').'</a>';

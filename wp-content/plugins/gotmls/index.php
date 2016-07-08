@@ -8,7 +8,7 @@ Author URI: http://wordpress.ieonly.com/category/my-plugins/anti-malware/
 Contributors: scheeeli, gotmls
 Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=QZHD8QHZ2E7PE
 Description: This Anti-Virus/Anti-Malware plugin searches for Malware and other Virus like threats and vulnerabilities on your server and helps you remove them. It's always growing and changing to adapt to new threats so let me know if it's not working for you.
-Version: 4.16.17
+Version: 4.16.26
 */
 if (isset($_SERVER["DOCUMENT_ROOT"]) && ($SCRIPT_FILE = str_replace($_SERVER["DOCUMENT_ROOT"], "", isset($_SERVER["SCRIPT_FILENAME"])?$_SERVER["SCRIPT_FILENAME"]:isset($_SERVER["SCRIPT_NAME"])?$_SERVER["SCRIPT_NAME"]:"")) && strlen($SCRIPT_FILE) > strlen("/".basename(__FILE__)) && substr(__FILE__, -1 * strlen($SCRIPT_FILE)) == substr($SCRIPT_FILE, -1 * strlen(__FILE__)))
 	include(dirname(__FILE__)."/safe-load/index.php");
@@ -99,7 +99,7 @@ add_action('admin_enqueue_scripts', 'GOTMLS_enqueue_scripts');
 
 function GOTMLS_display_header($optional_box = "") {
 	global $wp_version, $current_user;
-	get_currentuserinfo();
+	wp_get_current_user();
 	$GOTMLS_url_parts = explode('/', GOTMLS_siteurl);
 	if (isset($_GET["check_site"]) && $_GET["check_site"])
 		echo '<div id="check_site" style="z-index: 1234567;"><img src="'.GOTMLS_images_path.'checked.gif" height=16 width=16 alt="&#x2714;"> '.__("Tested your site. It appears we didn't break anything",'gotmls').' ;-)</div><script type="text/javascript">window.parent.document.getElementById("check_site_warning").style.backgroundColor=\'#0C0\';</script><li>Please <a target="_blank" href="https://wordpress.org/plugins/gotmls/stats/?compatibility%5Bversion%5D='.$wp_version.'&compatibility%5Btopic_version%5D='.GOTMLS_Version.'&compatibility%5Bcompatible%5D=1#compatibility-works">Vote "Works"</a> or <a target="_blank" href="https://wordpress.org/support/view/plugin-reviews/gotmls#postform">write a "Five-Star" Reviews</a> on WordPress.org if you like this plugin.</li><style>#footer, #GOTMLS-metabox-container, #GOTMLS-right-sidebar, #admin-page-container, #wpadminbar, #adminmenuback, #adminmenuwrap, #adminmenu, .error, .updated, .update-nag {display: none !important;} #wpbody-content {padding-bottom: 0;} #wpbody, html.wp-toolbar {padding-top: 0 !important;} #wpcontent, #footer {margin-left: 5px !important;}';
@@ -943,7 +943,7 @@ function GOTMLS_settings() {
 		$GLOBALS["GOTMLS"]["tmp"]["settings_array"]["check_custom"] = stripslashes($_POST["check_custom"]);
 	if (isset($_POST["scan_depth"]) && is_numeric($_POST["scan_depth"]) && $_POST["scan_depth"] != $GLOBALS["GOTMLS"]["tmp"]["settings_array"]["scan_depth"])
 		$GLOBALS["GOTMLS"]["tmp"]["settings_array"]["scan_depth"] = $_POST["scan_depth"];
-	if (isset($_POST['check_htaccess']) && is_numeric($_POST['check_htaccess']) && $_POST['check_htaccess'] != $GLOBALS["GOTMLS"]["tmp"]["settings_array"]['check_htaccess'])
+/*	if (isset($_POST['check_htaccess']) && is_numeric($_POST['check_htaccess']) && $_POST['check_htaccess'] != $GLOBALS["GOTMLS"]["tmp"]["settings_array"]['check_htaccess'])
 		$GLOBALS["GOTMLS"]["tmp"]["settings_array"]['check_htaccess'] = $_POST['check_htaccess'];
 	if (isset($_POST['check_timthumb']) && is_numeric($_POST['check_timthumb']) && $_POST['check_timthumb'] != $GLOBALS["GOTMLS"]["tmp"]["settings_array"]['check_timthumb'])
 		$GLOBALS["GOTMLS"]["tmp"]["settings_array"]['check_timthumb'] = $_POST['check_timthumb'];
@@ -952,7 +952,7 @@ function GOTMLS_settings() {
 	if (isset($_POST['check_known']) && is_numeric($_POST['check_known']) && $_POST['check_known'] != $GLOBALS["GOTMLS"]["tmp"]["settings_array"]['check_known'])
 		$GLOBALS["GOTMLS"]["tmp"]["settings_array"]['check_known'] = $_POST['check_known'];
 	if (isset($_POST['check_potential']) && is_numeric($_POST['check_potential']) && $_POST['check_potential'] != $GLOBALS["GOTMLS"]["tmp"]["settings_array"]['check_potential'])
-		$GLOBALS["GOTMLS"]["tmp"]["settings_array"]['check_potential'] = $_POST['check_potential'];
+		$GLOBALS["GOTMLS"]["tmp"]["settings_array"]['check_potential'] = $_POST['check_potential'];*/
 	if (isset($_POST['skip_quarantine']) && $_POST['skip_quarantine'])
 		$GLOBALS["GOTMLS"]["tmp"]["settings_array"]['skip_quarantine'] = $_POST['skip_quarantine'];
 	elseif (isset($_POST["exclude_ext"]))
@@ -979,7 +979,7 @@ function GOTMLS_settings() {
 	foreach ($GLOBALS["GOTMLS"]["tmp"]["threat_levels"] as $threat_level_name=>$threat_level) {
 		$scan_opts .= $lt.'div style="padding: 0; position: relative;" id="check_'.$threat_level.'_div"'.$gt;
 		if (($threat_level != "wp_core" && isset($GLOBALS["GOTMLS"]["tmp"]["definitions_array"][$threat_level])) || isset($GLOBALS["GOTMLS"]["tmp"]["definitions_array"][$threat_level]["$wp_version"])) {
-			$scan_opts .= $lt.'input type="checkbox" name="check[]" id="check_'.$threat_level.'_Yes" value="'.$threat_level.'"'.(in_array($threat_level,$GLOBALS["GOTMLS"]["log"]["settings"]["check"])?' checked':'').' /'.$gt.' '.$lt.'a style="text-decoration: none;" href="#check_'.$threat_level.'_div_0" onclick="document.getElementById(\'check_'.$threat_level.'_Yes\').checked=true;showhide(\'dont_check_'.$threat_level.'\');"'."$gt{$lt}b$gt$threat_level_name$lt/b$gt$lt/a$gt\n";
+			$scan_opts .= $lt.'input type="checkbox" name="check[]" id="check_'.$threat_level.'_Yes" value="'.$threat_level.'"'.(in_array($threat_level,$GLOBALS["GOTMLS"]["tmp"]["settings_array"]["check"])?' checked':'').' /'.$gt.' '.$lt.'a style="text-decoration: none;" href="#check_'.$threat_level.'_div_0" onclick="document.getElementById(\'check_'.$threat_level.'_Yes\').checked=true;showhide(\'dont_check_'.$threat_level.'\');"'."$gt{$lt}b$gt$threat_level_name$lt/b$gt$lt/a$gt\n";
 			if (isset($_GET["SESSION"])) {
 				if (isset($_SESSION["GOTMLS_debug"][$threat_level]))
 					$lt.'div style="float: right;"'.$gt.print_r($_SESSION["GOTMLS_debug"][$threat_level],1)."$lt/div$gt";
@@ -1103,7 +1103,7 @@ function update_status(title, time) {
 			$fix_button_js = "\n\t\tdis='block';";
 		} else {
 			$vars .= ", $scan_group=0";
-			if ($found && !in_array($scan_group, $GLOBALS["GOTMLS"]["log"]["settings"]["check"]))
+			if ($found && !in_array($scan_group, $GLOBALS["GOTMLS"]["tmp"]["settings_array"]["check"]))
 				$potential_threat = ' potential" title="'.__("You are not currently scanning for this type of threat!",'gotmls');
 			else
 				$potential_threat = "";
@@ -1127,12 +1127,15 @@ var startTime = 0;
 	if (isset($_REQUEST["scan_type"]) && $_REQUEST["scan_type"] == "Save") {
 		if ($GOTMLS_nonce_found) {
 			update_option('GOTMLS_settings_array', $GLOBALS["GOTMLS"]["tmp"]["settings_array"]);
-			echo "\n{$lt}script type='text/javascript'$gt\nalert('Settings Saved!');\n$lt/script$gt\n";
+			echo "\n{$lt}div onclick=\"this.style.display='none';\" style='position: relative; top: -50px;' class='updated'$gt\nSettings Saved!$lt/div$gt\n";//script type='text/javascript'$gt\nalert('Settings Saved!');\n$lt/script$gt\n";
 		} else
 			echo GOTMLS_box(GOTMLS_Invalid_Nonce(""), __("Saving these settings requires a valid Nonce Token. No valid Nonce Token was found at this time, either because the token have expired or because the data was invalid. Please try re-submitting the form above.",'gotmls')."\n{$lt}script type='text/javascript'$gt\nalert('".GOTMLS_Invalid_Nonce("")."');\n$lt/script$gt\n");
 	} elseif (isset($_REQUEST["scan_what"]) && is_numeric($_REQUEST["scan_what"]) && ($_REQUEST["scan_what"] > -1)) {
 		if ($GOTMLS_nonce_found) {
 			update_option('GOTMLS_settings_array', $GLOBALS["GOTMLS"]["tmp"]["settings_array"]);
+			$GLOBALS["GOTMLS"]["log"]["settings"]["check"] = array();
+			GOTMLS_update_scan_log(array("settings" => $GLOBALS["GOTMLS"]["tmp"]["settings_array"]));
+			echo "\n{$lt}div onclick=\"this.style.display='none';\" style='position: relative; top: -50px;' class='updated'$gt\nSettings Saved!$lt/div$gt\n";//script type='text/javascript'$gt\nalert('Settings Saved!');\n$lt/script$gt\n";
 			if (!isset($_REQUEST["scan_type"]))
 				$_REQUEST["scan_type"] = "Complete Scan";
 			echo "\n$lt".'form method="POST" action="'.admin_url('admin-ajax.php?'.GOTMLS_set_nonce(__FUNCTION__."1030")).(isset($_SERVER["QUERY_STRING"])&&strlen($_SERVER["QUERY_STRING"])?"&".$_SERVER["QUERY_STRING"]:"").'" target="GOTMLS_iFrame" name="GOTMLS_Form_clean"'.$gt.$lt.'input type="hidden" name="action" value="GOTMLS_fix"'.$gt.$lt.'input type="hidden" id="GOTMLS_fixing" name="GOTMLS_fixing" value="1"'.$gt;

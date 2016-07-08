@@ -55,13 +55,16 @@ This field allows you to exclude URLs from the cache. This means that if you nee
 
 == Changelog ==
 
-== Version 2.3.7
+= Version 2.3.8 =
+* Improved compatibility with SiteGround Staging System
+
+= Version 2.3.7 =
 * Fixed PHP warnings in Object Cache classes
 
-== Version 2.3.6
+= Version 2.3.6 =
 * Minor URL handling bug fixes
 
-== Version 2.3.5
+= Version 2.3.5 =
 * Improved cache testing URL detection
 
 = Version 2.3.4 =

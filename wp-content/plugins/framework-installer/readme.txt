@@ -5,7 +5,7 @@ Tags: CMS, Views, Demos, Download
 License: GPLv2
 Requires at least: 3.8.1
 Tested up to: 4.5.2
-Stable tag: 2.0
+Stable tag: 2.0.1
 
 Download complete reference sites for Types and Views.
 
@@ -329,3 +329,8 @@ Improved Layouts import calls.
   ==2.0==
  Updated Installer code base to version 1.7.8.
  Compatibility with WPML 3.4+ and Toolset 2.1+
+ 
+  ==2.0.1==
+ Fixed PHP notices when refsite tutorial description is not set.
+ Support for first release of CRED Tutorial reference sites.
+ Added support for automated import of CRED user forms.

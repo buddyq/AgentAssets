@@ -308,6 +308,7 @@ function cu_edit_profile_form()
         $html .= '</fieldset>';
 
         # BILLING INFORMATION
+        /*
         $html .= '<div class="av-special-heading av-special-heading-h3 meta-heading   avia-builder-el-4  el_after_av_textblock  el_before_av_contact ">';
         $html .= '<h3 class="av-special-heading-tag" itemprop="headline">'.__('Billing Information','micu').'</h3>';
         $html .= '<div class="special-heading-border"><div class="special-heading-inner-border"></div></div>';
@@ -346,6 +347,7 @@ function cu_edit_profile_form()
         $html .= '</p>';
 
         $html .= '</fieldset>';
+        */
 
         $html .= '<input name="update_form" type="submit" value="'.__('Update','micu').'" class="button" data-sending-label="Processing">';
         

@@ -168,7 +168,7 @@ function medma_groups_admin_shortcode_view($data) {
                 <p id="element_medma_code" class="first_form form_element form_element_half">
                     <label for="medma-admin-group-code">Code</label>
                     <input id="medma-admin-group-code" value="<?php echo htmlspecialchars($group->code);?>" class="text_input is_empty" type="text" name="MedmaAdminGroup[code]" readonly="readonly">
-                    <span>Link for invite users: <strong><?php echo MedmaGroupModel::getCodeLink($group->code);?></strong></span>
+                    <span>Link to invite users: <strong><?php echo MedmaGroupModel::getCodeLink($group->code);?></strong></span>
                 </p>
                 <p id="element_medma_send_generate_new" class="form_element form_element_half">
                     <label>&nbsp;</label>
@@ -194,11 +194,17 @@ function medma_groups_admin_shortcode_view($data) {
                             <td><?php echo ($user->is_group_admin) ? 'Admin' : 'Member';?></td>
                             <td style="width: 350px;">
                                 <?php if ($user->is_group_admin) { ?>
-                                    <input type="submit" class="button botton-danger" value="Remove Admin Rights" name="bar_<?php echo $user->id; ?>">
+                                    <input type="button" class="button botton-danger button-remove-rights"
+                                           value="Remove Admin Rights" name="bar_<?php echo $user->id; ?>"
+                                           data-user-id="<?php echo $user->id; ?>" data-group-id="<?php echo $group->id;?>">
                                 <?php } else { ?>
-                                    <input type="submit" class="button botton-danger" value="Give Admin Rights" name="bar_<?php echo $user->id; ?>">
+                                    <input type="button" class="button botton-danger button-give-rights"
+                                           value="Give Admin Rights" name="bar_<?php echo $user->id; ?>"
+                                           data-user-id="<?php echo $user->id; ?>" data-group-id="<?php echo $group->id;?>">
                                 <?php } ?>
-                                <input type="submit" class="button botton-danger" value="Remove from Group" name="bar_<?php echo $user->id; ?>">
+                                <input type="button" class="button botton-danger button-remove"
+                                       value="Remove from Group" name="bar_<?php echo $user->id; ?>"
+                                       data-user-id="<?php echo $user->id; ?>" data-group-id="<?php echo $group->id;?>">
                             </td>
                         </tr>
                     <?php } ?>
@@ -207,6 +213,191 @@ function medma_groups_admin_shortcode_view($data) {
             </div>
         </div>
     </form>
-
     <?php
+    add_action('wp_footer', 'medma_groups_admin_add_scripts_to_footer');
+}
+
+function medma_groups_admin_add_scripts_to_footer() {
+    ?>
+    <script>
+        jQuery(document).ready(function($) {
+            jQuery('.button-remove').click(function() {
+                var msg = 'Are you sure you wont to remove this user from the group?';
+                var el = this;
+                alertify.confirm(msg, function() {
+                    var data = {
+                        'action': 'medma_remove_user',
+                        'user_id': jQuery(el).attr('data-user-id'),
+                        'group_id': jQuery(el).attr('data-group-id'),
+                    };
+                    alertify.message('Processing request');
+                    // We can also pass the url value separately from ajaxurl for front end AJAX implementations
+                    jQuery.post('<?php echo admin_url( 'admin-ajax.php' )?>', data, function (response) {
+                        if (typeof(response.result) === 'undefined') {
+                            alertify.error('Bad response!');
+                        } else if ('error' == response.result) {
+                            alertify.error(response.message);
+                        } else {
+                            alertify.success('User has been successfully deleted!');
+                            location.reload();
+                        }
+                    }, 'json');
+                }).set('title', 'Removing user');
+            });
+        });
+
+        jQuery(document).ready(function($) {
+            jQuery('.button-remove-rights').click(function() {
+                var msg = 'Are you sure you wont to remove admin rights for this user?';
+                var el = this;
+                alertify.confirm(msg, function() {
+                    var data = {
+                        'action': 'medma_remove_admin_rights',
+                        'user_id': jQuery(el).attr('data-user-id'),
+                        'group_id': jQuery(el).attr('data-group-id'),
+                    };
+                    alertify.message('Processing request');
+                    jQuery.post('<?php echo admin_url( 'admin-ajax.php' )?>', data, function (response) {
+                        if (typeof(response.result) === 'undefined') {
+                            alertify.error('Bad response!');
+                        } else if ('error' == response.result) {
+                            alertify.error(response.message);
+                        } else {
+                            alertify.success('Users admin rights has been successfully removed!');
+                            location.reload();
+                        }
+                    }, 'json');
+                }).set('title', 'Admin rights');
+            });
+        });
+
+        jQuery(document).ready(function($) {
+            jQuery('.button-give-rights').click(function() {
+                var msg = 'Are you sure you wont to remove admin rights for this user?';
+                var el = this;
+                alertify.confirm(msg, function() {
+                    var data = {
+                        'action': 'medma_give_admin_rights',
+                        'user_id': jQuery(el).attr('data-user-id'),
+                        'group_id': jQuery(el).attr('data-group-id'),
+                    };
+                    alertify.message('Processing request');
+                    jQuery.post('<?php echo admin_url( 'admin-ajax.php' )?>', data, function (response) {
+                        if (typeof(response.result) === 'undefined') {
+                            alertify.error('Bad response!');
+                        } else if ('error' == response.result) {
+                            alertify.error(response.message);
+                        } else {
+                            alertify.success('The user has been successfully got admin rights!');
+                            location.reload();
+                        }
+                    }, 'json');
+                }).set('title', 'Admin rights');
+            });
+        });
+    </script>
+    <?php
+}
+
+add_action( 'wp_ajax_medma_remove_user', 'medma_ajax_remove_user' );
+add_action( 'wp_ajax_medma_remove_admin_rights', 'medma_ajax_remove_admin_rights' );
+add_action( 'wp_ajax_medma_give_admin_rights', 'medma_ajax_give_admin_rights' );
+
+function medma_ajax_remove_user() {
+    $status = array('result' => 'error', 'message' => '');
+    while (true) {
+        if (!isset($_POST['user_id']) || !isset($_POST['group_id'])) {
+            $status['message'] = 'Invalid request';
+            break;
+        }
+        $user_id = (int)$_POST['user_id'];
+        $group_id = (int)$_POST['group_id'];
+
+        $group = MedmaGroupModel::findOne('id = '.$group_id);
+        if (!$group) {
+            $status['message'] = 'Group not found';
+            break;
+        }
+
+        if (!MedmaGroupModel::hasAdminRights($group_id, get_current_user_id())) {
+            $status['message'] = 'Access denied';
+            break;
+        }
+
+        if (false === MedmaGroupModel::removeRelatedUsers($group_id, array($user_id))) {
+            $status['message'] = 'Unknown Error';
+            break;
+        }
+
+        $status['result'] = 'success';
+        break;
+    }
+    echo json_encode($status);
+    wp_die(); // this is required to terminate immediately and return a proper response
+}
+
+function medma_ajax_remove_admin_rights() {
+    $status = array('result' => 'error', 'message' => '');
+    while (true) {
+        if (!isset($_POST['user_id']) || !isset($_POST['group_id'])) {
+            $status['message'] = 'Invalid request';
+            break;
+        }
+        $user_id = (int)$_POST['user_id'];
+        $group_id = (int)$_POST['group_id'];
+
+        $group = MedmaGroupModel::findOne('id = '.$group_id);
+        if (!$group) {
+            $status['message'] = 'Group not found';
+            break;
+        }
+
+        if (!MedmaGroupModel::hasAdminRights($group_id, get_current_user_id())) {
+            $status['message'] = 'Access denied';
+            break;
+        }
+
+        if (false === MedmaGroupModel::updateAdminRights($group_id, array($user_id), 0)) {
+            $status['message'] = 'Unknown Error';
+            break;
+        }
+
+        $status['result'] = 'success';
+        break;
+    }
+    echo json_encode($status);
+    wp_die(); // this is required to terminate immediately and return a proper response
+}
+
+function medma_ajax_give_admin_rights() {
+    $status = array('result' => 'error', 'message' => '');
+    while (true) {
+        if (!isset($_POST['user_id']) || !isset($_POST['group_id'])) {
+            $status['message'] = 'Invalid request';
+            break;
+        }
+        $user_id = (int)$_POST['user_id'];
+        $group_id = (int)$_POST['group_id'];
+
+        $group = MedmaGroupModel::findOne('id = '.$group_id);
+        if (!$group) {
+            $status['message'] = 'Group not found';
+            break;
+        }
+
+        if (!MedmaGroupModel::hasAdminRights($group_id, get_current_user_id())) {
+            $status['message'] = 'Access denied';
+            break;
+        }
+
+        if (false === MedmaGroupModel::updateAdminRights($group_id, array($user_id), 1)) {
+            $status['message'] = 'Unknown Error';
+            break;
+        }
+
+        $status['result'] = 'success';
+        break;
+    }
+    echo json_encode($status);
+    wp_die(); // this is required to terminate immediately and return a proper response
 }

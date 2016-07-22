@@ -171,13 +171,41 @@ function medma_manager_group_admin() {
                         $subview = (isset($_GET['subview']) && 'themes' == $_GET['subview']) ? 'themes' : 'users';
                         $list = array();
                         if ($subview == 'users') {
-                            if (isset($_POST['new_group_user'])) {
+                            if (isset($_POST['new_group_user']) && 0 < $_POST['new_group_user']) {
                                 if (MedmaGroupModel::addRelatedUser($group->id, $_POST['new_group_user'])) {
                                     $notices[] = array('class' => 'success', 'message' => 'New user has been successfully append to group.');
                                 } else {
                                     $notices[] = array('class' => 'error', 'message' => 'Error! Can\'t append user to group.');
                                 }
                             }
+                            if (isset($_POST['bulk_action'])) {
+                                if ('delete' == $_POST['bulk_action']) {
+                                    $ids = $_POST['group_users'];
+                                    $result = MedmaGroupModel::removeRelatedUsers($group->id, $ids);
+                                    if ($result) {
+                                        $notices[] = array('class' => 'success', 'message' => 'The users has been successfully deleted.');
+                                    } else {
+                                        $notices[] = array('class' => 'error', 'message' => 'Error! Can\'t delete users.');
+                                    }
+                                } else if ('giveRights' == $_POST['bulk_action']) {
+                                    $ids = $_POST['group_users'];
+                                    $result = MedmaGroupModel::updateAdminRights($group->id, $ids, 1);
+                                    if ($result) {
+                                        $notices[] = array('class' => 'success', 'message' => 'Success');
+                                    } else {
+                                        $notices[] = array('class' => 'error', 'message' => 'Error');
+                                    }
+                                } else if ('disableRights' == $_POST['bulk_action']) {
+                                    $ids = $_POST['group_users'];
+                                    $result = MedmaGroupModel::updateAdminRights($group->id, $ids, 0);
+                                    if ($result) {
+                                        $notices[] = array('class' => 'success', 'message' => 'Success');
+                                    } else {
+                                        $notices[] = array('class' => 'error', 'message' => 'Error');
+                                    }
+                                }
+                            }
+
                             $list = MedmaGroupModel::getRelatedUsers($group->id);
                         }
                         if ($subview == 'themes') {
@@ -420,6 +448,8 @@ function medma_manager_group_view_users($data) {
                 <select id="new-group-theme" name="bulk_action">
                     <option value="">Bulk Action…</option>
                     <option value="delete">Delete</option>
+                    <option value="giveRights">Give Admin Rights</option>
+                    <option value="disableRights">Disable Admin Rights</option>
                 </select>
                 <input id="bulkaction" class="button" type="submit" value="Apply" name="bulkaction">
             </div>

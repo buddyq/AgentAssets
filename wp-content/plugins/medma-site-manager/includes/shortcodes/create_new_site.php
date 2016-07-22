@@ -230,9 +230,23 @@ function mism_create_new_site($atts)
         $html .= '<select name="template">';
 
         foreach ($themes AS $theme) {
-            if ($theme->userblog_id > 1 && $theme->site_id == 1
-                && MedmaThemeManager::checkAccess(get_blog_option($theme->userblog_id, 'stylesheet'))) {
-                $html .= '<option value="' . $theme->userblog_id . '">' . $theme->blogname . '</option>';
+            if ($theme->userblog_id > 1 && $theme->site_id == 1) {
+                $theme_system_id = get_blog_option($theme->userblog_id, 'stylesheet');
+                if (MedmaThemeManager::checkAccess($theme_system_id)) {
+                    $groups = '';
+                    $themeObject = MedmaThemeManager::findOne('theme_system_id = %s', array($theme_system_id));
+                    if ($themeObject && $themeObject->status == MedmaThemeManager::STATUS_AUTHORIZED) {
+                        $themeGroups = MedmaThemeManager::getThemeGroups($theme_system_id);
+                        if ($themeGroups) {
+                            $groupsNames = array();
+                            foreach ($themeGroups as $themeGroup) {
+                                $groupsNames[] = $themeGroup->name;
+                            }
+                            $groups = '('.implode(', ', $groupsNames) . ')';
+                        }
+                    }
+                    $html .= '<option value="' . $theme->userblog_id . '">' . $theme->blogname . ' ' . $groups . '</option>';
+                }
             }
         }
         $html .= '</select>';

@@ -131,7 +131,7 @@ class MedmaGroupModel {
     public static function removeRelatedUsers($group_id, $user_ids) {
         global $wpdb;
         return $wpdb->query('DELETE FROM `'.$wpdb->base_prefix. 'medma_group_user`'
-            .'WHERE group_id = '.(int)$group_id.' user_id IN ('.implode(', ', $user_ids)). ')';
+            .'WHERE group_id = '.(int)$group_id.' AND user_id IN ('.implode(', ', $user_ids). ')');
     }
 
     public static function getRelatedThemes($group_id) {
@@ -158,7 +158,7 @@ class MedmaGroupModel {
     public static function removeRelatedThemes($group_id, $theme_ids) {
         global $wpdb;
         return $wpdb->query('DELETE FROM `'.$wpdb->base_prefix. 'medma_group_theme`'
-            .'WHERE group_id = '.(int)$group_id.' theme_id IN ('.implode(', ', $theme_ids)). ')';
+            .'WHERE group_id = '.(int)$group_id.' AND theme_id IN ('.implode(', ', $theme_ids). ')');
     }
 
     public static function getAdminGroups($user_id) {
@@ -205,6 +205,31 @@ class MedmaGroupModel {
         if ($group) {
             $status = self::addRelatedUser($group->id, $user_id);
         }
+        return $status;
+    }
+
+    public static function updateAdminRights($group_id, $user_ids, $is_admin) {
+        $result = false;
+        global $wpdb;
+        $result = $wpdb->query('UPDATE `'.$wpdb->base_prefix.'medma_group_user` SET is_admin = '.(int)$is_admin .' '
+            .' WHERE group_id = '.(int)$group_id . ' AND user_id IN('.implode(', ',$user_ids).')');
+
+        return $result;
+    }
+
+    public static function hasAdminRights($group_id, $user_id) {
+        $status = false;
+
+        $group = self::findOne('id = '.(int)$group_id);
+        if ($group->primaryadmin_id == $user_id) {
+            $status = true;
+        } else {
+            global $wpdb;
+            $result = $wpdb->get_var('SELECT is_admin FROM `'.$wpdb->base_prefix . 'medma_group_user` '
+                . ' WHERE user_id = '.(int)$user_id.' AND group_id = '.(int)$group_id);
+            $status = (1 == $result);
+        }
+
         return $status;
     }
 }

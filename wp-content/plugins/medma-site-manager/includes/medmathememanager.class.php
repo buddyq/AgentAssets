@@ -142,4 +142,17 @@ class MedmaThemeManager {
         }
         return $status;
     }
+
+    public static function getThemeGroups($theme_system_id) {
+        global $wpdb;
+        $mg = '`'.$wpdb->base_prefix.'medma_group`';
+        $mt = '`'.$wpdb->base_prefix.'medma_theme`';
+        $mgt = '`'.$wpdb->base_prefix.'medma_group_theme`';
+
+        $escaped_theme_system_id = $wpdb->_real_escape($theme_system_id);
+
+        return $wpdb->get_results("SELECT mg.id, mg.`name` FROM $mgt mgt "
+            . " INNER JOIN $mt mt ON mt.id = mgt.theme_id AND mt.theme_system_id = \"$escaped_theme_system_id\""
+            . " LEFT JOIN $mg mg ON mg.id = mgt.group_id");
+    }
 }

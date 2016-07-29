@@ -13,6 +13,10 @@ $mism_package_settings = get_option('mism_package_settings');
 if (isset($_POST['buy_package']) && $_POST['buy_package'] = "Buy") {
     $_SESSION['cart'] = $_POST;
 }
+
+$discount_flag = 0;
+$discount = $discount_amount = 0;
+$coupon_id = null;
   
 if (isset($_POST['add_coupon']) && $_POST['add_coupon'] = "Apply Coupon") {
     global $wpdb;

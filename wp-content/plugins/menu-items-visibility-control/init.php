@@ -3,7 +3,7 @@
 Plugin Name:    Menu Items Visibility Control
 Description:    Control the display logic of individual menu items.
 Author:         Hassan Derakhshandeh
-Version:        0.3.3
+Version:        0.3.4
 Text Domain:    menu-items-visibility-control
 Domain Path:    /languages
 */
@@ -23,13 +23,13 @@ class Menu_Items_Visibility_Control {
 
 	function __construct() {
 		if( is_admin() ) {
-			add_action( 'init', array( &$this, 'i18n' ) );
-			add_filter( 'wp_edit_nav_menu_walker', array( &$this, 'edit_nav_menu_walker' ) );
-			add_action( 'wp_nav_menu_item_custom_fields', array( &$this, 'option' ), 12, 4 );
-			add_action( 'wp_update_nav_menu_item', array( &$this, 'update_option' ), 10, 3 );
-			add_action( 'delete_post', array( &$this, 'remove_visibility_meta' ), 1, 3);
+			add_action( 'init', array( $this, 'i18n' ) );
+			add_filter( 'wp_edit_nav_menu_walker', array( $this, 'edit_nav_menu_walker' ) );
+			add_action( 'wp_nav_menu_item_custom_fields', array( $this, 'option' ), 12, 4 );
+			add_action( 'wp_update_nav_menu_item', array( $this, 'update_option' ), 10, 3 );
+			add_action( 'delete_post', array( $this, 'remove_visibility_meta' ), 1, 3);
 		} else {
-			add_filter( 'wp_get_nav_menu_items', array( &$this, 'visibility_check' ), 10, 3 );
+			add_filter( 'wp_get_nav_menu_items', array( $this, 'visibility_check' ), 10, 3 );
 		}
 	}
 
@@ -52,7 +52,9 @@ class Menu_Items_Visibility_Control {
 		return 'Boom_Walker_Nav_Menu_Edit';
 	}
 
-	function option( $item_id, $item, $depth, $args ) { ?>
+	function option( $item_id, $item, $depth, $args ) {
+		$item_id = $item->ID;
+		?>
 		<p class="field-visibility description description-wide">
 			<label for="edit-menu-item-visibility-<?php echo $item_id; ?>">
 				<?php _e( 'Visibility', 'menu-items-visibility-control' ) ?>:

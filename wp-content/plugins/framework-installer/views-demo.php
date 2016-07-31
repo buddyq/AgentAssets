@@ -5,9 +5,9 @@
   Description: Download complete reference designs for Types and Views to your local test site.
   Author: OnTheGoSystems
   Author URI: http://www.onthegosystems.com
-  Version: 2.0.1
+  Version: 2.0.2
  */
-define('WPVDEMO_VERSION', '2.0.1');
+define('WPVDEMO_VERSION', '2.0.2');
 define('WPVDEMO_ABSPATH', dirname(__FILE__));
 define('WPVDEMO_WPCONTENTDIR',WP_CONTENT_DIR);
 define('WPVDEMO_RELPATH', plugins_url() . '/' . basename(WPVDEMO_ABSPATH));

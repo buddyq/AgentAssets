@@ -3,8 +3,8 @@ Contributors: shazdeh
 Plugin Name: Menu Item Visibility Control
 Tags: menu, nav-menu, navigation, navigation menu, conditional tags, context, filter
 Requires at least: 3.1
-Tested up to: 4.5.2
-Stable tag: 0.3.3
+Tested up to: 4.5.3
+Stable tag: 0.3.4
 
 Control individual menu items' visibility based on your desired condition.
 
@@ -42,6 +42,9 @@ Please see this page: https://wordpress.org/plugins/nav-menu-roles/faq/
 
 
 == Changelog ==
+
+= 0.3.4 =
+* Fix compatibility with Menu Icons plugin
 
 = 0.3.3 =
 * Fix menu item edit screen styles

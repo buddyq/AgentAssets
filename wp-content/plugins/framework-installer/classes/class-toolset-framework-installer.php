@@ -1199,7 +1199,7 @@ class Toolset_Framework_Installer {
 					$refsite->actions->requisites_not_meet_msg = __ ( "This demo site can't be installed. Please check that Views, Types, Module Manager and CRED Frontend-Editor have been installed and you are running in a clean WordPress installation.", "wpvdemo" );
 				} else {
 					// Site is not empty
-					$refsite->actions->requisites_not_meet_msg = __ ( "This demo site can't be installed. Please check that Views, Types, Module Manager and CRED Frontend-Editor have been installed and you are running in a clean WordPress installation. To reset your Website and Database from a previous installation, you can use the reset feature under 'Manage sites &ndash;&gt; Reset Demo Site'.", "wpvdemo" );
+					$refsite->actions->requisites_not_meet_msg = __ ( "This demo site can't be installed. Please check that Views, Types, Module Manager and CRED Frontend-Editor have been installed and you are running in a clean WordPress installation. To reset your Website and Database from a previous installation, you can use the reset feature under 'Toolset &ndash;&gt; Settings &ndash;&gt; Reset Demo Site'.", "wpvdemo" );
 				}
 			} elseif (($required_activated_plugin_status) && (! ($final_required_activated_plugin_status))) {
 				// Here we have cases where plugins are installed but other requirements are not meet
@@ -1207,7 +1207,7 @@ class Toolset_Framework_Installer {
 				$check_import_is_done = get_option ( 'wpv_import_is_done' );
 				if ('yes' == $check_import_is_done) {
 					// Import is already done, site is not empty
-					$refsite->actions->requisites_not_meet_msg = __ ( "This demo site can't be installed. You need a fresh WordPress installation to install a demo site. To reset your Website and Database from a previous installation, you can use the reset feature under 'Manage sites &ndash;&gt; Reset Demo Site'.", "wpvdemo" );
+					$refsite->actions->requisites_not_meet_msg = __ ( "This demo site can't be installed. You need a fresh WordPress installation to install a demo site. To reset your Website and Database from a previous installation, you can use the reset feature under 'Toolset &ndash;&gt; Settings &ndash;&gt; Reset Demo Site'.", "wpvdemo" );
 				} else {
 					// Flagged messages for other issues
 					// Here we need to show 'reset' messages only if necessary
@@ -1217,7 +1217,7 @@ class Toolset_Framework_Installer {
 					} else {
 						// Site is not empty
 						// Let's show reset messages too
-						$refsite->actions->requisites_not_meet_msg = __ ( "This demo site can't be installed. Please ensure that you meet all plugin and site requirements before installing a demo site. To reset your Website and Database from a previous installation, you can use the reset feature under 'Manage sites &ndash;&gt; Reset Demo Site'.", "wpvdemo" );
+						$refsite->actions->requisites_not_meet_msg = __ ( "This demo site can't be installed. Please ensure that you meet all plugin and site requirements before installing a demo site. To reset your Website and Database from a previous installation, you can use the reset feature under 'Toolset &ndash;&gt; Settings &ndash;&gt; Reset Demo Site'.", "wpvdemo" );
 					}
 				}
 			} else {
@@ -1650,7 +1650,7 @@ class Toolset_Framework_Installer {
     		//Let's not apply this check to Discover-wp
     			?>
 <div class="error">
-	<p><?php _e('It looks like your Installer settings in the database is corrupted. Please reset the site by going to "Manage Sites" -> "Reset demo site". This is required before you can install a new reference site.','wpvdemo');?>
+	<p><?php _e('It looks like your Installer settings in the database is corrupted. Please reset the site by going to "Toolset" -> "Settings -> "Reset demo site". This is required before you can install a new reference site.','wpvdemo');?>
     			</p>
 </div>
 <?php
@@ -3081,10 +3081,15 @@ class Toolset_Framework_Installer {
     	
     	/** ANALYZE utm_term -default 'get-started' */
     	$utm_term= 'get-started';
-    	$linktext=sanitize_title($linktext);
-    	if (!(empty($linktext))) {
-    	    $utm_term= $linktext;	
-    	} 
+    	
+    	//Validated $linktext since this can be now EMPTY or blank
+    	if ( is_string( $linktext ) ) {
+    		if ( !(empty( $linktext ) ) ) {
+    			//Link text is valid string and not empty
+    			$linktext=sanitize_title($linktext);
+    			$utm_term= $linktext;
+    		}
+    	}
     	
     	$google_analytics_arguments=array(
     			'utm_source' 	=> $utm_source,
@@ -3124,18 +3129,18 @@ class Toolset_Framework_Installer {
 		    		//Get href
 		    		$the_href= $link->getAttribute('href');
 		    		
-		    		if (!(empty($the_link_text))) {
+		    		/** Framework installer 2.0.2+ : Allows Google analytics arguments to be appended on links with images. */		    			
+		    		//Add Google analytics arguments
+		    		$new_url_with_arguments= $this->wpvdemo_append_google_analytics_arguments_to_url($the_href,$location,$the_link_text);
 		    			
-		    			//Add Google analytics arguments
-		    			$new_url_with_arguments= $this->wpvdemo_append_google_analytics_arguments_to_url($the_href,$location,$the_link_text);
-		    			
-		    			if ($the_href != $new_url_with_arguments) {
-		    				$updated_array++;
-		    			}
-		    			//Update back
-		    			$link->setAttribute('href', $new_url_with_arguments);
-		    			
+		    		if ($the_href != $new_url_with_arguments) {
+		    			$updated_array++;
 		    		}
+		    		
+		    		//Update back
+		    		$link->setAttribute('href', $new_url_with_arguments);
+		    			
+		    		
 		    	}
 		    	if ($updated_array > 0) {
 		    		//It's updated

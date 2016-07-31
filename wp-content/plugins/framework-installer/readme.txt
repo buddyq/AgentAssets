@@ -4,8 +4,8 @@ Donate link: http://wp-types.com/documentation/views-demos-downloader/
 Tags: CMS, Views, Demos, Download
 License: GPLv2
 Requires at least: 3.8.1
-Tested up to: 4.5.2
-Stable tag: 2.0.1
+Tested up to: 4.5.3
+Stable tag: 2.0.2
 
 Download complete reference sites for Types and Views.
 
@@ -334,3 +334,7 @@ Improved Layouts import calls.
  Fixed PHP notices when refsite tutorial description is not set.
  Support for first release of CRED Tutorial reference sites.
  Added support for automated import of CRED user forms.
+ 
+  ==2.0.2==
+ Added support for appending Google Analytics arguments on image links for dashboard tutorials.
+ Fixed some outdated text on the plugin settings.

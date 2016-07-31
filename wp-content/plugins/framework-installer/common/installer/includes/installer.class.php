@@ -1069,16 +1069,16 @@ final class WP_Installer{
         }
         
     }
-    
+
+    /**
+     * Alias for WP_Installer::get_repository_site_key
+     * @see WP_Installer::get_repository_site_key()
+     *
+     * @param string $repository_id
+     * @return string (site key) or bool
+     */
     public function get_site_key($repository_id){
-        
-        if(isset($this->settings['repositories'][$repository_id]['subscription'])){
-            $site_key = $this->settings['repositories'][$repository_id]['subscription']['key'];
-        }else{
-            $site_key = false;
-        }
-        
-        return $site_key;
+        return WP_Installer::get_repository_site_key( $repository_id );
     }
     
     public function remove_site_key(){

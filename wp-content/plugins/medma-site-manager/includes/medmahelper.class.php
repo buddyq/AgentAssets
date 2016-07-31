@@ -6,17 +6,20 @@ class MedmaHelper {
             'color' => 'blue',
             'size' => 'large',
             'icon' => '',
-            'icon_font' => 'entypo-fontello'
+            'icon_font' => 'entypo-fontello',
+            'title' => 'Note',
         ), $htmlOptions);
 
         $html = '<div class="avia_message_box avia-color-'.$htmlOptions['color'].' avia-size-'.$htmlOptions['size'].' avia-icon_select-yes avia-border-  avia-builder-el-1  el_after_av_notification  el_before_av_notification ">';
-        $html .= '<span class="avia_message_box_title">Note</span>';
+        $html .= '<span class="avia_message_box_title">'.$htmlOptions['title'].'</span>';
         $html .= '<div class="avia_message_box_content">';
         $html .= '<span class="avia_message_box_icon" aria-hidden="true" data-av_icon="'.$htmlOptions['icon'].'" data-av_iconfont="'.$htmlOptions['icon_font'].'"></span>';
-        $html .= $content;
+        $html .= '<p>'.$content.'</p>';
         $html .= '</div>';
+        if (!empty($secContent)) {
+            $html .= '<p>'.$secContent.'</p>';
+        }
         $html .= '</div>';
-
         return $html;
     }
 
@@ -35,7 +38,7 @@ class MedmaHelper {
             $where_format = array('%d', '%d');
             $result = $wpdb->update($table, $data, $where, $format = null, $where_format);
             //
-            $html .= self::getAviaMessageBox('<p>You have consumed all the sites allowed by your current package. Please <a href="/pricing/" title="View Pricing">upgrade</a> your package.</p>',
+            $html .= self::getAviaMessageBox('You have consumed all the sites allowed by your current package. Please <a href="/pricing/" title="View Pricing">upgrade</a> your package.',
                 '',
                 array('color' => 'red')
             );

@@ -3,7 +3,7 @@
 add_action('admin_menu', 'medma_theme_manager_menu');
 
 function medma_theme_manager_menu() {
-    if (is_super_admin()) {
+    if (is_super_admin() && get_current_blog_id() == 1) {
         add_menu_page('Medma Manager', 'Medma Manager', 'medma_manager', 'medma-manager-group-handle', 'medma_manager_group_admin');
 
         add_submenu_page('medma-manager-group-handle', 'Groups', 'Groups', 'medma_manager', 'medma-manager-group-handle', 'medma_manager_group_admin');
@@ -16,7 +16,7 @@ function medma_manager_theme_admin() {
     $notices = array();
     if (isset($_POST['changeit'])) {
         $new_status = empty($_POST['new_status']) ? $_POST['new_status2'] : $_POST['new_status'];
-        $update_status = MedmaThemeManager::update(array('status' => $new_status), 'id IN ('.implode(',',$_POST['themes']).')');
+        $update_status = MedmaThemeManager::update(array('status' => $new_status), '', $_POST['themes']);
         if ($update_status) {
             $notices[] = array('class' => 'success', 'message' => 'Themes has been successfully updated.');
         } else {

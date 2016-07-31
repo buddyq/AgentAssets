@@ -11,7 +11,7 @@ add_action('admin_menu', 'custom_theme_options_menu');
 function custom_theme_options_menu()
 {
 
-    add_menu_page('Agent Information', 'Customize Microsite', 'manage_options', 'mi-top-level-handle', 'mi_theme_options');
+    add_menu_page('Agent Information', 'Customize Microsite', 'manage_options', 'mi-top-level-handle', 'mi_sub_agent_information');
 
     add_submenu_page('mi-top-level-handle', 'Agent Information', 'Agent Information', 'manage_options', 'mi-sub-agent-information', 'mi_sub_agent_information');
 

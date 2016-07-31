@@ -55,7 +55,7 @@ class MedmaThemeManager {
         return $result;
     }
 
-    public static function update($attributes, $where) {
+    public static function update($attributes, $where, $theme_ids = array()) {
         global $wpdb;
 
         $fields = array();
@@ -68,8 +68,19 @@ class MedmaThemeManager {
         }
         $fields = implode( ', ', $fields );
 
+        $theme_ids_in = (count($theme_ids)) ? 'IN ('.implode(',',$theme_ids).')' : '';
+
+        if (!empty($theme_ids_in)) {
+            if (!empty($where)) $where .= ' AND ';
+            $where .= (' id '.$theme_ids_in);
+        }
+
         $sql = 'UPDATE `'.self::tableName().'` SET '.$fields.' WHERE '.$where;
-        return $wpdb->query($wpdb->prepare($sql, array()));
+        $result = $wpdb->query($wpdb->prepare($sql, array()));
+        if ($result && isset($attributes['status']) && self::STATUS_AUTHORIZED != $attributes['status']) {
+            $wpdb->query('DELETE FROM `'.$wpdb->base_prefix.'medma_group_theme` WHERE `theme_id` '.$theme_ids_in);
+        }
+        return $result;
     }
 
     public static function buildThemesList() {
@@ -112,8 +123,10 @@ class MedmaThemeManager {
             }
         }
         if (0 < count($delete_ids)) {
-            $wpdb->delete(self::tableName(), 'id IN('.implode(',',$delete_ids).')');
-            //todo drop relations to medma groups
+            $theme_ids_in = 'IN('.implode(',',$delete_ids).')';
+            $wpdb->delete(self::tableName(), 'id '.$theme_ids_in);
+
+            $wpdb->query('DELETE FROM `'.$wpdb->base_prefix.'medma_group_theme` WHERE `theme_id` IN '.$theme_ids_in);
         }
 
         return $medma_themes;

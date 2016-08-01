@@ -1,6 +1,6 @@
 <?php
 
-add_shortcode('medma_group_assign_code', 'medma_group_assign_code_shortcode');
+add_shortcode('aa_group_assign_code', 'medma_group_assign_code_shortcode');
 
 function medma_group_assign_code_shortcode() {
     if (isset($_GET['form'])) return;

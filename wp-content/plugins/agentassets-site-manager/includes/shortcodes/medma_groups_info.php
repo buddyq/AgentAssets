@@ -1,6 +1,6 @@
 <?php
 
-add_shortcode('medma_groups_info', 'medma_groups_info_shortcode');
+add_shortcode('aa_groups_info', 'medma_groups_info_shortcode');
 
 function medma_groups_info_shortcode(/*$atts*/) {
     //if (isset($_GET['form'])) return;

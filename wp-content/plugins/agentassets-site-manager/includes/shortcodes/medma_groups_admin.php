@@ -1,6 +1,6 @@
 <?php
 
-add_shortcode('if_medma_admin_has_groups', 'medma_admin_has_groups_shortcode');
+add_shortcode('if_aa_admin_has_groups', 'medma_admin_has_groups_shortcode');
 
 function medma_admin_has_groups_shortcode($atts, $content) {
     $current_user_id = get_current_user_id();
@@ -11,7 +11,7 @@ function medma_admin_has_groups_shortcode($atts, $content) {
     }
 }
 
-add_shortcode('medma_groups_admin', 'medma_groups_admin_shortcode');
+add_shortcode('aa_groups_admin', 'medma_groups_admin_shortcode');
 
 function medma_groups_admin_shortcode(/*$atts*/) {
     if (isset($_GET['form'])) return;

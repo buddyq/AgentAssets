@@ -196,7 +196,7 @@ class MedmaGroupModel {
     }
 
     public static function getCodeLink($code) {
-        return add_query_arg('group_code', $code, get_permalink(REGISTRATION_PAGE_POST_ID));
+        return add_query_arg('group_code', $code, get_permalink(self::REGISTRATION_PAGE_POST_ID));
     }
 
     public static function addRelatedUserByCode($user_id, $code) {

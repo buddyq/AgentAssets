@@ -15,7 +15,7 @@ function medma_theme_manager_menu() {
 function medma_manager_theme_admin() {
     $notices = array();
     if (isset($_POST['changeit'])) {
-        $new_status = empty($_POST['new_status']) ? $_POST['new_status2'] : $_POST['new_status'];
+        $new_status = (int)(empty($_POST['new_status']) ? $_POST['new_status2'] : $_POST['new_status']);
         $update_status = MedmaThemeManager::update(array('status' => $new_status), '', $_POST['themes']);
         if ($update_status) {
             $notices[] = array('class' => 'success', 'message' => 'Themes has been successfully updated.');
@@ -177,8 +177,7 @@ function medma_manager_group_admin() {
                                 } else {
                                     $notices[] = array('class' => 'error', 'message' => 'Error! Can\'t append user to group.');
                                 }
-                            }
-                            if (isset($_POST['bulk_action'])) {
+                            } else if (isset($_POST['bulk_action'])) {
                                 if ('delete' == $_POST['bulk_action']) {
                                     $ids = $_POST['group_users'];
                                     $result = MedmaGroupModel::removeRelatedUsers($group->id, $ids);
@@ -209,11 +208,21 @@ function medma_manager_group_admin() {
                             $list = MedmaGroupModel::getRelatedUsers($group->id);
                         }
                         if ($subview == 'themes') {
-                            if (isset($_POST['new_group_theme'])) {
+                            if (isset($_POST['new_group_theme']) && 0 < $_POST['new_group_theme']) {
                                 if (MedmaGroupModel::addRelatedTheme($group->id, $_POST['new_group_theme'])) {
                                     $notices[] = array('class' => 'success', 'message' => 'New theme has been successfully append to group.');
                                 } else {
                                     $notices[] = array('class' => 'error', 'message' => 'Error! Can\'t append theme to group.');
+                                }
+                            } else if (isset($_POST['bulk_action'])) {
+                                if ('delete' == $_POST['bulk_action']) {
+                                    $ids = $_POST['group_themes'];
+                                    $result = MedmaGroupModel::removeRelatedThemes($group->id, $ids);
+                                    if ($result) {
+                                        $notices[] = array('class' => 'success', 'message' => 'The themes has been successfully deleted.');
+                                    } else {
+                                        $notices[] = array('class' => 'error', 'message' => 'Error! Can\'t delete themes.');
+                                    }
                                 }
                             }
                             $list = MedmaGroupModel::getRelatedThemes($group->id);

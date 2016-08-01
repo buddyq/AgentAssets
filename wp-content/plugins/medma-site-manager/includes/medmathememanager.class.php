@@ -60,11 +60,11 @@ class MedmaThemeManager {
 
         $fields = array();
         foreach ( $attributes as $field => $value ) {
-            if ( is_null( $value['value'] ) ) {
+            if ( isset($value['value']) && is_null( $value['value'] ) ) {
                 $fields[] = "`$field` = NULL";
                 continue;
             }
-            $fields[] = "`$field` = " . $value['format'];
+            $fields[] = "`$field` = " . $value;
         }
         $fields = implode( ', ', $fields );
 

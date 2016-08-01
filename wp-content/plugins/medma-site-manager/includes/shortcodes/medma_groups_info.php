@@ -13,5 +13,5 @@ function medma_groups_info_shortcode(/*$atts*/) {
         $result[] = $group->name;
     }
 
-    return implode(', ',$result);
+    return count($result) ? 'You are a member of following groups: ' . (implode(', ',$result)).'<br/>' : '';
 }

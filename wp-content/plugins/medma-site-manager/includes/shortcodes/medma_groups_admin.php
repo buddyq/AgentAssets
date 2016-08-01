@@ -1,5 +1,16 @@
 <?php
 
+add_shortcode('if_medma_admin_has_groups', 'medma_admin_has_groups_shortcode');
+
+function medma_admin_has_groups_shortcode($atts, $content) {
+    $current_user_id = get_current_user_id();
+    if (!$current_user_id) return '';
+
+    if (MedmaGroupModel::getAdminGroups($current_user_id)) {
+        return do_shortcode($content);
+    }
+}
+
 add_shortcode('medma_groups_admin', 'medma_groups_admin_shortcode');
 
 function medma_groups_admin_shortcode(/*$atts*/) {

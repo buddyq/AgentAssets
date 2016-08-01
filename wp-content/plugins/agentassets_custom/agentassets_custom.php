@@ -1,6 +1,6 @@
 <?php
 /*
- * Plugin Name: Medma Custom
+ * Plugin Name: Agentassets Custom
  * 
  */
 

@@ -1,11 +1,11 @@
 <?php
 /**
- * Plugin Name: Medma Multisite Site Manager
+ * Plugin Name: Agentassets Multisite Site Manager
  * Plugin URI: http://URI_Of_Page_Describing_Plugin_and_Updates
  * Description: A plugin designed to handle numbers of sites of a user
  * Version: 1.0.0
- * Author: Medma Infomatix
- * Author URI: http://www.medma.net
+ * Author: Agentassets
+ * Author URI: http://agentassets.com
  * Text Domain: mism
  * Network: true
  * License: GPL2

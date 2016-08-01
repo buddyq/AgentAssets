@@ -74,7 +74,7 @@ class MedmaGroupModel {
         }
 
         if (strlen($attributes['name']) < 2) {
-            $errors['name'] = 'The group name must have minimum 6 symbols.';
+            $errors['name'] = 'The group name must have minimum 2 symbols.';
         }
         if (empty($attributes['name'])) {
             $errors['name'] = 'The group name can\'t be empty.';

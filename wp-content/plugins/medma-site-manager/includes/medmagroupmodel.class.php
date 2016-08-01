@@ -73,7 +73,7 @@ class MedmaGroupModel {
             $errors['primaryadmin_id'] = 'Invalid user.';
         }
 
-        if (strlen($attributes['name']) < 6) {
+        if (strlen($attributes['name']) < 2) {
             $errors['name'] = 'The group name must have minimum 6 symbols.';
         }
         if (empty($attributes['name'])) {

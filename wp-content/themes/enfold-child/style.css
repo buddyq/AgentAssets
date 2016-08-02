@@ -15,3 +15,7 @@ Version: 1.0
 #header_meta a:hover{
   color: #538774;
 }
+
+.avia_message_box_content p {
+    display: block;
+}

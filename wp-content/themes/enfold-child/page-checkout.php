@@ -17,7 +17,7 @@ if (isset($_POST['buy_package']) && $_POST['buy_package'] = "Buy") {
 $discount_flag = 0;
 $discount = $discount_amount = 0;
 $coupon_id = null;
-  
+
 if (isset($_POST['add_coupon']) && $_POST['add_coupon'] = "Apply Coupon") {
     global $wpdb;
     $discount_code = $_POST['discount_code'];
@@ -39,7 +39,7 @@ if (isset($_POST['add_coupon']) && $_POST['add_coupon'] = "Apply Coupon") {
     foreach ($allusers AS $singleUser) {
         if (($singleUser == $current_user_id) || $singleUser == '0') {
             $discount = $discount_amount;
-            $discount_flag = 1; 
+            $discount_flag = 1;
         } elseif (empty($_POST['discount_code'])) {
             $discount = 0;
         } else {
@@ -151,21 +151,21 @@ else
                                                 if (($singleUser == $current_user_id) || $singleUser == '0') {
                                                     # Do something
                                                     ?>
-                                                    <div class="coupon-applied">Coupon Applied Successfully</div>
+                                                    <div class="coupon-applied success">Coupon Applied Successfully</div>
                                                     <?php
                                                 } elseif (empty($_POST['discount_code'])) {
                                                     ?>
-                                                    <div class="coupon-applied">Please enter some coupon code for availing the discount</div>
+                                                    <div class="coupon-applied empty">Please enter some coupon code for availing the discount</div>
 
                                                     <?php
                                                 } else {
                                                     ?>
-                                                    <div class="coupon-applied">Coupon Code Invalid for your user</div>
+                                                    <div class="coupon-applied invalid">Coupon Code Invalid.</div>
                                                     <?php
                                                 }
                                             }
                                         }
-                                        ?>     
+                                        ?>
 
 
                                         <input class="input-textfield" type="text" name="discount_code" value=""/>
@@ -217,7 +217,7 @@ else
                                         <input type="hidden" name="amount" value="<?php echo round($price, 2); ?>"/>
                                         <input type="hidden" name="item_name" value="<?php echo $item_name; ?>"/>
                                         <input type="hidden" name="item_number" value="<?php echo $item_number; ?>"/>
-											
+
                                         <input id="checkout-button" type="button" name="checkout" value="Checkout" class="avia-button size-medium avia-color-theme-color avia-size-medium avia-position-center"/>
 
                                     </form>
@@ -230,11 +230,11 @@ else
         </div>
     </div>
 </div>
-<?php 
+<?php
 
 	/* $sql = "SELECT count(*) FROM `" . $wpdb->base_prefix . "orders` WHERE package_id='" . $package_id . "' AND user_id='" . $user_id . "'";
     $results = $wpdb->get_results($sql);
-	
+
 	 $package_id;
      $user_id;
      $package_name =$_SESSION['cart']['item_name'];
@@ -277,7 +277,7 @@ else
                 'action': 'purchase_package',
                 'cmd': '_xclick',
                 'currency_code': default_currency,
-                'paypal_url': paypal_url, 
+                'paypal_url': paypal_url,
                 'package_id': package_id,
                 'notify_url': '<?php echo $mism_package_settings['notify']; ?>',
                 'return': '<?php echo $mism_package_settings['return']; ?>',
@@ -289,10 +289,10 @@ else
                 'userid': user_id,
                 'total_amount' : '<?php echo $total_amount;?>'
             };
-       
+
             // We can also pass the url value separately from ajaxurl for front end AJAX implementations
             jQuery.post('<?php echo get_option("siteurl") . "/wp-admin/admin-ajax.php"; ?>', data, function(response) {
-            
+
                 jQuery('#form_checkout').attr('action',response);
                 jQuery('#form_checkout').submit();
             });

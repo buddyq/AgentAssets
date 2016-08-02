@@ -12,9 +12,9 @@ function mi_ipnlistener_notification_callback() {
     //include_once 'includes/ipn.listener.class.php';
     $listener = new IpnListener();
 
-    $listener->use_sandbox = true;
+    $listener->use_sandbox = false;
     $listener->use_ssl = true;
-    $listener->force_ssl_v3 = false;
+    $listener->force_ssl_v3 = true;
 
     try {
         $listener->requirePostMethod();

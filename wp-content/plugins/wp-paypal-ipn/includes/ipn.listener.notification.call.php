@@ -11,26 +11,20 @@ add_action('wp_ajax_mi_ipnlistener_notification', 'mi_ipnlistener_notification_c
 add_action('wp_ajax_nopriv_mi_ipnlistener_notification', 'mi_ipnlistener_notification_callback');
 
 function mi_ipnlistener_notification_callback() {
-
-
-    ini_set('log_errors', true);
-    ini_set('error_log', dirname(__FILE__) . '/ipn_errors.log');
+    //ini_set('log_errors', true);
+    //ini_set('error_log', dirname(__FILE__) . '/ipn_errors.log');
     //include_once 'includes/ipn.listener.class.php';
-
     $listener = new IpnListener();
 
     $listener->use_sandbox = true;
     $listener->use_ssl = true;
     $listener->force_ssl_v3 = false;
 
-
-
     try {
         $listener->requirePostMethod();
         $verified = $listener->processIpn();
     } catch (Exception $e) {
-
-        error_log($e->getMessage());
+        file_put_contents(dirname(__FILE__) . '/ipn_errors.log', $e->getMessage());
         exit(0);
     }
     if ($verified) {
@@ -67,7 +61,7 @@ function mi_ipnlistener_notification_callback() {
             }
         }
     } else {
-        mail('mehul@medma.in', 'Paypal Verification | Invalid', $verified);
+        file_put_contents(dirname(__FILE__) . '/ipn_errors.log', 'Paypal Verification | Invalid');
     }
 }
 

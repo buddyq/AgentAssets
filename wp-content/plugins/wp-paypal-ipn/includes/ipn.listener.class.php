@@ -103,8 +103,8 @@ class IpnListener {
         curl_setopt($ch, CURLOPT_HEADER, true);
         curl_setopt($ch, CURLOPT_IPRESOLVE, CURL_IPRESOLVE_V4);
         
-        if ($this->force_ssl_v3) {
-            curl_setopt($ch, CURLOPT_SSLVERSION, 3);
+        if ($this->use_ssl) {
+            curl_setopt($ch, CURLOPT_SSLVERSION, 4);
         }
         
         $this->response = curl_exec($ch);

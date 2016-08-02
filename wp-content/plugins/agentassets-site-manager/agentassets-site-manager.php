@@ -48,10 +48,10 @@ require_once 'includes/filters.php';
  */
 function add_style_to_head()
 {
-    wp_enqueue_style('medma-site-manager-general', plugins_url('medma-site-manager').'/css/general.css','','1.0');
-    wp_enqueue_style('medma-site-manager-alertify', plugins_url('medma-site-manager').'/css/alertify.min.css','','1.7.1');
-    wp_enqueue_style('medma-site-manager-alertify-theme', plugins_url('medma-site-manager').'/css/alertify-medma-theme.css','','1.7.1');
-    wp_enqueue_script('medma-site-manager-alertify', plugins_url('medma-site-manager').'/js/alertify.min.js','','1.7.1');
+    wp_enqueue_style('medma-site-manager-general', plugins_url('agentassets-site-manager').'/css/general.css','','1.0');
+    wp_enqueue_style('medma-site-manager-alertify', plugins_url('agentassets-site-manager').'/css/alertify.min.css','','1.7.1');
+    wp_enqueue_style('medma-site-manager-alertify-theme', plugins_url('agentassets-site-manager').'/css/alertify-medma-theme.css','','1.7.1');
+    wp_enqueue_script('medma-site-manager-alertify', plugins_url('agentassets-site-manager').'/js/alertify.min.js','','1.7.1');
 }
 
 add_action('wp_head','add_style_to_head');

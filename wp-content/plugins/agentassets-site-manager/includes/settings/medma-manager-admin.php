@@ -1,18 +1,18 @@
 <?php
 
-add_action('admin_menu', 'medma_theme_manager_menu');
+add_action('admin_menu', 'aag_theme_manager_menu');
 
-function medma_theme_manager_menu() {
+function aag_theme_manager_menu() {
     if (is_super_admin() && get_current_blog_id() == 1) {
-        add_menu_page('Medma Manager', 'Medma Manager', 'medma_manager', 'medma-manager-group-handle', 'medma_manager_group_admin');
+        add_menu_page('Agentassets Group Manager', 'Agentassets Group Manager', 'aag_manager', 'aag-manager-group-handle', 'aag_manager_group_admin');
 
-        add_submenu_page('medma-manager-group-handle', 'Groups', 'Groups', 'medma_manager', 'medma-manager-group-handle', 'medma_manager_group_admin');
-        add_submenu_page('medma-manager-group-handle', 'Themes', 'Themes', 'medma_manager', 'medma-manager-theme-handle', 'medma_manager_theme_admin');
+        add_submenu_page('aag-manager-group-handle', 'Groups', 'Groups', 'aag_manager', 'aag-manager-group-handle', 'aag_manager_group_admin');
+        add_submenu_page('aag-manager-group-handle', 'Themes', 'Themes', 'aag_manager', 'aag-manager-theme-handle', 'aag_manager_theme_admin');
 
     }
 }
 
-function medma_manager_theme_admin() {
+function aag_manager_theme_admin() {
     $notices = array();
     if (isset($_POST['changeit'])) {
         $new_status = (int)(empty($_POST['new_status']) ? $_POST['new_status2'] : $_POST['new_status']);
@@ -28,7 +28,7 @@ function medma_manager_theme_admin() {
     $themes = MedmaThemeManager::buildThemesList();
     ?>
     <div class="wrap">
-        <h1>Medma Themes Manager</h1>
+        <h1>Agentassets Themes Manager</h1>
         <?php if (count($notices)) foreach ($notices as $notice) { ?>
         <div class="notice notice-<?php echo $notice['class'];?> is-dismissible">
             <p><?php echo $notice['message']; ?></p>
@@ -104,7 +104,7 @@ function medma_manager_theme_admin() {
 }
 
 
-function medma_manager_group_admin() {
+function aag_manager_group_admin() {
     global $pagenow, $plugin_page;
     $this_page_url = add_query_arg( 'page', $plugin_page, admin_url( $pagenow ) );
 
@@ -255,7 +255,7 @@ function medma_manager_group_admin() {
     ?>
     <div class="wrap">
         <h1>
-            Medma Groups Manager
+            Agentassets Groups Manager
             <?php if ('list_view' === $view) { ?>
             <a class="page-title-action" href="<?php echo add_query_arg('medma_group_action', 'editor', $this_page_url);?>">Add New</a>
             <?php } ?>
@@ -265,13 +265,13 @@ function medma_manager_group_admin() {
                 <p><?php echo $notice['message']; ?></p>
             </div>
         <?php }
-        call_user_func('medma_manager_group_'.$view, $viewData);
+        call_user_func('aag_manager_group_'.$view, $viewData);
         ?>
     </div>
     <?php
 }
 
-function medma_manager_group_list_view($data) {
+function aag_manager_group_list_view($data) {
     global $pagenow, $plugin_page;
     $this_page_url = add_query_arg( 'page', $plugin_page, admin_url( $pagenow ) );
     $edit_action_url = add_query_arg('medma_group_action', 'editor', $this_page_url);
@@ -342,7 +342,7 @@ function medma_manager_group_list_view($data) {
     <?php
 }
 
-function medma_manager_group_form_view($data) {
+function aag_manager_group_form_view($data) {
     $group = $data['group'];
 
     if (empty($group->id)) {
@@ -400,7 +400,7 @@ function medma_manager_group_form_view($data) {
     <?php
 }
 
-function medma_manager_group_view($data) {
+function aag_manager_group_view($data) {
     global $pagenow, $plugin_page;
     $this_page_url = add_query_arg( 'page', $plugin_page, admin_url( $pagenow ) );
     $group_page_url = add_query_arg( 'group_id', $data['group']->id, $this_page_url);
@@ -442,13 +442,13 @@ function medma_manager_group_view($data) {
     <?php
 
     if ($subview == 'themes') {
-        medma_manager_group_view_themes($data);
+        aag_manager_group_view_themes($data);
     } else {
-        medma_manager_group_view_users($data);
+        aag_manager_group_view_users($data);
     }
 }
 
-function medma_manager_group_view_users($data) {
+function aag_manager_group_view_users($data) {
     ?>
     <form method="post">
 
@@ -520,7 +520,7 @@ function medma_manager_group_view_users($data) {
     <?php
 }
 
-function medma_manager_group_view_themes($data) {
+function aag_manager_group_view_themes($data) {
     ?>
     <form method="post">
 

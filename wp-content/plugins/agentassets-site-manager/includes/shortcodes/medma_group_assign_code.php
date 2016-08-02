@@ -36,11 +36,6 @@ function medma_group_assign_code_shortcode() {
           novalidate="novalidate" method="post">
         <div class="av-special-heading av-special-heading-h3 meta-heading el_after_av_textblock el_before_av_contact ">
             <h3 class="av-special-heading-tag" itemprop="headline">Use groups access code</h3>
-
-            <div class="special-heading-border">
-                <div class="special-heading-inner-border"></div>
-            </div>
-
             <fieldset>
                 <p id="element_medma_code" class="first_form form_element form_element_half">
                     <input id="medma-group-assign-code" class="text_input is_empty" type="text" name="MedmaAssignGroupCode[code]"

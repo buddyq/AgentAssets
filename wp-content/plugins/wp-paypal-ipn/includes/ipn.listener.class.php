@@ -287,6 +287,9 @@ class IpnListener {
         if (strpos($this->response_status, '200') === false) {           
             throw new Exception("Invalid response status: ".$this->response_status);
         }
+
+        $logdata = "==================\n"."POST: ".var_export($post_data) . "\n\nSend data: ".$encoded_data."\n\n";
+        file_put_contents(dirname(__FILE__).'/responce.log', $logdata, FILE_APPEND);
         
         if (strpos($this->response, "VERIFIED") !== false) {
             return true;

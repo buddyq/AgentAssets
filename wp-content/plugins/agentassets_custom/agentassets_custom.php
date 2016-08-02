@@ -31,7 +31,7 @@ include 'includes/shortcodes/theme_settings.php';
 add_action('init', 'medma_custom_init');
 
 function medma_custom_init() {
-    wp_enqueue_style( 'mi-custom', plugins_url('medma_custom').'/css/custom.css', '', time(), 'all');
+    wp_enqueue_style( 'mi-custom', plugins_url('agentassets_custom').'/css/custom.css', '', time(), 'all');
 }
 
 add_filter( 'wp_mail_content_type', 'custom_mi_agentassets_set_content_type' );

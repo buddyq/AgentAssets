@@ -3,9 +3,7 @@
  * IPN Notification Call URL: <DOMAIN_URL>/wp-admin/admin-ajax.php?action=mi_ipnlistener_notification 
  */
 
-ini_set('log_errors', true);
-ini_set('error_log', dirname(__FILE__).'/ipn_errors.log');
-
+/*
 global $wpdb;
 
 include_once 'includes/ipn.listener.class.php';

@@ -3,10 +3,6 @@
 /*
  * IPN Notification Call URL: <DOMAIN_URL>/wp-admin/admin-ajax.php?action=mi_ipnlistener_notification 
  */
-
-
-
-
 add_action('wp_ajax_mi_ipnlistener_notification', 'mi_ipnlistener_notification_callback');
 add_action('wp_ajax_nopriv_mi_ipnlistener_notification', 'mi_ipnlistener_notification_callback');
 

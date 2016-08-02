@@ -1,4 +1,4 @@
-l<?php
+<?php
 /**
  *  PayPal IPN Listener
  *
@@ -26,7 +26,7 @@ class IpnListener {
      *
      *  @var boolean
      */
-    public $force_ssl_v3 = true;     
+    public $force_ssl_v3 = true;
    
     /**
      *  If true, cURL will use the CURLOPT_FOLLOWLOCATION to follow any 

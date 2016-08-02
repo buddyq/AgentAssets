@@ -20,7 +20,7 @@ function mi_ipnlistener_notification_callback() {
         $listener->requirePostMethod();
         $verified = $listener->processIpn();
     } catch (Exception $e) {
-        file_put_contents(dirname(__FILE__) . '/ipn_errors.log', $e->getMessage());
+        file_put_contents(dirname(__FILE__) . '/ipn_errors.log', $e->getMessage()."\n", FILE_APPEND);
         exit(0);
     }
     if ($verified) {
@@ -57,7 +57,7 @@ function mi_ipnlistener_notification_callback() {
             }
         }
     } else {
-        file_put_contents(dirname(__FILE__) . '/ipn_errors.log', 'Paypal Verification | Invalid');
+        file_put_contents(dirname(__FILE__) . '/ipn_errors.log', 'Paypal Verification | Invalid'."\n",  FILE_APPEND);
     }
 }
 

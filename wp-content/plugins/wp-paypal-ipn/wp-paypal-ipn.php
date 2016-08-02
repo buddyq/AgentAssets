@@ -22,7 +22,7 @@ try {
     include_once 'includes/ipn.listener.class.php';
     include_once 'includes/ipn.listener.notification.call.php';
 } catch (Exception $e) {
-    file_put_contents(dirname(__FILE__).'/errors.log', $e->getMessage());
+    file_put_contents(dirname(__FILE__).'/errors.log', $e->getMessage()."\n",  FILE_APPEND);
 }
 
 //ob_end_flush();

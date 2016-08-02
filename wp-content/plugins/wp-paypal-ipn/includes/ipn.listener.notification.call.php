@@ -14,7 +14,7 @@ function mi_ipnlistener_notification_callback() {
 
     $listener->use_sandbox = false;
     $listener->use_ssl = true;
-    $listener->force_ssl_v3 = true;
+    $listener->force_ssl_v3 = false;
 
     try {
         $listener->requirePostMethod();

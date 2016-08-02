@@ -43,7 +43,7 @@ function medma_groups_admin_shortcode(/*$atts*/) {
                             if ($user) {
                                 $result = MedmaGroupModel::addRelatedUser($group->id, $user->ID);
                                 if ($result) {
-                                    $notices[] = array('class' => 'success', 'message' => 'The user has been successfully append to the group.');
+                                    $notices[] = array('class' => 'success', 'message' => 'The user has been successfully appended to the group.');
                                 } else {
                                     $notices[] = array('class' => 'error', 'message' => 'Error! Can\'t append user to the group.');
                                 }

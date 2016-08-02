@@ -232,12 +232,12 @@ function cu_edit_profile_form()
 
         $html .= '<p class="first_form form_element form_element_half" id="element_micu_business_phone">';
         $html .= '<label for="micu_business_phone">'.__('Business Phone','micu').' </label>';
-        $html .= '<input name="micu_business_phone" class="text_input" id="micu_business_phone" value="'.$businessPhone.'">';
+        $html .= '<input name="micu_business_phone" class="text_input" type="text" id="micu_business_phone" value="'.$businessPhone.'">';
         $html .= '</p>';
 
         $html .= '<p class=" form_element form_element_half" id="element_micu_mobile_phone">';
         $html .= '<label for="micu_mobile_phone">'.__('Mobile Phone','micu').' </label>';
-        $html .= '<input name="micu_mobile_phone" class="text_input" id="micu_mobile_phone" value="'.$mobilePhone.'">';
+        $html .= '<input name="micu_mobile_phone" class="text_input" type="text" id="micu_mobile_phone" value="'.$mobilePhone.'">';
         $html .= '</p>';
 
         $html .= '<p class="first_form form_element form_element_half" id="element_micu_email">';

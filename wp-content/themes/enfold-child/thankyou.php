@@ -34,8 +34,8 @@ get_header();
                                 </div>
                             </div>
                             <div class="avia_message_box_content">
-                              <?php print_r($_POST) ?>
-                                <span>You will be e-mailed a receipt at <?php echo $_POST['receiver_email']; ?></span>
+                              <?php //print_r($GLOBALS) ?>
+                                <span>You will be e-mailed a receipt at <?php echo $_POST['payer_email']; ?></span>
                             </div>
 
                         </div>

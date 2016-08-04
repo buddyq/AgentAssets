@@ -10,7 +10,8 @@ function agentassets_map_render_shortcode($atts, $content) {
         'show_focus_map_button' => 1,
         'address' => get_option('google_map_address'),
         'bubble_marker_address' => get_option('google_map_bubble_marker_address'),
-        'agent_name' => get_option('google_map_agent_name'),
+        'agent_name' => get_option('google_map_bubble_agent_name'),
+        'price' => get_option('google_map_bubble_marker_price')
     ), $atts);
     ob_start(); ?>
 
@@ -18,10 +19,13 @@ function agentassets_map_render_shortcode($atts, $content) {
         [wpv-map-marker
             map_id='<?php echo $atts['map_id'];?>'
             marker_id='<?php echo $atts['marker_id'];?>'
-            marker_title='<?php echo $atts['bubble_marker_address'];?>'
             marker_icon='http://aveone.agentassets.com/wp-content/plugins/toolset-maps/resources/images/markers/Home.png'
             address='<?php echo $atts['address'];?>'
-        ]<?php echo $atts['agent_name'];?>[/wpv-map-marker]
+        ]<strong><?php echo $atts['address']; ?></strong><br/>
+        <strong><?php echo $atts['bubble_marker_address']; ?></strong><br/>
+        <strong>Price:</strong> <?php echo $atts['price'];?><br/>
+        <strong>Represented By:</strong> <?php echo $atts['agent_name'];?><br/>
+        [/wpv-map-marker]
     </span>
     <span id="wpv-shortcode-generator-target">
         [wpv-map-render map_id='<?php echo $atts['map_id'];?>' map_height='<?php echo $atts['map_height'];?>']

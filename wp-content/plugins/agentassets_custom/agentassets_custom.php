@@ -19,7 +19,7 @@ include 'includes/filters.php';
 include 'includes/actions.php';
 include 'includes/widgets.php';
 include 'includes/shortcodes/theme_settings.php';
-
+include 'includes/shortcodes/aa-map-render.php';
 
 # Add Scripts
 //wp_enqueue_script( 'jquery-validate', plugins_url('medma_custom').'/js/jquery.validate.js', '', '1.13.1', true );

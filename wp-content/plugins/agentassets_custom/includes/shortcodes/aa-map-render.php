@@ -10,7 +10,7 @@ function agentassets_map_render_shortcode($atts, $content) {
         'show_focus_map_button' => 1,
         'address' => get_option('google_map_address'),
         'bubble_marker_address' => get_option('google_map_bubble_marker_address'),
-        'agent_name' => get_option('google_map_bubble_agentname'),
+        'agent_name' => get_option('google_map_bubble_marker_agentname'),
         'price' => get_option('google_map_bubble_marker_price')
     ), $atts);
     ob_start(); ?>

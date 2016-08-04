@@ -26,7 +26,9 @@ function agentassets_map_render_shortcode($atts, $content) {
     <span id="wpv-shortcode-generator-target">
         [wpv-map-render map_id='<?php echo $atts['map_id'];?>' map_height='<?php echo $atts['map_height'];?>']
     </span>
+    <?php if ($atts['show_focus_map_button'] == 1) { ?>
     <a class="js-wpv-addon-maps-focus-map button" href="#" data-map="<?php echo $atts['map_id'];?>" data-marker="<?php echo $atts['marker_id'];?>">Focus on marker</a>
+    <?php } ?>
 
     <?php
     $html = ob_get_contents();

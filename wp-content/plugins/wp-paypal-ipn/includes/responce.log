@@ -1,0 +1,212 @@
+==================
+POST: array (
+  'mc_gross' => '0.08',
+  'protection_eligibility' => 'Ineligible',
+  'address_status' => 'unconfirmed',
+  'payer_id' => 'K36KPCGRLYN26',
+  'tax' => '0.00',
+  'address_street' => 'Street Shkilna,building 2',
+  'payment_date' => '12:25:22 Aug 02, 2016 PDT',
+  'payment_status' => 'Pending',
+  'charset' => 'windows-1252',
+  'address_zip' => '48120',
+  'first_name' => 'Andrej',
+  'address_country_code' => 'UA',
+  'address_name' => 'Andrej Chvyl',
+  'notify_version' => '3.8',
+  'custom' => '246,35,new',
+  'payer_status' => 'verified',
+  'address_country' => 'Ukraine',
+  'address_city' => 'PGT Mykulyntsi',
+  'quantity' => '1',
+  'verify_sign' => 'AYE8XgAcnXnazo3SBruMduV-JivjAq.sjjDVdznIcI.xrCuC2PD.8MkD',
+  'payer_email' => 'myado@ukr.net',
+  'txn_id' => '32H60738D71198723',
+  'payment_type' => 'instant',
+  'last_name' => 'Chvyl',
+  'address_state' => 'area Ternopilska,district Terebovlianskyi',
+  'receiver_email' => 'payments@agentassets.com',
+  'shipping_discount' => '0.00',
+  'insurance_amount' => '0.00',
+  'pending_reason' => 'unilateral',
+  'txn_type' => 'web_accept',
+  'item_name' => 'Single Site',
+  'discount' => '84.92',
+  'mc_currency' => 'USD',
+  'item_number' => '51',
+  'residence_country' => 'UA',
+  'shipping_method' => 'Default',
+  'handling_amount' => '0.00',
+  'transaction_subject' => '',
+  'payment_gross' => '0.08',
+  'shipping' => '0.00',
+  'ipn_track_id' => '4b49e5a01a8da',
+)
+
+Send data: cmd=_notify-validate&mc_gross=0.08&protection_eligibility=Ineligible&address_status=unconfirmed&payer_id=K36KPCGRLYN26&tax=0.00&address_street=Street+Shkilna%2Cbuilding+2&payment_date=12%3A25%3A22+Aug+02%2C+2016+PDT&payment_status=Pending&charset=windows-1252&address_zip=48120&first_name=Andrej&address_country_code=UA&address_name=Andrej+Chvyl&notify_version=3.8&custom=246%2C35%2Cnew&payer_status=verified&address_country=Ukraine&address_city=PGT+Mykulyntsi&quantity=1&verify_sign=AYE8XgAcnXnazo3SBruMduV-JivjAq.sjjDVdznIcI.xrCuC2PD.8MkD&payer_email=myado%40ukr.net&txn_id=32H60738D71198723&payment_type=instant&last_name=Chvyl&address_state=area+Ternopilska%2Cdistrict+Terebovlianskyi&receiver_email=payments%40agentassets.com&shipping_discount=0.00&insurance_amount=0.00&pending_reason=unilateral&txn_type=web_accept&item_name=Single+Site&discount=84.92&mc_currency=USD&item_number=51&residence_country=UA&shipping_method=Default&handling_amount=0.00&transaction_subject=&payment_gross=0.08&shipping=0.00&ipn_track_id=4b49e5a01a8da
+
+response: HTTP/1.1 100 Continue
+
+HTTP/1.1 200 OK
+Date: Tue, 02 Aug 2016 19:25:26 GMT
+Server: Apache
+X-Frame-Options: SAMEORIGIN
+Set-Cookie: c9MWDuvPtT9GIMyPc3jwol1VSlO=YpeVrMRl31Bs_BsX3cJicQxR2u5XKNbfJpLRpt-cWYGzgz4XSIBq-tgi5G55cdmc54_Zf9C4Unm2O9nzoWUMBWI-3rweXDD7TBBJecvR3UwQSwlHopD8tWX6CchXGF-rNHN-MKziGBYpMPOGHPeByIBy1WeG0iEc7Q0soHEzxSMeZ6kGTOqzTWLvIQh0ou080UsPf9MgtnFF2qEUqpd9JxRtVMFT9NZv2ofYjDn1u2_23BTjgHAjmVVsyKPLYm89p061GFnj7OUGU6INNs4DbmdGjMNWoEBR2Ai7dW7k9yTB2lPVsHYFsNaGWP1HpBRvEcGHltUFAOntzASAO0BrMX9jsvsbcsBSiZ13fZZLx5Gclv1pG4dqZ3S46nXM6itLp3fWTY1GS-6kswOGK3AU-wT6sPMYBg299i2Pk7wsBIU2dUD_4lkC-WY8q6S; domain=.paypal.com; path=/; Secure; HttpOnly
+Set-Cookie: cookie_check=yes; expires=Fri, 31-Jul-2026 19:25:26 GMT; domain=.paypal.com; path=/; Secure; HttpOnly
+Set-Cookie: navcmd=_notify-validate; domain=.paypal.com; path=/; Secure; HttpOnly
+Set-Cookie: navlns=0.0; expires=Thu, 02-Aug-2018 19:25:26 GMT; domain=.paypal.com; path=/; Secure; HttpOnly
+Set-Cookie: Apache=10.72.108.11.1470165926476568; path=/; expires=Thu, 26-Jul-46 19:25:26 GMT
+Vary: Accept-Encoding,User-Agent
+X-Cnection: close
+HTTP_X_PP_AZ_LOCATOR: sandbox.slc
+Paypal-Debug-Id: e542fbc66fe8c
+Set-Cookie: X-PP-SILOVER=name%3DSANDBOX3.WEB.1%26silo_version%3D1880%26app%3Dappdispatcher%26TIME%3D2800984151%26HTTP_X_PP_AZ_LOCATOR%3Dsandbox.slc; Expires=Tue, 02 Aug 2016 19:55:26 GMT; domain=.paypal.com; path=/; Secure; HttpOnly
+Set-Cookie: X-PP-SILOVER=; Expires=Thu, 01 Jan 1970 00:00:01 GMT
+Strict-Transport-Security: max-age=14400
+Transfer-Encoding: chunked
+Content-Type: text/html; charset=UTF-8
+
+INVALID
+
+==================
+POST: array (
+  'mc_gross' => '0.08',
+  'protection_eligibility' => 'Ineligible',
+  'address_status' => 'confirmed',
+  'payer_id' => '5T52PRNF3HAZ2',
+  'tax' => '0.00',
+  'address_street' => '2317 Bowman Ave',
+  'payment_date' => '13:20:53 Aug 02, 2016 PDT',
+  'payment_status' => 'Pending',
+  'charset' => 'windows-1252',
+  'address_zip' => '78703',
+  'first_name' => 'Buddy',
+  'address_country_code' => 'US',
+  'address_name' => 'Buddy Quaid',
+  'notify_version' => '3.8',
+  'custom' => '247,35,new',
+  'payer_status' => 'verified',
+  'address_country' => 'United States',
+  'address_city' => 'Austin',
+  'quantity' => '1',
+  'verify_sign' => 'A81HadezQkXhz0ZnmaS333zkG43pAf8TJn3PyZEKztBNVayf2U8FYjZH',
+  'payer_email' => 'bquaid@gmail.com',
+  'txn_id' => '4MS774648M7152335',
+  'payment_type' => 'instant',
+  'last_name' => 'Quaid',
+  'address_state' => 'TX',
+  'receiver_email' => 'payments@agentassets.com',
+  'shipping_discount' => '0.00',
+  'insurance_amount' => '0.00',
+  'pending_reason' => 'unilateral',
+  'txn_type' => 'web_accept',
+  'item_name' => 'Single Site',
+  'discount' => '84.92',
+  'mc_currency' => 'USD',
+  'item_number' => '51',
+  'residence_country' => 'US',
+  'shipping_method' => 'Default',
+  'handling_amount' => '0.00',
+  'transaction_subject' => '',
+  'payment_gross' => '0.08',
+  'shipping' => '0.00',
+  'ipn_track_id' => '790a08d8877f4',
+)
+
+Send data: cmd=_notify-validate&mc_gross=0.08&protection_eligibility=Ineligible&address_status=confirmed&payer_id=5T52PRNF3HAZ2&tax=0.00&address_street=2317+Bowman+Ave&payment_date=13%3A20%3A53+Aug+02%2C+2016+PDT&payment_status=Pending&charset=windows-1252&address_zip=78703&first_name=Buddy&address_country_code=US&address_name=Buddy+Quaid&notify_version=3.8&custom=247%2C35%2Cnew&payer_status=verified&address_country=United+States&address_city=Austin&quantity=1&verify_sign=A81HadezQkXhz0ZnmaS333zkG43pAf8TJn3PyZEKztBNVayf2U8FYjZH&payer_email=bquaid%40gmail.com&txn_id=4MS774648M7152335&payment_type=instant&last_name=Quaid&address_state=TX&receiver_email=payments%40agentassets.com&shipping_discount=0.00&insurance_amount=0.00&pending_reason=unilateral&txn_type=web_accept&item_name=Single+Site&discount=84.92&mc_currency=USD&item_number=51&residence_country=US&shipping_method=Default&handling_amount=0.00&transaction_subject=&payment_gross=0.08&shipping=0.00&ipn_track_id=790a08d8877f4
+
+response: HTTP/1.1 200 OK
+Server: Apache
+X-Frame-Options: SAMEORIGIN
+HTTP_X_PP_AZ_LOCATOR: dcg12.slc
+Paypal-Debug-Id: d6099f20eaf2
+Cache-Control: max-age=0, no-cache, no-store, must-revalidate
+Pragma: no-cache
+Content-Type: text/html; charset=UTF-8
+DC: slc-b-origin-www-2.paypal.com
+Date: Tue, 02 Aug 2016 20:20:58 GMT
+Content-Length: 8
+Connection: close
+Set-Cookie: cwrClyrK4LoCV1fydGbAxiNL6iG=ER3yskHCAkxxZ8oMcH9QZIoVXKo7oNxmHWvJlu1cGclATlxupShXYDnpMbrsJqAirRrEwjwo3Nw73E9gKZImv1wOrHnsnb1NRS6_Nwez9KrVE23n53x7eRsSlhuVfT-vFrrLAV0CwHarB-aMwwykz266pX0SIFYd3tN3KeIH6bO7m2jITsREBMsswkwWcPTJ-ReX0dh95xAnZ6lYTTunl2f1hyChDpYQo0NcKvv5e6YHxMmF673b7SVQmP4OQUxsurJBfrNo4_-f7fBhOX3IYN1xo1vYFU12adQHUEP8KlEh0N6H0zb5OpR5mINPBLbqjwJtSJ5TkYj4JvjEaUY1FxMFlMLYMc6eKxSGWt8oZTMKXuQevvwH3nK0ppVbgy93XvsztNxMGcdIQQ5Lbh-OOl24bGe_46jo1_I6mScn4pfCStdURufu88r0NZq; domain=.paypal.com; path=/; Secure; HttpOnly
+Set-Cookie: cookie_check=yes; expires=Fri, 31-Jul-2026 20:20:58 GMT; domain=.paypal.com; path=/; Secure; HttpOnly
+Set-Cookie: navcmd=_notify-validate; domain=.paypal.com; path=/; Secure; HttpOnly
+Set-Cookie: navlns=0.0; expires=Thu, 02-Aug-2018 20:20:58 GMT; domain=.paypal.com; path=/; Secure; HttpOnly
+Set-Cookie: X-PP-SILOVER=name%3DLIVE6.WEB.1%26silo_version%3D880%26app%3Dappdispatcher%26TIME%3D2852168023%26HTTP_X_PP_AZ_LOCATOR%3Ddcg12.slc; Expires=Tue, 02 Aug 2016 20:50:58 GMT; domain=.paypal.com; path=/; Secure; HttpOnly
+Set-Cookie: X-PP-SILOVER=; Expires=Thu, 01 Jan 1970 00:00:01 GMT
+Set-Cookie: AKDC=slc-b-origin-www-2.paypal.com; expires=Tue, 02-Aug-2016 20:50:58 GMT; path=/; secure
+Strict-Transport-Security: max-age=63072000
+
+VERIFIED
+
+==================
+POST: array (
+  'mc_gross' => '0.08',
+  'protection_eligibility' => 'Ineligible',
+  'address_status' => 'confirmed',
+  'payer_id' => '5T52PRNF3HAZ2',
+  'tax' => '0.00',
+  'address_street' => '2317 Bowman Ave',
+  'payment_date' => '13:59:46 Aug 02, 2016 PDT',
+  'payment_status' => 'Pending',
+  'charset' => 'windows-1252',
+  'address_zip' => '78703',
+  'first_name' => 'Buddy',
+  'address_country_code' => 'US',
+  'address_name' => 'Buddy Quaid',
+  'notify_version' => '3.8',
+  'custom' => '247,35,new',
+  'payer_status' => 'verified',
+  'address_country' => 'United States',
+  'address_city' => 'Austin',
+  'quantity' => '1',
+  'verify_sign' => 'AbzlMQfnGCW1kgs7W9U77Rx7TroaA.WLBMI.sZCyQJH-8ZMmRgQhkjVK',
+  'payer_email' => 'bquaid@gmail.com',
+  'txn_id' => '35662905EL0081454',
+  'payment_type' => 'instant',
+  'last_name' => 'Quaid',
+  'address_state' => 'TX',
+  'receiver_email' => 'payments@agentassets.com',
+  'shipping_discount' => '0.00',
+  'insurance_amount' => '0.00',
+  'pending_reason' => 'unilateral',
+  'txn_type' => 'web_accept',
+  'item_name' => 'Single Site',
+  'discount' => '84.92',
+  'mc_currency' => 'USD',
+  'item_number' => '51',
+  'residence_country' => 'US',
+  'shipping_method' => 'Default',
+  'handling_amount' => '0.00',
+  'transaction_subject' => '',
+  'payment_gross' => '0.08',
+  'shipping' => '0.00',
+  'ipn_track_id' => 'd2f74f9e7593a',
+)
+
+Send data: cmd=_notify-validate&mc_gross=0.08&protection_eligibility=Ineligible&address_status=confirmed&payer_id=5T52PRNF3HAZ2&tax=0.00&address_street=2317+Bowman+Ave&payment_date=13%3A59%3A46+Aug+02%2C+2016+PDT&payment_status=Pending&charset=windows-1252&address_zip=78703&first_name=Buddy&address_country_code=US&address_name=Buddy+Quaid&notify_version=3.8&custom=247%2C35%2Cnew&payer_status=verified&address_country=United+States&address_city=Austin&quantity=1&verify_sign=AbzlMQfnGCW1kgs7W9U77Rx7TroaA.WLBMI.sZCyQJH-8ZMmRgQhkjVK&payer_email=bquaid%40gmail.com&txn_id=35662905EL0081454&payment_type=instant&last_name=Quaid&address_state=TX&receiver_email=payments%40agentassets.com&shipping_discount=0.00&insurance_amount=0.00&pending_reason=unilateral&txn_type=web_accept&item_name=Single+Site&discount=84.92&mc_currency=USD&item_number=51&residence_country=US&shipping_method=Default&handling_amount=0.00&transaction_subject=&payment_gross=0.08&shipping=0.00&ipn_track_id=d2f74f9e7593a
+
+response: HTTP/1.1 200 OK
+Server: Apache
+X-Frame-Options: SAMEORIGIN
+Cache-Control: max-age=0, no-cache, no-store, must-revalidate
+Pragma: no-cache
+HTTP_X_PP_AZ_LOCATOR: slcb.slc
+Paypal-Debug-Id: 49cd2dc038986
+Cache-Control: max-age=0, no-cache, no-store, must-revalidate
+Pragma: no-cache
+Content-Type: text/html; charset=UTF-8
+DC: slc-b-origin-www-1.paypal.com
+Date: Tue, 02 Aug 2016 20:59:54 GMT
+Content-Length: 8
+Connection: close
+Set-Cookie: cwrClyrK4LoCV1fydGbAxiNL6iG=yelcy1g-XVaSNGChwc3I-x5Wa16WcFdgtiRD-UpuYH_Lm3zqBklnqugx_7NWyJD1Exn0hdbaYAMgZCumKuJO8EI9p-EijkU1YsfRUBGbJAwMB9guxv7H84OhaQ59FFv2Gqvjet2r_wbqEloOl-dcqxmM0xHsU3AC31R4qO7rgSZ4tSPYIf7K7nV4vNsun9sO0rh4jlrlrWmGvRuTri856llc4TsFK1l70fTYOd6ywlDRGmp3gyy0rVBdCiBvpeLPZDqe2PMGDbU3NuBPaZ8i8JlmQSPByNJM2ZbOYZNB88-1x8Rx_iVbPoHshnOnZvZGG60eAbdQjpMQjqJAwKKfG03Zmeh8X6RTxRekLsYfalomTU-pEhzpGP_1p-6YMlobMY0dKP_OCsML_ozbZHHk-X4almKQQlo-qC-yR8E-8BVCKUTTV_6XFFcQtrC; domain=.paypal.com; path=/; Secure; HttpOnly
+Set-Cookie: cookie_check=yes; expires=Fri, 31-Jul-2026 20:59:54 GMT; domain=.paypal.com; path=/; Secure; HttpOnly
+Set-Cookie: navcmd=_notify-validate; domain=.paypal.com; path=/; Secure; HttpOnly
+Set-Cookie: navlns=0.0; expires=Thu, 02-Aug-2018 20:59:54 GMT; domain=.paypal.com; path=/; Secure; HttpOnly
+Set-Cookie: X-PP-SILOVER=name%3DLIVE6.WEB.1%26silo_version%3D880%26app%3Dappdispatcher%26TIME%3D3389628759%26HTTP_X_PP_AZ_LOCATOR%3Dslcb.slc; Expires=Tue, 02 Aug 2016 21:29:54 GMT; domain=.paypal.com; path=/; Secure; HttpOnly
+Set-Cookie: X-PP-SILOVER=; Expires=Thu, 01 Jan 1970 00:00:01 GMT
+Set-Cookie: AKDC=slc-b-origin-www-1.paypal.com; expires=Tue, 02-Aug-2016 21:29:54 GMT; path=/; secure
+Strict-Transport-Security: max-age=63072000
+
+VERIFIED
+

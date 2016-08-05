@@ -35,17 +35,18 @@ if (isset($_POST['add_coupon']) && $_POST['add_coupon'] = "Apply Coupon") {
     $discount_amount = get_post_meta($coupon_id, 'wpcf-total-discount', true);
     $current_user_id = get_current_user_id();
 
-
-    foreach ($allusers AS $singleUser) {
-        if (($singleUser == $current_user_id) || $singleUser == '0') {
-            $discount = $discount_amount;
-            $discount_flag = 1;
-        } elseif (empty($_POST['discount_code'])) {
-            $discount = 0;
-        } else {
-            $discount = 0;
-        }
-    }
+    if(!empty($coupon_details)){
+      foreach ($allusers AS $singleUser) {
+          if (($singleUser == $current_user_id) || $singleUser == '0') {
+              $discount = $discount_amount;
+              $discount_flag = 1;
+          } elseif (empty($_POST['discount_code'])) {
+              $discount = 0;
+          } else {
+              $discount = 0;
+          }
+      }//end foreach
+    }//end if
  }
 
 
@@ -143,26 +144,31 @@ else
                                             $coupons = get_posts($args);
                                             $allusers = get_post_meta($coupons[0]->ID, 'micu_coupon_users', true);
                                             $current_user_id = get_current_user_id();
-												//echo "<pre>";
-												//print_r($allusers);
-                                            foreach ($allusers AS $singleUser) {
-												//echo $singleUser;
-												//echo $current_user_id;
-                                                if (($singleUser == $current_user_id) || $singleUser == '0') {
-                                                    # Do something
-                                                    ?>
-                                                    <div class="coupon-applied success">Coupon Applied Successfully</div>
-                                                    <?php
-                                                } elseif (empty($_POST['discount_code'])) {
-                                                    ?>
-                                                    <div class="coupon-applied empty">Please enter some coupon code for availing the discount</div>
 
-                                                    <?php
-                                                } else {
-                                                    ?>
-                                                    <div class="coupon-applied invalid">Coupon Code Invalid.</div>
-                                                    <?php
-                                                }
+                                            if (!empty($coupons)) {
+
+                                              foreach ($allusers AS $singleUser) {
+
+                                                  if (($singleUser == $current_user_id) || $singleUser == '0') {
+                                                      # Do something
+                                                      ?>
+                                                      <div class="coupon-applied success">Coupon Applied Successfully</div>
+                                                      <?php
+                                                  } elseif (empty($_POST['discount_code'])) {
+                                                      ?>
+                                                      <div class="coupon-applied empty">Please enter some coupon code for availing the discount</div>
+
+                                                      <?php
+                                                  } else {
+                                                      ?>
+                                                      <div class="coupon-applied invalid">Coupon Code Invalid.</div>
+                                                      <?php
+                                                  }
+                                              }
+                                            }else{
+                                              ?>
+                                              <div class="coupon-applied invalid">Coupon Code Invalid.</div>
+                                              <?php
                                             }
                                         }
                                         ?>

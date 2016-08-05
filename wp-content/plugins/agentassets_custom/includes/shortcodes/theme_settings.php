@@ -1,8 +1,51 @@
 <?php
 
-/* 
+/*
  * Theme Options | Customized
  */
+ // Rearrange the admin menu
+   function custom_menu_order($menu_ord) {
+     if (!$menu_ord) return true;
+     return array(
+       'separator1', // First separator
+       'admin.php?page=mi-sub-agent-information', // Custom type one
+       'admin.php?page=mi-sub-property-details', // Custom type two
+       'admin.php?page=mi-sub-printable-info', // Custom type three
+       'edit.php?post_type=printable_info', // Upload printables
+       'admin.php?page=mi-sub-contact-details', // Custom type four
+       'admin.php?page=mi-sub-meta-info', // Custom type five
+       'separator2', // Second separator
+     );
+   }
+
+   add_filter('custom_menu_order', 'custom_menu_order'); // Activate custom_menu_order
+   add_filter('menu_order', 'custom_menu_order');
+
+   /** Rebranding and whitelabel the EnviraGallery
+       as per http://enviragallery.com/docs/whitelabel-envira/ **/
+
+   add_filter( 'gettext', 'tgm_envira_whitelabel', 10, 3 );
+   
+   if (!function_exists('tgm_envira_whitelabel')) {
+   function tgm_envira_whitelabel( $translated_text, $source_text, $domain ) {
+
+       // If not in the admin, return the default string.
+       if ( ! is_admin() ) {
+           return $translated_text;
+       }
+
+       if ( strpos( $source_text, 'an Envira' ) !== false ) {
+           return str_replace( 'an Envira', '', $translated_text );
+       }
+
+       if ( strpos( $source_text, 'Envira' ) !== false ) {
+           return str_replace( 'Envira', 'Photo', $translated_text );
+       }
+
+       return $translated_text;
+
+   }
+   }
 
 add_action('admin_menu', 'custom_theme_options_menu');
 //add_action( 'admin_menu', 'custom_admin_scripts' );
@@ -11,14 +54,12 @@ add_action('admin_menu', 'custom_theme_options_menu');
 function custom_theme_options_menu()
 {
 
-    add_menu_page('Agent Information', 'Customize Microsite', 'manage_options', 'mi-top-level-handle', 'mi_sub_agent_information');
-
-    add_submenu_page('mi-top-level-handle', 'Agent Information', 'Agent Information', 'manage_options', 'mi-sub-agent-information', 'mi_sub_agent_information');
-
-    add_submenu_page('mi-top-level-handle', 'Property Details', 'Property Details', 'manage_options', 'mi-sub-property-details', 'mi_sub_property_details');
-    add_submenu_page('mi-top-level-handle', 'Printable Info', 'Printable Info', 'manage_options', 'mi-sub-printable-info', 'mi_sub_printable_info');
-    add_submenu_page('mi-top-level-handle', 'Contact Info', 'Contact Info', 'manage_options', 'mi-sub-contact-details', 'mi_sub_contact_details');
-    add_submenu_page('mi-top-level-handle', 'Meta Info', 'Meta Info', 'manage_options', 'mi-sub-meta-info', 'mi_sub_meta_information');
+    // add_menu_page('Agent Information', 'Customize Microsite', 'manage_options', 'mi-top-level-handle', 'mi_sub_agent_information');
+    add_menu_page('Agent Information', 'Agent Information', 'manage_options', 'mi-sub-agent-information', 'mi_sub_agent_information','dashicons-businessman');
+    add_menu_page('Property Details', 'Property Details', 'manage_options', 'mi-sub-property-details', 'mi_sub_property_details','dashicons-admin-home');
+    add_menu_page('Printable Info', 'Printable Info', 'manage_options', 'mi-sub-printable-info', 'mi_sub_printable_info', 'dashicons-media-document');
+    add_menu_page('Contact Info', 'Contact Info', 'manage_options', 'mi-sub-contact-details', 'mi_sub_contact_details', 'dashicons-email-alt');
+    add_menu_page('Meta Info', 'Meta Info', 'manage_options', 'mi-sub-meta-info', 'mi_sub_meta_information', 'dashicons-chart-area');
 
 }
 
@@ -38,10 +79,11 @@ function mi_sub_meta_information()
     }
     $meta_keywords = get_option('meta_keywords', true);
     $meta_description = get_option('meta_description', true);
+    $aa_logo = '<img src="' . plugins_url( '../../images/logo.png', __FILE__ ) . '" height="50" style="vertical-align:middle;" > ';
 
     ?>
     <div class="wrap">
-        <h1>Meta Information</h1>
+        <h1><?php echo $aa_logo ?> Meta Information</h1>
 
         <form method="post" action="" novalidate="novalidate">
 
@@ -194,9 +236,11 @@ function mi_sub_property_details()
     $property_tour_link1 = get_option('property_tour_link1', true);
     $property_tour_link2 = get_option('property_tour_link2', true);
 
+    $aa_logo = '<img src="' . plugins_url( '../../images/logo.png', __FILE__ ) . '" height="50" style="vertical-align:middle;" > ';
+
     ?>
     <div class="wrap">
-        <h1>Property Details</h1>
+        <h1><?php echo $aa_logo ?> Property Details</h1>
 
         <form method="post" action="" novalidate="novalidate">
 
@@ -577,10 +621,12 @@ function mi_sub_printable_info()
     }
     $printable_text = stripslashes(get_option('printable_text', true));
     $printable_image = get_option('printable_image', true);
+    $aa_logo = '<img src="' . plugins_url( '../../images/logo.png', __FILE__ ) . '" height="50" style="vertical-align:middle;" > ';
+
     ?>
 
     <div class="wrap">
-        <h1>Printable Info</h1>
+        <h1><?php echo $aa_logo ?> Printable Info</h1>
 
         <form method="post" action="" novalidate="novalidate" enctype="multipart/form-data">
 
@@ -714,11 +760,12 @@ function mi_sub_contact_details()
     $google_map_bubble_marker_city_state = get_option('google_map_bubble_marker_city_state', true);
     $google_map_bubble_marker_price = get_option('google_map_bubble_marker_price', true);
     $google_map_bubble_marker_agentname = get_option('google_map_bubble_marker_agentname', true);
+    $aa_logo = '<img src="' . plugins_url( '../../images/logo.png', __FILE__ ) . '" height="50" style="vertical-align:middle;" > ';
 
     ?>
 
     <div class="wrap">
-        <h1>Contact Info</h1>
+        <h1><?php echo $aa_logo ?> Contact Info</h1>
 
         <form method="post" enctype="multipart/form-data" action="" novalidate="novalidate">
 
@@ -727,17 +774,17 @@ function mi_sub_contact_details()
 
                 <tr>
                     <th scope="row">
-                        <label for="contact_page_image">Contact Page Image</label>
+                        <label for="contact_page_image">Contact Page Image<span class="desc">Photo to display on the contact page</span></label>
                     </th>
                     <td>
 
-                        <img src="<?php echo $contact_page_image; ?>" style="width: auto; height: 100px;"/>
-                        <input type="file" name="contact_image_upload" id="contact_image_upload" multiple="false"/>
-                        <?php wp_nonce_field('contact_image_upload', 'contact_image_upload_nonce'); ?>
+                        <img class="contact_settings_image" src="<?php echo $contact_page_image; ?>"/>
+                        <?php if (isset($contact_page_image)): ?>
+                          <input type="file" name="contact_image_upload" id="contact_image_upload" multiple="false"/>
+                          <?php wp_nonce_field('contact_image_upload', 'contact_image_upload_nonce'); ?>
+                        <?php endif; ?>
 
-                        <!--<input name="contact_page_image" type="file" id="contact_page_image" value="<?php //if(isset($contact_page_image)){ echo $contact_page_image; }
-                        ?>" class="regular-text">-->
-                        Upload Photo to be displayed in the contact page
+
                     </td>
                 </tr>
 
@@ -836,6 +883,7 @@ function mi_sub_contact_details()
 /* ------------   Script for uploads of images ------------------------------------------------*/
 
 add_action('in_admin_footer', 'medma_cms_add_script');
+
 function medma_cms_add_script()
 {
     wp_enqueue_script('media-upload');
@@ -1013,6 +1061,7 @@ function mi_sub_agent_information()
         update_user_meta($user_id, 'googleplus', $input_googleplus);
 
     }
+    $aa_logo = '<img src="' . plugins_url( '../../images/logo.png', __FILE__ ) . '" height="50" style="vertical-align:middle;" > ';
 
     $agentname = get_user_meta($user_id, 'first_name', true);
     $designation = get_user_meta($user_id, 'designation', true);
@@ -1069,7 +1118,7 @@ function mi_sub_agent_information()
     }
     ?>
     <div class="wrap">
-        <h1>Agent Information</h1>
+        <h1><?php echo $aa_logo ?> Agent Information</h1>
 
         <form method="post" action="admin.php?page=mi-sub-agent-information" novalidate="novalidate"
               enctype="multipart/form-data">
@@ -1235,9 +1284,8 @@ function wp_gear_manager_admin_styles()
 
 add_action('admin_print_scripts', 'wp_gear_manager_admin_scripts');
 add_action('admin_print_styles', 'wp_gear_manager_admin_styles');
-
-
 add_action('in_admin_footer', 'custom_admin_scripts');
+
 
 function custom_admin_scripts()
 {

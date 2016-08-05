@@ -19,3 +19,17 @@ Version: 1.0
 .avia_message_box_content p {
     display: block;
 }
+
+.coupon-applied.success{
+  background: #E0F1B5;
+  padding: 5px;
+  color: #333;
+  font-style: italic;
+}
+
+.coupon-applied.invalid{
+  background: #FFF8F4;
+  color: #AF2C20;
+  padding: 5px;
+  font-style:italic;
+}

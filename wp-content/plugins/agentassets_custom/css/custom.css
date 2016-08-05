@@ -266,8 +266,8 @@ transition: 		all 0.3s ease-in-out;
 	#micu_signup_form tr th:first-child,
 	#micu_signup_form tr td:first-child{
 		width:30%;
-		
-	} 
+
+	}
 	#micu_signup_form tr th:last-child,
 	#micu_signup_form tr td:last-child{
 		width:70%;
@@ -280,7 +280,7 @@ transition: 		all 0.3s ease-in-out;
 	#micu_signup_form tr td:first-child{
 		width:100%;
 		display: block;
-	} 
+	}
 	#micu_signup_form tr th:last-child,
 	#micu_signup_form tr td:last-child{
 		width:100%;
@@ -299,4 +299,34 @@ transition: 		all 0.3s ease-in-out;
 		background: #FFFFFF;
 	}
 
+}
+
+.wrap h1{
+  background: #559987;
+  padding: 30px 20px;
+  color: #fff;
+  text-shadow: 1px 1px 1px #333;
+  margin: -10px -20px 10px -22px;
+}
+.wrap h1:before{
+  display: inline-block;
+  width: 100px;
+  background-image: url('../images/aa_logo-header-logo-circle-only.png');
+}
+
+.contact_settings_image{
+  width: 25em;
+  height: auto;
+  padding: 5px;
+  background: #fff;
+  box-shadow: 1px 1px 1px 0 #000;
+  clear: right;
+  display: block;
+}
+label .desc{
+  display: inline-block;
+  font-size: x-small;
+  font-style: italic;
+  clear: both;
+  font-weight: normal;
 }

@@ -23,7 +23,6 @@ function agentassets_map_render_shortcode($atts, $content) {
             address='<?php echo $atts['address'];?>'
         ]
         <div style="color: #000;">
-        <strong><?php echo $atts['address']; ?></strong><br/>
         <strong><?php echo $atts['bubble_marker_address']; ?></strong><br/>
         <strong>Price:</strong> <?php echo $atts['price'];?><br/>
         <strong>Represented By:</strong> <?php echo $atts['agent_name'];?><br/>

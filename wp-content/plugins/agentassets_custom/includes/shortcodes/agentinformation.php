@@ -19,8 +19,9 @@ function agentinformation_shortcode($atts)
     $value = null;
     if (isset($atts['key'])) {
         $defaults = array(
-            'profile_picture' => plugins_url('medma-site-manager') . '/images/dummy_agent_pic.png',
-            'broker_logo' => plugins_url('medma-site-manager') . '/images/placeholder_wide.jpg',
+            'profile_picture' => plugins_url('agentassets-site-manager') . '/images/dummy_agent_pic.png',
+            'broker_logo' => plugins_url('agentassets-site-manager') . '/images/placeholder_wide.jpg',
+            'contact_page_image' => 'error',
         );
 
         $blog_id = get_current_blog_id();

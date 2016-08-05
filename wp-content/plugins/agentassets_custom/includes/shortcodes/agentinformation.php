@@ -29,6 +29,9 @@ function agentinformation_shortcode($atts)
         if (!$user_id) $user_id = 1;
 
         $value = get_user_meta($user_id, $atts['key'], true);
+        if (empty($value)) {
+            $value = get_option($atts['key']);
+        }
 
         if (in_array($atts['key'], array('profile_picture', 'broker_logo', 'contact_page_image'))) {
             if (!empty($value)) {

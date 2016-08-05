@@ -12,6 +12,7 @@ add_shortcode('agentinformation_facebook', 'agentinformation_facebook_shortcode'
 add_shortcode('agentinformation_twitter', 'agentinformation_twitter_shortcode');
 add_shortcode('agentinformation_googleplus', 'agentinformation_googleplus_shortcode');
 add_shortcode('agentinformation_bloginfo', 'agentinformation_bloginfo_shortcode');
+add_shortcode('agentinformation_contact_page_image', 'agentinformation_contact_page_image_shortcode');
 
 function agentinformation_shortcode($atts)
 {
@@ -28,7 +29,7 @@ function agentinformation_shortcode($atts)
 
         $value = get_user_meta($user_id, $atts['key'], true);
 
-        if (in_array($atts['key'], array('profile_picture', 'broker_logo'))) {
+        if (in_array($atts['key'], array('profile_picture', 'broker_logo', 'contact_page_image'))) {
             if (!empty($value)) {
                 $size = 'full';
 
@@ -167,4 +168,9 @@ function agentinformation_bloginfo_shortcode($attr = array())
     $key = $attr['key'];
     $value = get_bloginfo($key);
     return $value;
+}
+
+function agentinformation_contact_page_image_shortcode($attr = array()) {
+    $attr['key'] = 'contact_page_image';
+    return agentinformation_shortcode($attr);
 }

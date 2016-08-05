@@ -75,7 +75,7 @@ function gallery_init() {
 
 	$args = array(
 		'labels'             => $labels,
-                'description'        => __( 'Description.', 'supersized' ),
+    'description'        => __( 'Description.', 'supersized' ),
 		'public'             => true,
 		'publicly_queryable' => true,
 		'show_ui'            => true,

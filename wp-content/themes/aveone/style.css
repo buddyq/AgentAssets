@@ -265,6 +265,11 @@ table#recaptcha_table:before {background:none;}
 #logo a, .footer a { color:#999480; }
 #logo a:hover , .footer a:hover {color: #000; text-decoration: none; }
 #tagline { color: #FFFFFF; padding-top:20px;margin-left:10px;font:13px Roboto; }
+#logo, #logo a{
+  font: normal 33px Raleway !important;
+  color: #999480 !important;
+  letter-spacing: -.03em !important;
+}
 
 /* Menu */
 

@@ -676,9 +676,43 @@ function mi_sub_printable_info()
 function mi_sub_contact_details()
 {
     if (isset($_POST['submit'])) {
+        $user_id = get_current_user_id();
+        $blog_id = get_current_user_id();
+        if (isset($_POST['contact_image_upload_nonce']) && wp_verify_nonce($_POST['contact_image_upload_nonce'], 'broker_logo_upload')) {
+            require_once(ABSPATH . 'wp-admin/includes/file.php');
+
+            $file = $_FILES['contact_image_upload'];
+
+            if ($file) {
+                $overrides = array(
+                    'test_form' => false,
+                    'test_size' => true,
+                    'test_upload' => true,
+                );
+
+                // Set up options array to add this file as an attachment
+                $attachment = array(
+                    'post_title' => addslashes('Contact Page Image - ' . $user_id),
+                    'post_content' => '',
+                    'post_status' => 'inherit'
+                );
+
+                //switch_to_blog(1);
+                $contact_page_image_id = media_handle_upload('contact_page_image', 0, $attachment, $overrides);
+                //restore_current_blog();
+
+                if (is_wp_error($contact_page_image_id)) {
+                    //var_dump($broker_logo_id);
+                } else {
+                    update_user_meta($user_id, 'contact_page_image', array($blog_id, $contact_page_image_id));
+                }
+            }
+        } else {
+            // The security check failed, maybe show the user an error.
+        }
 
         // Check that the nonce is valid, and the user can edit this post.
-        if (isset($_POST['contact_image_upload_nonce']) && wp_verify_nonce($_POST['contact_image_upload_nonce'], 'contact_image_upload')) {
+        /*if (isset($_POST['contact_image_upload_nonce']) && wp_verify_nonce($_POST['contact_image_upload_nonce'], 'contact_image_upload')) {
             // The nonce was valid and the user has the capabilities, it is safe to continue.
 
             // These files need to be included as dependencies when on the front end.
@@ -720,7 +754,7 @@ function mi_sub_contact_details()
         } else {
 
             // The security check failed, maybe show the user an error.
-        }
+        }*/
 
 
         $input_contact_form_shortcode = $_POST['contact_form_shortcode'];
@@ -752,7 +786,7 @@ function mi_sub_contact_details()
 
     }
 
-    $contact_page_image = get_option('contact_page_image', true);
+
     $contact_form_shortcode_slash = get_option('contact_form_shortcode', true);
     $contact_form_shortcode = stripcslashes($contact_form_shortcode_slash);
     $google_map_address = get_option('google_map_address', true);
@@ -761,6 +795,29 @@ function mi_sub_contact_details()
     $google_map_bubble_marker_price = get_option('google_map_bubble_marker_price', true);
     $google_map_bubble_marker_agentname = get_option('google_map_bubble_marker_agentname', true);
     $aa_logo = '<img src="' . plugins_url( '../../images/logo.png', __FILE__ ) . '" height="50" style="vertical-align:middle;" > ';
+
+    $contact_page_image = get_option('contact_page_image', true);
+    //$agent_profile_picture = get_user_meta($user_id, 'profile_picture', true);
+    $attachment_blog_id = 1;
+    if (is_array($contact_page_image)) {
+        $attachment_blog_id = $contact_page_image[0];
+        $contact_page_image = $contact_page_image[1];
+    }
+
+    if (is_numeric($contact_page_image) && $contact_page_image > 0) {
+        if ($attachment_blog_id != $blog_id) {
+            switch_to_blog($attachment_blog_id);
+        }
+        $contact_page_image_url = wp_get_attachment_image_src($contact_page_image, 'full');
+        if (is_array($contact_page_image_url)) {
+            $contact_page_image_url = $contact_page_image_url[0];
+        }
+        if ($attachment_blog_id != $blog_id) {
+            switch_to_blog($blog_id);
+        }
+    } else {
+        $contact_page_image_url = $contact_page_image;
+    }
 
     ?>
 
@@ -774,6 +831,25 @@ function mi_sub_contact_details()
 
                 <tr>
                     <th scope="row">
+                        <label for="profile_picture">Profile Picture</label>
+                    </th>
+                    <td>
+                        <?php if (isset($contact_page_image_url)) { ?>
+                            <img style="height:100px; width:auto;" src="<?php echo $contact_page_image_url; ?>"
+                                 alt="Contact Page Picture"/>
+                        <?php } else { ?>
+                            <img style="height:100px; width:auto;"
+                                 src=""
+                                 alt="Contact Page Picture"/>
+                        <?php } ?>
+
+                        <input type="file" name="contact_image_upload" id="contact_image_upload" multiple="false"/>
+                        <?php wp_nonce_field('contact_image_upload', 'contact_image_upload_nonce'); ?>
+                    </td>
+                </tr>
+
+                <?php /* <tr>
+                    <th scope="row">
                         <label for="contact_page_image">Contact Page Image<span class="desc">Photo to display on the contact page</span></label>
                     </th>
                     <td>
@@ -786,7 +862,7 @@ function mi_sub_contact_details()
 
 
                     </td>
-                </tr>
+                </tr> */ ?>
 
                 <tr>
                     <th scope="row">
@@ -882,9 +958,9 @@ function mi_sub_contact_details()
 
 /* ------------   Script for uploads of images ------------------------------------------------*/
 
-add_action('in_admin_footer', 'medma_cms_add_script');
+add_action('in_admin_footer', 'aa_cms_add_script');
 
-function medma_cms_add_script()
+function aa_cms_add_script()
 {
     wp_enqueue_script('media-upload');
     ?>
@@ -1177,7 +1253,7 @@ function mi_sub_agent_information()
                                  alt="Profile Picture"/>
                         <?php } else { ?>
                             <img style="height:100px; width:auto;"
-                                 src="<?php echo plugins_url('medma-site-manager'); ?>/images/dummy_agent_pic.png"
+                                 src="<?php echo plugins_url('agentassets-site-manager'); ?>/images/dummy_agent_pic.png"
                                  alt="Profile Picture"/>
                         <?php } ?>
 
@@ -1217,7 +1293,7 @@ function mi_sub_agent_information()
                                  alt="Broker Logo"/>
                         <?php } else { ?>
                             <img style="height:100px; width:auto;"
-                                 src="<?php echo plugins_url('medma-site-manager'); ?>/images/placeholder_wide.jpg"
+                                 src="<?php echo plugins_url('agentassets-site-manager'); ?>/images/placeholder_wide.jpg"
                                  alt="Broker Logo"/>
                         <?php } ?>
 

@@ -2,7 +2,7 @@
 
 class Add_From_Server {
 
-	var $version = '3.3.1';
+	var $version = '3.3.2';
 	var $basename = '';
 
 	function __construct( $plugin ) {
@@ -183,7 +183,8 @@ class Add_From_Server {
 			$input = get_option( 'frmsvr_root' );
 		}
 
-		$input = wp_normalize_path( $input );
+		// WP < 4.4 Compat: ucfirt
+		$input = ucfirst( wp_normalize_path( $input ) );
 
 		return $input;
 	}
@@ -214,10 +215,16 @@ class Add_From_Server {
 
 		if ( !empty($_POST['files']) && !empty($_POST['cwd']) ) {
 
+			check_admin_referer( 'afs_import' );
+
 			$files = wp_unslash( $_POST['files'] );
 
 			$cwd = trailingslashit( wp_unslash( $_POST['cwd'] ) );
-			$post_id = isset($_REQUEST['post_id']) ? intval( $_REQUEST['post_id'] ) : 0;
+			if ( false === strpos( $cwd, $this->get_root() ) ) {
+				return;
+			}
+
+			$post_id = isset($_REQUEST['post_id']) ? absint( $_REQUEST['post_id'] ) : 0;
 			$import_date = isset($_REQUEST['import-date']) ? $_REQUEST['import-date'] : 'current';
 
 			$import_to_gallery = isset($_POST['gallery']) && 'on' == $_POST['gallery'];
@@ -276,7 +283,8 @@ class Add_From_Server {
 		}
 
 		// Is the file allready in the uploads folder?
-		if ( preg_match( '|^' . preg_quote( wp_normalize_path( $uploads['basedir'] ), '|' ) . '(.*)$|i', $file, $mat ) ) {
+		// WP < 4.4 Compat: ucfirt
+		if ( preg_match( '|^' . preg_quote( ucfirst( wp_normalize_path( $uploads['basedir'] ) ), '|' ) . '(.*)$|i', $file, $mat ) ) {
 
 			$filename = basename( $file );
 			$new_file = $file;
@@ -340,15 +348,67 @@ class Add_From_Server {
 		$type = $return['type'];
 
 		$title = preg_replace( '!\.[^.]+$!', '', basename( $file ) );
-		$content = '';
+		$content = $excerpt = '';
 
-		// use image exif/iptc data for title and caption defaults if possible
-		if ( $image_meta = @wp_read_image_metadata( $new_file ) ) {
-			if ( '' != trim( $image_meta['title'] ) ) {
-				$title = trim( $image_meta['title'] );
+		if ( preg_match( '#^audio#', $type ) ) {
+			$meta = wp_read_audio_metadata( $new_file );
+	
+			if ( ! empty( $meta['title'] ) ) {
+				$title = $meta['title'];
 			}
-			if ( '' != trim( $image_meta['caption'] ) ) {
-				$content = trim( $image_meta['caption'] );
+	
+			if ( ! empty( $title ) ) {
+	
+				if ( ! empty( $meta['album'] ) && ! empty( $meta['artist'] ) ) {
+					/* translators: 1: audio track title, 2: album title, 3: artist name */
+					$content .= sprintf( __( '"%1$s" from %2$s by %3$s.', 'add-from-server' ), $title, $meta['album'], $meta['artist'] );
+				} elseif ( ! empty( $meta['album'] ) ) {
+					/* translators: 1: audio track title, 2: album title */
+					$content .= sprintf( __( '"%1$s" from %2$s.', 'add-from-server' ), $title, $meta['album'] );
+				} elseif ( ! empty( $meta['artist'] ) ) {
+					/* translators: 1: audio track title, 2: artist name */
+					$content .= sprintf( __( '"%1$s" by %2$s.', 'add-from-server' ), $title, $meta['artist'] );
+				} else {
+					$content .= sprintf( __( '"%s".', 'add-from-server' ), $title );
+				}
+	
+			} elseif ( ! empty( $meta['album'] ) ) {
+	
+				if ( ! empty( $meta['artist'] ) ) {
+					/* translators: 1: audio album title, 2: artist name */
+					$content .= sprintf( __( '%1$s by %2$s.', 'add-from-server' ), $meta['album'], $meta['artist'] );
+				} else {
+					$content .= $meta['album'] . '.';
+				}
+	
+			} elseif ( ! empty( $meta['artist'] ) ) {
+	
+				$content .= $meta['artist'] . '.';
+	
+			}
+	
+			if ( ! empty( $meta['year'] ) )
+				$content .= ' ' . sprintf( __( 'Released: %d.' ), $meta['year'] );
+	
+			if ( ! empty( $meta['track_number'] ) ) {
+				$track_number = explode( '/', $meta['track_number'] );
+				if ( isset( $track_number[1] ) )
+					$content .= ' ' . sprintf( __( 'Track %1$s of %2$s.', 'add-from-server' ), number_format_i18n( $track_number[0] ), number_format_i18n( $track_number[1] ) );
+				else
+					$content .= ' ' . sprintf( __( 'Track %1$s.', 'add-from-server' ), number_format_i18n( $track_number[0] ) );
+			}
+	
+			if ( ! empty( $meta['genre'] ) )
+				$content .= ' ' . sprintf( __( 'Genre: %s.', 'add-from-server' ), $meta['genre'] );
+	
+		// Use image exif/iptc data for title and caption defaults if possible.
+		} elseif ( 0 === strpos( $type, 'image/' ) && $image_meta = @wp_read_image_metadata( $new_file ) ) {
+			if ( trim( $image_meta['title'] ) && ! is_numeric( sanitize_title( $image_meta['title'] ) ) ) {
+				$title = $image_meta['title'];
+			}
+	
+			if ( trim( $image_meta['caption'] ) ) {
+				$excerpt = $image_meta['caption'];
 			}
 		}
 
@@ -368,13 +428,15 @@ class Add_From_Server {
 			'post_title' => $title,
 			'post_name' => $title,
 			'post_content' => $content,
+			'post_excerpt' => $excerpt,
 			'post_date' => $post_date,
 			'post_date_gmt' => $post_date_gmt
 		);
 
 		$attachment = apply_filters( 'afs-import_details', $attachment, $file, $post_id, $import_date );
 
-		$new_file = str_replace( wp_normalize_path( $uploads['basedir'] ), $uploads['basedir'], $new_file );
+		// WP < 4.4 Compat: ucfirt
+		$new_file = str_replace( ucfirst( wp_normalize_path( $uploads['basedir'] ) ), $uploads['basedir'], $new_file );
 
 		// Save the data
 		$id = wp_insert_attachment( $attachment, $new_file, $post_id );
@@ -440,7 +502,8 @@ class Add_From_Server {
 			$cwd = $this->get_root();
 		}
 
-		$cwd = wp_normalize_path( $cwd );
+		// WP < 4.4 Compat: ucfirt
+		$cwd = ucfirst( wp_normalize_path( $cwd ) );
 
 		if ( strlen( $cwd ) > 1 ) {
 			$cwd = untrailingslashit( $cwd );
@@ -461,11 +524,15 @@ class Add_From_Server {
 		}
 
 		array_walk( $parts, function( &$item, $index ) use( $url, $parts ) {
-			$path = implode( '/', array_slice( $parts, 0, $index ) );
+			$path = implode( '/', array_slice( $parts, 0, $index + 1 ) );
 			$path = ltrim( $path, '/' ) ?: '/';
 			$item_url = add_query_arg( array( 'adirectory' => $path ), $url );
 
-			$item = sprintf( '<a href="%s">%s/</a>', esc_url( $item_url ), esc_html( $item ) );
+			if ( $index == count( $parts ) - 1 ) {
+				$item = esc_html( $item ) . '/';
+			} else {
+				$item = sprintf( '<a href="%s">%s/</a>', esc_url( $item_url ), esc_html( $item ) );
+			}
 		} );
 		$dirparts = implode( '', $parts );
 
@@ -595,6 +662,7 @@ class Add_From_Server {
 					<?php endif; ?>
 				</fieldset>
 				<br class="clear"/>
+				<?php wp_nonce_field( 'afs_import' ); ?>
 				<input type="hidden" name="cwd" value="<?php echo esc_attr( $cwd ); ?>"/>
 				<?php submit_button( __( 'Import', 'add-from-server' ), 'primary', 'import', false ); ?>
 			</form>
@@ -607,17 +675,17 @@ class Add_From_Server {
 		$quickjumps = array();
 		$quickjumps[] = array(	
 			__( 'WordPress Root', 'add-from-server' ),
-			wp_normalize_path( ABSPATH )
+			ucfirst( wp_normalize_path( ABSPATH ) ) // WP < 4.4 Compat: ucfirt
 		);
 		if ( ($uploads = wp_upload_dir()) && false === $uploads['error'] ) {
 			$quickjumps[] = array(
 				__( 'Uploads Folder', 'add-from-server' ),
-				wp_normalize_path( $uploads['path'] )
+				ucfirst( wp_normalize_path( $uploads['path'] ) ) // WP < 4.4 Compat: ucfirt
 			);
 		}
 		$quickjumps[] = array(
 			__( 'Content Folder', 'add-from-server' ),
-			wp_normalize_path( WP_CONTENT_DIR )
+			ucfirst( wp_normalize_path( WP_CONTENT_DIR ) ) // WP < 4.4 Compat: ucfirt
 		);
 
 		$quickjumps = apply_filters( 'frmsvr_quickjumps', $quickjumps );
@@ -629,7 +697,7 @@ class Add_From_Server {
 		$pieces = array();
 		foreach ( $quickjumps as $jump ) {
 			list( $text, $adir ) = $jump;
-			$adir = wp_normalize_path( $adir );
+			$adir = ucfirst( wp_normalize_path( $adir ) ); // WP < 4.4 Compat: ucfirt
 
 			// Validate it's within the locked directory
 			if ( strpos( $adir, $this->get_root() ) === false )
@@ -660,12 +728,12 @@ class Add_From_Server {
 	function language_notice( $force = false ) {
 		$message_english = 'Hi there!
 I notice you use WordPress in a Language other than English (US), Did you know you can translate WordPress Plugins into your native language as well?
-If you\'d like to help out with translating this plugin into %1$s you can head over to <a href="%2$s">translate.WordPress.org page</a> and suggest translations for any languages which you know.
+If you\'d like to help out with translating this plugin into %1$s you can head over to <a href="%2$s">translate.WordPress.org</a> and suggest translations for any languages which you know.
 Thanks! Dion.';
 		/* translators: %1$s = The Locale (de_DE, en_US, fr_FR, he_IL, etc). %2$s = The translate.wordpress.org link to the plugin overview */
 		$message = __( 'Hi there!
 I notice you use WordPress in a Language other than English (US), Did you know you can translate WordPress Plugins into your native language as well?
-If you\'d like to help out with translating this plugin into %1$s you can head over to <a href="%2$s">translate.WordPress.org page</a> and suggest translations for any languages which you know.
+If you\'d like to help out with translating this plugin into %1$s you can head over to <a href="%2$s">translate.WordPress.org</a> and suggest translations for any languages which you know.
 Thanks! Dion.', 'add-from-server' );
 
 		// Don't display the message for English (US) or what we'll assume to be fully translated localised builds.

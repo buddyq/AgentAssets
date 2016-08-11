@@ -55,36 +55,3 @@ function rebranding_wordpress_logo(){
 
 }
 add_action('wp_before_admin_bar_render', 'rebranding_wordpress_logo' );
-
-/** Rebranding and whitelabel the EnviraGallery
-    as per http://enviragallery.com/docs/whitelabel-envira/ **/
-
-add_filter( 'gettext', 'tgm_envira_whitelabel', 10, 3 );
-
-if (!function_exists('tgm_envira_whitelabel')) {
-function tgm_envira_whitelabel( $translated_text, $source_text, $domain ) {
-
-    // If not in the admin, return the default string.
-    if ( ! is_admin() ) {
-        return $translated_text;
-    }
-
-    if ( strpos( $source_text, 'an Envira' ) !== false ) {
-        return str_replace( 'an Envira', '', $translated_text );
-    }
-
-    if ( strpos( $source_text, 'Envira' ) !== false ) {
-        return str_replace( 'Envira', 'Photo', $translated_text );
-    }
-
-    return $translated_text;
-
-}
-}
-add_action( 'admin_init', 'tgm_envira_remove_header' );
-function tgm_envira_remove_header() {
-
-    // Remove the Envira banner
-    remove_action( 'in_admin_header', array( Envira_Gallery_Posttype_Admin::get_instance(), 'admin_header' ), 100 );
-
-}

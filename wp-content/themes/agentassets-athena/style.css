@@ -1,8 +1,8 @@
 /*
-Theme Name: Agentassets Athena
-Author: the WordPress team
-Author URI: https://wordpress.org/
-Description: Agentassets Athena Theme
+Theme Name: Agent<strong>Assets</strong> Athena
+Author: AgentAssets.com
+Author URI: https://AgentAssets.com/
+Description: Athena is our newest and most beautiful theme to date. This theme for us is a proof of concept and our way of staying ahead of the game. Nobody can beat our design and flexibility.
 Version: 1.0
 Template: twentysixteen
 License: GNU General Public License v2 or later
@@ -20,15 +20,15 @@ Text Domain: twentysixteen
 .page-template-page_full-screen header,
 .page-template-page_full-screen footer,
 .page-template-page_full-screen #wpadminbar,
-body.page-template-page_full-screen:before, 
+body.page-template-page_full-screen:before,
 body.page-template-page_full-screen:after {display: none}
 
 html,
-.page-template-page_full-screen, 
-.page-template-page_full-screen .site, 
-.page-template-page_full-screen .site-content, 
-.page-template-page_full-screen .page, 
-.page-template-page_full-screen .site-inner, 
+.page-template-page_full-screen,
+.page-template-page_full-screen .site,
+.page-template-page_full-screen .site-content,
+.page-template-page_full-screen .page,
+.page-template-page_full-screen .site-inner,
 .page-template-page_full-screen .entry-content {height: 100%}
 
 .page-template-page_full-screen,

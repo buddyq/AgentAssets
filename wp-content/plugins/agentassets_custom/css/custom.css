@@ -301,23 +301,27 @@ transition: 		all 0.3s ease-in-out;
 
 }
 
-.wrap h1{
-  background: #559987;
-  padding: 30px 20px;
+.wrap h1, h2.options{
+  background: #559987 !important;
+  padding: 30px 20px !important;
   color: #fff;
   text-shadow: 1px 1px 1px #333;
   margin: -10px -20px 10px -22px;
 }
 .wrap h1:before{
-  display: inline-block;
-  width: 100px;
-  background-image: url('../images/aa_logo-header-logo-circle-only.png');
+  display: inline-block !important;
+  width: 100px !important;
+  background-image: url('http://agentassets.com/wp-content/plugins/agentassets_custom/images/logo.png') !important;
+}
+h2.options{
+  margin: 0 0 0 0;
 }
 
 .contact_settings_image{
   width: 25em;
   height: auto;
   padding: 5px;
+  margin-bottom: 5px;
   background: #fff;
   box-shadow: 1px 1px 1px 0 #000;
   clear: right;
@@ -330,3 +334,7 @@ label .desc{
   clear: both;
   font-weight: normal;
 }
+.gm-style{
+  line-height: 1.5em;
+}
+.entry-content #js-wpv-addon-maps-render-location_map img{ box-shadow: none;}

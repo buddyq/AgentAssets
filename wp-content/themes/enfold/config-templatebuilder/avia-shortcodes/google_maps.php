@@ -33,8 +33,14 @@ if ( !class_exists( 'avia_sc_gmaps' ) )
 				if(is_admin() && isset($_POST['action']) && $_POST['action'] == "avia_ajax_av_google_map" )
 				{
 					$prefix  = is_ssl() ? "https" : "http";
-					
-            		wp_register_script( 'avia-google-maps-api', $prefix.'://maps.google.com/maps/api/js', array('jquery'), '3', true);
+		            $api_key = avia_get_option('gmap_api');
+		            $api_url = $prefix.'://maps.google.com/maps/api/js?v=3.24';
+		            
+		            if($api_key != ""){
+			           $api_url .= "&key=" .$api_key;
+		            }
+		            
+		            wp_register_script( 'avia-google-maps-api', $api_url, array('jquery'), NULL, true);
 					
 					$load_google_map_api = apply_filters('avf_load_google_map_api', true, 'av_google_map');
 					            
@@ -47,7 +53,6 @@ if ( !class_exists( 'avia_sc_gmaps' ) )
 		            );
 	
 		            if($load_google_map_api) wp_localize_script( 'avia-google-maps-api', 'avia_gmaps_L10n', $args );
-					
 				}
 			}
 			

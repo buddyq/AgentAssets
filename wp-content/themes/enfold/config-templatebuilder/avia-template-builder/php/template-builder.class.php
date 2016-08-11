@@ -10,7 +10,7 @@ if ( !class_exists( 'AviaBuilder' ) ) {
 
 	class AviaBuilder
 	{
-		const VERSION = '0.8';
+		const VERSION = '0.9';
 		public static $mode = "";
 		public static $path = array();
 		public static $resources_to_load = array();

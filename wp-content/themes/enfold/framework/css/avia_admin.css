@@ -424,8 +424,9 @@ display:none;
 }
 
 #avia_options_page div .avia_heading{
-font-size: 11px;
+font-size: 12px;
 color:#888;
+line-height: 1.65em;
 }
 
 .avia_heading h4{

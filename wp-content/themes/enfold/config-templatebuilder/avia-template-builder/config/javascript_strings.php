@@ -16,6 +16,12 @@ $strings['avia_modal_js']  = array(
 				'no_layout'  => __( 'The current number of cells does not allow any layout variations', 'avia_framework' ),
 				'add_one_cell'  => __( 'You need to add at least one cell', 'avia_framework' ),
 				'remove_one_cell'  => __( 'You need to remove at least one cell', 'avia_framework' ),
+				
+				'gmap_api_text' => __( 'Google changed the way google maps work. You now need to enter a valid Google Maps API Key', 'avia_framework' )."<br/><br/>".
+								   __( 'You can read a description on how to create and enter that key here:', 'avia_framework' )." ".
+								   "<a target='_blank' href='".admin_url( "admin.php?page=avia#goto_google" )."'>".__( 'Enfold Google Settings', 'avia_framework' )."</a>",
+								
+			
 			);
 			
 			

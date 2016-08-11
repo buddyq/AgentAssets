@@ -664,7 +664,7 @@ text-decoration: underline;
 #top .av-menu-button-colored  > a .avia-menu-text{border-bottom: 1px solid; border-left: none; border-right: none; border-top: none; border-radius: 3px;}
 .av-menu-button-colored  > a:hover .avia-menu-text{opacity: 0.9;}
 #top #header .av-menu-button > a .avia-menu-subtext{display:none;}
-#top #header .av-menu-button > a .avia-menu-text{text-align: center;}
+#top #header .av-menu-button > a .avia-menu-text{text-align: center; white-space: nowrap;}
 
 
 /*ajax search*/

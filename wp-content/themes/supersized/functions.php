@@ -25,8 +25,8 @@ function setup() {
 		'social'  => __( 'Social Links Menu', 'twentyfifteen' ),
 	) );
 
-	
-	
+
+
 }
 
 add_action( 'after_setup_theme', 'setup' );
@@ -69,33 +69,33 @@ add_action('wp_before_admin_bar_render', 'rebranding_wordpress_logo' );
  * @since Twenty Fifteen 1.0
  */
 function scripts() {
-	
+
         wp_enqueue_script('jquery');
-    
+
         // Load Bootstrap CSS
         wp_enqueue_style( 'bootstrap', get_template_directory_uri() . '/css/bootstrap.min.css');
-        
+
         // Load Supersized CSS
         wp_enqueue_style( 'supersized', get_template_directory_uri() . '/css/supersized.css');
-        
+
         // Load Supersized Shutter CSS
         wp_enqueue_style( 'supersized-shutter', get_template_directory_uri() . '/css/supersized.shutter.css');
-    
+
 	      // Load our main stylesheet.
 	      wp_enqueue_style( 'supersized-style', get_stylesheet_uri() );
-        
+
         // Load Bootstrap JS
         wp_enqueue_script( 'bootstrap', get_template_directory_uri() . '/js/bootstrap.min.js');
-        
+
         // Load jQuery Easing JS
         wp_enqueue_script( 'jquery-easing', get_template_directory_uri() . '/js/jquery.easing.min.js');
-                
+
         // Load Supersized JS
         wp_enqueue_script( 'supersized', get_template_directory_uri() . '/js/supersized.min.js');
-        
+
         // Load Supersized Shutter JS
         wp_enqueue_script( 'supersized-shutter', get_template_directory_uri() . '/js/supersized.shutter.js');
-        
+
 }
 add_action( 'wp_enqueue_scripts', 'scripts' );
 
@@ -351,7 +351,7 @@ function property_details()
                         <label>School District:</label>
                         <span><?php echo get_option('property_school_district'); ?></span>
                     </li>
-                    
+
                     <li>
                         <label>View:</label>
                         <span><?php echo get_option('property_view'); ?></span>
@@ -380,7 +380,7 @@ function property_details()
                 <div class="property-tour-links">
                     <h3>Tour</h3>
                     <ul class="tour-links">
-                        <?php 
+                        <?php
                         if(get_option('property_tour_link1'))
                         {
                             ?>
@@ -407,7 +407,7 @@ function property_details()
  * @package Theme Settings | Customizer
  * @since 05/11/2015
  * @author MG
- * 
+ *
  */
 
 
@@ -417,7 +417,7 @@ function property_details()
 
 
 function custom_theme_options_menu() {
-    
+
     add_menu_page('Agent Information', 'Theme Options', 'manage_options', 'mi-top-level-handle', 'mi_theme_options' );
 
     add_submenu_page('mi-top-level-handle', 'Agent Information', 'Agent Information' , 'manage_options', 'mi-sub-agent-information', 'mi_sub_agent_information');
@@ -426,35 +426,35 @@ function custom_theme_options_menu() {
     add_submenu_page('mi-top-level-handle', 'Printable Info', 'Printable Info' , 'manage_options', 'mi-sub-printable-info', 'mi_sub_printable_info');
     add_submenu_page('mi-top-level-handle', 'Contact Info', 'Contact Info' , 'manage_options', 'mi-sub-contact-details', 'mi_sub_contact_details');
     add_submenu_page('mi-top-level-handle', 'Meta Info', 'Meta Info' , 'manage_options', 'mi-sub-meta-info', 'mi_sub_meta_information');
-    
+
 }
 
 
 function mi_sub_meta_information(){
-    
-     if(isset($_POST['submit'])) 
+
+     if(isset($_POST['submit']))
     {
         $input_meta_keywords = $_POST['meta_keywords'];
         update_option('meta_keywords', $input_meta_keywords);
         $meta_keywords = get_option('meta_keywords');
-        
+
         $input_meta_description = $_POST['meta_description'];
         update_option('meta_description', $input_meta_description);
        $meta_description = get_option('meta_description');
-       
+
     }
     $meta_keywords = get_option('meta_keywords');
     $meta_description = get_option('meta_description');
-    
+
     ?>
     <div class="wrap">
             <h1>Meta Information</h1>
 
             <form method="post" action="" novalidate="novalidate">
-                
+
                 <table class="form-table">
                     <tbody>
-                        
+
                         <tr>
                             <th scope="row">
                                 <label for="meta_keywords">Meta Keywords</label>
@@ -463,7 +463,7 @@ function mi_sub_meta_information(){
                                <textarea name="meta_keywords" cols="50" rows="10"><?php if(isset($meta_keywords)){ echo $meta_keywords; }?></textarea>
                             </td>
                         </tr>
-                        
+
                         <tr>
                             <th scope="row">
                                 <label for="meta_description">Meta Description</label>
@@ -472,7 +472,7 @@ function mi_sub_meta_information(){
                                 <textarea name="meta_description" cols="50" rows="10"><?php echo $meta_description; ?></textarea>
                             </td>
                         </tr>
-                       
+
                     </tbody>
                 </table>
                 <p class="submit">
@@ -481,107 +481,107 @@ function mi_sub_meta_information(){
             </form>
     </div>
     <?php
-    
-    
+
+
 }
 
 
 function mi_sub_property_details(){
-    
-    if(isset($_POST['submit'])) 
+
+    if(isset($_POST['submit']))
     {
         $input_property_description = addslashes($_POST['property_description']);
-        
+
         update_option('property_description', $input_property_description);
         $property_description = stripslashes(get_option('property_description',true));
-        
+
         $input_property_price_type = $_POST['property_price_type'];
         update_option('property_price_type', $input_property_price_type);
         $property_price_type = get_option('property_price_type',true);
-        
+
         $input_property_price = $_POST['property_price'];
         update_option('property_price', $input_property_price);
         $property_price = get_option('property_price',true);
-        
-        
+
+
         $property_price_min = $_POST['property_price1'];
         update_option('property_price1', $property_price_min);
         $property_price_min = get_option('property_price1',true);
-        
-        
+
+
         $property_price_max = $_POST['property_price2'];
         update_option('property_price2', $property_price_max);
         $property_price_max = get_option('property_price2',true);
-        
-        
+
+
         $input_property_type = $_POST['property_type'];
         update_option('property_type', $input_property_type);
         $property_type = get_option('property_type',true);
-        
- 
+
+
         $input_property_mls = $_POST['property_mls'];
         update_option('property_mls', $input_property_mls);
         $property_mls = get_option('property_mls',true);
-                
+
         $input_property_area = $_POST['property_area'];
         update_option('property_area', $input_property_area);
         $property_area = get_option('property_area',true);
-        
+
         $input_property_bedrooms = $_POST['property_bedrooms'];
         update_option('property_bedrooms', $input_property_bedrooms);
         $property_bedrooms = get_option('property_bedrooms',true);
-        
-        
+
+
         $input_property_baths = $_POST['property_baths'];
         update_option('property_baths', $input_property_baths);
         $property_baths = get_option('property_baths',true);
-        
-        
+
+
         $input_property_living_areas = $_POST['property_living_areas'];
         update_option('property_living_areas', $input_property_living_areas);
         $property_living_areas = get_option('property_living_areas',true);
-        
-        
+
+
         $input_property_square_feet = $_POST['property_square_feet'];
         update_option('property_square_feet', $input_property_square_feet);
         $property_square_feet = get_option('property_square_feet',true);
-         
-        
+
+
         $input_property_school_district = $_POST['property_school_district'];
         update_option('property_school_district', $input_property_school_district);
         $property_school_district = get_option('property_school_district',true);
-        
+
         $input_property_view = $_POST['property_view'];
         update_option('property_view', $input_property_view);
         $property_view = get_option('property_view',true);
-         
-        
+
+
         $input_property_garages = $_POST['property_garages'];
-        update_option('property_garages', $input_property_garages); 
+        update_option('property_garages', $input_property_garages);
         $property_garages = get_option('property_garages',true);
-        
-        
+
+
         $input_property_year_built = $_POST['property_year_built'];
-        update_option('property_year_built', $input_property_year_built); 
+        update_option('property_year_built', $input_property_year_built);
         $property_year_built = get_option('property_year_built',true);
-        
+
         $input_property_lot_size = $_POST['property_lot_size'];
-        update_option('property_lot_size', $input_property_lot_size); 
+        update_option('property_lot_size', $input_property_lot_size);
         $property_lot_size = get_option('property_lot_size',true);
-        
+
         $input_property_acreage = $_POST['property_acreage'];
         update_option('property_acreage', $input_property_acreage);
         $property_acreage = get_option('property_acreage',true);
-        
+
         $input_property_tour_link1 = $_POST['property_tour_link1'];
         update_option('property_tour_link1', $input_property_tour_link1);
         $property_tour_link1 = get_option('property_tour_link1',true);
-        
+
         $input_property_tour_link2 = $_POST['property_tour_link2'];
         update_option('property_tour_link2', $input_property_tour_link2);
         $property_tour_link2 = get_option('property_tour_link2',true);
-        
-        
+
+
     }
      $property_desc_rawdata = get_option('property_description',true);
      $property_description = stripslashes($property_desc_rawdata);
@@ -604,13 +604,13 @@ function mi_sub_property_details(){
      $property_acreage = get_option('property_acreage',true);
      $property_tour_link1 = get_option('property_tour_link1',true);
       $property_tour_link2 = get_option('property_tour_link2',true);
-      
+
     ?>
      <div class="wrap">
             <h1>Property Details</h1>
 
             <form method="post" action="" novalidate="novalidate">
-                
+
                 <table class="form-table">
                     <tbody>
                         <tr>
@@ -621,7 +621,7 @@ function mi_sub_property_details(){
                                 <?php wp_editor(stripslashes($property_description), 'property_description');?>
                             </td>
                         </tr>
-                        
+
                         <tr>
                             <th scope="row">
                                 <label for="property_price_type">Price Type</label>
@@ -641,11 +641,11 @@ function mi_sub_property_details(){
                                     <?php }else{?>
                                         <option value="range">Range</option>
                                  <?php   } ?>
-                                    
+
                                 </select>
                             </td>
                         </tr>
-                        
+
                         <tr id="fixed-price-type">
                             <th scope="row">
                                 <label for="property_price">Price</label>
@@ -654,7 +654,7 @@ function mi_sub_property_details(){
                                 <input name="property_price" type="text" id="property_price" value="<?php if(isset($property_price)){ echo $property_price; }?>" class="regular-text">
                             </td>
                         </tr>
-                        
+
                         <tr id="range-price-type-min">
                             <th scope="row">
                                 <label for="property_price1">Min. Price</label>
@@ -662,7 +662,7 @@ function mi_sub_property_details(){
                             <td>
                                 <input name="property_price1" type="text" id="property_price1" value="<?php if(isset($property_price_min)){ echo $property_price_min; }?>" class="regular-text">
                             </td>
-                        </tr> 
+                        </tr>
                         <tr id="range-price-type-max">
                             <th scope="row">
                                 <label for="property_price2">Max. Price</label>
@@ -671,7 +671,7 @@ function mi_sub_property_details(){
                                 <input name="property_price2" type="text" id="property_price2" value="<?php if(isset($property_price_max)){ echo $property_price_max; }?>" class="regular-text">
                             </td>
                         </tr>
-                        
+
                         <tr>
                             <th scope="row">
                                 <label for="property_type">Type:</label>
@@ -680,7 +680,7 @@ function mi_sub_property_details(){
                                 <input name="property_type" type="text" id="property_type" value="<?php if(isset($property_type)){ echo $property_type; }?>" class="regular-text">
                             </td>
                         </tr>
-                        
+
                          <tr>
                             <th scope="row">
                                 <label for="property_mls">MLS#:</label>
@@ -689,7 +689,7 @@ function mi_sub_property_details(){
                                 <input name="property_mls" type="text" id="property_mls" value="<?php if(isset($property_mls)){ echo $property_mls; }?>" class="regular-text">
                             </td>
                         </tr>
-                        
+
                         <tr>
                             <th scope="row">
                                 <label for="property_area">Area:</label>
@@ -698,7 +698,7 @@ function mi_sub_property_details(){
                                 <input name="property_area" type="text" id="property_area" value="<?php if(isset($property_area)){ echo $property_area; }?>" class="regular-text">
                             </td>
                         </tr>
-                        
+
                         <tr>
                             <th scope="row">
                                 <label for="property_bedrooms">Bedrooms:</label>
@@ -707,7 +707,7 @@ function mi_sub_property_details(){
                                 <input name="property_bedrooms" type="text" id="property_bedrooms" value="<?php if(isset($property_bedrooms)){ echo $property_bedrooms; }?>" class="regular-text">
                             </td>
                         </tr>
-                        
+
                         <tr>
                             <th scope="row">
                                 <label for="property_baths">Baths:</label>
@@ -796,7 +796,7 @@ function mi_sub_property_details(){
                                 <input name="property_tour_link2" type="text" id="property_tour_link2" value="<?php if(isset($property_tour_link2)){ echo $property_tour_link2; }?>" class="regular-text">
                             </td>
                         </tr>
-                        
+
                 </table>
                 <p class="submit">
                     <input type="submit" name="submit" id="submit" class="button button-primary" value="Save Changes">
@@ -804,7 +804,7 @@ function mi_sub_property_details(){
             </form>
      </div>
     <?php
-    
+
 }
 
 
@@ -814,25 +814,25 @@ function mi_sub_property_details(){
 
 
 function mi_sub_printable_info(){
-    
-     if(isset($_POST['submit'])) 
+
+     if(isset($_POST['submit']))
     {
-         
+
          // Check that the nonce is valid, and the user can edit this post.
-        if (    isset( $_POST['printable_image_upload_nonce'] )    && wp_verify_nonce( $_POST['printable_image_upload_nonce'], 'printable_image_upload' ))       
+        if (    isset( $_POST['printable_image_upload_nonce'] )    && wp_verify_nonce( $_POST['printable_image_upload_nonce'], 'printable_image_upload' ))
         {
                require_once( ABSPATH . 'wp-admin/includes/file.php' );
-        
+
                $file = $_FILES['printable_image_upload'];
-               
+
                $overrides = array(
                         'test_form' => false,
                         'test_size' => true,
-                        'test_upload' => true, 
+                        'test_upload' => true,
                 );
 
                $printable_image_results = wp_handle_sideload( $file, $overrides );
-            
+
                 if (!empty($printable_image_results['error'])) {
                         // insert any error handling here
                 } else {
@@ -844,26 +844,26 @@ function mi_sub_printable_info(){
 
                // The security check failed, maybe show the user an error.
        }
-         
+
         $input_printable_text = addslashes($_POST['printable_text']);
-        
+
         update_option('printable_text', $input_printable_text);
         $printable_text = stripslashes(get_option('printable_text'));
         $printable_image = get_option('printable_image');
     }
     $printable_text = stripslashes(get_option('printable_text'));
      $printable_image = get_option('printable_image');
-    
+
      ?>
-    
+
      <div class="wrap">
             <h1>Printable Info</h1>
 
             <form method="post" action="" novalidate="novalidate" enctype="multipart/form-data">
-                
+
                 <table class="form-table">
                     <tbody>
-                        
+
                         <tr>
                             <th scope="row">
                                 <label for="printable_image">Printable Image</label>
@@ -874,7 +874,7 @@ function mi_sub_printable_info(){
                                 <?php wp_nonce_field( 'printable_image_upload', 'printable_image_upload_nonce' ); ?>
                             </td>
                         </tr>
-                        
+
                         <tr>
                             <th scope="row">
                                 <label for="printable_text">Printable Text</label>
@@ -884,12 +884,12 @@ function mi_sub_printable_info(){
                             </td>
                          </tr>
                          <tr>
-                            
+
                              <td><h3>Note:</h3> </td>
                             <td><a href="<?php echo admin_url('edit.php?post_type=printable_info'); ?>">Click Here</a> to add attachments to Printable Info</td>
-                           
+
                          </tr>
-                       
+
                     </tbody>
                 </table>
                 <p class="submit">
@@ -901,11 +901,11 @@ function mi_sub_printable_info(){
 }
 
 function mi_sub_contact_details(){
-    if(isset($_POST['submit'])) 
+    if(isset($_POST['submit']))
     {
-        
+
         // Check that the nonce is valid, and the user can edit this post.
-        if (    isset( $_POST['contact_image_upload_nonce'] )    && wp_verify_nonce( $_POST['contact_image_upload_nonce'], 'contact_image_upload' ))       
+        if (    isset( $_POST['contact_image_upload_nonce'] )    && wp_verify_nonce( $_POST['contact_image_upload_nonce'], 'contact_image_upload' ))
         {
                // The nonce was valid and the user has the capabilities, it is safe to continue.
 
@@ -915,7 +915,7 @@ function mi_sub_contact_details(){
                //require_once( ABSPATH . 'wp-admin/includes/media.php' );
 
                $file = $_FILES['contact_image_upload'];
-               
+
                $overrides = array(
                         // tells WordPress to not look for the POST form
                         // fields that would normally be present, default is true,
@@ -926,14 +926,14 @@ function mi_sub_contact_details(){
                         // setting this to false lets WordPress allow empty files, not recommended
                         'test_size' => true,
 
-                        // A properly uploaded file will pass this test. 
+                        // A properly uploaded file will pass this test.
                         // There should be no reason to override this one.
-                        'test_upload' => true, 
+                        'test_upload' => true,
                 );
 
-               
+
                $results = wp_handle_sideload( $file, $overrides );
-               
+
                 if (!empty($results['error'])) {
                         // insert any error handling here
                 } else {
@@ -949,38 +949,38 @@ function mi_sub_contact_details(){
 
                // The security check failed, maybe show the user an error.
        }
-         
-         
-        
+
+
+
          $input_contact_form_shortcode = $_POST['contact_form_shortcode'];
         update_option('contact_form_shortcode', $input_contact_form_shortcode);
       $contact_form_shortcode_slash = get_option('contact_form_shortcode',true);
          // $contact_form_shortcode = stripcslashes($contact_form_shortcode_slash);
        $contact_form_shortcode = stripcslashes($contact_form_shortcode_slash);
-         
-         
+
+
          $input_google_map_address = $_POST['google_map_address'];
         update_option('google_map_address', $input_google_map_address);
          $google_map_address = get_option('google_map_address',true);
-         
+
          $input_google_map_bubble_marker_address = $_POST['google_map_bubble_marker_address'];
         update_option('google_map_bubble_marker_address', $input_google_map_bubble_marker_address);
          $google_map_bubble_marker_address = get_option('google_map_bubble_marker_address',true);
-         
+
          $input_google_map_bubble_marker_city_state = $_POST['google_map_bubble_marker_city_state'];
         update_option('google_map_bubble_marker_city_state', $input_google_map_bubble_marker_city_state);
          $google_map_bubble_marker_city_state = get_option('google_map_bubble_marker_city_state',true);
-         
+
          $input_google_map_bubble_marker_price = $_POST['google_map_bubble_marker_price'];
         update_option('google_map_bubble_marker_price', $input_google_map_bubble_marker_price);
          $google_map_bubble_marker_price = get_option('google_map_bubble_marker_price',true);
-         
+
          $input_google_map_bubble_marker_agentname = $_POST['google_map_bubble_marker_agentname'];
         update_option('google_map_bubble_marker_agentname', $input_google_map_bubble_marker_agentname);
          $google_map_bubble_marker_agentname = get_option('google_map_bubble_marker_agentname',true);
-        
+
     }
-    
+
     $contact_page_image = get_option('contact_page_image');
     $contact_form_shortcode_slash = get_option('contact_form_shortcode');
     $contact_form_shortcode = stripcslashes($contact_form_shortcode_slash);
@@ -989,42 +989,42 @@ function mi_sub_contact_details(){
     $google_map_bubble_marker_city_state = get_option('google_map_bubble_marker_city_state');
     $google_map_bubble_marker_price = get_option('google_map_bubble_marker_price');
     $google_map_bubble_marker_agentname = get_option('google_map_bubble_marker_agentname');
-       
+
     ?>
-    
+
     <div class="wrap">
             <h1>Contact Info</h1>
 
             <form method="post" enctype="multipart/form-data" action="" novalidate="novalidate">
-                
+
                 <table class="form-table">
                     <tbody>
-                        
+
                         <tr>
                             <th scope="row">
                                 <label for="contact_page_image">Contact Page Image</label>
                             </th>
                             <td>
-                                
+
                                 <img src="<?php echo $contact_page_image; ?>" style="width: auto; height: 100px;"/>
                                 <input type="file" name="contact_image_upload" id="contact_image_upload"  multiple="false" />
                                 <?php wp_nonce_field( 'contact_image_upload', 'contact_image_upload_nonce' ); ?>
-                                
+
                                 <!--<input name="contact_page_image" type="file" id="contact_page_image" value="<?php //if(isset($contact_page_image)){ echo $contact_page_image; }?>" class="regular-text">-->
                                 Upload Photo to be displayed in the contact page
                             </td>
                         </tr>
-                        
+
                         <tr>
                             <th scope="row">
                                <label for="contact_form_shortcode">Contact Form Shortcode</label>
                             </th>
                             <td>
                                 <input name="contact_form_shortcode" type="text" id="contact_form_shortcode" value='<?php if(isset($contact_form_shortcode)){ echo $contact_form_shortcode; }?>' class="regular-text">
-                                Copy/Paste Contact Form Shortcode 
-                            </td> 
+                                Copy/Paste Contact Form Shortcode
+                            </td>
                         </tr>
-                        
+
                         <tr>
                             <th scope="row">
                                 <label for="google_map_address">Google Map Address</label>
@@ -1034,7 +1034,7 @@ function mi_sub_contact_details(){
                                 Example: 775 New York Eve, Brooklyn.
                             </td>
                         </tr>
-                        
+
                         <tr>
                             <th scope="row">
                                 <label for="google_map_bubble_marker_address">Google Map Bubble Marker Address</label>
@@ -1044,7 +1044,7 @@ function mi_sub_contact_details(){
                                 Example: 775 New York Eve, Brooklyn.
                             </td>
                         </tr>
-                        
+
                         <tr>
                             <th scope="row">
                                 <label for="google_map_bubble_marker_city_state">Google Map Bubble Marker City/State</label>
@@ -1054,7 +1054,7 @@ function mi_sub_contact_details(){
                                 Displays City/state on Google Bubble marker
                             </td>
                         </tr>
-                        
+
                         <tr>
                             <th scope="row">
                                 <label for="google_map_bubble_marker_price">Google Map Bubble Marker Price</label>
@@ -1064,7 +1064,7 @@ function mi_sub_contact_details(){
                                 Displays Price on Google Bubble marker
                             </td>
                         </tr>
-                        
+
                         <tr>
                             <th scope="row">
                                 <label for="google_map_bubble_marker_agentname">Google Map Bubble Agent Name</label>
@@ -1074,8 +1074,8 @@ function mi_sub_contact_details(){
                                  Displays Agent Name on Google Bubble marker
                             </td>
                         </tr>
-                        
-                        
+
+
                     </tbody>
                 </table>
                 <p class="submit">
@@ -1097,8 +1097,8 @@ function medma_cms_add_script(){
 
 <script type="text/javascript">
         // Uploading files
-        var file_frame; 
-      
+        var file_frame;
+
           jQuery('.upload_image').live('click', function( event ){
 
             event.preventDefault();
@@ -1122,12 +1122,12 @@ function medma_cms_add_script(){
             file_frame.on( 'select', function() {
               // We set multiple to false so only get one image from the uploader
               attachment = file_frame.state().get('selection').first().toJSON();
-             
+
                 jQuery('.upload_image_text').val(attachment.url);
                 alert(attachment.url);
                 jQuery('.upload_image_hidden').val(attachment.id);
                  alert(attachment.id);
-              
+
             });
 
             // Finally, open the modal
@@ -1160,8 +1160,8 @@ tb_remove();
 
 
 function mi_sub_agent_information() {
-	
-        
+
+
         $blog_id = get_current_blog_id();
         switch_to_blog($blog_id);
         $admin_email = get_option('admin_email');
@@ -1175,8 +1175,8 @@ function mi_sub_agent_information() {
             $user_id = $user_details->ID;
             switch_to_blog($blog_id);
         }
-        
-        
+
+
         if(isset($_POST['submit']))
         {
             $input_agent_name = $_POST['agentname'];
@@ -1188,9 +1188,9 @@ function mi_sub_agent_information() {
             $input_facebook = $_POST['facebook'];
             $input_twitter = $_POST['twitter'];
             $input_googleplus = $_POST['googleplus'];
-            
-            
-            if (    isset( $_POST['profile_picture_upload_nonce'] )    && wp_verify_nonce( $_POST['profile_picture_upload_nonce'], 'profile_picture_upload' ))       
+
+
+            if (    isset( $_POST['profile_picture_upload_nonce'] )    && wp_verify_nonce( $_POST['profile_picture_upload_nonce'], 'profile_picture_upload' ))
             {
                    require_once( ABSPATH . 'wp-admin/includes/file.php' );
 
@@ -1199,11 +1199,11 @@ function mi_sub_agent_information() {
                    $overrides = array(
                             'test_form' => false,
                             'test_size' => true,
-                            'test_upload' => true, 
+                            'test_upload' => true,
                     );
 
                    $profile_picture_results = wp_handle_sideload( $file, $overrides );
-                   
+
                     if (!empty($profile_picture_results['error'])) {
                             // insert any error handling here
                     } else {
@@ -1215,8 +1215,8 @@ function mi_sub_agent_information() {
 
                    // The security check failed, maybe show the user an error.
            }
-           
-           if (    isset( $_POST['broker_logo_upload_nonce'] )    && wp_verify_nonce( $_POST['broker_logo_upload_nonce'], 'broker_logo_upload' ))       
+
+           if (    isset( $_POST['broker_logo_upload_nonce'] )    && wp_verify_nonce( $_POST['broker_logo_upload_nonce'], 'broker_logo_upload' ))
             {
                    require_once( ABSPATH . 'wp-admin/includes/file.php' );
 
@@ -1225,11 +1225,11 @@ function mi_sub_agent_information() {
                    $overrides = array(
                             'test_form' => false,
                             'test_size' => true,
-                            'test_upload' => true, 
+                            'test_upload' => true,
                     );
 
                    $broker_logo_results = wp_handle_sideload( $file, $overrides );
-                  
+
                     if (!empty($broker_logo_results['error'])) {
                             // insert any error handling here
                     } else {
@@ -1241,8 +1241,8 @@ function mi_sub_agent_information() {
 
                    // The security check failed, maybe show the user an error.
            }
-            
-            
+
+
             update_user_meta($user_id,'first_name',$input_agent_name);
             update_user_meta($user_id,'designation',$input_designation);
             update_user_meta($user_id,'business_phone',$input_business_phone);
@@ -1252,12 +1252,12 @@ function mi_sub_agent_information() {
             update_user_meta($user_id,'facebook',$input_facebook);
             update_user_meta($user_id,'twitter',$input_twitter);
             update_user_meta($user_id,'googleplus',$input_googleplus);
-            
-            
-            
-            
+
+
+
+
         }
-        
+
         $agentname = get_user_meta($user_id,'first_name',true);
         $designation = get_user_meta($user_id,'designation',true);
         $business_phone = get_user_meta($user_id,'business_phone',true);
@@ -1278,7 +1278,7 @@ function mi_sub_agent_information() {
         {
             $agent_profile_picture_url = $agent_profile_picture;
         }
-        
+
         $agent_broker_logo =  get_user_meta($user_id,'broker_logo',true);
         if(is_numeric($agent_broker_logo) && $agent_broker_logo>0)
         {
@@ -1290,14 +1290,14 @@ function mi_sub_agent_information() {
         {
             $agent_broker_logo_url = $agent_broker_logo;
         }
-        
-        
+
+
 	?>
         <div class="wrap">
             <h1>Agent Information</h1>
 
             <form method="post" action="admin.php?page=mi-sub-agent-information" novalidate="novalidate" enctype="multipart/form-data">
-                
+
                 <table class="form-table">
                     <tbody>
                         <tr>
@@ -1308,7 +1308,7 @@ function mi_sub_agent_information() {
                                 <input name="agentname" type="text" id="agentname" value="<?php if(isset($agentname)){ echo $agentname; }?>" class="regular-text">
                             </td>
                         </tr>
-                        
+
                         <tr>
                             <th scope="row">
                                 <label for="designation">Designation</label>
@@ -1343,12 +1343,12 @@ function mi_sub_agent_information() {
                                 <?php }else{ ?>
                                     <img style="height:100px; width:auto;" src="<?php echo plugins_url('medma-site-manager'); ?>/images/dummy_agent_pic.png" alt="Profile Picture"/>
                                 <?php } ?>
-                                
+
                                 <input type="file" name="profile_picture_upload" id="profile_picture_upload"  multiple="false" />
                                 <?php wp_nonce_field( 'profile_picture_upload', 'profile_picture_upload_nonce' ); ?>
                             </td>
                         </tr>
-                        
+
                         <tr>
                             <th scope="row">
                                 <label for="brokername">Broker Name</label>
@@ -1375,12 +1375,12 @@ function mi_sub_agent_information() {
                                 <?php }else{ ?>
                                     <img style="height:100px; width:auto;" src="<?php echo plugins_url('medma-site-manager'); ?>/images/placeholder_wide.jpg" alt="Broker Logo"/>
                                 <?php } ?>
-                                
+
                                 <input type="file" name="broker_logo_upload" id="broker_logo_upload"  multiple="false" />
                                 <?php wp_nonce_field( 'broker_logo_upload', 'broker_logo_upload_nonce' ); ?>
                             </td>
                         </tr>
-                        
+
                         <tr>
                             <th scope="row">
                                 <label for="facebook">Facebook</label>
@@ -1405,7 +1405,7 @@ function mi_sub_agent_information() {
                                 <input name="googleplus" type="text" id="googleplus" value="<?php if(isset($googleplus)){ echo $googleplus; }?>" class="regular-text">
                             </td>
                         </tr>
-                
+
                     </tbody>
                 </table>
 
@@ -1416,7 +1416,7 @@ function mi_sub_agent_information() {
 
         </div>
         <?php
-        
+
 }
 
 function wp_gear_manager_admin_scripts() {
@@ -1443,28 +1443,28 @@ function custom_admin_scripts() {
                 var x = jQuery(this).val();
                 jQuery(this).val(x.toString().replace(/,/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ","));
             });
-                
+
             jQuery(document).on('keyup', '#property_price1', function() {
                 var x = jQuery(this).val();
                 jQuery(this).val(x.toString().replace(/,/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ","));
             });
-                
+
             jQuery(document).on('keyup', '#property_price2', function() {
                 var x = jQuery(this).val();
                 jQuery(this).val(x.toString().replace(/,/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ","));
             });
-            
+
             jQuery(document).on('keyup', '#property_square_feet', function() {
                 var x = jQuery(this).val();
                 jQuery(this).val(x.toString().replace(/,/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ","));
             });
-                
+
             jQuery(document).on('keyup', '#property_lot_size', function() {
                 var x = jQuery(this).val();
                 jQuery(this).val(x.toString().replace(/,/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ","));
             });
             var price_type = jQuery("#property_price_type").val();
-            
+
             if(price_type == "fixed")
             {
                 jQuery('#property_price').show();
@@ -1612,7 +1612,7 @@ function custom_map_shortcode($atts) {
 
 
         }
-    }); 
+    });
 
     }
 
@@ -1684,7 +1684,7 @@ add_shortcode('display_printable_info', 'display_printable_info');
 
 function display_printable_info() {
     ?>
-        
+
         <div class="printable-information row">
         <div class="col-sm-12">
             <div class="title">
@@ -1697,24 +1697,24 @@ function display_printable_info() {
                 <div class="attachments"><!-- Item attachments -->
                     <h2>Available Downloads</h2>
                 <ul class="itemAttachments">
-                          <?php 
+                          <?php
                                                     // The Query
-                          $the_query = new WP_Query( array( 
+                          $the_query = new WP_Query( array(
                                             'post_type' => 'printable_info',   /* edit this line */
                                             'posts_per_page' => 1 ) );
 
                          // The Loop
                          if ( $the_query->have_posts() ) {
-                             
+
                                  while ( $the_query->have_posts() ) {
                                          $the_query->the_post();
                              ?>
-                             
+
                             <li>
                                 <h3><?php echo get_the_title();  ?></h3>
 
                                 <h5><?php echo get_the_content(); ?></h5>
-                                
+
                                 <div style="border:none" class="button medium white download">
                                      <?php $Printable_info_pdf = get_post_meta(get_the_ID(), 'wpcf-select-file-here', true );
                                      //echo "<prE>";print_r($Printable_info_pdf);echo "</pre>";
@@ -1722,8 +1722,8 @@ function display_printable_info() {
                                         if(!empty($Printable_info_pdf)) { ?>
                                             <a class="btn btn-primary" target="_new" href="<?php echo $Printable_info_pdf; ?>">Download</a>
                                         <?php }
-                                            
-                                        
+
+
                                             ?>
                                         <div class="pdf-size-details">
 <!--                                            <span class="pdf-dowmload-size">Size: 0.37 MB </span><br>-->
@@ -1732,15 +1732,15 @@ function display_printable_info() {
                             </li>
                             <?php
                             }
-                              
-                         } 
+
+                         }
                          /* Restore original Post Data */
                          wp_reset_postdata();
 
                            ?>
                        </ul>
-                </div>   
-        
+                </div>
+
                 </div>
                <div class="col-sm-8 info-picture">
                 <img src= "<?php echo get_option('printable_image');?>" style="height:100%;width:100%;" alt="image"/>
@@ -1752,47 +1752,47 @@ function display_printable_info() {
 
 
 // Register Custom Post Type
-function printable_info_post_type() {
-
-	$labels = array(
-		'name'                => _x( 'Printable_infos', 'Post Type General Name', 'text_domain' ),
-		'singular_name'       => _x( 'Printable_info', 'Post Type Singular Name', 'text_domain' ),
-		'menu_name'           => __( 'Printable_info', 'text_domain' ),
-		'name_admin_bar'      => __( 'Post Type', 'text_domain' ),
-		'parent_item_colon'   => __( 'Parent Item:', 'text_domain' ),
-		'all_items'           => __( 'All Items', 'text_domain' ),
-		'add_new_item'        => __( 'Add New Item', 'text_domain' ),
-		'add_new'             => __( 'Add New', 'text_domain' ),
-		'new_item'            => __( 'New Item', 'text_domain' ),
-		'edit_item'           => __( 'Edit Item', 'text_domain' ),
-		'update_item'         => __( 'Update Item', 'text_domain' ),
-		'view_item'           => __( 'View Item', 'text_domain' ),
-		'search_items'        => __( 'Search Item', 'text_domain' ),
-		'not_found'           => __( 'Not found', 'text_domain' ),
-		'not_found_in_trash'  => __( 'Not found in Trash', 'text_domain' ),
-	);
-	$args = array(
-		'label'               => __( 'Printable_info', 'text_domain' ),
-		'description'         => __( 'Post Type Description', 'text_domain' ),
-		'labels'              => $labels,
-		'supports'            => array( 'title','editor','thumbnail'),
-		'hierarchical'        => false,
-		'public'              => true,
-		'show_ui'             => true,
-		'show_in_menu'        => true,
-		'menu_position'       => 5,
-		'show_in_admin_bar'   => true,
-		'show_in_nav_menus'   => true,
-		'can_export'          => true,
-		'has_archive'         => true,		
-		'exclude_from_search' => false,
-		'publicly_queryable'  => true,
-		'capability_type'     => 'page',
-	);
-	register_post_type( 'Printable_info', $args );
-}
-
-add_action( 'init', 'printable_info_post_type', 0 );
+// function printable_info_post_type() {
+//
+// 	$labels = array(
+// 		'name'                => _x( 'Printable_infos', 'Post Type General Name', 'text_domain' ),
+// 		'singular_name'       => _x( 'Printable_info', 'Post Type Singular Name', 'text_domain' ),
+// 		'menu_name'           => __( 'Printable_info', 'text_domain' ),
+// 		'name_admin_bar'      => __( 'Post Type', 'text_domain' ),
+// 		'parent_item_colon'   => __( 'Parent Item:', 'text_domain' ),
+// 		'all_items'           => __( 'All Items', 'text_domain' ),
+// 		'add_new_item'        => __( 'Add New Item', 'text_domain' ),
+// 		'add_new'             => __( 'Add New', 'text_domain' ),
+// 		'new_item'            => __( 'New Item', 'text_domain' ),
+// 		'edit_item'           => __( 'Edit Item', 'text_domain' ),
+// 		'update_item'         => __( 'Update Item', 'text_domain' ),
+// 		'view_item'           => __( 'View Item', 'text_domain' ),
+// 		'search_items'        => __( 'Search Item', 'text_domain' ),
+// 		'not_found'           => __( 'Not found', 'text_domain' ),
+// 		'not_found_in_trash'  => __( 'Not found in Trash', 'text_domain' ),
+// 	);
+// 	$args = array(
+// 		'label'               => __( 'Printable_info', 'text_domain' ),
+// 		'description'         => __( 'Post Type Description', 'text_domain' ),
+// 		'labels'              => $labels,
+// 		'supports'            => array( 'title','editor','thumbnail'),
+// 		'hierarchical'        => false,
+// 		'public'              => true,
+// 		'show_ui'             => true,
+// 		'show_in_menu'        => true,
+// 		'menu_position'       => 5,
+// 		'show_in_admin_bar'   => true,
+// 		'show_in_nav_menus'   => true,
+// 		'can_export'          => true,
+// 		'has_archive'         => true,
+// 		'exclude_from_search' => false,
+// 		'publicly_queryable'  => true,
+// 		'capability_type'     => 'page',
+// 	);
+// 	register_post_type( 'Printable_info', $args );
+// }
+//
+// add_action( 'init', 'printable_info_post_type', 0 );
 
 /* For add meta box of the printable info */
 /**
@@ -1816,7 +1816,7 @@ add_action('add_meta_boxes', 'printable_info_add_meta_box' );
 */
 
 /* For create a custom pdf upload field */
-/*function printable_info_meta_box_callback() {  
+/*function printable_info_meta_box_callback() {
     wp_nonce_field(plugin_basename(__FILE__), 'wp_custom_attachment_nonce');
     ?>
     <p class="description">
@@ -1825,16 +1825,16 @@ add_action('add_meta_boxes', 'printable_info_add_meta_box' );
     <?php
     $Printable_info_pdf = get_post_meta(get_the_ID(), 'wp_custom_attachment', true );
     ?>
-    
+
     <input type="file" id="wp_custom_attachment" name="wp_custom_attachment" value="" size="25">
     <br>
     <p class="description">
         Uploaded file path:
-        
+
     </p>
     <input style="width:700px;" type="text" id="cu-wp-url" value="<?php echo $Printable_info_pdf['url']; ?>">
     <p class="description">
-       <label>Download</label> <a href="<?php echo $Printable_info_pdf['url']; ?>" target="_new" > <img style="width:22px;" src="<?php echo get_site_url();?>/wp-content/themes/supersized/images/pdficon.png"/></a> 
+       <label>Download</label> <a href="<?php echo $Printable_info_pdf['url']; ?>" target="_new" > <img style="width:22px;" src="<?php echo get_site_url();?>/wp-content/themes/supersized/images/pdficon.png"/></a>
     </p>
 <?php
  }
@@ -1873,8 +1873,6 @@ add_action('post_edit_form_tag', 'update_edit_form');*/
 
 add_filter('show_admin_bar', '__return_false');
 
-
-
 add_action( 'wp_ajax_send_contact_details', 'send_contact_details_callback' );
 add_action( 'wp_ajax_nopriv_send_contact_details', 'send_contact_details_callback' );
 
@@ -1900,7 +1898,7 @@ function send_contact_details_callback() {
         }elseif(5 == $subject_id){
             $subject = 'Other';
         }
-        
+
         $content = '';
         $content .= '<html>';
         $content .= '<body>';
@@ -1915,11 +1913,11 @@ function send_contact_details_callback() {
         $content .= '</div>';
         $content .= '</body>';
         $content .= '</html>';
-        
+
         $current_blog_id = get_current_blog_id();
         $users = get_users(array('blog_id'=>$current_blog_id,'role'=>'administrator'));
         $admin_email = $users['0']->data->user_email;
-        
+
         $send = wp_mail($admin_email, $subject, $content);
         if($send){
             echo "sent";

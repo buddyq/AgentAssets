@@ -2,7 +2,7 @@
 Theme Name: Austin Portfolio Real Estate-kw
 Theme URI: http://www.AgentAssets.com
 Version: 3.0
-Description: Exclusive custom theme for Austin Portfolio Real Estate-kw
+Description: Exclusive custom theme for Austin Portfolio Real Estate agents. <p><strong>Note: </strong>Certain items you may have in your profile like logo etc may not be visible inside this theme because this theme is branded just for APRE and conforms to KW standards.</p>
 Author: Buddy Quaid - AgentAssets.com
 Author URI: http://www.AgentAssets.com
 Tags: buddypress, two-columns, fixed-layout, fluid-layout, responsive-layout, left-sidebar, right-sidebar, full-width-template, sticky-post, threaded-comments, microformats, post-formats, black, blue, white, dark, flexible-header, featured-images, custom-background, custom-colors, custom-header, custom-menu, theme-options, translation-ready
@@ -749,7 +749,7 @@ background:rgba(255,255,255,.7);font-size:14px;border:1px solid rgba(0,0,0,.1);f
 
 /* [gallery] */
 .gallery { margin: auto; }
-.gallery img {border:none !important;margin:0 auto 10px auto;}
+.gallery img {border:none !important;margin:0;}
 .gallery-image { margin-left: 0; }
 .gallery-caption { margin-left: 0; font-size:11px;font-style:italic; }
 .gallery-item { text-align: center; margin-left: 0; }
@@ -1637,14 +1637,14 @@ Animate.css - http://daneden.me/animate
 #slider{
     background: transparent;
     border: none;
-    margin: 35px 0 40px;
+    margin: 0px 0 10px;
 }
 
 #slider.flexslider .slides li img {
     text-align: center;
     width: auto;
-    border: 4px solid #FFFFFF !important;
-    border-radius: 5px;
+    /*border: 4px solid #FFFFFF !important;*/
+    /*border-radius: 5px;*/
 }
 
 div#carousel {
@@ -1652,17 +1652,20 @@ div#carousel {
 }
 
 #carousel .flex-viewport {
-  height: 150px !important;
+  height: 100px !important;
 }
 
 #carousel .slides li {
-  width: 160px !important;
+  /*width: 160px !important;*/
 }
 
 #carousel.flexslider .slides li img {
-  width: 150px;
-  height: 150px;
+  width: 100px;
+  height: 100px;
   margin: 0 15px;
+}
+.flexslider{
+  border: none !important;
 }
 
 .flex-direction-nav a:before{

@@ -690,7 +690,24 @@ if(defined('ICL_SITEPRESS_VERSION') && defined('ICL_LANGUAGE_CODE'))
 
 }
 
-
+/*fix for: https://wpml.org/errata/translation-editor-support-avia-layout-builder-enfold/*/
+if(!function_exists('avia_wpml_sync_avia_layout_builder'))
+{
+	add_action( 'wpml_translation_job_saved', 'avia_wpml_sync_avia_layout_builder', 10, 3 );
+	
+	function avia_wpml_sync_avia_layout_builder( $new_post_id, $fields, $job ) {
+	    if ( isset( $fields['body']['data'] ) ) {
+	        if ( 'active' === get_post_meta( $new_post_id, '_aviaLayoutBuilder_active', true ) ) {
+	            update_post_meta(
+	                $new_post_id,
+	                '_aviaLayoutBuilderCleanData',
+	                $fields['body']['data']
+	            );
+	        }
+	    }
+	}
+	
+}
 
 
 

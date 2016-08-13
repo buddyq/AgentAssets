@@ -3,49 +3,46 @@
 /*
  * Theme Options | Customized
  */
- // Rearrange the admin menu
-   function custom_menu_order($menu_ord) {
-     if (!$menu_ord) return true;
-     return array(
-       'separator1', // First separator
-       'admin.php?page=mi-sub-agent-information', // Custom type one
-       'admin.php?page=mi-sub-property-details', // Custom type two
-       'admin.php?page=mi-sub-printable-info', // Custom type three
-       'edit.php?post_type=printable_info', // Upload printables
-       'admin.php?page=mi-sub-contact-details', // Custom type four
-       'admin.php?page=mi-sub-meta-info', // Custom type five
-       'separator2', // Second separator
-     );
-   }
 
-   add_filter('custom_menu_order', 'custom_menu_order'); // Activate custom_menu_order
-   add_filter('menu_order', 'custom_menu_order');
 
-   /** Rebranding and whitelabel the EnviraGallery
-       as per http://enviragallery.com/docs/whitelabel-envira/ **/
+/*
+
+White label for Envira Gallery plugin. This changes the name
+to 'Photo Gallery' and removes their custom banner.
+
+*/
 
    add_filter( 'gettext', 'tgm_envira_whitelabel', 10, 3 );
-   
-   if (!function_exists('tgm_envira_whitelabel')) {
-   function tgm_envira_whitelabel( $translated_text, $source_text, $domain ) {
 
-       // If not in the admin, return the default string.
-       if ( ! is_admin() ) {
-           return $translated_text;
-       }
+   if (!function_exists('tgm_envira_whitelabel'))
+   {
+     function tgm_envira_whitelabel( $translated_text, $source_text, $domain )
+     {
 
-       if ( strpos( $source_text, 'an Envira' ) !== false ) {
-           return str_replace( 'an Envira', '', $translated_text );
-       }
+         // If not in the admin, return the default string.
+         if ( ! is_admin() ) {
+             return $translated_text;
+         }
 
-       if ( strpos( $source_text, 'Envira' ) !== false ) {
-           return str_replace( 'Envira', 'Photo', $translated_text );
-       }
+         if ( strpos( $source_text, 'an Envira' ) !== false ) {
+             return str_replace( 'an Envira', '', $translated_text );
+         }
 
-       return $translated_text;
+         if ( strpos( $source_text, 'Envira' ) !== false ) {
+             return str_replace( 'Envira', 'Photo', $translated_text );
+         }
 
-   }
-   }
+         return $translated_text;
+       } //end function
+   } // end if
+
+   add_action( 'admin_init', 'tgm_envira_remove_header' );
+
+   function tgm_envira_remove_header() {
+      // Remove the Envira banner
+      remove_action( 'in_admin_header', array( Envira_Gallery_Posttype_Admin::get_instance(), 'admin_header' ), 100 );
+    }
+/* END ENVIRA GALLERY WHITE-LABELING */
 
 add_action('admin_menu', 'custom_theme_options_menu');
 //add_action( 'admin_menu', 'custom_admin_scripts' );
@@ -657,7 +654,7 @@ function mi_sub_printable_info()
                 <tr>
 
                     <td><h3>Note:</h3></td>
-                    <td><a href="<?php echo admin_url('edit.php?post_type=printable_info'); ?>">Click Here</a> to add
+                    <td><a href="<?php echo admin_url('edit.php?post_type=property-attachment'); ?>">Click Here</a> to add
                         attachments to Printable Info
                     </td>
 
@@ -675,10 +672,22 @@ function mi_sub_printable_info()
 
 function mi_sub_contact_details()
 {
+    $blog_id = get_current_blog_id();
+    switch_to_blog($blog_id);
+    $admin_email = get_option('admin_email');
+    $user_details = get_user_by('email', $admin_email);
+    $user_id = $user_details->ID;
+
+    if ($user_id == 0 || $user_id == null) {
+        switch_to_blog(1);
+        $admin_email = get_option('admin_email');
+        $user_details = get_user_by('email', $admin_email);
+        $user_id = $user_details->ID;
+        switch_to_blog($blog_id);
+    }
     if (isset($_POST['submit'])) {
-        $user_id = get_current_user_id();
-        $blog_id = get_current_user_id();
-        if (isset($_POST['contact_image_upload_nonce']) && wp_verify_nonce($_POST['contact_image_upload_nonce'], 'broker_logo_upload')) {
+
+        if (isset($_POST['contact_image_upload_nonce']) && wp_verify_nonce($_POST['contact_image_upload_nonce'], 'contact_image_upload')) {
             require_once(ABSPATH . 'wp-admin/includes/file.php');
 
             $file = $_FILES['contact_image_upload'];
@@ -698,7 +707,7 @@ function mi_sub_contact_details()
                 );
 
                 //switch_to_blog(1);
-                $contact_page_image_id = media_handle_upload('contact_page_image', 0, $attachment, $overrides);
+                $contact_page_image_id = media_handle_upload('contact_image_upload', 0, $attachment, $overrides);
                 //restore_current_blog();
 
                 if (is_wp_error($contact_page_image_id)) {
@@ -796,8 +805,8 @@ function mi_sub_contact_details()
     $google_map_bubble_marker_agentname = get_option('google_map_bubble_marker_agentname', true);
     $aa_logo = '<img src="' . plugins_url( '../../images/logo.png', __FILE__ ) . '" height="50" style="vertical-align:middle;" > ';
 
-    $contact_page_image = get_option('contact_page_image', true);
-    //$agent_profile_picture = get_user_meta($user_id, 'profile_picture', true);
+    //$contact_page_image = get_option('contact_page_image', true);
+    $contact_page_image = get_user_meta($user_id, 'contact_page_image', true);
     $attachment_blog_id = 1;
     if (is_array($contact_page_image)) {
         $attachment_blog_id = $contact_page_image[0];
@@ -831,11 +840,11 @@ function mi_sub_contact_details()
 
                 <tr>
                     <th scope="row">
-                        <label for="profile_picture">Profile Picture</label>
+                        <label for="profile_picture">Contact Picture<span class="desc">Picutre will show on the contact page.</span></label>
                     </th>
                     <td>
                         <?php if (isset($contact_page_image_url)) { ?>
-                            <img style="height:100px; width:auto;" src="<?php echo $contact_page_image_url; ?>"
+                            <img class="contact_settings_image" src="<?php echo $contact_page_image_url; ?>"
                                  alt="Contact Page Picture"/>
                         <?php } else { ?>
                             <img style="height:100px; width:auto;"
@@ -878,34 +887,38 @@ function mi_sub_contact_details()
                 </tr>
 
                 <tr>
+                    <th scope="row" colspan="2">
+                      <h2 class="options">Map Settings for Location Page</h2>
+                    </th>
+                <tr>
                     <th scope="row">
-                        <label for="google_map_address">Google Map Address</label>
+                        <label for="google_map_address">Map Pin Location<span class="desc">This is the actual pin position on the earth.</span></label>
                     </th>
                     <td>
                         <input name="google_map_address" type="text" id="google_map_address"
                                value="<?php if (isset($google_map_address)) {
                                    echo $google_map_address;
                                } ?>" class="regular-text">
-                        Example: 775 New York Eve, Brooklyn.
+                        <em>Example: 1600 Pennsylvania Ave, Washington D.C.</em>
                     </td>
                 </tr>
 
                 <tr>
                     <th scope="row">
-                        <label for="google_map_bubble_marker_address">Google Map Bubble Marker Address</label>
+                        <label for="google_map_bubble_marker_address">Map Info Box Address<span class="desc">This is the address that will show up in the info box above the map pin.</span></label>
                     </th>
                     <td>
                         <input name="google_map_bubble_marker_address" type="text" id="google_map_bubble_marker_address"
                                value="<?php if (isset($google_map_bubble_marker_address)) {
                                    echo $google_map_bubble_marker_address;
                                } ?>" class="regular-text">
-                        Example: 775 New York Eve, Brooklyn.
+                        <em>Example: 1600 Pennsylvania Ave, Washington D.C.</em>
                     </td>
                 </tr>
 
                 <tr>
                     <th scope="row">
-                        <label for="google_map_bubble_marker_city_state">Google Map Bubble Marker City/State</label>
+                        <label for="google_map_bubble_marker_city_state">Map Info Box City/State<span class="desc">Enter city &amp; state to complete the address</span></label>
                     </th>
                     <td>
                         <input name="google_map_bubble_marker_city_state" type="text"
@@ -913,26 +926,26 @@ function mi_sub_contact_details()
                                value="<?php if (isset($google_map_bubble_marker_city_state)) {
                                    echo $google_map_bubble_marker_city_state;
                                } ?>" class="regular-text">
-                        Displays City/state on Google Bubble marker
+                        <em>Displays City/State on Map Info Box</em>
                     </td>
                 </tr>
 
                 <tr>
                     <th scope="row">
-                        <label for="google_map_bubble_marker_price">Google Map Bubble Marker Price</label>
+                        <label for="google_map_bubble_marker_price">Map Info Price<span class="desc">Enter the price of the property or leave blank if you don't want to hide it.</span></label>
                     </th>
                     <td>
                         <input name="google_map_bubble_marker_price" type="text" id="google_map_bubble_marker_price"
                                value="<?php if (isset($google_map_bubble_marker_price)) {
                                    echo $google_map_bubble_marker_price;
                                } ?>" class="regular-text">
-                        Displays Price on Google Bubble marker
+                        <em>Displays Price inside Map Info Box</em>
                     </td>
                 </tr>
 
                 <tr>
                     <th scope="row">
-                        <label for="google_map_bubble_marker_agentname">Google Map Bubble Agent Name</label>
+                        <label for="google_map_bubble_marker_agentname">Map Info Box Agent Name<span class="desc">Listing agent's name will be show inside map info box. Leave blank to hide.</span></label>
                     </th>
                     <td>
                         <input name="google_map_bubble_marker_agentname" type="text"
@@ -940,7 +953,7 @@ function mi_sub_contact_details()
                                value="<?php if (isset($google_map_bubble_marker_agentname)) {
                                    echo $google_map_bubble_marker_agentname;
                                } ?>" class="regular-text">
-                        Displays Agent Name on Google Bubble marker
+                        <em>Displays Agent Name on Map Info Box</em>
                     </td>
                 </tr>
 
@@ -1195,7 +1208,7 @@ function mi_sub_agent_information()
     ?>
     <div class="wrap">
         <h1><?php echo $aa_logo ?> Agent Information</h1>
-
+        <div class="notice notice-info"><p>Changing any of the information below will override the agent information for this particular site. When creating a site, this information is copied from your profile information.</p></div>
         <form method="post" action="admin.php?page=mi-sub-agent-information" novalidate="novalidate"
               enctype="multipart/form-data">
             <table class="form-table">

@@ -6,7 +6,7 @@
  * @subpackage Functions
  */
 
- 
+
 add_action('wp_ajax_aveone_dynamic_css', 'aveone_dynamic_css');
 add_action('wp_ajax_nopriv_aveone_dynamic_css', 'aveone_dynamic_css');
 
@@ -779,12 +779,12 @@ function display_printable_info() {
                     switch_to_blog(get_current_blog_id());
                     global $wpdb, $table_prefix;
 
-                    $sql = "SELECT ID FROM `{$table_prefix}posts` WHERE post_type = 'printable_info'";
+                    $sql = "SELECT ID FROM `{$table_prefix}posts` WHERE post_type = 'attachment'";
                     $id = $wpdb->get_var($sql);
                     restore_current_blog();
 
 
-                    $type = 'printable_info';
+                    $type = 'property-attachment';
                     $args = array(
                         'post_type' => $type,
                         'post_status' => 'publish',

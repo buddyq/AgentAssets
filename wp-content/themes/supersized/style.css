@@ -1,8 +1,9 @@
 /*
 Theme Name: Supersized
-Author: Medma Infomatix Team
-Author URI: https://medma.net/
-Version: 1.0
+Author: AgentAssets.com
+Author URI: https://AgetnAssets.com/
+Description: A beautiful theme that takes displays galleries using the entire screen. This is why it's called <strong>Supersized!</strong>
+Version: 2.0
 License: GNU General Public License v2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 Text Domain: supersized
@@ -53,7 +54,7 @@ footer h2 { text-align: right; }
   font-size: x-small;
 }
 
-.footer-wrapper a, .footer-wrapper p.siteby { 
+.footer-wrapper a, .footer-wrapper p.siteby {
      color: rgb(145,145,145) !important;
 }
 .broker-wrapper p { margin: 0 0 5px 0;}
@@ -101,7 +102,7 @@ footer h2 { text-align: right; }
 
 }
 
-.content h1 {  
+.content h1 {
     font-size: 1.7em;
     line-height: 1em;
     font-weight: bold;
@@ -216,9 +217,9 @@ div#map-canvas {
     padding: 0;
 }
 
-div#supersized-navbar-collapse {    
+div#supersized-navbar-collapse {
     border-bottom: 1px solid rgba(36,57,97,1);
-} 
+}
 
 .printable-information.row .col-sm-4 {
     padding-left: 0;
@@ -251,7 +252,7 @@ div#supersized-navbar-collapse {
 #menu-primary li {
     display: inline-block !important;
     float: none !important;
-    margin-left: -4px; 
+    margin-left: -4px;
 }
 
 ul#menu-primary {
@@ -285,7 +286,7 @@ nav.navbar.navbar-default.container {
  }
 
   /*30-11-2015  nav bar*/
-  
+
  ul.nav.navbar-nav {
   margin: 0 auto;
   width: 100%;
@@ -484,7 +485,7 @@ input#contact-us-submit {
 	.navbar-default .navbar-nav>li>a {
 		padding: 8px 12px 6px !important;
 	}
-        
+
         #footer.footer-wrapper .col-sm-6:last-child {
 		float: right;
 		width: 61%;
@@ -513,6 +514,3 @@ input#contact-us-submit {
 		text-align: left !important;
 	}
 }
-
-
-

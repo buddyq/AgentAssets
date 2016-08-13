@@ -254,32 +254,28 @@ var $par = jQuery.noConflict();
 
 
 <script type="text/javascript">
-var $carousel = jQuery.noConflict();
-$carousel('#myCarousel').carousel({
-interval: 7000
-})
-$carousel('#carousel-nav a').click(function(q){
-q.preventDefault();
-targetSlide = $carousel(this).attr('data-to')-1;
-$carousel('#myCarousel').carousel(targetSlide);
-$carousel(this).addClass('active').siblings().removeClass('active');
-});
+  var $carousel = jQuery.noConflict();
+  $carousel('#myCarousel').carousel({
+    interval: 7000
+  })
 
-$carousel('#bootstrap-slider').carousel({
-interval: 7000})
-$carousel('#carousel-nav a').click(function(q){
-q.preventDefault();
-targetSlide = $carousel(this).attr('data-to')-1;
-$carousel('#bootstrap-slider').carousel(targetSlide);
-$carousel(this).addClass('active').siblings().removeClass('active');
-});
+  $carousel('#carousel-nav a').click(function(q){
+    q.preventDefault();
+    targetSlide = $carousel(this).attr('data-to')-1;
+    $carousel('#myCarousel').carousel(targetSlide);
+    $carousel(this).addClass('active').siblings().removeClass('active');
+  });
 
-// $('#carousel-rel a').click(function(q){
-//         console.log('Clicked');
-//         targetSlide = (parseInt($('#carousel-rel a.active').data('to')) + 1) % 3;
-//         console.log('targetSlide');
-//         $('#carousel-rel a[data-to='+ targetSlide +']').addClass('active').siblings().removeClass('active');
-//     });
+  $carousel('#bootstrap-slider').carousel({
+    interval: 7000})
+    $carousel('#carousel-nav a').click(function(q){
+    q.preventDefault();
+    targetSlide = $carousel(this).attr('data-to')-1;
+    $carousel('#bootstrap-slider').carousel(targetSlide);
+    $carousel(this).addClass('active').siblings().removeClass('active');
+  });
+
+
 </script>
 
 
@@ -291,8 +287,6 @@ $carousel(this).addClass('active').siblings().removeClass('active');
 		</div>
 
 <!--END body-->
-
-
 
   <?php $aveone_pos_button = aveone_get_option('evl_pos_button','right');
   if ($aveone_pos_button == "disable" || $aveone_pos_button == "") { ?>
@@ -312,10 +306,10 @@ $carousel(this).addClass('active').siblings().removeClass('active');
          // The slider being synced must be initialized first
          jQuery('#carousel').flexslider({
             animation: "slide",
-            controlNav: false,
-            animationLoop: false,
+            controlNav: true,
+            animationLoop: true,
             slideshow: false,
-            itemWidth: 210,
+            itemWidth: 100,
             itemMargin: 5,
             asNavFor: '#slider',
             smoothHeight: true
@@ -325,7 +319,7 @@ $carousel(this).addClass('active').siblings().removeClass('active');
             animation: "slide",
             controlNav: false,
             animationLoop: false,
-            slideshow: false,
+            slideshow: true,
             sync: "#carousel"
          });
     });

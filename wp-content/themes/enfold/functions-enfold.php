@@ -618,8 +618,37 @@ ga('send', 'pageview');
 			echo $avia_config['analytics_code'];
 		}
 	}
+}
+
+/*
+* add gmaps code
+*/
+
+if(!function_exists('avia_gmap_key'))
+{
+	add_action('wp_footer', 'avia_gmap_key', 10);
+	add_action('admin_footer', 'avia_gmap_key', 10);
+
+	function avia_gmap_key()
+	{
+		$api_key = avia_get_option('gmap_api');
+		
+		if(!empty($api_key))
+		{
+			echo "
+<script type='text/javascript'>
+ /* <![CDATA[ */  
+var avia_framework_globals = avia_framework_globals || {};
+	avia_framework_globals.gmap_api = '".$api_key."';
+/* ]]> */ 
+</script>	
+";
+    
+		}
+	}
 
 }
+
 
 
 /*

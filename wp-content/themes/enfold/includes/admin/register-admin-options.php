@@ -14,6 +14,7 @@ $avia_pages = array(
 	array( 'slug' => 'blog', 		'parent'=>'avia', 'icon'=>"blog.png", 					'title' =>  __('Blog Layout', 'avia_framework')),
 	array( 'slug' => 'social', 		'parent'=>'avia', 'icon'=>"user.png", 					'title' =>  __('Social Profiles', 'avia_framework')),
 	array( 'slug' => 'newsletter', 	'parent'=>'avia', 'icon'=>"blog.png", 					'title' =>  __('Newsletter', 'avia_framework')),
+	array( 'slug' => 'google', 		'parent'=>'avia', 'icon'=>"map.png", 					'title' =>  __('Google Services', 'avia_framework')),
 );
 
 if(class_exists( 'woocommerce' ))
@@ -40,6 +41,44 @@ include('register-backend-google-fonts.php');
 //required for the advanced styling wizard
 include('register-backend-advanced-styles.php');
 
+
+/*google*/
+
+
+
+$avia_elements[] =	array(
+					"slug"	=> "google",
+					"name" 	=> __("Google Analytics Tracking Code", 'avia_framework'),
+					"desc" 	=> __("Enter your Google analytics tracking Code here. It will automatically be added so google can track your visitors behavior.", 'avia_framework'),
+					"id" 	=> "analytics",
+					"type" 	=> "textarea"
+					);
+
+$avia_elements[] = array("slug"	=> "google", "type" => "visual_group_start", "id" => "avia_google_maps_group", "nodescription" => true);	
+
+
+$google_link = "https://console.developers.google.com/flows/enableapi?apiid=maps_backend,geocoding_backend,directions_backend,distance_matrix_backend,elevation_backend,places_backend&keyType=CLIENT_SIDE&reusekey=true";
+$tutorial_link = "http://www.kriesi.at/documentation/enfold/how-to-register-a-google-maps-api-key/";
+
+
+$avia_elements[] = array(	"name" => 	__("Google Maps", 'avia_framework'),
+								"desc" => __("Google recently changed the way their map service works. New domains which want to use Google Maps need to register an API key for their website. Older domains should  work fine without this API key. If the google map elements of this theme do not work properly you need to register a new API key.", 'avia_framework')."<br><a href='{$google_link}' target='_blank'>".__("Register an API Key", 'avia_framework')."</a> | <a target='_blank' href='{$tutorial_link}'>".__("Tutorial: How to create an API key", 'avia_framework')."</a>",
+								"std" => "",
+								"slug"	=> "google",
+								"type" => "heading",
+								"nodescription"=>true);
+
+
+$avia_elements[] =	array(
+					"slug"	=> "google",
+					"name" 	=> __("Google Maps API Key", 'avia_framework'),
+					"desc" 	=> __("Enter a valid Google Maps API Key to use all map related theme functions.", 'avia_framework'),
+					"id" 	=> "gmap_api",
+					"type" 	=> "text",
+					"std" 	=> ""
+					);
+
+$avia_elements[] = array("slug"	=> "google", "type" => "visual_group_end", "id" => "avia_google_maps_group_end", "nodescription" => true);
 
 /*newsletter*/
 
@@ -741,13 +780,6 @@ $avia_elements[] =	array(
 										));
 	
 
-$avia_elements[] =	array(
-					"slug"	=> "avia",
-					"name" 	=> __("Google Analytics Tracking Code", 'avia_framework'),
-					"desc" 	=> __("Enter your Google analytics tracking Code here. It will automatically be added so google can track your visitors behavior.", 'avia_framework'),
-					"id" 	=> "analytics",
-					"type" 	=> "textarea"
-					);
 
 
 

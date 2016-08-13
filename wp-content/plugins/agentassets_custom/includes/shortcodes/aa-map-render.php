@@ -3,15 +3,16 @@
 add_shortcode('aa-map-render', 'agentassets_map_render_shortcode');
 
 function agentassets_map_render_shortcode($atts, $content) {
+    $contactsInfo = ContactInfoModel::model();
     $atts = shortcode_atts(array(
         'map_id' => 'location_map',
         'marker_id' => 'address_marker',
         'map_height' => '500px',
         'show_focus_map_button' => 1,
-        'address' => get_option('google_map_address'),
-        'bubble_marker_address' => get_option('google_map_bubble_marker_address'),
-        'agent_name' => get_option('google_map_bubble_marker_agentname'),
-        'price' => get_option('google_map_bubble_marker_price')
+        'address' => $contactsInfo->google_map_address,
+        'bubble_marker_address' => $contactsInfo->google_map_bubble_marker_address,
+        'agent_name' => $contactsInfo->google_map_bubble_marker_agentname,
+        'price' => $contactsInfo->google_map_bubble_marker_price,
     ), $atts);
     ob_start(); ?>
 

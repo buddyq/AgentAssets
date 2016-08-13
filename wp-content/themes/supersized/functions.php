@@ -1593,7 +1593,7 @@ function custom_map_shortcode($atts) {
 
               directionsDisplay.setPanel(document.getElementById(\'directionsPanel\'));
 
-             var contentString = "<div id=\'bubble-content\'><h5>'.$address.'</h5><h5>'.$city_state.'</h5><p><label>Price:&nbsp;</label>'.$price.'</p><p><label>Represented By:&nbsp;</label>'.$agent.'</p></div>";
+             var contentString = "<div id=\'bubble-content\'><h5>'.$city_state.'</h5><p><label>Price:&nbsp;</label>'.$price.'</p><p><label>Represented By:&nbsp;</label>'.$agent.'</p></div>";
 
             var infowindow = new google.maps.InfoWindow({
                 content: contentString

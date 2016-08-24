@@ -251,7 +251,7 @@ function wpv_layout_meta_html($atts) {
     $view_layout_settings = apply_filters( 'wpv_filter_wpv_get_view_layout_settings', array() );
     
     if ( isset( $view_layout_settings['layout_meta_html'] ) ) {
-        $content = wpml_content_fix_links_to_translated_content($view_layout_settings['layout_meta_html']);
+        $content = $view_layout_settings['layout_meta_html'];
         return wpv_do_shortcode($content);
     } else {
         return '';

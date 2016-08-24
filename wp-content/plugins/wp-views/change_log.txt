@@ -1,4 +1,8 @@
 -------------------------------------------------------------------------------------------------------------------
+Toolset Views 2.1.1
+	- Improved compatibility with WPML 3.5.
+
+-------------------------------------------------------------------------------------------------------------------
 Toolset Views 2.1, AKA Clarisse McClellan
 	- Added support for specific purposes for WordPress Archives, and the ability to set the purpose of a WordPress Archive when creating it.
 	

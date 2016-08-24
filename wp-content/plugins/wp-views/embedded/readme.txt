@@ -13,6 +13,9 @@ You're done!
 
 = Changelog =
 
+v. 2.1.1
+	- Improved compatibility with WPML 3.5.
+
 v. 2.1, AKA Clarisse McClellan
 	- Added pagination settings to WordPress Archives, including AJAX pagination with fade, horizontal and vertical slide and infinite scroll effects.
 	

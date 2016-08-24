@@ -14,7 +14,6 @@
  * @property array $shown_hidden_custom_fields Values from wpv_show_hidden_fields setting in the form of an array.
  *
  * @property int	$views_template_loop_blog
- * @property bool	$wpml_fix_urls
  * @property int	$wpv_bootstrap_version
  * @property int	$wpv_codemirror_autoresize
  * @property int	$wpv_enable_pagination_manage_history
@@ -163,14 +162,6 @@ class WPV_Settings implements ArrayAccess {
 
 
 	/**
-	 * Determines if we should convert URLs to point to translated content in Views and Content Templates.
-	 *
-	 * Boolean.
-	 */
-	const WPML_FIX_URLS = 'wpml_fix_urls';
-
-
-	/**
 	 * Determine whether the built-in map addon within Views is enabled.
 	 *
 	 * Numeric value, 0 or 1.
@@ -233,7 +224,6 @@ class WPV_Settings implements ArrayAccess {
 	 */
 	protected static $defaults = array(
 		WPV_Settings::BLOG_LOOP_CONTENT_TEMPLATE				=> 0,
-		WPV_Settings::WPML_FIX_URLS								=> true,
 		WPV_Settings::BOOTSTRAP_VERSION							=> 1,
 		WPV_Settings::CUSTOM_CONDITIONAL_FUNCTIONS				=> array(),
 		WPV_Settings::CUSTOM_INNER_SHORTCODES					=> array(),
@@ -650,16 +640,6 @@ class WPV_Settings implements ArrayAccess {
 		if( is_numeric( $value ) ) {
 			$this->settings[ WPV_Settings::BLOG_LOOP_CONTENT_TEMPLATE ] = (int) $value;
 		}
-	}
-
-
-	protected function _get_wpml_fix_urls() {
-		return (bool) $this->get_raw_value( WPV_Settings::WPML_FIX_URLS );
-	}
-
-
-	protected function _set_wpml_fix_urls( $value ) {
-		$this->settings[ WPV_Settings::WPML_FIX_URLS ] = (bool) $value;
 	}
 
 

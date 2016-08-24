@@ -73,9 +73,14 @@ function mi_sub_meta_information()
         update_option('meta_description', $input_meta_description);
         $meta_description = get_option('meta_description', true);
 
+        $input_google_analytics = $_POST['google_analytics'];
+        update_option('google_analytics', $input_google_analytics);
+        $google_analytics = get_option('google_analytics', true);
+
     }
     $meta_keywords = get_option('meta_keywords', true);
     $meta_description = get_option('meta_description', true);
+    $google_analytics = get_option('google_analytics', true);
     $aa_logo = '<img src="' . plugins_url( '../../images/logo.png', __FILE__ ) . '" height="50" style="vertical-align:middle;" > ';
 
     ?>
@@ -105,6 +110,18 @@ function mi_sub_meta_information()
                     <td>
                         <textarea name="meta_description" cols="50"
                                   rows="10"><?php echo $meta_description; ?></textarea>
+                    </td>
+                </tr>
+
+                <tr>
+                    <th scope="row">
+                        <label for="google_analytics">Google Analytics ID</label>
+                    </th>
+                    <td>
+                        <input name="google_analytics" type="text" id="google_analytics"
+                               value="<?php if (isset($google_analytics)) {
+                                   echo $google_analytics;
+                               } ?>" class="regular-text">
                     </td>
                 </tr>
 

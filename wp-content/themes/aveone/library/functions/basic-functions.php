@@ -1449,7 +1449,7 @@ function aveone_posts_slider() {
 
 <?php
 
-if (have_posts()) : $featured = new WP_Query($args);
+// if (have_posts()) : $featured = new WP_Query($args);
 // while($featured->have_posts()) : $featured->the_post();
 
 foreach ($gallery_data['gallery'] as $attachment_id => $image) {
@@ -1480,12 +1480,6 @@ echo aveone_truncate($postexcerpt, 180, ' [...]');
 <?php }//end foreach loop ?>
 
 
-<?php else: ?>
-<li>
-<?php _e( '<h2 style="color:#fff;">Oops, no posts to display! Please check your post slider Category (ID) settings</h2>', 'aveone' ); ?>
-</li>
-
-<?php endif; ?>
 <?php wp_reset_query(); ?>
  </ul>
  </div>  </div>

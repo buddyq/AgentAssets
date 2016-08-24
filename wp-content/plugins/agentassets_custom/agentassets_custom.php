@@ -1,7 +1,7 @@
 <?php
 /*
  * Plugin Name: Agentassets Custom
- * 
+ *
  */
 
 # Required Files

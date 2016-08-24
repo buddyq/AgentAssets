@@ -8,6 +8,10 @@ if(strpos($_SERVER['REQUEST_URI'], '?page=layerslider') !== false) {
 	if( get_option('ls-show-support-notice', 1) && !get_option('layerslider-validated', null) && !get_option('layerslider-authorized-site', null) ) {
 		add_action('admin_notices', 'layerslider_premium_support');
 	}
+
+	if( empty($_GET['action']) ) {
+		add_action('admin_notices', 'layerslider_beta_program');
+	}
 }
 
 // Storage notice
@@ -123,15 +127,38 @@ function layerslider_premium_support() {
 <?php } }
 
 
+function layerslider_beta_program() {
+	if( ! get_user_meta(get_current_user_id(), 'layerslider_beta_program', true)) {
+?>
+<div class="layerslider_notice ls-beta-program">
+	<img src="<?php echo LS_ROOT_URL.'/static/img/v6.png' ?>" alt="LayerSlider icon">
+		<h1><?php _e('LayerSlider 6 is coming soon. Participate in the beta program!', 'LayerSlider') ?></h1>
+		<p>
+			<?php _e("With two years in the making, LayerSlider 6 is our biggest update yet. It has so many new features and surprises that it almost feels like an entirely new plugin while keeping the user interface familiar. The release date is approaching fast, this is your chance to gain access all the cool new stuff before everyone else. Participate in our closed beta program and help us preparing LayerSlider 6 for the final release.", "LayerSlider") ?>
+
+			<br>
+			<a href="https://kreaturamedia.com/beta/" class="signup" target="_blank">SIGNUP to beta program</a>
+			<a href="<?php echo wp_nonce_url('?page=layerslider&action=hide-beta-program-notice', 'hide-beta-program-notice') ?>">Hide this message</a>
+		</p>
+	<div class="clear"></div>
+</div>
+
+<?php } }
+
+
 function layerslider_plugins_purchase_notice($plugin_file, $plugin_data, $status){
 	$table = _get_list_table('WP_Plugins_List_Table');
 	?>
-	<tr class="plugin-update-tr"><td colspan="<?php echo $table->get_column_count(); ?>" class="plugin-update colspanchange">
-		<div class="update-message ls-plugins-screen-notice">
-		<?php
-			printf(__('You need to authorize this site in order to get upgrades or support for this plugin. %sPurchase a license%s or %senter an existing purchase code%s.', 'installer'),
-				'<a href="http://codecanyon.net/item/layerslider-responsive-wordpress-slider-plugin-/1362246" target="_blank">', '</a>', '<a href="'.admin_url('admin.php?page=layerslider').'">', '</a>');
-		?>
-		</div>
+	<tr class="plugin-update-tr">
+		<td colspan="<?php echo $table->get_column_count(); ?>" class="plugin-update colspanchange">
+			<div class="update-message notice inline notice-warning notice-alt">
+				<p>
+					<?php
+						printf(__('You need to authorize this site in order to get upgrades or support for this plugin. %sPurchase a license%s or %senter an existing purchase code%s.', 'installer'),
+							'<a href="http://codecanyon.net/item/layerslider-responsive-wordpress-slider-plugin-/1362246" target="_blank">', '</a>', '<a href="'.admin_url('admin.php?page=layerslider').'">', '</a>');
+					?>
+				</p>
+			</div>
+		</td>
 	</tr>
 <?php } ?>

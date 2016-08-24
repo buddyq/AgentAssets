@@ -24,17 +24,8 @@ function cu_register_form()
             $facebook = $_POST['micu_facebook'];
             $googleplus = $_POST['micu_googleplus'];
 
-            /*
-            $billing_address_1 = $_POST['micu_billing_address_1'];
-            $billing_address_2 = $_POST['micu_billing_address_2'];
-            $billing_city = $_POST['micu_billing_city'];
-            $billing_state = $_POST['micu_billing_state'];
-            $billing_zip = $_POST['micu_billing_zip'];
-            $billing_email = $_POST['micu_billing_email'];
-            */
-
             $return_url = $_POST['micu_return_url'];
-            remove_action('wpmu_new_user', 'newuser_notify_siteadmin', 999);
+              remove_action('wpmu_new_user', 'newuser_notify_siteadmin', 999);
             # User Created
             $user_id = wpmu_create_user($username, $password, $email);
             if (isset($user_id) && $user_id > 0) {
@@ -238,15 +229,15 @@ function cu_register_form()
                 <div class="avia_message_box_content">
                     <span class="avia_message_box_icon" aria-hidden="true" data-av_icon="" data-av_iconfont="entypo-fontello"></span>
                     <p>use a different username.</p>
-                   
+
                 </div>
             </div>
-        
+
 	<?php ?>
 		<script type="text/javascript">
 		jQuery(document).ready(function($) {
 			jQuery('#form-submit').click(function(e){
-				
+
 				var username = jQuery('#micu_username').val();
 				var email = jQuery('#micu_email').val();
 				var data = {
@@ -254,7 +245,7 @@ function cu_register_form()
 					'username': username,
 					'email': email
 				};
-                               
+
 				jQuery('.wploaderimg').css('display','inline-block');
 				// We can also pass the url value separately from ajaxurl for front end AJAX implementations
 				jQuery.post('<?php echo get_option("siteurl")."/wp-admin/admin-ajax.php";?>', data, function(response) {
@@ -268,13 +259,13 @@ function cu_register_form()
 					{
 						jQuery('#username-error p').html(response);
 						jQuery('#username-error').css('display','block');
-						
+
 						jQuery('html, body').animate({
 							scrollTop: jQuery("#main").offset().top
 						}, 2000);
 						e.preventDefault();
 					}
-					
+
 				});
 			});
 		});
@@ -296,7 +287,7 @@ function cu_register_form()
         $html .= '<input name="micu_username" class="text_input is_empty" type="text" id="micu_username" value="">';
         $html.='<span class="error" id="emailError"></span>';
 		$html .= '</p>';
-        
+
         $html .= '<p class=" form_element form_element_half" id="element_micu_name">';
         $html .= '<label for="micu_name">'.__('Name','micu').' <abbr class="required" title="required">*</abbr></label>';
         $html .= '<input name="micu_name" class="text_input is_empty" type="text" id="micu_name" value="">';
@@ -403,54 +394,14 @@ function cu_register_form()
 
         $html .= '</fieldset>';
 
-        /*
-        # BILLING INFORMATION
-        $html .= '<div class="av-special-heading av-special-heading-h3 meta-heading   avia-builder-el-4  el_after_av_textblock  el_before_av_contact ">';
-        $html .= '<h3 class="av-special-heading-tag" itemprop="headline">'.__('Billing Information','micu').'</h3>';
-        $html .= '<div class="special-heading-border"><div class="special-heading-inner-border"></div></div>';
-        $html .= '</div>';
 
-        $html .= '<fieldset>';
-
-        $html .= '<p class=" first_form  form_element form_element_half" id="element_micu_billing_address_1">';
-        $html .= '<label for="micu_billing_address_1">'.__('Billing Address 1','micu').' <abbr class="required" title="required">*</abbr></label>';
-        $html .= '<input name="micu_billing_address_1" class="text_input is_empty" type="text" id="micu_billing_address_1" value="">';
-        $html .= '</p>';
-
-        $html .= '<p class=" form_element form_element_half" id="element_micu_billing_address_2">';
-        $html .= '<label for="micu_billing_address_2">'.__('Billing Address 2','micu').' </label>';
-        $html .= '<input name="micu_billing_address_2" class="text_input" type="text" id="micu_billing_address_2" value="">';
-        $html .= '</p>';
-
-        $html .= '<p class=" first_form  form_element form_element_half" id="element_micu_billing_city">';
-        $html .= '<label for="micu_billing_city">'.__('Billing City','micu').' <abbr class="required" title="required">*</abbr></label>';
-        $html .= '<input name="micu_billing_city" class="text_input is_empty" type="text" id="micu_billing_city" value="">';
-        $html .= '</p>';
-
-        $html .= '<p class=" form_element form_element_half" id="element_micu_billing_state">';
-        $html .= '<label for="micu_billing_state">'.__('Billing State','micu').' <abbr class="required" title="required">*</abbr></label>';
-        $html .= '<input name="micu_billing_state" class="text_input is_empty" type="text" id="micu_billing_state" value="">';
-        $html .= '</p>';
-
-        $html .= '<p class=" first_form  form_element form_element_half" id="element_micu_billing_zip">';
-        $html .= '<label for="micu_billing_zip">'.__('Billing Zip','micu').' <abbr class="required" title="required">*</abbr></label>';
-        $html .= '<input name="micu_billing_zip" class="text_input is_empty is_number" type="text" id="micu_billing_zip" value="">';
-        $html .= '</p>';
-
-        $html .= '<p class=" form_element form_element_half" id="element_micu_billing_email">';
-        $html .= '<label for="micu_billing_email">'.__('Billing Email','micu').' <abbr class="required" title="required">*</abbr></label>';
-        $html .= '<input name="micu_billing_email" class="text_input is_empty is_email" type="text" id="micu_billing_email" value="">';
-        $html .= '</p>';
-
-        $html .= '</fieldset>';
-        */
         ob_start();
         do_action('register_cu_form');
         $html .= ob_get_clean() . '<br/></br>';
 
 
         $html .= '<input type="hidden" name="micu_return_url" value="'.$_SERVER['REQUEST_URI'].'">';
-        $html .= '<input id="form-submit" name="submit" type="submit" value="Submit" class="button" data-sending-label="Processing"><span class="wploaderimg" style="   display: none;margin: 0 10px;"><img style="margin: -10px 0;" src="'.plugins_url("medma_custom").'/images/wpspin.gif"/></span>';
+        $html .= '<input id="form-submit" name="submit" type="submit" value="Submit" class="button" data-sending-label="Processing"><span class="wploaderimg" style="   display: none;margin: 0 10px;"><img style="margin: -10px 0;" src="'.plugins_url("agentassets_custom").'/images/wpspin.gif"/></span>';
         $html .= '</form>';
 
         return $html;
@@ -462,20 +413,20 @@ add_action( 'wp_ajax_nopriv_unique_check', 'unique_check_callback' );
 add_action( 'wp_ajax_unique_check', 'unique_check_callback' );
 function unique_check_callback() {
 	global $wpdb;
-	
+
 	$username = $_POST['username'];
 	$email = $_POST['email'];
-	
+
 	$username_exists = 0;
 	$sql = "SELECT * FROM `" . $wpdb->base_prefix . "users` WHERE `user_login`='" . $username . "'";
 	$username_details = $wpdb->get_results($sql);
 	$username_exists = count($username_details);
-	
+
 	$email_exists = 0;
 	$sql = "SELECT * FROM `" . $wpdb->base_prefix . "users` WHERE `user_email`='" . $email . "'";
 	$email_details = $wpdb->get_results($sql);
 	$email_exists = count($email_details);
-	
+
 	if($username_exists>0 && $email_exists>0)
 	{
 		echo "Username and Email already exists";
@@ -493,9 +444,9 @@ function unique_check_callback() {
 		// Success
 		echo 1;
 	}
-	
-	
-	
+
+
+
 	/*$sql = "SELECT user_login FROM `{$wpdb->base_prefix}users";
     $sql = "SELECT user_login FROM `" . $wpdb->base_prefix . "users` WHERE `user_login`='" . $_POST['username'] . "' OR `user_email`='" . $_POST['email'] . "'";
     $results = $wpdb->get_results($sql);
@@ -507,17 +458,17 @@ function unique_check_callback() {
 }
 
 add_action('medma_custom_admin_user_notification','medma_custom_admin_user_notification_callback');
-                
+
 function medma_custom_admin_user_notification_callback($userdata){
     $email = get_site_option( 'admin_email' );
 
     if ( is_email($email) == false )
             return false;
-    
+
     $user_id = $userdata['ID'];
-    
+
     $user = get_userdata( $user_id );
-    
+
     $name = $userdata['first_name'];
     if(!$name){
         $name = 'N/A';
@@ -558,64 +509,50 @@ function medma_custom_admin_user_notification_callback($userdata){
         $googleplus = '#';
     }
 
-    /*
-    $billing_address_1 = $userdata['billing_address_1'];
-    if(!$billing_address_1){
-        $billing_address_1 = 'N/A';
-    }
+    $top_description = 'A new user has registered with AgentAssets.com with the below details:';
+    $email_title = 'A new user has signed up!';
 
-    $billing_address_2 = $userdata['billing_address_2'];
-    if(!$billing_address_2){
-        $billing_address_2 = 'N/A';
-    }
+    $email_body = '<p><strong><i>The deets!</i></strong></p>'
+      . '<table>'
+      . '<tr>'
+      . '<td width="50%">Username: </td><td>'.$user->user_login.'</td>'
+      . '</tr>'
+      . '<tr>'
+      . '<td width="50%">Name: </td><td>'.$user->user_nicename.' </td>'
+      . '</tr>'
+      . '<tr>'
+      . '<td width="50%">Email: </td><td>'.$user->user_email.' </td>'
+      . '</tr>'
+      . '<tr>'
+      . '<td width="50%">Business Phone: </td><td>'.$business_phone.' </td>'
+      . '</tr>'
+      . '<tr>'
+      . '<td width="50%">Mobile Phone: </td><td>'.$mobile_phone.' </td>'
+      . '</tr>'
+      . '<tr>'
+      . '<td width="50%">Broker: </td><td>'.$broker.'</td>'
+      . '</tr>'
+      . '<tr>'
+      . '<td width="50%">Broker Website: </td><td>'.$broker_website.'</td>'
+      . '</tr>'
+      . '<tr>'
+      . '<td width="50%">Twitter: </td><td>http://twitter.com/'.$twitter.'</td>'
+      . '</tr>'
+      . '<tr>'
+      . '<td width="50%">Facebook: </td><td>http://facebook.com/'.$facebook.'</td>'
+      . '</tr>'
+      . '<tr>'
+      . '<td width="50%">Google Plus: </td><td>http://plus.google.com/'.$googleplus.'</td>'
+      . '</tr>'
+      . '</table>'
+      . '<p>&nbsp;</p>'
+      . '<p>That\'s all!</p>';
+    $msg = include_once($directory = dirname(dirname(__FILE__)).'/aa-email-template.php');
 
-    $billing_state = $userdata['billing_state'];
-    if(!$billing_state){
-        $billing_state = 'N/A';
-    }
+      $headers[] = 'From: AgentAssets.com Registration <no-reply@agentassets.com>';
+      $headers[] = 'Reply-to: Buddy Quaid <buddy@agentassets.com>';
 
-    $billing_city= $userdata['billing_city'];
-    if(!$billing_city){
-        $billing_city = 'N/A';
-    }
-
-    $billing_zip = $userdata['billing_zip'];
-    if(!$billing_zip){
-        $billing_zip = 'N/A';
-    }
-
-    $billing_email = $userdata['billing_email'];
-    if(!$billing_email){
-        $billing_email = 'N/A';
-    }*/
-    
-    $msg = '<p>Dear Admin,</p>'
-            . '<p>&nbsp;</p>'
-            . '<p>A new user has registered with Agent Assets with below details:</p>'
-            . '<p></p>'
-            . '<p>Username: '.$user->user_login.'</p>'
-            . '<p>Name: '.$user->user_nicename.' </p>'
-            . '<p>Email: '.$user->user_email.' </p>'
-            . '<p>Business Phone: '.$business_phone.' </p>'
-            . '<p>Mobile Phone: '.$mobile_phone.' </p>'
-            . '<p>Broker: '.$broker.'</p>'
-            . '<p>Broker Website: '.$broker_website.'</p>'
-            . '<p>Twitter: http://twitter.com/'.$twitter.'</p>'
-            . '<p>Facebook: http://facebook.com/'.$facebook.'</p>'
-            . '<p>Google Plus: http://plus.google.com/'.$googleplus.'</p>'
-          /*  . '<p>Billing Address 1: '.$billing_address_1.'</p>'
-            . '<p>Billing Address 2: '.$billing_address_2.'</p>'
-            . '<p>Billing City: '.$billing_city.'</p>'
-            . '<p>Billing State: '.$billing_state.'</p>'
-            . '<p>Billing Zip: '.$billing_zip.'</p>'
-            . '<p>Billing Email: '.$billing_email.'</p>'
-          */
-            . '<p>&nbsp;</p>'
-            . '<p>Thanks,</p>'
-            . '<p> '.$user->user_nicename.' </p>';
-    
-    wp_mail( $email, sprintf(__('New User Registration: %s'), $user->user_login), $msg );
+    wp_mail( $email, sprintf(__('New User Registration: %s'), $user->user_login), $msg, $headers );
 }
-
 
 ?>

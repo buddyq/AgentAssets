@@ -4,7 +4,7 @@ Plugin Name: Print-O-Matic
 Text Domain: print-o-matic
 Plugin URI: http://plugins.twinpictures.de/plugins/print-o-matic/
 Description: Shortcode that adds a printer icon, allowing the user to print the post or a specified HTML element in the post.
-Version: 1.7.4
+Version: 1.7.5
 Author: twinpictures
 Author URI: http://twinpictuers.de
 License: GPL2
@@ -20,7 +20,7 @@ class WP_Print_O_Matic {
 	 * Current version
 	 * @var string
 	 */
-	var $version = '1.7.4';
+	var $version = '1.7.5';
 
 	/**
 	 * Used as prefix for options entry
@@ -94,7 +94,7 @@ class WP_Print_O_Matic {
 	 */
 	function printMaticInit() {
 		//script
-		wp_register_script('printomatic-js', plugins_url('/printomat.js', __FILE__), array('jquery'), '1.8');
+		wp_register_script('printomatic-js', plugins_url('/printomat.js', __FILE__), array('jquery'), '1.8.1');
 		if( empty($this->options['script_check']) ){
 			wp_enqueue_script('printomatic-js');
 		}
@@ -197,14 +197,14 @@ class WP_Print_O_Matic {
 		}
 
 		$this->add_print_script[$id] = array(
-							'pom_site_css' => $pom_site_css,
-							'pom_custom_css' => $pom_custom_css,
-							'pom_html_top' => $pom_html_top,
-							'pom_html_bottom' => $pom_html_bottom,
-							'pom_do_not_print' => $pom_do_not_print,
-							'pom_pause_time' => $pause_before_print,
-							'pom_close_after_print' => $close_after_print,
-						);
+			'pom_site_css' => $pom_site_css,
+			'pom_custom_css' => $pom_custom_css,
+			'pom_html_top' => $pom_html_top,
+			'pom_html_bottom' => $pom_html_bottom,
+			'pom_do_not_print' => $pom_do_not_print,
+			'pom_pause_time' => $pause_before_print,
+			'pom_close_after_print' => $close_after_print,
+		);
 
 		//return nothing if usign an external button
 		if($printstyle == "external"){
@@ -399,8 +399,8 @@ class WP_Print_O_Matic {
 
 								<tr>
 									<th><?php _e( 'Activate jQuery fix.clone', 'print-o-matic' ) ?></th>
-									<td><label><input type="checkbox" id="<?php echo $this->options_name ?>[fix_clone]" name="<?php echo $this->options_name ?>[fix_clone]" value="1"  <?php echo checked( $options['fix_clone'], 1 ); ?> /> <?php _e('Activate if textbox content is not printing.', 'print-o-matic'); ?>
-										<br /><span class="description"><?php printf(__('Addresses known bug with textboxes and the jQuery clone function. %sjquery.fix.clone on github.com%s', 'print-o-matic'), '<a href="http://github.com/spencertipping/jquery.fix.clone/" target="_blank">', '</a>'); ?></span></label>
+									<td><label><input type="checkbox" id="<?php echo $this->options_name ?>[fix_clone]" name="<?php echo $this->options_name ?>[fix_clone]" value="1"  <?php echo checked( $options['fix_clone'], 1 ); ?> /> <?php _e('Activate if textbox or select elements are not printing.', 'print-o-matic'); ?>
+										<br /><span class="description"><?php printf(__('Addresses known bug with textbox and sellect ellemnts when using the jQuery clone function. %sjquery.fix.clone on github.com%s', 'print-o-matic'), '<a href="http://github.com/spencertipping/jquery.fix.clone/" target="_blank">', '</a>'); ?></span></label>
 									</td>
 								</tr>
 
@@ -493,7 +493,6 @@ class WP_Print_O_Matic {
 	}
 
 } // end class WP_Print_O_Matic
-
 
 /**
  * Create instance

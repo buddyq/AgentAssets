@@ -4,6 +4,28 @@ require_once "SiteSettingsModel.php";
 
 /**
  * Class AgentInformationModel
+ *
+ * @property string property_description
+ * @property string price_type
+ * @property string price
+ * @property string price1
+ * @property string price2
+ * @property string property_type
+ * @property string property_mls
+ * @property string property_area
+ * @property string property_bedrooms
+ * @property string property_baths
+ * @property string property_living_areas
+ * @property string property_square_feet
+ * @property string property_school_district
+ * @property string property_pool
+ * @property string property_view
+ * @property string property_garages
+ * @property string property_year_built
+ * @property string property_lot_size
+ * @property string property_acreage
+ * @property string property_tour_link1
+ * @property string property_tour_link2
  */
 class PropertyDetailsModel extends SiteSettingsModel
 {
@@ -21,12 +43,12 @@ class PropertyDetailsModel extends SiteSettingsModel
     public function attributesMetadata()
     {
         return array(
-            /*'property_description' => array(
+            'property_description' => array(
                 'label' => 'Property Description',
                 'type' => 'editor',
                 'rules' => array(),
                 'formIndex' => 1,
-            ),*/
+            ),
             'price_type' => array(
                 'label' => 'Price Type',
                 'type' => 'select',

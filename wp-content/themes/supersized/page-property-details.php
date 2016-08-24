@@ -3,6 +3,7 @@
 
     </div>
     <div class="content col-sm-12">
+        <h1 class="page-title"><?php echo get_the_title($post->ID); ?></h1>
         <?php the_content(); ?>
     </div>
 

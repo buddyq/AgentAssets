@@ -92,6 +92,7 @@ class AAAdminFormImageField extends AAAdminFormField {
     );
 
     public function render() {
+        wp_enqueue_media();
         $image = wp_get_attachment_image_src($this->htmlOptions['value'], $size='large');
         $image_url = ($image) ? $image[0] : '';
         ?>
@@ -222,9 +223,11 @@ class AAAdminFormEditorField extends AAAdminFormField {
                 </label>
             </th>
             <td>
-                <?php wp_editor($value, $this->id, array(
+                <div>
+                <?php wp_editor($value, $this->id . '-editor', array(
                     'textarea_name' => $this->htmlOptions['name'],
                 )); ?>
+                </div>
                 <?php echo $this->description;?>
                 <?php if ($this->error) { ?>
                     <p class="wp-ui-text-notification"><?php echo $this->error;?></p>

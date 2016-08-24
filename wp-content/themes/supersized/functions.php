@@ -305,7 +305,7 @@ class wp_bootstrap_navwalker extends Walker_Nav_Menu {
 /*
  * Display Property Details Page
  */
-
+/*
 add_shortcode('display_property_details', 'property_details');
 function property_details()
 {
@@ -401,7 +401,7 @@ function property_details()
     </div>
     <?php
 }
-
+*/
 
 /*
  * @package Theme Settings | Customizer
@@ -1500,6 +1500,7 @@ function custom_admin_scripts() {
     <?php
 }*/
 
+/*
 add_shortcode('custom_map', 'custom_map_shortcode');
 
 function custom_map_shortcode($atts) {
@@ -1679,7 +1680,9 @@ function custom_map_shortcode($atts) {
         $html  .= '</div>';
         return $html;
  }
+*/
 
+/*
 add_shortcode('display_printable_info', 'display_printable_info');
 
 function display_printable_info() {
@@ -1701,7 +1704,7 @@ function display_printable_info() {
                                                     // The Query
                           $the_query = new WP_Query( array(
                                             'post_type' => 'printable_info',   /* edit this line */
-                                            'posts_per_page' => 1 ) );
+/*                                            'posts_per_page' => 1 ) );
 
                          // The Loop
                          if ( $the_query->have_posts() ) {
@@ -1735,7 +1738,7 @@ function display_printable_info() {
 
                          }
                          /* Restore original Post Data */
-                         wp_reset_postdata();
+/*                         wp_reset_postdata();
 
                            ?>
                        </ul>
@@ -1749,7 +1752,7 @@ function display_printable_info() {
         </div>
     <?php
 }
-
+*/
 
 // Register Custom Post Type
 // function printable_info_post_type() {

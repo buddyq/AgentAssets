@@ -8,19 +8,26 @@ function aa_media_image_shortcode($atts, $content) {
         'class' => '',
         'alt' => '',
         'title' => '',
+        'height' => '',
+        'width' => '',
         'align' => '',
+        'default' => '',
+        'style' => '',
     ), $atts);
 
     $mediaIdRaw = do_shortcode($content);
     $mediaId = filter_var($mediaIdRaw, FILTER_SANITIZE_NUMBER_INT);
 
     $image = wp_get_attachment_image_src((int)$mediaId, $atts['size']);
-    $image_url = ($image) ? $image[0] : '';
+    $image_url = ($image) ? $image[0] : $atts['default'];
 
     return '<img src="'.$image_url.'" '
-        . (empty($atts['class']) ? '' : 'alt="'.$atts['class'].'" ')
-        . (empty($atts['alt']) ? '' : 'alt="'.$atts['alt'].'" ')
-        . (empty($atts['title']) ? '' : 'title="'.$atts['title'].'" ')
-        . (empty($atts['align']) ? '' : 'align="'.$atts['align'].'" ')
+        . (empty($atts['class']) ? '' : 'alt="'.htmlspecialchars($atts['class']).'" ')
+        . (empty($atts['alt']) ? '' : 'alt="'.htmlspecialchars($atts['alt']).'" ')
+        . (empty($atts['title']) ? '' : 'title="'.htmlspecialchars($atts['title']).'" ')
+        . (empty($atts['align']) ? '' : 'align="'.htmlspecialchars($atts['align']).'" ')
+        . (empty($atts['height']) ? '' : 'height="'.htmlspecialchars($atts['height']).'" ')
+        . (empty($atts['width']) ? '' : 'align="'.htmlspecialchars($atts['width']).'" ')
+        . (empty($atts['style']) ? '' : 'style="'.htmlspecialchars($atts['style']).'" ')
         . '/>';
 }

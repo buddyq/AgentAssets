@@ -7,7 +7,7 @@ get_header();
 </div>
 <div class="content col-sm-12">
     <?php
-        echo do_shortcode( '[custom_map]' );
+        echo do_shortcode( '[aa-map-render]' );
     ?>
 </div>
 

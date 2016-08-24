@@ -1,5 +1,12 @@
 <?php
 
+/**
+ * Class PrintableInfoModel
+ *
+ * @property string printable_text
+ * @property int printable_image
+ */
+
 class PrintableInfoModel extends SiteSettingsModel {
     const OPTION_PREFIX = 'agentassets_printableinfo_';
 
@@ -21,12 +28,12 @@ class PrintableInfoModel extends SiteSettingsModel {
                 'rules' => array(),
                 'formIndex' => 1,
             ),
-            /*'printable_text' => array(
+            'printable_text' => array(
                 'label' => 'Printable Text',
                 'type' => 'editor',
                 'rules' => array(),
                 'formIndex' => 2,
-            ),*/
+            ),
         );
     }
 }

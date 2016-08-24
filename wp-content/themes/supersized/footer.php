@@ -1,37 +1,25 @@
                   </div>
-            </div>  
+            </div>
+
+                  <?php $agentInformation = AgentInformationModel::model(); ?>
 
                 <footer id="footer" class="footer-wrapper">
                     <div class="container">
                         <div class="col-sm-6">
                             <div class="broker-wrapper">
                                 <div id="brokerLogo">
-                                    <a href="<?php echo get_user_meta($users['0']->data->ID,'broker_website',true);?>" rel="nofollow" target="_blank">
-                                        <?php 
+                                    <a href="<?php echo $agentInformation->broker_website;?>" rel="nofollow" target="_blank">
+                                        <?php
                                         $current_blog_id = get_current_blog_id();
-                                        
-                                        $users = get_users(array('blog_id'=>$current_blog_id,'role'=>'administrator'));
-                                        
-                                        $broker_attach_id = get_user_meta($users['0']->data->ID,'broker_logo',true);
-                                        switch_to_blog(1);  # Switching to Admin
-                                        $broker_attach_details = wp_get_attachment_image_src($broker_attach_id,'full');
-                                        $broker_logo = $broker_attach_details[0];
-                                        //$broker_logo = $user_data['agent_company_logo'];
-                                        restore_current_blog();
-                                        if($broker_logo != "")
-                                        {
-                                            ?>
-                                            <?php echo do_shortcode('[agentinformation_broker_logo_url size=ss-broker-logo]'); ?>
-                                            <!-- <img src="<?php echo $broker_logo;?>" height="80" alt="<?php echo get_user_meta($users['0']->data->ID,'broker',true);?>"> -->
-                                            <?php
-                                        }
-                                        else
-                                        {
-                                            ?>
+                                        $blogOwnerId = OrderMap::getBlogOwner($current_blog_id);
+                                        $blogOwner = get_user_by('ID', $blogOwnerId);
 
-                                            <!-- <img src="<?php echo get_template_directory_uri();?>/images/broker_logo.jpg" height="80" alt="<?php echo get_user_meta($users['0']->data->ID,'broker',true);?>"> -->
-                                            <?php
-                                        }
+                                        echo aa_media_image_shortcode(array(
+                                            'size' => 'ss-broker-logo',
+                                            'height' => '80px',
+                                            'alt' => get_user_meta(OrderMap::getBlogOwner($current_blog_id), 'broker', true),
+                                            'default' => get_template_directory_uri() . '/images/broker_logo.jpg',
+                                        ), $agentInformation->broker_logo);
                                         ?>
                                     </a>
                                 </div>
@@ -44,21 +32,13 @@
                         
                             <div class="agent-wrapper">
                                 <div class="agent-info col-sm-9">
-                                    <?php 
-                                    
-                                    if(isset($users['0']->data->display_name) && !empty($users['0']->data->display_name)){ ?>
-                                    <h2><?php echo $users['0']->data->display_name;?></h2>
-                                    <?php } else { ?>
-                                    <h2>Agent Name</h2>
-                                    <?php } ?>
+                                    <h2><?php echo empty($agentInformation->agent_name) ? $blogOwner->display_name : $agentInformation->agent_name;?></h2>
                                     <ul>
-                                        <?php 
-                                        
-                                        $business_phone = get_user_meta($users['0']->data->ID,'business_phone',true);
-                                        if($business_phone != "")
+                                        <?php
+                                        if(!empty($agentInformation->business_phone))
                                         {
                                             ?>
-                                            <li>c: <?php echo $business_phone;?></li>
+                                            <li>c: <?php echo $agentInformation->business_phone;?></li>
                                             <?php
                                         }
                                         else
@@ -68,11 +48,10 @@
                                             <?php
                                         }
 
-                                        $mobile_phone = get_user_meta($users['0']->data->ID,'mobile_phone',true);
-                                        if($mobile_phone != "")
+                                        if(!empty($agentInformation->mobile_phone))
                                         {
                                             ?>
-                                            <li>o: <?php echo $mobile_phone;?></li>
+                                            <li>o: <?php echo $agentInformation->mobile_phone;?></li>
                                             <?php
                                         }
                                         else
@@ -84,49 +63,28 @@
                                         ?>
 
                                         <li>
-                                            <a  class="cu-agent-mail" href="mailto:<?php echo $users['0']->data->user_email;?>"><?php echo $users['0']->data->user_email;?></a>
+                                            <a  class="cu-agent-mail" href="mailto:<?php echo $blogOwner->user_email;?>"><?php echo $blogOwner->user_email;?></a>
                                         </li>
                                         <!-- if twitter / facebook / or google plus is entered -->
                                         <li class="social">
                                             <?php
 
                                     // $attachment_id = get_user_meta($users['0']->data->ID,'profile_picture',true);
-                                    
-                                    $facebook_url = get_user_meta($users['0']->data->ID,'facebook',true);
-                                    $twitter_url = get_user_meta($users['0']->data->ID,'twitter',true);
-                                    $googleplus_url = get_user_meta($users['0']->data->ID,'googleplus',true);
-                                          
                                             ?>
-                                            <a target="_blank" class="twitter" title="Follow me on Twitter!" href="http://twitter.com/<?php echo $twitter_url; ?>"><span><img src="<?php echo get_template_directory_uri();?>/images/Twitter.png"></span></a>
-                                            <a target="_blank" class="facebook" title="Friend me on Facebook!" href="http://facebook.com/<?php echo $facebook_url; ?>"><span><img src="<?php echo get_template_directory_uri();?>/images/Facebook.png"></span></a>
-                                            <a target="_blank" class="googleplus" title="Add me to your circles on Google+" href="http://plus.google.com/<?php echo $googleplus_url;?>"><span><img src="<?php echo get_template_directory_uri();?>/images/Google.png"></span></a>
+                                            <a target="_blank" class="twitter" title="Follow me on Twitter!" href="http://twitter.com/<?php echo $agentInformation->twitter; ?>"><span><img src="<?php echo get_template_directory_uri();?>/images/Twitter.png"></span></a>
+                                            <a target="_blank" class="facebook" title="Friend me on Facebook!" href="http://facebook.com/<?php echo $agentInformation->facebook; ?>"><span><img src="<?php echo get_template_directory_uri();?>/images/Facebook.png"></span></a>
+                                            <a target="_blank" class="googleplus" title="Add me to your circles on Google+" href="http://plus.google.com/<?php echo $agentInformation->google_plus;?>"><span><img src="<?php echo get_template_directory_uri();?>/images/Google.png"></span></a>
                                         </li>
                                     </ul>
                                 </div><!-- End agent info -->
 
                                 <div id="agent-pic" class="col-sm-3">
-                                    <?php 
-                                    $profilepic = do_shortcode('[agentinformation_profile_picture_url size=ss-agent-img]');
-                                    // $attachment_id = get_user_meta($users['0']->data->ID,'profile_picture',true);
-                                    $facebook_url = get_user_meta($users['0']->data->ID,'facebook',true);
-                                    $twitter_url = get_user_meta($users['0']->data->ID,'twitter',true);
-                                    $googleplus_url = get_user_meta($users['0']->data->ID,'googleplus',true);
-                                    switch_to_blog(1);  # Switching to Admin
-                                    // $attach_details = wp_get_attachment_image_src($attachment_id,'full');
-                                    
-                                // $profilepic = $attach_details[0];
-                                //$profilepic = $user_data['agent_image'];
-                                    restore_current_blog();
-                                    if($profilepic !="")
-                                    {
-                                      echo $profilepic;
-                                    }
-                                    else
-                                    {
-                                      ?>
-                                        <img style="width:auto; height:136px;" src="<?php echo get_template_directory_uri();?>/images/agent_pic.jpg" alt="Agent Photo">
-                                        <?php
-                                    }
+                                    <?php
+                                    echo aa_media_image_shortcode(array(
+                                        'style' => 'width:auto; height:136px;',
+                                        'default' => get_template_directory_uri() . '/images/agent_pic.jpg',
+                                        'alt' => 'Agent Photo',
+                                    ), $agentInformation->profile_picture);
                                     ?>
                                 </div>
 

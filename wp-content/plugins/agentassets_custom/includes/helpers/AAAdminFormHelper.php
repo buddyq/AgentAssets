@@ -70,7 +70,7 @@ class AAAdminFormConfig {
             'number' => 'AAAdminFormNumberField',
             'image' => 'AAAdminFormImageField',
             'textarea' => 'AAAdminFormTextareaField',
-            'content' => 'AAAdminFormContentField',
+            'editor' => 'AAAdminFormEditorField',
             'select' => 'AAAdminFormDropdownField',
         );
 
@@ -123,12 +123,12 @@ class AAAdminFormHelper {
         ), $htmlOptions);
         ?>
         <form <?php echo deployTagOptions($htmlOptions);?> >
+        <?php if ($nonce) {
+            wp_nonce_field($nonce);
+        } ?>
             <table class="form-table">
                 <tbody>
         <?php
-        if ($nonce) {
-            wp_nonce_field($nonce);
-        }
     }
 
     public static function endForm($submit = null) {

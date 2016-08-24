@@ -2,7 +2,8 @@
 
 add_shortcode('aa-map-render', 'agentassets_map_render_shortcode');
 
-function agentassets_map_render_shortcode($atts, $content) {
+function agentassets_map_render_shortcode($atts, $content)
+{
     $contactsInfo = (class_exists('ContactInfoModel')) ? ContactInfoModel::model() : null;
     $atts = shortcode_atts(array(
         'map_id' => 'location_map',
@@ -15,6 +16,13 @@ function agentassets_map_render_shortcode($atts, $content) {
         'agent_name' => $contactsInfo ? $contactsInfo->google_map_bubble_marker_agentname : get_option('google_map_bubble_marker_agentname'),
         'price' => $contactsInfo ? $contactsInfo->google_map_bubble_marker_price : get_option('google_map_bubble_marker_price'),
     ), $atts);
+
+    return do_shortcode(AACRender::instance(AA_CUSTOM_RENDER_INSTANCE)->srender('aa-map-render', 'shortcode', array(
+        'atts' => $atts,
+    )));
+}
+    /*
+
     ob_start(); ?>
 
     <span id="wpv-shortcode-generator-target">
@@ -58,3 +66,4 @@ function agentassets_map_render_shortcode($atts, $content) {
     ob_end_clean();
     return do_shortcode($html);
 }
+*/

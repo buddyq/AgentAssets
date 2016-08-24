@@ -198,6 +198,7 @@ function medma_groups_admin_shortcode_view($data) {
                     </tr>
                     </thead>
                     <tbody>
+                    <?php if (!empty($data['users'])): ?>
                     <?php foreach ($data['users'] as $user) { ?>
                         <tr>
                             <td><?php echo $user->name;?></td>
@@ -219,6 +220,11 @@ function medma_groups_admin_shortcode_view($data) {
                             </td>
                         </tr>
                     <?php } ?>
+                    <?php else: ?>
+                        <tr>
+                            <td>You've got no user group yet.</td>
+                        </tr>
+                    <?php endif; ?>
                     </tbody>
                 </table>
             </div>

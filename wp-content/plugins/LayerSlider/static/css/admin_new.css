@@ -1,4 +1,4 @@
-html {
+html, body {
   background: white; }
 
 .clear {
@@ -334,6 +334,7 @@ html {
 
 #ls-screen-options-form input[type="number"] {
   width: 50px; }
+
 #ls-screen-options-form button {
   margin-left: 10px; }
 
@@ -572,17 +573,22 @@ div.ls-bulk-actions {
 .ls-export-wrapper .half:first-child {
   margin-right: -1px;
   border-right: 1px solid #dfdfdf; }
+
 .ls-export-wrapper .half:last-child {
   margin-left: 0;
   border-left: 1px solid #dfdfdf; }
+
 .ls-export-wrapper .checkbox {
   width: 16px; }
+
 .ls-export-wrapper span.status {
   float: right;
   margin-right: 10px;
   font-weight: 600; }
+
 .ls-export-wrapper .status.available {
   color: #76b546; }
+
 .ls-export-wrapper .status.notavailable {
   color: #E14D43; }
 
@@ -590,30 +596,39 @@ div.ls-bulk-actions {
   margin: 20px 10px 0 0;
   text-align: justify;
   color: #777; }
+
 .ls-import-export-box input, .ls-import-export-box select {
   width: 90%; }
+
 .ls-import-export-box td {
   padding: 8px !important; }
+
 .ls-import-export-box input.ls-import-file {
   width: 300px;
   margin-bottom: 8px;
   line-height: 16px; }
+
 .ls-import-export-box label {
   line-height: 30px; }
+
 .ls-import-export-box form {
   padding: 10px; }
+
 .ls-import-export-box form.ls-export-form tr:first-child td {
   padding-top: 8px; }
   .ls-import-export-box form.ls-export-form tr:first-child td:last-child {
     padding-right: 8px; }
+
 .ls-import-export-box form.ls-export-form select {
   width: 100%;
   height: 106px;
   margin-bottom: 8px;
   border-radius: 3px;
   padding: 3px; }
+
 .ls-import-export-box form.ls-export-form button {
   margin-right: 0 !important; }
+
 .ls-import-export-box button {
   float: right;
   margin-right: 10px !important; }
@@ -633,35 +648,45 @@ div.ls-bulk-actions {
 #ls-permission-form .inner {
   padding: 20px;
   text-align: center; }
+
 #ls-permission-form i {
   margin: 0 20px; }
+
 #ls-permission-form td:first-child {
   width: 130px;
   text-align: right; }
+
 #ls-permission-form input, #ls-permission-form select {
   width: 200px;
   border-radius: 3px; }
+
 #ls-permission-form p {
   margin-bottom: 0; }
 
 .ls-auto-update .inner {
   padding: 20px 0;
   text-align: center; }
+
 .ls-auto-update p:last-child {
   margin-bottom: 0; }
+
 .ls-auto-update i {
   margin: 0px 20px; }
+
 .ls-auto-update span.status {
   float: right;
   margin-right: 5px;
   font-weight: 600; }
+
 .ls-auto-update tbody td:first-child {
   width: 130px; }
+
 .ls-auto-update input {
   margin: 0 2px 0 5px; }
   .ls-auto-update input.key {
     width: 250px;
     font: normal normal normal 13px/15px Arial, sans-serif; }
+
 .ls-auto-update .footer a {
   float: right;
   margin-left: 10px;
@@ -710,18 +735,23 @@ div.ls-bulk-actions {
 
 .ls-global-settings .inner {
   padding: 0; }
+
 .ls-global-settings span.warning {
   float: right;
   margin: 0 5px;
   color: red;
   font-weight: 600; }
+
 .ls-global-settings thead {
   color: #444; }
+
 .ls-global-settings tbody td:first-child {
   width: 230px;
   text-align: right; }
+
 .ls-global-settings .ls-checkbox {
   margin: 0 10px; }
+
 .ls-global-settings td.desc {
   font-size: 12px; }
 
@@ -1080,14 +1110,18 @@ div.ls-image {
 
 .ls-post-adv-settings p {
   margin: 5px 0; }
+
 .ls-post-adv-settings select {
   width: 130px; }
+
 .ls-post-adv-settings input {
   width: 50px; }
+
 .ls-post-adv-settings span.sep {
   margin: 0 7px;
   font-size: 12px;
   text-align: center; }
+
 .ls-post-adv-settings .half {
   padding: 15px 0; }
 

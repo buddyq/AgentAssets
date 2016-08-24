@@ -2,6 +2,7 @@
 /*                   N O T I C E                  */
 /**************************************************/
 .ls-plugins-screen-notice:before {
+  font-family: dashicons !important;
   content: "\f153" !important; }
 
 .layerslider_notice {
@@ -17,7 +18,7 @@
 
 .layerslider_notice h1 {
   margin: -4px 0px 7px 0px;
-  font: normal normal normal 24px/26px "HelveticaNeue-Light", "Helvetica Neue Light", "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font: normal normal normal 24px/26px 'Open Sans', sans-serif;
   -webkit-font-smoothing: antialiased; }
 
 .layerslider_notice p {
@@ -36,6 +37,50 @@
   position: absolute;
   right: 1px;
   top: 0; }
+
+.ls-beta-program {
+  margin: 50px 20px 0 0;
+  border: 0;
+  background: #161a2d url(../img/betabg.jpg);
+  background-position: -400px 620px;
+  background-attachment: fixed;
+  color: rgba(255, 255, 255, 0.7);
+  border-radius: 10px; }
+  .ls-beta-program h1 {
+    padding-left: 110px;
+    color: white; }
+  .ls-beta-program p {
+    padding-left: 110px;
+    padding-right: 15px; }
+  .ls-beta-program img {
+    width: 80px;
+    height: 80px;
+    margin-left: 15px; }
+  .ls-beta-program a {
+    position: static !important;
+    display: inline-block;
+    height: 32px;
+    margin: 15px 15px 0 0 !important;
+    padding: 0 20px;
+    border: 2px solid #424551;
+    border-radius: 32px;
+    box-sizing: border-box;
+    font-size: 13px;
+    font-weight: 600;
+    line-height: 28px;
+    text-align: center;
+    text-transform: uppercase;
+    vertical-align: middle;
+    transition: all 0.3s;
+    color: #fff !important;
+    text-decoration: none; }
+    .ls-beta-program a:hover {
+      border-color: white; }
+    .ls-beta-program a.signup {
+      border-color: transparent;
+      background: #ff5c33; }
+      .ls-beta-program a.signup:hover {
+        background: #ff3300; }
 
 /**************************************************/
 /*                   N O T I C E                  */

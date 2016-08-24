@@ -2,7 +2,7 @@
 Contributors: Hristo Sg, danielkanchev
 Tags: nginx, caching, speed, memcache, memcached, performance, siteground, nginx, supercacher
 Requires at least: 3.0.1
-Tested up to: 4.5
+Tested up to: 4.6
 Stable tag: 1.0
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -54,6 +54,9 @@ This field allows you to exclude URLs from the cache. This means that if you nee
 * Enable Memcached - Store in the server's memory (using Memcached) frequently executed queries to the database for a faster access on a later use.
 
 == Changelog ==
+
+= Version 2.3.9 =
+* Improved WordPress 4.6 compatibilitty
 
 = Version 2.3.8 =
 * Improved compatibility with SiteGround Staging System

@@ -1897,8 +1897,6 @@ class WP_Views {
 					$post_content = str_replace('[wpv-layout-meta-html]', $view_layout_settings['layout_meta_html'], $post_content );
 				}
 
-				$post_content = wpml_content_fix_links_to_translated_content( $post_content );
-
 				$view_settings = $this->get_view_settings();
 
 				// find the loop

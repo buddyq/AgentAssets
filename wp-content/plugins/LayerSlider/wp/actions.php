@@ -118,6 +118,16 @@ function ls_register_form_actions() {
 			}
 		}
 
+
+		if(isset($_GET['page']) && $_GET['page'] == 'layerslider' && isset($_GET['action']) && $_GET['action'] == 'hide-beta-program-notice') {
+			if(check_admin_referer('hide-beta-program-notice')) {
+				update_user_meta( get_current_user_id(), 'layerslider_beta_program', true);
+				header('Location: admin.php?page=layerslider');
+				die();
+			}
+		}
+
+
 		if(isset($_GET['page']) && $_GET['page'] == 'layerslider' && isset($_GET['action']) && $_GET['action'] == 'hide-update-notice') {
 			if(check_admin_referer('hide-update-notice')) {
 				$latest = get_option('ls-latest-version', LS_PLUGIN_VERSION);

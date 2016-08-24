@@ -673,7 +673,6 @@ class WPV_template{
 			}
         }
 
-		$content = wpml_content_fix_links_to_translated_content( $content );
 		$WPVDebug->add_log_item( 'shortcodes', $content );
 		
 		/**

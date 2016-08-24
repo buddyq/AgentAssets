@@ -1382,26 +1382,33 @@ bottom:-1px;}
 
 /* General button style (reset) */
 .btn {
-    background: #3498db !important;
-    background-image: -webkit-linear-gradient(top, #3498db, #2980b9);
-    background-image: -moz-linear-gradient(top, #3498db, #2980b9);
-    background-image: -ms-linear-gradient(top, #3498db, #2980b9);
-    background-image: -o-linear-gradient(top, #3498db, #2980b9);
-    background-image: linear-gradient(to bottom, #3498db, #2980b9);
+    background: #BCB39E !important;
+    background-image: -webkit-linear-gradient(top, #BCB39E, #000);
+    background-image: -moz-linear-gradient(top, #BCB39E, #000);
+    background-image: -ms-linear-gradient(top, #BCB39E, #000);
+    background-image: -o-linear-gradient(top, #BCB39E, #000);
+    background-image: linear-gradient(to bottom, #BCB39E, #000);
     -webkit-box-shadow: 0px 1px 3px #666666;
     -moz-box-shadow: 0px 1px 3px #666666;
     box-shadow: 0px 1px 3px #666666;
     color: #ffffff;
     font-size: 20px;
-    padding: 5px 20px 5px 20px;
-    border: solid #1f628d 2px !important;
+    padding: 8px 20px 5px 20px !important;
+    border: solid #000 2px !important;
     text-decoration: none;
     width: 100%;
+    text-shadow: 1px 1px 1px rgba(0,0,0,1) !important;
     text-transform: uppercase;
+    font-weight: bold;
 }
-
+@keyframes coloring {
+  from{background-color: #BCB39E;}
+  to{background-color: #333333;}
+}
 .btn:hover {
-    background: #3cb0fd !important;
+    background-color: #333333 !important;
+    animation-name: coloring;
+    animation-duration: 1s;
     background-image: -webkit-linear-gradient(top, #3cb0fd, #3498db);
     background-image: -moz-linear-gradient(top, #3cb0fd, #3498db);
     background-image: -ms-linear-gradient(top, #3cb0fd, #3498db);
@@ -1620,7 +1627,15 @@ Animate.css - http://daneden.me/animate
 }
 .menu-header{ width: 70%;}
 
-#slides div {-moz-border-radius:5px;-webkit-border-radius:5px;background-color:rgba(0,0,0,0.7);border-radius:5px;bottom:0;margin:20px;padding:15px;position:absolute;z-index:10; color:#FFFFFF;}
+#slides div {
+  background-color:rgba(0,0,0,0.7);
+  bottom:0;
+  margin:20px;
+  padding:15px 8px;
+  position:absolute;
+  z-index:10;
+  color:#FFFFFF;
+}
 #slides h2 {font-size:14px;margin-bottom:5px;}
 #slides strong {color:#999480;font-size:14px;text-shadow:none;text-transform: uppercase; font-weight: bold;}
 #slides p {color:#FFFFFF;font-size:11px;line-height:14px;margin:0!important;text-shadow:none;}

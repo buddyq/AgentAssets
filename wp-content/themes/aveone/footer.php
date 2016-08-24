@@ -72,7 +72,7 @@
                         // echo "<pre>"; print_r ($attachment_id); die("</pre>");
                         $attach_details = wp_get_attachment_image($attachment_id);
                         // echo $attach_details;
-                        $image = wp_get_image_editor($attachment_id);
+                        //$image = wp_get_image_editor($attachment_id);
                         // echo "<pre>"; print_r ($image); die("</pre>");
                         $agent_profile_picture = $attachment_id;
                         // echo "<pre>"; print_r ($agent_profile_picture); die("</pre>");

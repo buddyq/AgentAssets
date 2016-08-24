@@ -233,7 +233,6 @@ function render_view_template( $view_template_id, $post_in = null, $current_user
 		if ( $output_mode == 'raw_mode' ) {
 			$WPV_templates->remove_wpautop();
 		}
-		$content = wpml_content_fix_links_to_translated_content( $content );
 		if (
 			
 			/**

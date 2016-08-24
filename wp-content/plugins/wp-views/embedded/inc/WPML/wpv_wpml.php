@@ -19,7 +19,6 @@ function wpv_wpml_icl_current_language( $lang ) { // TODO check why is this need
     return $sitepress->get_default_language();
 }
 
-
 /**
  * Converts links in a string to the corresponding ones in the current language
  *
@@ -30,10 +29,6 @@ function wpv_wpml_icl_current_language( $lang ) { // TODO check why is this need
  */
 function wpml_content_fix_links_to_translated_content($body){
     global $WPV_settings, $wpdb, $sitepress, $sitepress_settings, $wp_taxonomies;
-
-    if ( ! $WPV_settings->wpml_fix_urls ) {
-        return $body;
-    }
 
     if (isset($sitepress)) {
 
@@ -281,125 +276,6 @@ function wpml_content_get_link_paths($body) {
         }
     }
     return $links;
-}
-
-
-add_action( 'icl_tm_menu_mcsetup', 'wpv_wpml_settings' );
-
-/**
- * Filter hooked into icl_tm_menu_mcsetup. Add View settings to the Translation Management setup screen.
- *
- * @note displays different HTML for different WPML versions
- *
- * @since unknown
- */
-function wpv_wpml_settings() {
-    global $WPV_settings;
-
-    wp_nonce_field('wpv_wpml_save_settings_nonce', 'wpv_wpml_save_settings_nonce');
-    
-    if(defined('ICL_SITEPRESS_VERSION')) {
-
-        if ( version_compare( ICL_SITEPRESS_VERSION, '3.0' )  < 0 ) {
-
-            /*
-            *    This section should be display conditionally, only for WPML < 3.0
-            */
-            ?>
-            <table class="widefat">
-                <thead>
-                    <tr>
-                        <th><?php _e('Views', 'wpv-views'); ?></th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td style="border: none;">
-                            <p>
-                                <label>
-                                    <input id="wpv_wpml_fix_urls" type="checkbox" value="1" <?php checked( $WPV_settings->wpml_fix_urls ); ?> />
-                                    <?php _e('Convert URLs to point to translated content in Views and Content Templates', 'wpv-views'); ?>
-                                </label>
-                            </p>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                            <input class="button-primary" type="button" value="<?php _e('Save', 'wpv-views'); ?>" onclick="wpv_wpml_save_view_settings(); return false;" />
-                            <span id="icl_ajx_response_views_wpml" class="icl_ajx_response"><?php _e('Settings Saved', 'wpv-views'); ?></span>
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
-        <?php
-    
-        } else {
-
-            /*
-            * This section should be display conditionally, only for WPML >= 3.0
-            */
-
-            ?>
-
-            <div class="wpml-section">
-                <div class="wpml-section-header">
-                    <h3>
-                        <?php _e('Views', 'wpv-views'); ?>
-                    </h3>
-                </div>
-                <div class="wpml-section-content">
-                    <p>
-                        <label>
-                            <input id="wpv_wpml_fix_urls" type="checkbox" value="1" <?php checked( $WPV_settings->wpml_fix_urls ); ?> />
-                            <?php _e('Convert URLs to point to translated content in Views and Content Templates', 'wpv-views'); ?>
-                        </label>
-                    </p>
-                    <p class="buttons-wrap">
-                        <span id="icl_ajx_response_views_wpml" class="icl_ajx_response"><?php _e('Settings Saved', 'wpv-views'); ?></span>
-                        <input class="button-primary" type="button" value="<?php _e('Save', 'wpv-views'); ?>" onclick="wpv_wpml_save_view_settings(); return false;" />
-                    </p>
-                </div>
-            </div>
-
-            <?php
-
-        }
-    }
-    ?>
-
-	<script type="text/javascript">
-        function wpv_wpml_save_view_settings() {
-
-            var data = {
-                action : 'wpv_wpml_save_settings',
-                wpv_wpml_fix_urls : jQuery('#wpv_wpml_fix_urls:checked').val(),
-                wpv_nonce : jQuery('#wpv_wpml_save_settings_nonce').attr('value')
-
-            };
-
-            jQuery.ajaxSetup({async:false});
-            jQuery.post(ajaxurl, data, function(response) {
-                jQuery('#icl_ajx_response_views_wpml').show();
-            });
-
-        }
-    </script>
-
-    <?php
-}
-
-
-
-add_action('wp_ajax_wpv_wpml_save_settings', 'wpv_wpml_save_settings');
-
-function wpv_wpml_save_settings() {
-	if (wp_verify_nonce($_POST['wpv_nonce'], 'wpv_wpml_save_settings_nonce')) {
-        global $WPV_settings;
-        $WPV_settings->wpml_fix_urls = isset( $_POST['wpv_wpml_fix_urls'] ) ? $_POST['wpv_wpml_fix_urls'] : false;
-        $WPV_settings->save();
-    }
-
-    die();
 }
 
 

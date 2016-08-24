@@ -16,20 +16,16 @@
 	<!-- Favicon -->
 	<!-- Firefox, Chrome, Safari, IE 11+ and Opera. -->
 	<link href="<?php echo $aveone_favicon; ?>" rel="icon" type="image/x-icon" />
-	<?php } ?>
-
-        <?php
-       // $meta_keywords = aveone_get_option('evl_meta_keywords');
-        //$meta_description = aveone_get_option('evl_meta_description');
-         $meta_keywords = get_option('meta_keywords',true);
-         $meta_description = get_option('meta_description',true);
-        ?>
-        <meta name="keywords" content="<?php echo $meta_keywords;?>" />
-        <meta name="description" content="<?php echo $meta_description;?>" />
-
-	<!-- Meta Tags -->
+	<?php }
+ 	// $meta_keywords = aveone_get_option('evl_meta_keywords');
+  //$meta_description = aveone_get_option('evl_meta_description');
+  $meta_keywords = get_option('meta_keywords',true);
+  $meta_description = get_option('meta_description',true);
+  ?>
+  <meta name="keywords" content="<?php echo $meta_keywords;?>" />
+  <meta name="description" content="<?php echo $meta_description;?>" />
 	<meta http-equiv="Content-Type" content="<?php bloginfo( 'html_type' ); ?>; charset=<?php bloginfo('charset'); ?>" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 	<?php wp_head(); ?>
 <!--END head-->
 
@@ -41,7 +37,7 @@
 
 <!--BEGIN body-->
 <body <?php body_class(); ?>>
-
+<?php include_once("analyticstracking.php") ?>
 <?php //$aveone_custom_background = aveone_get_option('evl_custom_background','1'); if ($aveone_custom_background == "1") { ?>
 <div id="wrapper">
 <?php //} ?>
@@ -95,7 +91,7 @@
 				 echo $tagline;
 
 				 } ?>
-				 
+
 
 				 <?php $aveone_blog_title = aveone_get_option('evl_blog_title','0');
 				 if ($aveone_blog_title == "0" || !$aveone_blog_title) { ?>

@@ -1,8 +1,9 @@
 <?php
+include plugin_dir_path(__DIR__) . 'helpers/AAGoogleMapApi.php';
 
 add_shortcode('aa-map-render', 'agentassets_map_render_shortcode');
 
-function agentassets_map_render_shortcode($atts, $content)
+function agentassets_map_render_shortcode($atts, $content, $tag)
 {
     $contactsInfo = (class_exists('ContactInfoModel')) ? ContactInfoModel::model() : null;
     $atts = shortcode_atts(array(
@@ -15,55 +16,27 @@ function agentassets_map_render_shortcode($atts, $content)
         'bubble_marker_address' => $contactsInfo ? $contactsInfo->google_map_bubble_marker_address : get_option('google_map_bubble_marker_address'),
         'agent_name' => $contactsInfo ? $contactsInfo->google_map_bubble_marker_agentname : get_option('google_map_bubble_marker_agentname'),
         'price' => $contactsInfo ? $contactsInfo->google_map_bubble_marker_price : get_option('google_map_bubble_marker_price'),
+        
+        'map_type_id' => 'roadmap',
+        'map_width' => '100%',
+        'zoom' => 14,
+        'latitude' => '',
+        'longitude' => '',
+        'scrollwheel' => true,
+        'disable_default_ui' => false,
+        'api_key' => 'AIzaSyCFVCN5SzM9EzvW-5FzL3nHhmcCkY1EYr4',
+        'marker_size' => 0,
+        'marker_url' => plugins_url('agentassets_custom/images/marker.png'),
+        
+        'open_window' => true,
     ), $atts);
 
-    return do_shortcode(AACRender::instance(AA_CUSTOM_RENDER_INSTANCE)->srender('aa-map-render', 'shortcode', array(
-        'atts' => $atts,
-    )));
+    
+    $googleMapApi = new AAGoogleMapApi($atts);
+    $googleMapApi->showMap();
+
+//    return do_shortcode(AACRender::instance(AA_CUSTOM_RENDER_INSTANCE)->srender('aa-map-render', 'shortcode', array(
+//        'atts' => $atts, 'gma' => $googleMapApi
+//    )));
+    
 }
-    /*
-
-    ob_start(); ?>
-
-    <span id="wpv-shortcode-generator-target">
-        [wpv-map-marker
-            map_id='<?php echo $atts['map_id'];?>'
-            marker_id='<?php echo $atts['marker_id'];?>'
-            marker_icon='http://aveone.agentassets.com/wp-content/plugins/toolset-maps/resources/images/markers/Home.png'
-            address='<?php echo $atts['address'];?>'
-        ]
-        <div style="color: #000;">
-
-        <?php if (!empty($atts['bubble_marker_address'])): ?>
-          <strong><?php echo $atts['bubble_marker_address']; ?></strong><br/>
-        <?php endif; ?>
-
-        <?php if (!empty($atts['city_state'])): ?>
-          <strong><?php echo $atts['city_state']; ?></strong><br/>
-        <?php endif; ?>
-
-        <?php if (!empty($atts['price'])): ?>
-          <strong>Price:</strong> <?php echo $atts['price'];?><br/>
-        <?php endif; ?>
-
-        <?php if (!empty($atts['agent_name'])): ?>
-          <strong><em>Represented By:</strong> <?php echo $atts['agent_name'];?></em>
-        <?php endif; ?>
-
-        </div>
-        [/wpv-map-marker]
-    </span>
-    <span id="wpv-shortcode-generator-target">
-        [wpv-map-render map_id='<?php echo $atts['map_id'];?>' map_height='<?php echo $atts['map_height'];?>']
-    </span>
-    <?php if ($atts['show_focus_map_button'] == 1) { ?>
-    <br/>
-    <div><a class="js-wpv-addon-maps-focus-map button" href="#" data-map="<?php echo $atts['map_id'];?>" data-marker="<?php echo $atts['marker_id'];?>">Focus on marker</a></div>
-    <?php } ?>
-
-    <?php
-    $html = ob_get_contents();
-    ob_end_clean();
-    return do_shortcode($html);
-}
-*/

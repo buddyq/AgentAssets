@@ -82,14 +82,29 @@ class AAGoogleMapApi
             <div id=\"google_map\" style=\"height: " . $this->map_height . "; width: " . $this->map_width . ";\"></div>
             <br>
             <div>
-                <a id=\"aa_google_map_focus\" class=\"button\" href=\"#\" data-map=\"location_map\" 
-                        data-marker=\"address_marker\">Focus on marker</a>
+                <span style='display: inline-block; float: left; width: 50%; text-align: left'>
+                    <input type='text' id='direction_from_address'>
+                    <input type='button' id='direction_from_init' class='button' value='Go'>
+                </span>
+                <span style='display: inline-block; float: left; width: 50%; text-align: right'>
+                    <input type='button' id=\"aa_google_map_focus\" value='Focus on marker'>
+                </span>
             </div>
             <script>
                 var map;
                 function initialize() {
                     var mapOptions = " . json_encode($this->options, JSON_UNESCAPED_UNICODE) . "
                     map = new google.maps.Map(document.getElementById('google_map'), mapOptions);
+                    
+                    var directionsService = new google.maps.DirectionsService;
+                    var directionsDisplay = new google.maps.DirectionsRenderer;
+                    directionsDisplay.setMap(map);
+                    
+                    var onChangeHandler = function() {
+                        calculateAndDisplayRoute(directionsService, directionsDisplay);
+                    };
+                    
+                    document.getElementById('direction_from_init').addEventListener('click', onChangeHandler);
                     
                     var marker = new google.maps.Marker({
                         position: " . json_encode($this->position) . ",
@@ -124,6 +139,20 @@ class AAGoogleMapApi
                         e.preventDefault();
                         map.setCenter(" . json_encode($this->position) . ");
                         return false;
+                    });
+                }
+                
+                function calculateAndDisplayRoute(directionsService, directionsDisplay) {
+                    directionsService.route({
+                        origin: document.getElementById('direction_from_address').value,
+                        destination: " . json_encode($this->position) . ",
+                        travelMode: google.maps.TravelMode.DRIVING
+                    }, function(response, status) {
+                        if (status === google.maps.DirectionsStatus.OK) {
+                            directionsDisplay.setDirections(response);
+                        } else {
+                            window.alert('Directions request failed due to ' + status);
+                        }
                     });
                 }
 

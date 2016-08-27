@@ -105,6 +105,12 @@ class AAGoogleMapApi
                     };
                     
                     document.getElementById('direction_from_init').addEventListener('click', onChangeHandler);
+                    document.getElementById('direction_from_address').addEventListener('keyup', function(e){
+                        if (e.which == 13) {
+                            console.log(e.which);
+                            onChangeHandler();
+                        }
+                    });
                     
                     var marker = new google.maps.Marker({
                         position: " . json_encode($this->position) . ",

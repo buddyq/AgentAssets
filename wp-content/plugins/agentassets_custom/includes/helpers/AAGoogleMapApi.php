@@ -50,11 +50,14 @@ class AAGoogleMapApi
             $this->description .= '<strong><em>Represented By:&nbsp;</em></strong><em>' . $atts['agent_name'] . '</em><br>';
         }
 
-        $this->api_key = 'key=' . (!empty($atts['api_key']) ? $atts['api_key'] : 'AIzaSyCFVCN5SzM9EzvW-5FzL3nHhmcCkY1EYr4');
+        $themeOptions = get_blog_option(1, 'avia_options_agentassets_theme');
+        $apiKey = $themeOptions['avia']['gmap_api'];
+
+        $this->api_key = 'key=' . (!empty($atts['api_key']) ? $atts['api_key'] : $apiKey);
 
         $this->open_window = !empty($atts['open_window']) ? 'infowindow.open(map, marker);' : '';
 
-        $this->marker = '""';
+        $this->marker = "''";
         if (!empty($atts['marker_url'])) {
             $this->marker = '{
                 url: "' . $atts['marker_url'] . '",
@@ -77,6 +80,7 @@ class AAGoogleMapApi
     }
     
     public function showMap() {
+        $test = '';
         $content = "
             <script src=\"https://maps.googleapis.com/maps/api/js?{$this->api_key}&sensor=false\" type=\"text/javascript\"></script>
             <div id=\"google_map\" style=\"height: " . $this->map_height . "; width: " . $this->map_width . ";\"></div>
@@ -118,7 +122,7 @@ class AAGoogleMapApi
                     });
         
                     var infowindow = new google.maps.InfoWindow({
-                        content: '<p>$this->description</p>'
+                        content: '<p style=\"color: #000\">$this->description</p>'
                     });
             
                     google.maps.event.addListener(marker, 'click', function() {

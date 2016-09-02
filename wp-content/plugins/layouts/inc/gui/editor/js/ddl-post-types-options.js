@@ -48,7 +48,8 @@ DDLayout.PostTypes_Options = function(adm)
     {
         var  $where_ui = jQuery('.js-where-used-ui')
             , $button = jQuery('.js-layout-content-assignment-button')
-            , $errors = jQuery('.js-where-used-box-messages');
+            , $errors = jQuery('.js-where-used-box-messages')
+            , $button_area = jQuery('.layout-content-assignment-button-wrap');
 
         self.is_assigned = DDLayout.local_settings.list_where_used !== null;
 
@@ -57,6 +58,7 @@ DDLayout.PostTypes_Options = function(adm)
             return;
         } else if( self.is_assigned && layout_model.get('has_child') ) {
             $button.prop('disabled', true);
+            $button_area.append('<button class="button button-large new_layout_alert_border" id="remove_assignments">'+DDLayout_settings.DDL_JS.strings.remove_assignments_button+'</button>');
             $errors.wpvToolsetMessage({
                 text: DDLayout_settings.DDL_JS.strings.this_is_a_parent_layout,
                 type: 'warning',

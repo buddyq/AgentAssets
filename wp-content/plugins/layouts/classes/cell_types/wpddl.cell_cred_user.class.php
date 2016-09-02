@@ -109,7 +109,6 @@ if (!class_exists('CRED_User_Cell')) {
                                 ?>
                             </select>
                         </fieldset>
-
                         <fieldset class="ddl-dialog-fieldset">
                             <legend><?php _e('Settings:', 'ddl-layouts'); ?></legend>
                             
@@ -173,10 +172,13 @@ if (!class_exists('CRED_User_Cell')) {
                             $k = isset($k) ? $k : '';
                             foreach ($posts as $post) :
                                 $form = $fm->getForm($post->ID);
+                                $levels_for_user = json_decode($form->fields['form_settings']->form['user_role']);
+                                $user_levels = implode(',', $levels_for_user);
+                            
                                 echo $this->ddl_cred_user_get_option_element($post->ID,
                                     $post->post_title,
                                     $form->fields['form_settings']->form['type'],
-                                    $post->post_type, $k);
+                                    $post->post_type, $user_levels);
                             endforeach;
                             ?>
                         </select>
@@ -369,7 +371,7 @@ if (!class_exists('CRED_User_Cell')) {
 
             ob_start();
             ?>
-            <option value="<?php echo $id; ?>"
+            <option <?php echo $level;?> value="<?php echo $id; ?>"
                     data-type="<?php echo $type; ?>"
                     data-post-type="<?php echo $post_type->label; ?>"
                     data-user-level="<?php echo $level;?>"

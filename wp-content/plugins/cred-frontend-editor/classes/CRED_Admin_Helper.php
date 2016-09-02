@@ -68,6 +68,12 @@ final class CRED_Admin_Helper {
          * add debug information
          */
         add_filter('icl_get_extra_debug_info', array(__CLASS__, 'getExtraDebugInfo'));
+        
+        /*
+         * Add necessary JS for forms deletion handling 
+         */
+         
+        add_action("admin_footer", array(__CLASS__, "handlePostFormDeletionJS"));
     }
 
     // add custom classes to our metaboxes, so they can be handled as needed
@@ -842,6 +848,7 @@ final class CRED_Admin_Helper {
         echo CRED_Loader::tpl('form-settings-meta-box', array(
             'form' => $form,
             'settings' => $settings,
+            'post_types' => CRED_Loader::get('MODEL/Fields')->getPostTypes(),
             //'cred_themes'=>array('minimal'=>__('Simple CSS','wp-cred'),'styled'=>__('Bootstrap CSS','wp-cred')),
             'form_action_pages' => $form_action_pages,
             'help' => CRED_CRED::$help,
@@ -878,6 +885,11 @@ final class CRED_Admin_Helper {
         ));
     }
 
+    /**
+     * @deprecated since 1.8
+     * @param type $form
+     * @param type $args
+     */
     public static function addPostTypeMetaBox($form, $args) {
         $settings = $args['args']['form_settings'];
         echo CRED_Loader::tpl('post-type-meta-box', array(
@@ -918,10 +930,46 @@ final class CRED_Admin_Helper {
         ));
     }
 
+    /**
+     * @deprecated since version 1.8
+     * @param type $form
+     * @param type $args
+     */
     public static function addExtraAssetsMetaBox($form, $args) {
         $extra = $args['args']['extra'];
 
         echo CRED_Loader::tpl('extra-meta-box', array(
+            'css' => isset($extra->css) ? $extra->css : '',
+            'js' => isset($extra->js) ? $extra->js : '',
+            'help' => CRED_CRED::$help,
+            'help_target' => CRED_CRED::$help_link_target
+        ));
+    }
+    
+    /**
+     * @added since version 1.8
+     * @param type $form
+     * @param type $args
+     */
+    public static function addExtraCSSMetaBox($form, $args){
+        $extra = $args['args']['extra'];
+        echo CRED_Loader::tpl('extra-css-meta-box', array(
+            'css' => isset($extra->css) ? $extra->css : '',
+            'js' => isset($extra->js) ? $extra->js : '',
+            'help' => CRED_CRED::$help,
+            'help_target' => CRED_CRED::$help_link_target
+        ));
+    }
+    
+    /**
+     * @added since 1.8
+     * @param type $form
+     * @param type $args
+     */
+    public static function addExtraJSMetaBox($form, $args){
+        $extra = $args['args']['extra'];
+
+        echo CRED_Loader::tpl('extra-js-meta-box', array(
             'css' => isset($extra->css) ? $extra->css : '',
             'js' => isset($extra->js) ? $extra->js : '',
             'help' => CRED_CRED::$help,
@@ -964,11 +1012,24 @@ final class CRED_Admin_Helper {
     public static function addCredAccessMessagesMetaBox($form, $args) {
         global $wpcf_access;
         $is_access_active = (isset($wpcf_access) && !empty($wpcf_access));
-
         echo CRED_Loader::tpl('text-access-meta-box', array(
             'is_access_active' => $is_access_active,
             'form_type' => @$form->post_type,
+            'form_saved'=> ($args["args"]["form_settings"]->post["post_type"] != null)
         ));
+    }
+    
+    public static function addSaveMetaBox($form, $args){
+        echo CRED_Loader::tpl('save-form-meta-box', array(
+            'delete_link' => do_shortcode("[cred_delete_post_link class='submitdelete deletion' text='Move to Trash' action='delete' message='".__("Are you sure you want to delete this form?", "wp-cred")."' message_show='1']"),
+        ));
+    }
+    
+    public static function handlePostFormDeletionJS(){
+        if(isset($_GET["action"]) && $_GET["action"] == "edit"){
+            $js = "<script>jQuery(document).on('cred-post-delete-link-completed', function(){ if(window.pagenow && window.pagenow == 'cred-user-form'){ document.location = '".admin_url("admin.php?page=CRED_User_Forms&form_deleted=1")."'; } else { document.location = '".admin_url("admin.php?page=CRED_Forms&form_deleted=1")."'; } });</script>";
+            echo $js;
+        }
     }
 
 }

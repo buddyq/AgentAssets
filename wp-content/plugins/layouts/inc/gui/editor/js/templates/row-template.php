@@ -12,6 +12,6 @@
 
 	<p class="add-row">
 		<?php // Do not add a line break between buttons! ?>
-		<button class="button-secondary js-highlight-row js-add-row add-row-button add-row-button-fluid" type="button"><i class="icon-plus fa fa-plus"></i></button><button class="button-secondary js-highlight-row js-show-add-special-row-menu add-row-menu-toggle" type="button"><i class="fa fa-caret-down js-icon-caret"></i></button>
+		<button class="button-secondary js-highlight-row js-add-row add-row-button add-row-button-fluid" type="button"><i class="icon-plus fa fa-plus"></i></button><button class="button-secondary js-highlight-row js-show-add-special-row-menu add-row-menu-toggle" type="button"><i class="fa fa-bars js-icon-caret"></i></button>
 	</p>
 </script>

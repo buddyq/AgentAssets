@@ -3,11 +3,12 @@ class WPDD_Layouts_RenderManager{
     private static $instance;
     private $render_errors;
     private $attachment_markup = '';
+    private $content_removed_for_CRED= false;
 
     private function __construct(  ){
         $this->render_errors = array();
 
-        if( !is_admin() ){
+        if( !is_admin() && ( !defined('DOING_AJAX') || DOING_AJAX === false )  ){
             add_action('wp_head', array($this,'wpddl_frontend_header_init'));
             add_action('wpddl_before_header', array($this, 'before_header_hook'));
             add_filter('ddl_render_cell_content', array(&$this,'fix_attachment_body'), 10, 3 );
@@ -15,6 +16,7 @@ class WPDD_Layouts_RenderManager{
             add_filter('prepend_attachment', array(&$this, 'attachment_handler'), 999);
             add_action( 'ddl_before_frontend_render_cell', array(&$this, 'prevent_CRED_duplication_generic'), 1001, 2 );
             add_action('ddl_before_frontend_render_cell', array(&$this,'prevent_CRED_duplication_content_template'), 8, 2 );
+            add_action( 'ddl_after_frontend_render_cell', array(&$this, 'restore_the_content_for_cred'), 10, 2 );
             add_filter('ddl-content-template-cell-do_shortcode', array(&$this, 'prevent_cred_recursion'), 10, 2);
             add_action('get_header', array(&$this, 'fix_for_woocommerce_genesis'), 1 );
             add_filter('ddl_render_cell_content', array(&$this, 'message_if_menu_is_not_assigned'),11,2);
@@ -26,6 +28,13 @@ class WPDD_Layouts_RenderManager{
             if( 'toolset starter' == strtolower( wp_get_theme() )) {
                 add_action('template_redirect', array(&$this, 'fix_for_toolset_starter_wc_redirect'), 999);
             }
+        }
+    }
+
+    public function restore_the_content_for_cred( $cell, $renderer ){
+        if( $this->content_removed_for_CRED ){
+            add_filter('the_content', array('CRED_Helper', 'replaceContentWithForm'), 1000);
+            $this->content_removed_for_CRED = false;
         }
     }
 
@@ -194,12 +203,21 @@ class WPDD_Layouts_RenderManager{
      */
     public function prevent_CRED_duplication_generic($cell, $renderer){
         if( ( isset( $_GET['cred-edit-form']) || isset( $_GET['cred-edit-user-form'] ) ) &&
-            class_exists('CRED_Helper')
+            class_exists('CRED_Helper') && $cell->get_cell_type( ) === 'cell-text'
         ){
-            if( $cell->get_cell_type( ) === 'cell-text' && $cell->content_content_contains( array( 'cred_link_form', 'cred_link_user_form' ) ) ){
-                $this->hide_cred_cred_links($_GET);
+            $cred_links = $cell->content_content_contains( array( 'cred_link_form', 'cred_link_user_form' ) );
+            $post_body = $cell->content_content_contains( array( 'wpv-post-body') );
+
+            if( $cred_links && $post_body ){
+                $this->hide_cred_cred_links($_GET); // wpv post body renders the form keep the filter
+            } elseif( $cred_links && !$post_body ) {
+                $this->hide_cred_cred_links($_GET); // the_content filter renders the form keep the filter
+            } elseif( !$cred_links && $post_body ) {
+                // do nothing // wpv post body renders the form keep the filter
+                $this->content_removed_for_CRED = false;
             } else {
                 remove_filter('the_content', array('CRED_Helper', 'replaceContentWithForm'), 1000);
+                $this->content_removed_for_CRED = true; // the form is rendered directly by do_shortcode, remove the filter to prevent duplication
             }
         }
     }

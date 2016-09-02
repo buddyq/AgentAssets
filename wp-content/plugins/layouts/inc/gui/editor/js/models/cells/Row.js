@@ -3,6 +3,7 @@ DDLayout.models.cells.Row = DDLayout.models.abstract.Element.extend({
         Cells: DDLayout.models.collections.Cells
         ,cssClass:'row-fixed'
         ,kind: 'Row'
+        ,row_type:'row'
         ,layout_type:'fixed'
         ,mode:'normal'
     }
@@ -45,7 +46,7 @@ DDLayout.models.cells.Row = DDLayout.models.abstract.Element.extend({
 
         for (var i = 0; i < cells.length; i++) {
             var test_cell = cells.at(i);
-            if (test_cell.get('kind') == 'Container') {
+            if ( test_cell.hasRows() ) {
                 var rows_in_container = test_cell.get('Rows');
                 var parent_width = test_cell.get('width');
                 parent_width = rows_in_container.get_parent_width( row, parent_width);
@@ -77,7 +78,7 @@ DDLayout.models.cells.Row = DDLayout.models.abstract.Element.extend({
                 }
                 return count;
             }
-            if (test_cell.get('kind') == 'Container') {
+            if ( test_cell.hasRows() ) {
                 var rows_in_container = test_cell.get('Rows');
                 var space = rows_in_container.get_empty_space_to_right_of_cell(cell);
                 if (space >= 0) {
@@ -104,9 +105,17 @@ DDLayout.models.cells.Row = DDLayout.models.abstract.Element.extend({
                 return test_cell;
             }
 
-            if (test_cell.get('kind') == 'Container') {
+            if ( test_cell.hasRows() ) {
                 var rows_in_container = test_cell.get('Rows');
-                var cell = rows_in_container.find_cell_of_type(cell_type)
+
+                if( typeof rows_in_container === 'undefined' ) {
+                    return false;
+                } else if( _.isArray( rows_in_container ) ){
+                    rows_in_container = new DDLayout.models.collections.Rows( rows_in_container );
+                }
+
+
+                var cell = rows_in_container.find_cell_of_type(cell_type);
                 if (cell) {
                     return cell;
                 }
@@ -131,8 +140,15 @@ DDLayout.models.cells.Row = DDLayout.models.abstract.Element.extend({
                 ret.push( test_cell );
             }
 
-            if (test_cell.get('kind') == 'Container') {
+            if ( test_cell.hasRows() ) {
                 var rows_in_container = test_cell.get('Rows');
+
+                if( typeof rows_in_container === 'undefined' ) {
+                    return false;
+                } else if( _.isArray( rows_in_container ) ){
+                    rows_in_container = new DDLayout.models.collections.Rows( rows_in_container );
+                }
+
                 var cells = rows_in_container.find_cells_of_type(cell_type)
                 if (cells) {
                     _.each(cells, function(cell){

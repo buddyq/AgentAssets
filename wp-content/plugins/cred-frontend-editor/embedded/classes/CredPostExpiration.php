@@ -17,8 +17,8 @@ class CRED_PostExpiration {
             'custom_actions' => array()
         ),
         'expiration_time' => array(
-            'weeks' => 0,
-            'days' => 0
+            'expiration_date' => 0,
+            'expiration_period' => "minutes"
         )
     );
     private $_action_post_status = array(
@@ -79,7 +79,10 @@ class CRED_PostExpiration {
         add_action('add_meta_boxes', array($this, 'cred_pe_add_post_meta_box'));
         add_action('save_post', array($this, 'cred_pe_post_save'));
         add_filter('cred_ext_general_settings_options', array($this, 'cred_pe_general_settings_options'));
-        add_filter('cred_ext_meta_boxes', array($this, 'cred_pe_meta_boxes'), 10, 2);
+
+        //add_filter('cred_ext_meta_boxes', array($this, 'cred_pe_meta_boxes'), 10, 2);
+        add_action('cred_ext_cred_form_settings', array($this, 'cred_pe_form_setting'), 10, 2);
+
         add_filter('cred_admin_notification_subject_codes', array($this, 'addExtraNotificationCodes'), 10, 4);
         add_filter('cred_admin_notification_body_codes', array($this, 'addExtraNotificationCodes'), 10, 4);
         //add specific placeholders to CRED notification mail subject and body
@@ -88,7 +91,6 @@ class CRED_PostExpiration {
 
         add_action('wp_ajax_cred_post_expiration_date', array($this, 'cred_post_expiration_date'));
         add_action('wp_ajax_nopriv_cred_post_expiration_date', array($this, 'cred_post_expiration_date'));
-
         add_filter('cron_schedules', array($this, 'cred_pe_add_cron_schedules'), 10, 1);
         // shortcodes
         $this->_shortcodes['cred-post-expiration'] = array($this, 'cred_pe_shortcode_cred_post_expiration');
@@ -145,7 +147,7 @@ class CRED_PostExpiration {
     /**
      * enqueue scripts and styles
      */
-    function cred_pe_scripts() {        
+    function cred_pe_scripts() {
         if ($this->_post_expiration_enabled) {
             $screen_ids = array();
             $settings = $this->getCredPESettings();
@@ -246,9 +248,9 @@ class CRED_PostExpiration {
             if (isset($_POST['_cred_post_expiration'])) {
                 $form_expiration_settings = self::array_merge_distinct($this->_settings_defaults, $_POST['_cred_post_expiration']);
             }
-            /*else {                
-                 $form_expiration_settings = $this->_settings_defaults;
-            }*/
+            /* else {                
+              $form_expiration_settings = $this->_settings_defaults;
+              } */
             $this->updateForm($post_id, $form_expiration_settings);
 
             if ($form_expiration_settings['enable']) {
@@ -278,19 +280,20 @@ class CRED_PostExpiration {
             if ($settings['enable']) {
                 // expire time default is 0, that means no expiration
                 $expire_time = 0;
-                $days_value = 0;
-                $weeks_value = 0;
+                $expiration_amount = 0;
+                $expiration_period = 0;
                 //Convert to integer value to make sure $expire_time is set correctly
-                if (isset($settings['expiration_time']['days'])) {
-                    $days_value = intval($settings['expiration_time']['days']);
+                if (isset($settings['expiration_time']['expiration_date'])) {
+                    $expiration_amount = intval($settings['expiration_time']['expiration_date']);
                 }
-                if (isset($settings['expiration_time']['weeks'])) {
-                    $weeks_value = intval($settings['expiration_time']['weeks']);
+                if (isset($settings['expiration_time']['expiration_period'])) {
+                    $expiration_period = $settings['expiration_time']['expiration_period'];
                 }
-                if ($weeks_value > 0 || $days_value > 0) {
+                if ($expiration_period != null && $expiration_amount >= 0) {
                     // calculate expiration time and get the corresponding timestamp
-                    $expire_time = strtotime('+' . $weeks_value . ' weeks +' . $days_value . ' days');
+                    $expire_time = strtotime('+' . $expiration_amount . ' ' . $expiration_period);
                 }
+
                 update_post_meta($post_id, $this->_post_expiration_time_field, $expire_time);
                 // actions on expiration
                 $settings['action']['custom_actions'] = isset($settings['action']['custom_actions']) ? $settings['action']['custom_actions'] : array();
@@ -324,47 +327,54 @@ class CRED_PostExpiration {
     /**
      * insert Enable Automatic Expiration Date CRED settings option
      */
-    function cred_pe_general_settings( $settings ) {
+    function cred_pe_general_settings($settings) {
         $this->_post_expiration_enabled = (isset($settings['enable_post_expiration']) ? $settings['enable_post_expiration'] : false);
         ?>
 
         <label class='cred-label'>
-			<input type="checkbox" autocomplete="off" class='cred-checkbox-invalid js-cred-other-setting js-cred-other-setting-enable-post-expiration' name="cred_enable_post_expiration" value="1" <?php if (isset($settings['enable_post_expiration']) && $settings['enable_post_expiration']) echo "checked='checked'"; ?> />
-			<span class='cred-checkbox-replace'></span>
+            <input type="checkbox" autocomplete="off" class='cred-checkbox-invalid js-cred-other-setting js-cred-other-setting-enable-post-expiration' name="cred_enable_post_expiration" value="1" <?php if (isset($settings['enable_post_expiration']) && $settings['enable_post_expiration']) echo "checked='checked'"; ?> />
+            <span class='cred-checkbox-replace'></span>
             <span><?php _e('Enable Automatic Expiration of Post options for CRED Post Forms', $this->_localization_context); ?></span>
-		</label>
-		<div class="js-cred-other-setting-enable-post-expiration-extra" style="margin:10px 0 0 25px;<?php if ( ! $this->_post_expiration_enabled ) { echo 'display:none;'; } ?>">
-			<div class="toolset-advanced-setting">
-				<?php
-				$settings = $this->getCredPESettings();
-				echo CRED_Loader::tpl( 'pe_settings_meta_box', array(
-					'cred_post_expiration'	=> $this,
-					'settings'				=> $settings
-				));
-				?>
-			</div>
-		</div>
+        </label>
+        <div class="js-cred-other-setting-enable-post-expiration-extra" style="margin:10px 0 0 25px;<?php
+        if (!$this->_post_expiration_enabled) {
+            echo 'display:none;';
+        }
+        ?>">
+            <div class="toolset-advanced-setting">
+                <?php
+                $settings = $this->getCredPESettings();
+                $settings_defaults = $this->_settings_defaults;
+                echo CRED_Loader::tpl('pe_settings_meta_box', array(
+                    'cred_post_expiration' => $this,
+                    'settings' => $settings,
+                    'settings_defaults' => $settings_defaults,
+                    'field_name' => $this->_prefix . $this->_form_post_expiration
+                ));
+                ?>
+            </div>
+        </div>
         <?php
     }
-	
-	function cred_pe_general_settings_save( $settings, $posted_settings ) {
-		
-		if ( isset( $posted_settings[ 'cred_enable_post_expiration' ] ) ) {
-			$settings[ 'enable_post_expiration' ] = $posted_settings[ 'cred_enable_post_expiration' ];
-		} else {
-			$settings[ 'enable_post_expiration' ] = 0;
-		}
-		
-		$pe_settings = $this->getCredPESettings();
-		if ( isset( $posted_settings[ 'cred_post_expiration_cron_schedule' ] ) ) {
-			$pe_settings['post_expiration_cron']['schedule'] = $posted_settings[ 'cred_post_expiration_cron_schedule' ];
-		} else {
-			$pe_settings['post_expiration_cron']['schedule'] = '';
-		}
-		$this->setCredPESettings( $pe_settings );
-		
-		return $settings;
-	}
+
+    function cred_pe_general_settings_save($settings, $posted_settings) {
+
+        if (isset($posted_settings['cred_enable_post_expiration'])) {
+            $settings['enable_post_expiration'] = $posted_settings['cred_enable_post_expiration'];
+        } else {
+            $settings['enable_post_expiration'] = 0;
+        }
+
+        $pe_settings = $this->getCredPESettings();
+        if (isset($posted_settings['cred_post_expiration_cron_schedule'])) {
+            $pe_settings['post_expiration_cron']['schedule'] = $posted_settings['cred_post_expiration_cron_schedule'];
+        } else {
+            $pe_settings['post_expiration_cron']['schedule'] = '';
+        }
+        $this->setCredPESettings($pe_settings);
+
+        return $settings;
+    }
 
     /**
      * set Enable Automatic Expire Date CRED settings option default
@@ -375,6 +385,7 @@ class CRED_PostExpiration {
     }
 
     /**
+     * @deprecated since version 1.8
      * define Enable Automatic Expiration Date CRED Form meta box
      */
     function cred_pe_meta_boxes($metaboxes, $form_fields) {
@@ -402,6 +413,7 @@ class CRED_PostExpiration {
     }
 
     /**
+     * @deprecated since version 1.8
      * render Enable Automatic Expiration Date CRED Form meta box
      */
     function addCredPostExpireMetaBox($form, $args) {
@@ -410,6 +422,27 @@ class CRED_PostExpiration {
         echo CRED_Loader::tpl('pe_form_meta_box', array(
             'cred_post_expiration' => $this,
             'settings' => $settings,
+            'settings_defaults' => $settings_defaults,
+            'field_name' => $this->_prefix . $this->_form_post_expiration
+        ));
+    }
+
+    function cred_pe_form_setting($form, $settings) {
+        global $post;
+        if ($post && $post->post_type == CRED_USER_FORMS_CUSTOM_POST_NAME)
+            return '';
+        if ($this->_post_expiration_enabled) {
+            return $this->addCredPostExpireFormSettings($form, $settings);
+        }
+        return '';
+    }
+
+    function addCredPostExpireFormSettings($form, $settings) {
+        $fsettings = $this->getFormMeta($form->ID);
+        $settings_defaults = $this->_settings_defaults;
+        echo CRED_Loader::tpl('pe_form_meta_box', array(
+            'cred_post_expiration' => $this,
+            'settings' => $fsettings,
             'settings_defaults' => $settings_defaults,
             'field_name' => $this->_prefix . $this->_form_post_expiration
         ));
@@ -603,7 +636,9 @@ class CRED_PostExpiration {
                 foreach ($post_meta->notifications as $key => $notification) {
                     cred_log($key);
                     cred_log($notification);
-                    $notification_time = $post_meta->expiration_time - $notification['event']['expiration_date'] * DAY_IN_SECONDS;
+                    
+                    $notification_time = $post_meta->expiration_time - ($notification['event']['expiration_date'] * $notification['event']['expiration_period']);
+
                     if ($notification_time <= $now) {
                         // notify
                         $posts_ids_for_notifications[] = $post_meta->post_id;
@@ -870,7 +905,8 @@ class CRED_PostExpiration {
      * Render CRED Form notification option for post expiration.
      * */
     public function cred_pe_add_notification_option($form, $options, $notification) {
-        if (!$this->_post_expiration_enabled) return;
+        if (!$this->_post_expiration_enabled)
+            return;
         if ($form->post_type == CRED_USER_FORMS_CUSTOM_POST_NAME)
             return;
         list($ii, $name, $type) = $options;

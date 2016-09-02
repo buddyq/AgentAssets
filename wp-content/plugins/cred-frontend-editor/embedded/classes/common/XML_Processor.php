@@ -719,7 +719,7 @@ final class CRED_XML_Processor {
         return new WP_Error('unknown error', __('Unknown error during import', 'wp-cred'));
     }
 
-    private static function importSingleForm($form_data, $fmodel, &$options, &$results) {
+    public static function importSingleForm($form_data, $fmodel, &$options, &$results) {
         $form = new stdClass;
         $form->ID = '';
         $form->post_title = $form_data['post_title'];

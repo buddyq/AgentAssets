@@ -1,8 +1,10 @@
-// row-edit-dialog.js
+var DDLayout = DDLayout || {};
 
-DDLayout.RowDialog = function($)
+DDLayout.RowDialog = function($, row_view)
 {
     var self = this;
+
+    self.row_view = row_view
 
     _.extend( DDLayout.RowDialog.prototype, new DDLayout.Dialogs.Prototype(jQuery) );
 
@@ -147,13 +149,14 @@ DDLayout.RowDialog = function($)
             href: '#ddl-row-edit',
             closeButton:false,
             onComplete: function() {
-
+                Toolset.hooks.doAction(self.row_view.model.get('kind') +'.dialog_open', self.row_view.model);
             },
             onCleanup:function(){
                 jQuery('.js-css-styling-controls').removeClass('from-top-0').show();
                 jQuery('.ddl-dialog-content').removeClass('pad-top-0');
                 jQuery('.js-ddl-form-row').removeClass('ddl-zero');
                 jQuery('.js-row-dialog-edit-save').addClass('button-primary').prop('disabled', false);
+                Toolset.hooks.doAction(self.row_view.model.get('kind') +'.dialog_close', self.row_view.model);
             }
         });
     };

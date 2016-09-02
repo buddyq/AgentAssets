@@ -259,7 +259,7 @@ class CRED_Form_Builder implements CRED_Friendable, CRED_FriendableStatic {
 
     // manage form submission / validation and rendering and return rendered html
     public function form($form_id, $post_id = null, $preview = false, $force_form_count = false, $specific_post_id = null) {
-        cred_log("form");
+        cred_log("################## form ########################");
 
         $bypass_form = apply_filters('cred_bypass_process_form_' . $form_id, false, $form_id, $post_id, $preview);
         $bypass_form = apply_filters('cred_bypass_process_form', $bypass_form, $form_id, $post_id, $preview);
@@ -371,7 +371,9 @@ class CRED_Form_Builder implements CRED_Friendable, CRED_FriendableStatic {
             $formHelper->checkFilesType($this->out_['fields']['post_fields'], $this->out_['form_fields_info'], $zebraForm, $error_files);
         //##########################################################################################                
 
-        StaticClass::$_reset_file_values = ($is_ajax && $form_type == 'new' && $_fields['form_settings']->form['action'] == 'form' && $this->validate($tmp, true));
+        $pre_validation = $this->validate($tmp, true);
+        StaticClass::$_reset_file_values = ($is_ajax && $form_type == 'new' && $_fields['form_settings']->form['action'] == 'form' && $pre_validation);
+        cred_log("pre_validation: " . $pre_validation);
         cred_log("_reset_file_values: " . StaticClass::$_reset_file_values);
 
         $cloned = false;
@@ -382,7 +384,9 @@ class CRED_Form_Builder implements CRED_Friendable, CRED_FriendableStatic {
 
         cred_log("POST");
         cred_log($_POST);
-        cred_log("ALL POSTFIELDS");
+        cred_log("ALL FIELDS");
+        cred_log($this->out_['fields']);
+        cred_log("POSTFIELDS");
         cred_log($this->out_['fields']['post_fields']);
 
         if (StaticClass::$_reset_file_values) {
@@ -411,11 +415,13 @@ class CRED_Form_Builder implements CRED_Friendable, CRED_FriendableStatic {
             $_POST = $temp_post;
         }
 
-        $bypass_form = self::$_self_updated_form;
+        if ($form_use_ajax)
+            $bypass_form = self::$_self_updated_form;
 
         //if (!$bypass_form && $_zebraForm->validate($post_id, $_zebraForm->form_properties['fields']))
         $num_errors = 0;
         if (!$bypass_form && $validate) {
+            cred_log("######################################################################### OK");
             if (!$zebraForm->preview) {
                 // save post data
                 $bypass_save_form_data = apply_filters('cred_bypass_save_data_' . $form_id, false, $form_id, $post_id, $thisform);
@@ -749,7 +755,9 @@ class CRED_Form_Builder implements CRED_Friendable, CRED_FriendableStatic {
             $formHelper->checkFilesType($this->out_['fields']['post_fields'], $this->out_['form_fields_info'], $zebraForm, $error_files);
         //##########################################################################################
 
-        StaticClass::$_reset_file_values = ($is_ajax && $form_type == 'new' && $_fields['form_settings']->form['action'] == 'form' && $this->validate($tmp, true));
+        $pre_validation = $this->validate($tmp, true);
+        StaticClass::$_reset_file_values = ($is_ajax && $form_type == 'new' && $_fields['form_settings']->form['action'] == 'form');
+        cred_log("pre_validation: " . $pre_validation);
         cred_log("_reset_file_values: " . StaticClass::$_reset_file_values);
 
         $cloned = false;
@@ -800,7 +808,8 @@ class CRED_Form_Builder implements CRED_Friendable, CRED_FriendableStatic {
             $_POST = $temp_post;
         }
 
-        $bypass_form = self::$_self_updated_form;
+        if ($form_use_ajax)
+            $bypass_form = self::$_self_updated_form;
 
         //if (!$bypass_form && $_zebraForm->validate($post_id, $_zebraForm->form_properties['fields']))
         $num_errors = 0;
@@ -1066,6 +1075,11 @@ class CRED_Form_Builder implements CRED_Friendable, CRED_FriendableStatic {
         $form_type = $_fields['form_settings']->form['type'];
         $post_type = $_fields['form_settings']->post['post_type'];
 
+        //Added by Ahmed Hussein, for issue where multiple cred forms in same page get same post ids
+        if ($form_type == "new") {
+            $_post_to_create = null;
+        }
+
         // if this is an edit form and no post id given
         if ((('edit' == $form_type && false === $post_id && !$preview) ||
                 (isset($_GET['action']) && $_GET['action'] == 'edit_translation' && 'translation' == $form_type)) &&
@@ -1082,28 +1096,40 @@ class CRED_Form_Builder implements CRED_Friendable, CRED_FriendableStatic {
             if (!isset($_post_to_create) || empty($_post_to_create)) {
                 //Fix
                 global $wpdb;
+
+                //Adding auto-draft with each form render
                 $unique_value = md5(StaticClass::getIP());
-                $unique_post_title = "Auto Draft {$unique_value}";
-                $querystr = $wpdb->prepare("SELECT $wpdb->posts.ID FROM $wpdb->posts WHERE $wpdb->posts.post_status = 'auto-draft' AND $wpdb->posts.post_type = %s AND $wpdb->posts.post_title = %s ORDER by ID desc Limit 1", $post_type, $unique_post_title);
-                $_myposts = $wpdb->get_results($querystr, OBJECT);
+                $unique_post_title = "CRED Auto Draft {$unique_value}";
+
+                /* $querystr = $wpdb->prepare("SELECT $wpdb->posts.ID FROM $wpdb->posts WHERE $wpdb->posts.post_status = 'auto-draft' AND $wpdb->posts.post_type = %s AND $wpdb->posts.post_title = %s ORDER by ID desc Limit 1", $post_type, $unique_post_title);
+                  $_myposts = $wpdb->get_results($querystr, OBJECT); */
+
+                $mypost = get_default_post_to_edit($post_type, true);
+                $my_post = array(
+                    'ID' => $mypost->ID,
+                    'post_title' => $unique_post_title,
+                    'post_content' => '',
+                );
+                wp_update_post($my_post);
 
                 //Fix https://icanlocalize.basecamphq.com/projects/7393061-toolset/todo_items/192489607/comments
-                if (!empty($_myposts)) {
-                    $mypost = get_post($_myposts[0]->ID);
-                    $mypost->post_title = $unique_post_title;
-                    $mypost->post_content = '';
-                } else {
-                    //$post_id
-                    //Fixed https://icanlocalize.basecamphq.com/projects/7393061-toolset/todo_items/192489607/comments
-                    $mypost = get_default_post_to_edit($post_type, true);
-                    $my_post = array(
-                        'ID' => $mypost->ID,
-                        'post_title' => $unique_post_title,
-                        'post_content' => '',
-                    );
-                    wp_update_post($my_post);
-                    //################################################################################################
-                }
+                /* if (!empty($_myposts)) {
+                  $mypost = get_post($_myposts[0]->ID);
+                  $mypost->post_title = $unique_post_title;
+                  $mypost->post_content = '';
+                  } else {
+                  //$post_id
+                  //Fixed https://icanlocalize.basecamphq.com/projects/7393061-toolset/todo_items/192489607/comments
+                  $mypost = get_default_post_to_edit($post_type, true);
+                  $my_post = array(
+                  'ID' => $mypost->ID,
+                  'post_title' => $unique_post_title,
+                  'post_content' => '',
+                  );
+                  wp_update_post($my_post);
+                  //################################################################################################
+                  } */
+
                 $_post_to_create = $mypost->ID;
                 $this->_post_ID = $_post_to_create;
 
@@ -1685,8 +1711,8 @@ class CRED_Form_Builder implements CRED_Friendable, CRED_FriendableStatic {
     }
 
     // validate form
-    private function validate(&$error_files, $disable_hooks = false) {
-        cred_log("validate");
+    private function validate(&$error_files, $disable_recaptcha = false) {
+        cred_log("######################## validate ######################### $disable_recaptcha");
 
         // reference to the form submission method
         global ${'_' . StaticClass::METHOD};
@@ -1726,7 +1752,7 @@ class CRED_Form_Builder implements CRED_Friendable, CRED_FriendableStatic {
                 }
             }
 
-            if (!$disable_hooks && isset($_POST['_recaptcha'])) {
+            if (!$disable_recaptcha && isset($_POST['_recaptcha'])) {
                 if
                 (
                         (isset($_POST["g-recaptcha-response"]) && !empty($_POST["g-recaptcha-response"]))
@@ -1847,15 +1873,15 @@ class CRED_Form_Builder implements CRED_Friendable, CRED_FriendableStatic {
                 if ($form_type == 'edit') {
                     $user_id_to_edit = $_POST[StaticClass::PREFIX . 'post_id'];
                     $_user = new WP_User($user_id_to_edit);
-                    
-                    if (isset($_POST['user_email']) && 
-                            $_POST['user_email'] != $_user->data->user_email && 
+
+                    if (isset($_POST['user_email']) &&
+                            $_POST['user_email'] != $_user->data->user_email &&
                             email_exists($_POST['user_email'])) {
                         $zebraForm->add_top_message(__('Sorry, that email address is already used!', 'wp-cred'));
                         $zebraForm->add_field_message(__('Sorry, that email address is already used!', 'wp-cred'), 'user_email');
                         $result = false;
                     }
-                    
+
                     $user_role_to_edit = strtolower($_user->roles[0]);
                     $user_role_can_edit = json_decode($_fields['form_settings']->form['user_role'], true);
                     if (!empty($user_role_can_edit) && !in_array($user_role_to_edit, $user_role_can_edit)) {
@@ -1888,12 +1914,11 @@ class CRED_Form_Builder implements CRED_Friendable, CRED_FriendableStatic {
             $errors = array();
             //From CRED 1.2.6
             $form_slug = $form->getForm()->post_name;
-            if (!$disable_hooks) {
-                list($fields, $errors) = apply_filters('cred_form_validate_form_' . $form_slug, array($fields, $errors), $thisform);
-                list($fields, $errors) = apply_filters('cred_form_validate_' . $form_id, array($fields, $errors), $thisform);
-                list($fields, $errors) = apply_filters('cred_form_validate', array($fields, $errors), $thisform);
-            }
-
+            list($fields, $errors) = apply_filters('cred_form_validate_form_' . $form_slug, array($fields, $errors), $thisform);
+            list($fields, $errors) = apply_filters('cred_form_validate_' . $form_id, array($fields, $errors), $thisform);
+            list($fields, $errors) = apply_filters('cred_form_validate', array($fields, $errors), $thisform);
+            cred_log("################################### FILTERS");
+            cred_log(array($fields, $errors));
             if (!empty($errors)) {
                 //Added result to fix conditional elements of this todo
                 //Notice: Undefined index: cred_form_6_1_wysiwyg-field in with validation hook
@@ -1905,6 +1930,10 @@ class CRED_Form_Builder implements CRED_Friendable, CRED_FriendableStatic {
                         $ofname = $fname;
                         $fname = str_replace("wpcf-", "", $fname);
                     }
+                    
+                    if (isset($this->out_['fields']['extra_fields'][$fname]))                         
+                            $more_result = false;
+                            
                     if ($form->getForm()->post_type == CRED_USER_FORMS_CUSTOM_POST_NAME) {
                         if ((isset($this->out_['fields']['post_fields']) &&
                                 (array_key_exists($fname, $this->out_['fields']['post_fields']) ||
@@ -1938,7 +1967,7 @@ class CRED_Form_Builder implements CRED_Friendable, CRED_FriendableStatic {
                             //############################################################
                             $more_result = false;
                         }
-                    } else {
+                    } else {                        
                         if (isset($this->out_['form_fields']) &&
                                 array_key_exists($fname, $this->out_['form_fields'])) {
                             //Added result to fix conditional elements of this todo
@@ -1969,7 +1998,7 @@ class CRED_Form_Builder implements CRED_Friendable, CRED_FriendableStatic {
                     }
                 }
             }
-            $last_result = $zebraForm->validate($this->_post_ID, /* $formHelper->get_form_field_values() */ $zebraForm->form_properties['fields']);
+            $last_result = $zebraForm->validate($this->_post_ID, /* $formHelper->get_form_field_values() */ $zebraForm->form_properties['fields'], $is_user_form);
 
             cred_log("VALIDATION RESULT");
             cred_log(array($more_result, $result, $last_result));

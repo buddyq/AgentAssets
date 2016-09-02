@@ -3,6 +3,72 @@ Toolset CRED, by OnTheGoSystems
 
 Changelog:
 
+1.8
+
+- Fixed an issue where already saved repetitive image fields where not showing in CRED edit forms.
+
+- Fixed an issue with CRED edit user form shortcodes that didn't default to editing current user.
+
+- Added user Auto-Complete list when inserting a CRED user edit form.
+
+- Fixed an issue with custom invalid E-mail messages that weren't not showing properly.
+
+- Fixed an issue with imported CRED forms' slugs.
+
+- Fixed an error that occurred with cred_file_upload_disable_progress_bar if mutliple instance audio field was present.
+
+- Fixed a JavaScript error that occurred in CRED forms creation wizard while on a child site of a multisite network.
+
+- Fixed an issue with "value" attribute that wasn't passed to fields in CRED edit forms.
+
+- Fixed a anchor _target parameter conflict with image IDs.
+
+- Fixed an issue with backslashes being stripped of CSS after saving the form.
+
+- Fixed an issue with Error messages that weren't appearing properly for multiple CRED forms in the same page.
+https://wp-types.com/forums/topic/cred-forms-and-bootstrap-tabs/
+
+- Fixed an issue with Skype repetitive fields that weren't rendering on frontend.
+
+- Fixed an issue with mutliple _tt parameter in the url after a CRED form submit.
+
+- Fixed a compatibility issue with Geo My WordPress plugin.
+
+- Fixed an issue where CSS/JS fields weren't showing on child site of multisite network.
+
+- Fixed an issue with Form Submittion notification that are still active even when not selected.
+
+- Fixed issues with multiple CRED forms in the same page.
+
+- Fixed an issue with advanced options button in CRED popup being always disabled.
+
+- Fixed an issue with mutliple users submitting the form at the same time causing posts to overwrite each other.
+
+- Fixed an where translated versions of error messages weren't showing in CRED form validation messages.
+
+- Improved CRED form's Wizard look and behavior.
+
+- Improved the look and usability of CRED form editing page.
+
+- Minimized number of sections in CRED form creation wizard.
+
+- Extended post expiration settings.
+
+- Extended notifications settings for post expiration.
+
+- Added a new Save/Preview section.
+
+- Moved Export/Import to settings.
+
+- Improved JS/CSS editors look.
+
+- Improved URL rewriting when uploading a file to Amazon services
+https://wp-types.com/forums/topic/problem-of-toolset-types-image-filed-and-wp-offload-s3/
+
+- Added cred_form_ajax_upload_validate validation filter when uploading a file using AJAX
+
+
+
 1.7.1
 
 - Fixed an issue where images present in the repeating fields were not shown in the Post Editing forms on the front-end.
@@ -324,7 +390,7 @@ https://wp-types.com/forums/topic/cred-beta-user-profile-form-add-link-to-edit-f
 
 1.4.1
 
-- ​Fixed a security issue involving CRED User Forms
+- ?Fixed a security issue involving CRED User Forms
 
 1.4
 

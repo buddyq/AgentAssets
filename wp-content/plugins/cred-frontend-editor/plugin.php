@@ -4,7 +4,7 @@
   Plugin Name: Toolset CRED
   Plugin URI: https://wp-types.com/home/toolset-components/#cred
   Description: Create Edit Delete Wordpress content (ie. posts, pages, custom posts) from the front end using fully customizable forms
-  Version: 1.7.1
+  Version: 1.8
   Author: OnTheGoSystems
   Author URI: http://www.onthegosystems.com/
   License: GPLv2
@@ -33,7 +33,7 @@ if (defined('CRED_FE_VERSION'))
 // TODO use WP Cache object to cache queries(in base model) and templates(in loader DONE)
 /* removed */
 // current version
-define('CRED_FE_VERSION', '1.7.1');
+define('CRED_FE_VERSION', '1.8');
 // configuration constants
 define('CRED_NAME', 'CRED');
 define('CRED_CAPABILITY', 'manage_options');
@@ -162,10 +162,11 @@ add_filter( 'plugin_row_meta', 'toolset_cred_plugin_plugin_row_meta', 10, 4 );
 function toolset_cred_plugin_plugin_row_meta( $plugin_meta, $plugin_file, $plugin_data, $status ) {
 	$this_plugin = basename( CRED_FILE_PATH ) . '/plugin.php';
 	if ( $plugin_file == $this_plugin ) {
+                $ver2url = strtolower(str_replace(".","-",CRED_FE_VERSION));
 		$plugin_meta[] = sprintf(
 				'<a href="%s" target="_blank">%s</a>',
-				'https://wp-types.com/version/cred-1-6/?utm_source=credplugin&utm_campaign=cred&utm_medium=release-notes-plugin-row&utm_term=CRED 1.6 release notes',
-				__( 'CRED 1.6 release notes', 'wpv-views' ) 
+				' https://wp-types.com/version/cred-'.$ver2url.'/?utm_source=credplugin&utm_campaign=cred&utm_medium=release-notes-plugin-row&utm_term=CRED '.CRED_FE_VERSION.' release notes',
+				__( 'CRED '.CRED_FE_VERSION.' release notes', 'wpv-views' ) 
 			);
 	}
 	return $plugin_meta;
@@ -677,6 +678,9 @@ if (defined('ABSPATH')) {
             'insert-generic-field-shortcode-button' => array(
                 'path' => CRED_TEMPLATES_PATH . '/insert-generic-field-shortcode-button.tpl.php'
             ),
+            'access-button' => array(
+                'path' => CRED_TEMPLATES_PATH . '/access-button.tpl.php'
+            ),
             'scaffold-button' => array(
                 'path' => CRED_TEMPLATES_PATH . '/scaffold-button.tpl.php'
             ),
@@ -704,11 +708,20 @@ if (defined('ABSPATH')) {
             'extra-meta-box' => array(
                 'path' => CRED_TEMPLATES_PATH . '/extra-meta-box.tpl.php'
             ),
+            'extra-css-meta-box' => array(
+                'path' => CRED_TEMPLATES_PATH . '/extra-css-meta-box.tpl.php'
+            ),
+            'extra-js-meta-box' => array(
+                'path' => CRED_TEMPLATES_PATH . '/extra-js-meta-box.tpl.php'
+            ),
             'text-settings-meta-box' => array(
                 'path' => CRED_TEMPLATES_PATH . '/text-settings-meta-box.tpl.php'
             ),
             'text-access-meta-box' => array(
                 'path' => CRED_TEMPLATES_PATH . '/text-access-meta-box.tpl.php'
+            ),
+            'save-form-meta-box' => array(
+                'path' => CRED_TEMPLATES_PATH . "/save-form-meta-box.tpl.php"
             ),
             'delete-post-link' => array(
                 'path' => CRED_TEMPLATES_PATH . '/delete-post-link.tpl.php'

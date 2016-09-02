@@ -3,6 +3,72 @@ Toolset CRED, by OnTheGoSystems
 
 Changelog:
 
+1.8
+
+- Fixed an issue where already saved repetitive image fields where not showing in CRED edit forms.
+
+- Fixed an issue with CRED edit user form shortcodes that didn't default to editing current user.
+
+- Added user Auto-Complete list when inserting a CRED user edit form.
+
+- Fixed an issue with custom invalid E-mail messages that weren't not showing properly.
+
+- Fixed an issue with imported CRED forms' slugs.
+
+- Fixed an error that occurred with cred_file_upload_disable_progress_bar if mutliple instance audio field was present.
+
+- Fixed a JavaScript error that occurred in CRED forms creation wizard while on a child site of a multisite network.
+
+- Fixed an issue with "value" attribute that wasn't passed to fields in CRED edit forms.
+
+- Fixed a anchor _target parameter conflict with image IDs.
+
+- Fixed an issue with backslashes being stripped of CSS after saving the form.
+
+- Fixed an issue with Error messages that weren't appearing properly for multiple CRED forms in the same page.
+https://wp-types.com/forums/topic/cred-forms-and-bootstrap-tabs/
+
+- Fixed an issue with Skype repetitive fields that weren't rendering on frontend.
+
+- Fixed an issue with mutliple _tt parameter in the url after a CRED form submit.
+
+- Fixed a compatibility issue with Geo My WordPress plugin.
+
+- Fixed an issue where CSS/JS fields weren't showing on child site of multisite network.
+
+- Fixed an issue with Form Submittion notification that are still active even when not selected.
+
+- Fixed issues with multiple CRED forms in the same page.
+
+- Fixed an issue with advanced options button in CRED popup being always disabled.
+
+- Fixed an issue with mutliple users submitting the form at the same time causing posts to overwrite each other.
+
+- Fixed an where translated versions of error messages weren't showing in CRED form validation messages.
+
+- Improved CRED form's Wizard look and behavior.
+
+- Improved the look and usability of CRED form editing page.
+
+- Minimized number of sections in CRED form creation wizard.
+
+- Extended post expiration settings.
+
+- Extended notifications settings for post expiration.
+
+- Added a new Save/Preview section.
+
+- Moved Export/Import to settings.
+
+- Improved JS/CSS editors look.
+
+- Improved URL rewriting when uploading a file to Amazon services
+https://wp-types.com/forums/topic/problem-of-toolset-types-image-filed-and-wp-offload-s3/
+
+- Added cred_form_ajax_upload_validate validation filter when uploading a file using AJAX
+
+
+
 1.7.1
 
 - Fixed an issue where images present in the repeating fields were not shown in the Post Editing forms on the front-end.
@@ -165,6 +231,7 @@ https://wp-types.com/forums/topic/post-title-input-in-the-middle-of-form-possibl
 - Fixed an issue with string translation occurring for CRED Forms and the corresponding CRED Commerce settings.
 
 
+
 1.5
 
 - Added a new feature that allows the usage of the CRED Commerce plugin with CRED User Forms. This allows to charge the user registration using CRED User Forms.
@@ -323,7 +390,7 @@ https://wp-types.com/forums/topic/cred-beta-user-profile-form-add-link-to-edit-f
 
 1.4.1
 
-- ​Fixed a security issue involving CRED User Forms
+- ?Fixed a security issue involving CRED User Forms
 
 1.4
 
@@ -362,9 +429,150 @@ https://wp-types.com/forums/topic/cred-beta-user-profile-form-add-link-to-edit-f
 
 - Fixed the JavaScript issue with the custom Skype field
 
-1.3.4
+1.3.6.1
 
-* Fixed a issue with using 2 CRED forms in the same page
+- Security improvements.
+
+- Fixed the issue with _wpnonce.
+
+- Added new class for success message.
+
+1.3.6
+
+- Security improvements.
+
+- Added the new feature that allows user to choose the post or page to redirect the user to, after deleting current post.
+
+- Added the new feature that allows users to add additional MIME Types using the provided hooks.
+https://wp-types.com/forums/topic/added-mime-types-not-working-in-cred-frontend-form/
+
+- Added the PHP 5.2+ compatibility by exchanging the usage of "__DIR__" constant with the backwards compatible "dirname(__FILE__)" one.
+https://wp-types.com/forums/topic/cred-1-3-5-fails-to-activate-after-update/
+
+- Fixed images sent in notification email are broken
+https://wp-types.com/forums/topic/adding-images-to-email-notifications/
+
+- Added a default behavior that assigns posts to the "Uncategorized" category if the category option was left empty.
+
+- Added the CRED forms listing page in the Embedded version of the CRED plugin.
+
+- Added a new error warning when email notification fails.
+
+- Updated the jQuery autocomplete function for the taxonomy fields.
+https://wp-types.com/forums/topic/jquery-browser-msie-in-cred-autocomplete-returns-error-as-removed-in-jquery-1-9/
+
+- Fixed some minor CSS issues.
+
+- Fixed issues with the CRED Conditional display.
+https://wp-types.com/forums/topic/conditional-field-on-generic-field/
+
+- Fixed an issue with the "_nonce" usage on the frontend in order to prevent problems with the caching plugins.
+
+- Fixed an issue with the translation of some strings.
+https://wp-types.com/forums/topic/change-text-for-add_new-button-in-cred-form/
+
+- Fixed an issue with the conditional display that is evaluating Taxonomy terms.
+https://wp-types.com/forums/topic/taxonomy-conditional-display/
+
+- Fixed an issue with the limit of the upload file size for the repeating Image Custom Field.
+
+- Fixed an issue with taxonomy-related field values being lost after a failed form submition.
+https://wp-types.com/forums/topic/field-values-lost-after-validation-failed/
+
+- Fixed an issue when using the "&" symbol in the options of a custom Select field.
+
+- Fixed an issue where the Preview message would disappear if conditional fields were active.
+https://wp-types.com/forums/topic/cred-confirmation-not-displayed-when-conditional-fields-active/
+
+- Fixed an issue with Custom Fields not showing in email notifications.
+https://wp-types.com/forums/topic/cred-notification-and-custom-fields/
+https://wp-types.com/forums/topic/shortcodes-in-cred-email-notifications-not-working/
+
+- Fixed an issue with the repetitive Date field.
+https://wp-types.com/forums/topic/cant-submit-repeated-custom-date-field-in-cred-1-3-5/#post-288313
+
+- Fixed an issue with the Date field and the dates predating the year 1970.
+https://wp-types.com/forums/topic/pre-1971-dates-throw-error/
+
+- Fixed an issue where the Checkbox field was always checked.
+https://wp-types.com/forums/topic/checkboxes-are-always-checked/
+
+- Fixed an issue with the CRED automatic post expiration.
+https://wp-types.com/forums/topic/cred-warning-error-date-expects-parameter-2-to-be-long-string-given/
+
+- Fixed an issue where the submitted fields values were not preserved if the captcha was wrong.
+https://wp-types.com/forums/topic/when-the-captcha-is-wrong-the-fields-dont-preserve-their-values/
+
+- Fixed some PHP 5.3 compatibility issues.
+https://wp-types.com/forums/topic/too-much-parents-make-cred-form-break/
+
+- Fixed some email notifications issues.
+https://wp-types.com/forums/topic/cred-sends-test-emails-but-not-notifications/
+https://wp-types.com/forums/topic/future-publishing-doesnt-trigger-notifications/
+https://wp-types.com/forums/topic/cannot-set-notification-to-a-form-field/?action=takeit&topic_id=286043
+
+1.3.5 (Embedded)
+
+- Added compatibility for WordPress version 4.1.
+
+- Added the Embedded version with the read only features.
+
+- Added the automatic deactivation of the Embedded version of the plugin when the full version is activated
+
+- Fixed issues with more than one CRED form used on the same post/page.
+http://wp-types.com/forums/topic/two-cred-forms-in-the-same-page/
+
+- Fixed the issues with the validation of the Checkboxes, Skype and Date fields when CRED form submission fails.
+
+- Fixed the issues with the validation of the reCAPTCHA field when CRED form submission fails.
+
+- Fixed the issue with inserting a shortcode in the middle of the selected tag in WYSIWYG.
+
+- Fixed the issue with a conditional field when using the COOKIE property.
+
+- Fixed the issue with a conditional field when using the REGEX property.
+
+- Fixed some minor visual CSS issues.
+
+- Fixed the issue about all of the checkboxes being selected by default on the front-end.
+https://wp-types.com/forums/topic/error-all-checkboxes-selected-by-default/
+
+- Fixed a problem with the cred_form_validate.
+https://wp-types.com/forums/topic/change-the-field-name-in-cred-error-output/page/2/#post-264070
+https://wp-types.com/forums/topic/cred-form-validation-function-has-stopped-working-with-latest-cred-version/
+https://wp-types.com/forums/topic/cred-support-for-maxlength/
+
+- Fixed the issue with the order of images for a repetitive Image field.
+https://wp-types.com/forums/topic/cred-front-end-edit-form-with-repeating-image-field/#post-252096
+
+- Improved the new database entry on form visit.
+https://wp-types.com/forums/topic/cred-form-create-an-auto-draft-empty-post-every-time-the-page-is-loaded/
+
+- Fixed the issue with email notifications not being sent after posts expiration.
+https://wp-types.com/forums/topic/credcred-commerce-not-sending-email-notifications/
+
+- Fixed the issue with the delete link not working in the administration when HTTPS protocol is forced.
+https://wp-types.com/forums/topic/delete-link-doesnt-refresh-page/
+
+- Fixed the issue with the value attribute not working for repeating fields.
+https://wp-types.com/forums/topic/bug-valuesomething-not-showing-in-form/
+
+- Improved the automatic CRED notification expiration messages by adding more options on when the messages should be sent.
+https://wp-types.com/forums/topic/cred-notification-custom-days-before-expiration/
+
+- Fixed the issue with the Warning: Not available static property '_staticGlobal'
+https://wp-types.com/forums/topic/front-end-filter-corrupting-cred-form/
+
+- Fixed issue getting the $form_data['container_id'] right value in cred_save_data hook callback function
+https://wp-types.com/forums/topic/front-end-user-duplicate-post-function/
+
+- Fixed the issue where the post category was not set to "Uncategorized" for posts that didn't have the category option set.
+
+1.3.4.1
+
+* Added Compatibility to Wordpress 4.1
+
+1.3.4
 
 * Added the new "cred_wpml_get_localised_id" filter which adds the ability to turn off selecting the translated post_id. http://wp-types.com/forums/topic/cred_edit_post_link/
 
@@ -396,6 +604,10 @@ http://wp-types.com/forums/topic/cred-edit-form-bug-checkboxes-gen-field-doesnt-
 * Fixed an issue where Cred conditional group was not working in a Views list and for the Radio fields.
 http://wp-types.com/forums/topic/cred-conditional-group-3/
 http://wp-types.com/forums/topic/cred-conditional-group-doesnt-work/
+
+* Fixed conditional group using selectbox as operator
+https://wp-types.com/forums/topic/problems-displaying-a-conditional-group/
+https://wp-types.com/forums/topic/cred_form_validate-not-displaying-errors/
 
 * Fixed a compatibility issue related to the Thesis Theme.
 http://wp-types.com/forums/topic/edit-content/

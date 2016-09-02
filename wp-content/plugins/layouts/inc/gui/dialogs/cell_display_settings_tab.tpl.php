@@ -9,7 +9,7 @@
 	<?php do_action('ddl-before_default_edit_fields', $dialog_type);?>
 
 	<p>
-		<label for="ddl_tag_name"><?php _e('HTML Tag:', 'ddl-layouts'); ?></label>
+		<label class="label-tag" for="ddl_tag_name"><?php _e('HTML Tag:', 'ddl-layouts'); ?></label>
 		<select class="js-select2 js-ddl-tag-name" id="ddl_tag_name" name="ddl_tag_name">
             <option value="article">&lt;article&gt;</option>
 			<option value="aside">&lt;aside&gt;</option>
@@ -31,12 +31,12 @@
 		<span class="desc"><?php _e('Choose the HTML tag to use when rendering this cell.','ddl-layouts') ?></span>
 	</p>
 	<p>
-		<label for="ddl-<?php echo $dialog_type; ?>-edit-css-id"><?php _e('Tag ID', 'ddl-layouts'); ?> <span class="opt">(<?php _e('optional', 'ddl-layouts'); ?>):</span></label>
+		<label class="label-tag-id" for="ddl-<?php echo $dialog_type; ?>-edit-css-id"><?php _e('Tag ID', 'ddl-layouts'); ?> <span class="opt">(<?php _e('optional', 'ddl-layouts'); ?>):</span></label>
 		<input type="text" name="ddl-<?php echo $dialog_type; ?>-edit-css-id" id="ddl-<?php echo $dialog_type; ?>-edit-css-id" class="js-edit-css-id">
 		<span class="desc"><?php _e('Set an ID for the cell if you want to specify a unique style for it.','ddl-layouts') ?></span>
 	</p>
 	<p>
-		<label for="ddl-<?php echo $dialog_type; ?>-edit-class-name"><?php _e('Tag classes', 'ddl-layouts'); ?> <span class="opt">(<?php _e('optional', 'ddl-layouts'); ?>):</span></label>
+		<label class="label-tag-classes" for="ddl-<?php echo $dialog_type; ?>-edit-class-name"><?php _e('Tag classes', 'ddl-layouts'); ?> <span class="opt">(<?php _e('optional', 'ddl-layouts'); ?>):</span></label>
 		<input type="text" name="ddl-<?php echo $dialog_type; ?>-edit-class-name" id="ddl-<?php echo $dialog_type; ?>-edit-class-name" class="js-select2-tokenizer js-edit-css-class">
 		<span class="desc" style="display:none"><?php _e('Separated class names by a single space.','ddl-layouts') ?></span>
 	</p>

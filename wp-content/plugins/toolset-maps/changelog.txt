@@ -1,4 +1,11 @@
 -------------------------------------------------------------------------------------------------------------------
+Toolset Maps 1.2, AKA Colombo
+	- Added settings for hiding some Google Maps controls, like the zooming buttons, the street view toggler and the map type selection.
+	- Added name attributes to each auxiliar latitude and longitude input for address fields, so they can be used on save actions.
+	- Improved the usability related to the mandatory Google Maps API key by adding hints and messages, and making the relevant setting available even without Toolset Views.
+	- Fixed a bug that rejected valid latitude and longitude values.
+
+-------------------------------------------------------------------------------------------------------------------
 Toolset Maps 1.1.1
 	- Added support for address fields in CRED forms submitted using AJAX.
 	- Fixed an issue with the cluster icons depending on external resources.

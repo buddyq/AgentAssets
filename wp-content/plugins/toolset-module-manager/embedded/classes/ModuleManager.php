@@ -501,6 +501,8 @@ class ModuleManager
                                 }
                             } elseif( $layouts_info['id'] === 'CSS' || WPDDL_LAYOUTS_POST_TYPE.'CSS' === $layouts_info['id'] ){
                                 $module[WPDDL_LAYOUTS_POST_TYPE][$layouts_looped]['title'] = __("Layouts CSS", 'ddl-layouts');
+                            } elseif( $layouts_info['id'] === 'JS' || WPDDL_LAYOUTS_POST_TYPE.'JS' === $layouts_info['id'] ){
+                                $module[WPDDL_LAYOUTS_POST_TYPE][$layouts_looped]['title'] = __("Layouts JS", 'ddl-layouts');
                             }
                         }
                     }
@@ -629,9 +631,15 @@ class ModuleManager
                                 } elseif( is_array( $xmls[$section_id] ) ){
 
                                         if( @mkdir($tmp_dir.$DS.$section_id) ){
-                                            foreach( $xmls[$section_id] as $name => $data ){
-
-                                                file_put_contents($tmp_dir.$DS.$section_id.$DS.$name.'.'.$data['extension'], $data['data']);
+                                            foreach( $xmls[$section_id] as $name => $data ){                                               
+                                                if ( ( isset( $data['css'] ) )  && ( isset( $data['js'] ) ) ) {
+                                                	//Layouts CSS and JS resource
+                                                	foreach ( $data as $resources_extension => $resource_details ) {
+                                                		file_put_contents($tmp_dir.$DS.$section_id.$DS.$name.'.'.$resource_details['extension'], $resource_details['data']);                                                		
+                                                	}                                                 
+                                                } else {
+                                                	file_put_contents($tmp_dir.$DS.$section_id.$DS.$name.'.'.$data['extension'], $data['data']);
+                                                }
 
                                             }
                                         }
@@ -921,14 +929,26 @@ class ModuleManager
                                 zip_entry_close ( $zip_entry );
                                 $xmls[$zip_entry_info['filename']] = $data;
                             }
-                            elseif( isset($zip_entry_info['extension']) && ( 'ddl'== $zip_entry_info['extension'] || 'css' == $zip_entry_info['extension'] ) ){
+                            elseif( isset($zip_entry_info['extension']) && ( 'ddl'== $zip_entry_info['extension'] || 'css' == $zip_entry_info['extension'] || 'js' == $zip_entry_info['extension'] ) ){
                                 $not_one_xml=false;
                                 $data = zip_entry_read($zip_entry, zip_entry_filesize($zip_entry));
                                 zip_entry_close ( $zip_entry );
                                 $xmls[$zip_entry_info['dirname']] = isset($xmls[$zip_entry_info['dirname']]) ? $xmls[$zip_entry_info['dirname']] : array();
-                                $xmls[$zip_entry_info['dirname']][$zip_entry_info['filename']] = array();
-                                $xmls[$zip_entry_info['dirname']][$zip_entry_info['filename']]['extension'] = $zip_entry_info['extension'];
-                                $xmls[$zip_entry_info['dirname']][$zip_entry_info['filename']]['data'] = $data;
+                                
+                                if ( 'css' == $zip_entry_info['extension'] ) {
+                                	//CSS
+                                	$xmls[$zip_entry_info['dirname']][$zip_entry_info['filename']]['css']['extension'] = $zip_entry_info['extension'];
+                                	$xmls[$zip_entry_info['dirname']][$zip_entry_info['filename']]['css']['data'] = $data;                                	
+                                } elseif ( 'js' == $zip_entry_info['extension'] ) {
+                                	//JS
+                                	$xmls[$zip_entry_info['dirname']][$zip_entry_info['filename']]['js']['extension'] = $zip_entry_info['extension'];
+                                	$xmls[$zip_entry_info['dirname']][$zip_entry_info['filename']]['js']['data'] = $data;                                	
+                                } else {
+                                	$xmls[$zip_entry_info['dirname']][$zip_entry_info['filename']] = array();
+                                	$xmls[$zip_entry_info['dirname']][$zip_entry_info['filename']]['extension'] = $zip_entry_info['extension'];
+                                	$xmls[$zip_entry_info['dirname']][$zip_entry_info['filename']]['data'] = $data;
+                                }
+
 
                             }
                             elseif ( MODMAN_MODULE_INFO == $zip_entry_info['filename'] )

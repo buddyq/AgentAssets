@@ -419,6 +419,8 @@
 				<li class="row3 add-row js-add-row js-add-row-item" data-row-type="normal-row" data-cell-width="4"><?php _e('3 columns','ddl-layouts') ?></li>
 				<li class="row2 add-row js-add-row js-add-row-item" data-row-type="normal-row" data-cell-width="6"><?php _e('2 columns','ddl-layouts') ?></li>
 				<li class="row1 add-row js-add-row js-add-row-item" data-row-type="normal-row" data-cell-width="12"><?php _e('1 column','ddl-layouts') ?></li>
+				<li class="js-add-row js-add-row-item js-copy-row add-row add-row-duplicate" data-row-type="copy-row"><?php _e('Copy row','ddl-layouts') ?></li>
+				<li class="js-add-row js-add-row-item disabled js-paste-row add-row add-row-duplicate" data-row-type="paste-row"><?php _e('Paste row','ddl-layouts') ?></li>
 			</ul>
 
 		</div>
@@ -433,6 +435,34 @@
 				if( $wpddlayout->has_theme_sections() ):?>
 					<li class="js-add-row js-add-row-item" data-row-type="theme-section-row"><?php _e('Add custom row','ddl-layouts') ?></li>
 				<?php endif;?>
+
+                <li class="js-add-row js-add-row-item js-copy-row" data-row-type="copy-row"><?php _e('Copy row','ddl-layouts') ?></li>
+                <li class="js-add-row js-add-row-item disabled js-paste-row" data-row-type="paste-row"><?php _e('Paste row','ddl-layouts') ?></li>
+
+			</ul>
+
+		</div>
+
+		<div class="js-add-special-tab-menu ddl-context-menu ddl-special-row-context-menu">
+
+			<ul>
+				<li class="js-add-row js-add-row-item" data-row-type="normal-row"><?php _e('Add tab','ddl-layouts') ?></li>
+
+				<li class="js-add-row js-add-row-item js-copy-row" data-row-type="copy-row"><?php _e('Copy tab','ddl-layouts') ?></li>
+				<li class="js-add-row js-add-row-item disabled js-paste-row" data-row-type="paste-row"><?php _e('Paste tab','ddl-layouts') ?></li>
+
+			</ul>
+
+		</div>
+
+		<div class="js-add-special-panel-menu ddl-context-menu ddl-special-row-context-menu">
+
+			<ul>
+				<li class="js-add-row js-add-row-item" data-row-type="normal-row"><?php _e('Add accordion panel','ddl-layouts') ?></li>
+
+				<li class="js-add-row js-add-row-item js-copy-row" data-row-type="copy-row"><?php _e('Copy panel','ddl-layouts') ?></li>
+				<li class="js-add-row js-add-row-item disabled js-paste-row" data-row-type="paste-row"><?php _e('Paste panel','ddl-layouts') ?></li>
+
 			</ul>
 
 		</div>

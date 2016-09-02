@@ -6,6 +6,7 @@ class WPDDL_ModuleManagerSupport
     private static $instance;
     const LAYOUTS_MODULE_MANAGER_KEY = WPDDL_LAYOUTS_POST_TYPE;
     const LAYOUTS_MODULE_MANAGER_CSS_ID = 'CSS';
+    const LAYOUTS_MODULE_MANAGER_JS_ID = 'JS';
     private $track_has_posts = array();
 
     private function __construct()
@@ -54,6 +55,12 @@ class WPDDL_ModuleManagerSupport
             'id' => self::LAYOUTS_MODULE_MANAGER_KEY.self::LAYOUTS_MODULE_MANAGER_CSS_ID,
             'title' => __("Layouts CSS", 'ddl-layouts'),
             'details' => __("The Layouts CSS you can export as layouts.css file", 'ddl-layouts')
+        );
+
+        $ret[] = array(
+            'id' => self::LAYOUTS_MODULE_MANAGER_KEY.self::LAYOUTS_MODULE_MANAGER_JS_ID,
+            'title' => __("Layouts JS", 'ddl-layouts'),
+            'details' => __("The Layouts JS you can export as layouts.js file", 'ddl-layouts')
         );
 
         return $ret;
@@ -148,17 +155,22 @@ class WPDDL_ModuleManagerSupport
             if( isset($import_data[self::LAYOUTS_MODULE_MANAGER_CSS_ID]) && $import_data[self::LAYOUTS_MODULE_MANAGER_CSS_ID] ){
                 $import_data['items'][self::LAYOUTS_MODULE_MANAGER_KEY.self::LAYOUTS_MODULE_MANAGER_CSS_ID] = self::LAYOUTS_MODULE_MANAGER_KEY.self::LAYOUTS_MODULE_MANAGER_CSS_ID;
             }
+            if( isset($import_data[self::LAYOUTS_MODULE_MANAGER_JS_ID]) && $import_data[self::LAYOUTS_MODULE_MANAGER_JS_ID] ){
+                $import_data['items'][self::LAYOUTS_MODULE_MANAGER_KEY.self::LAYOUTS_MODULE_MANAGER_JS_ID] = self::LAYOUTS_MODULE_MANAGER_KEY.self::LAYOUTS_MODULE_MANAGER_JS_ID;
+            }
         }
 
+        unset( $import_data[WPDDL_ModuleManagerSupport::LAYOUTS_MODULE_MANAGER_JS_ID] );
         unset( $import_data[WPDDL_ModuleManagerSupport::LAYOUTS_MODULE_MANAGER_CSS_ID] );
         return $import_data;
     }
 
+    
     function modules_layouts_exist($items)
     {
         foreach ($items as $key => $item) {
             $id = $this->real_id( $item );
-            if ($id !== self::LAYOUTS_MODULE_MANAGER_CSS_ID) {
+            if ($id !== self::LAYOUTS_MODULE_MANAGER_CSS_ID && $id !== self::LAYOUTS_MODULE_MANAGER_JS_ID) {
                 $layout = get_page_by_title($item['title'], OBJECT, WPDDL_LAYOUTS_POST_TYPE);
                 if ($layout) {
                     $items[$key]['exists'] = true;
@@ -179,30 +191,45 @@ class WPDDL_ModuleManagerSupport
                 }
             } else {
 
-                global $wpddlayout_theme;
-                $css_string = $wpddlayout_theme->get_layout_css();
+                if($id === self::LAYOUTS_MODULE_MANAGER_CSS_ID ){
 
-                if ( false === empty( $css_string ) ) {
+                    global $wpddlayout_theme;
+                    $css_string = $wpddlayout_theme->get_layout_css();
 
                     $items[$key]['exists'] = true;
 
                     if (isset($item['hash'])) {
 
-                        $hash = $this->get_layouts_css_hash($css_string);
+                       $hash = $this->get_layouts_css_hash($css_string);
 
-                        if ($hash && $item['hash'] != $hash){
-                            $items[$key]['is_different'] = true;
-                        }
+                       if ($hash && $item['hash'] != $hash){
+                          $items[$key]['is_different'] = true;
+                       } else {
+                          $items[$key]['is_different'] = false;
+                       }
 
-                        else{
-                            $items[$key]['is_different'] = false;
-                        }
-
-                    }
-
-                } else {
-                    $items[$key]['exists'] = true;
+                    }                   
                 }
+                
+                if($id === self::LAYOUTS_MODULE_MANAGER_JS_ID ){
+
+                    global $wpddlayout_theme;
+                    $js_string = $wpddlayout_theme->get_layout_js();
+
+                    $items[$key]['exists'] = true;
+
+                    if (isset($item['hash'])) {
+
+                       $hash = $this->get_layouts_js_hash($js_string);
+
+                       if ($hash && $item['hash'] != $hash){
+                          $items[$key]['is_different'] = true;
+                       } else {
+                          $items[$key]['is_different'] = false;
+                       }
+                    }                    
+                }
+
             }
         }
         return $items;
@@ -219,17 +246,26 @@ class WPDDL_ModuleManagerSupport
         $hash_data['css_string'] = preg_replace('/\s+/', '', $css);
         return md5( serialize($hash_data) );
     }
+    private function get_layouts_js_hash($css)
+    {
+        $hash_data = array();
+        $hash_data['file_name'] = 'layouts.js';
+        $hash_data['js_string'] = preg_replace('/\s+/', '', $css);
+        return md5( serialize($hash_data) );
+    }
 
+    
     private function get_items_to_export($items)
     {
         global $wpddlayout_theme;
         $ret = array();
         $hash = array();
         $include_css = false;
+        $include_js = false;
 
         foreach ($items as $item) {
             $id = $this->real_id( $item );
-            if ($id !== self::LAYOUTS_MODULE_MANAGER_CSS_ID) {
+            if ($id !== self::LAYOUTS_MODULE_MANAGER_CSS_ID && $id !== self::LAYOUTS_MODULE_MANAGER_JS_ID) {
                 $layout = get_post((int)$id);
                 $settings = $wpddlayout_theme->build_export_data_from_post( $layout, array(post_types, archives, attachments) );
                 $has_posts = isset( $settings['has_posts'] ) && $settings['has_posts'];
@@ -237,8 +273,13 @@ class WPDDL_ModuleManagerSupport
                 $ret[] = $settings;
                 $this->track_has_posts[$layout->post_title] = $has_posts;
                 $hash[$layout->ID] = $this->do_hash( $layout, $settings);
-            } elseif ($id === self::LAYOUTS_MODULE_MANAGER_CSS_ID) {
+            } else {
+                if(($id === self::LAYOUTS_MODULE_MANAGER_CSS_ID)){
                 $include_css = true;
+            }
+                if(($id === self::LAYOUTS_MODULE_MANAGER_JS_ID)){
+                    $include_js = true;
+                }
             }
         }
 
@@ -252,14 +293,26 @@ class WPDDL_ModuleManagerSupport
 
         if ($include_css) {
             $css = $wpddlayout_theme->get_layout_css();
-
-            if ($css) {
-                $json['layouts.css'] = $css;
-                $hash_data = array();
-                $hash_data['file_name'] = 'layouts.css';
-                $hash_data['css_string'] = preg_replace('/\s+/', '', $css);
-                $hash[self::LAYOUTS_MODULE_MANAGER_CSS_ID] = md5(serialize($hash_data));
+            if ( is_string( $css ) ) {
+	            $json['layouts.css'] = $css;
+	            $hash_data = array();
+	            $hash_data['file_name'] = 'layouts.css';
+	            $hash_data['css_string'] = preg_replace('/\s+/', '', $css);
+	            $hash[self::LAYOUTS_MODULE_MANAGER_CSS_ID] = md5(serialize($hash_data));
             }
+            
+        }
+
+        if ($include_js) {
+            $js = $wpddlayout_theme->get_layout_js();
+			if ( is_string( $js ) ) {
+	            $json['layouts.js'] = $js;
+	            $hash_data = array();
+	            $hash_data['file_name'] = 'layouts.js';
+	            $hash_data['js_string'] = preg_replace('/\s+/', '', $js);
+	            $hash[self::LAYOUTS_MODULE_MANAGER_JS_ID] = md5(serialize($hash_data));
+			}
+            
         }
 
         return (object)array('json' => $json, 'hash' => $hash);

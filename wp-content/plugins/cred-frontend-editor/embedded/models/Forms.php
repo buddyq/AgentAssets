@@ -534,7 +534,8 @@ final class CRED_Forms_Model extends CRED_Abstract_Model implements CRED_Singlet
         return $forms;
     }
 
-    public function getFormsCount() {
+    public function getFormsCount($src = '') {
+        $sql_add = (isset($src)&&!empty($src)) ? " AND (p.post_name like '%$src%' || p.post_title like '%$src%') " : "";
         //$auto_draft=__('Auto Draft');
         $sql = '
             SELECT count(p.ID) FROM ' . $this->wpdb->posts . ' as p, ' . $this->wpdb->postmeta . ' as pm 
@@ -545,7 +546,8 @@ final class CRED_Forms_Model extends CRED_Abstract_Model implements CRED_Singlet
                 AND
                 p.post_type="' . $this->post_type_name . '" 
                 AND 
-                p.post_status="private" 
+                p.post_status="private"
+                '.$sql_add.'
             ORDER BY p.post_date DESC
         ';
         $count = $this->wpdb->get_var($sql);
@@ -558,7 +560,7 @@ final class CRED_Forms_Model extends CRED_Abstract_Model implements CRED_Singlet
       return array_map($funct, $array);
       } */
 
-    public function getFormsForTable($page, $perpage, $orderby = 'post_title', $order = 'asc') {
+    public function getFormsForTable($page, $perpage, $orderby = 'post_title', $order = 'asc', $src = '') {
         $p = intval($page);
         if ($p <= 0)
             $p = 1;
@@ -576,6 +578,8 @@ final class CRED_Forms_Model extends CRED_Abstract_Model implements CRED_Singlet
         if (!in_array($order, array('ASC', 'DESC')))
             $order = 'ASC';
 
+        $sql_add = (isset($src)&&!empty($src)) ? " AND (p.post_name like '%$src%' || p.post_title like '%$src%') " : "";
+        
         $sql = "
         SELECT p.ID, p.post_title, p.post_name, pm.meta_value as meta FROM {$this->wpdb->posts}  p, {$this->wpdb->postmeta} pm  
         WHERE (
@@ -586,11 +590,11 @@ final class CRED_Forms_Model extends CRED_Abstract_Model implements CRED_Singlet
             p.post_type='{$this->post_type_name}' 
             AND 
             p.post_status='private'
+            $sql_add
         ) 
         ORDER BY p.{$orderby} {$order} 
         {$limit}
         ";
-
 
         $forms = $this->wpdb->get_results($sql);
         foreach ($forms as $key => $form) {

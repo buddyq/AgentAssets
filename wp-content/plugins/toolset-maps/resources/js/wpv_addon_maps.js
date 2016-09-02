@@ -80,6 +80,10 @@ WPViews.ViewAddonMaps = function( $ ) {
 		thiz_map_options['draggable'] = thiz_map.data( 'draggable' );
 		thiz_map_options['scrollwheel'] = thiz_map.data( 'scrollwheel' );
 		thiz_map_options['double_click_zoom'] = thiz_map.data( 'doubleclickzoom' );
+		thiz_map_options['map_type_control'] = thiz_map.data( 'maptypecontrol' );
+		thiz_map_options['full_screen_control'] = thiz_map.data( 'fullscreencontrol' );
+		thiz_map_options['zoom_control'] = thiz_map.data( 'zoomcontrol' );
+		thiz_map_options['street_view_control'] = thiz_map.data( 'streetviewcontrol' );
 		thiz_map_options['background_color'] = thiz_map.data( 'backgroundcolor' );
 		thiz_map_options['cluster'] = thiz_map.data( 'cluster' );
 		
@@ -173,6 +177,22 @@ WPViews.ViewAddonMaps = function( $ ) {
 		
 		if ( thiz.options['double_click_zoom'] == 'off' ) {
 			map_settings['disableDoubleClickZoom'] = true;
+		}
+		
+		if ( thiz.options['map_type_control'] == 'off' ) {
+			map_settings['mapTypeControl'] = false;
+		}
+		
+		if ( thiz.options['full_screen_control'] == 'on' ) {
+			map_settings['fullscreenControl'] = true;
+		}
+		
+		if ( thiz.options['zoom_control'] == 'off' ) {
+			map_settings['zoomControl'] = false;
+		}
+		
+		if ( thiz.options['street_view_control'] == 'off' ) {
+			map_settings['streetViewControl'] = false;
 		}
 		
 		if ( thiz.options['background_color'] != '' ) {

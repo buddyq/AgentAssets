@@ -5,7 +5,7 @@
  * Description: Displays Youtube, Vimeo, Wistia or self-hosted videos in Lightbox views for Envira galleries
  * Author:      Envira Gallery Team
  * Author URI:  http://enviragallery.com
- * Version:     1.2.1
+ * Version:     1.2.2
  * Text Domain: envira-videos
  * Domain Path: languages
  *
@@ -54,7 +54,7 @@ class Envira_Videos {
      *
      * @var string
      */
-    public $version = '1.2.1';
+    public $version = '1.2.2';
 
     /**
      * The name of the plugin.

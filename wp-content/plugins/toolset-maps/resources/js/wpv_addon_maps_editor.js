@@ -20,8 +20,8 @@ WPViews.AddonMapsEditor = function( $ ) {
 	// Selector that holds address fields
 	self.selector = '.js-toolset-google-map, [data-types-field-type="google_address"]';
 	// Latitude and longitude validation regex
-	self.validate_lat = /^-?([1-8]?[1-9]|[1-9]0)(\.{1}\d{1,20})?$/;
-	self.validate_lon = /^-?([1]?[1-7][1-9]|[1]?[1-8][0]|[1-9]?[0-9])(\.{1}\d{1,20})?$/;
+	self.validate_lat = /^(-?([0-9]|8[0-4]|[1-7][0-9])(\.{1}\d{1,20})?)$/;
+	self.validate_lon = /^-?([1]?[1-7][1-9]|[1]?[1-8][0]|[1-9]|[1]?[0][1-9]|[0])(\.{1}\d{1,20})?$/;
 	// Extra inputs structure for latitude and longitude
 	self.inputs_structure = '<a class="toolset-google-map-toggle-latlon js-toolset-google-map-toggle-latlon">' + toolset_google_address_i10n.showhidecoords + '</a>';
 	self.inputs_structure += '<div class="js-toolset-google-map-toggling-latlon toolset-google-map-toggling-latlon" style="display:none"><p><label for="toolset-google-map-lat" class="toolset-google-map-label js-wpt-auxiliar-label">' + toolset_google_address_i10n.latitude + '</label><input id="toolset-google-map-lat" class="js-toolset-google-map-latlon js-toolset-google-map-lat toolset-google-map-lat" type="text" value="" /></p>';
@@ -66,20 +66,20 @@ WPViews.AddonMapsEditor = function( $ ) {
 	* @since 1.1.1
 	*/
 
-	self.create_random_id = function(prefix, use_previous){
-		if(!use_previous){
+	self.create_random_id = function( prefix, use_previous ) {
+		if ( ! use_previous ) {
 			function s4() {
-			    return Math.floor((1 + Math.random()) * 0x10000)
-			      .toString(16)
-			      .substring(1);
+			    return Math.floor( ( 1 + Math.random() ) * 0x10000 )
+			      .toString( 16 )
+			      .substring( 1 );
 			}
 			self.previous_random_id = prefix + s4() + s4() + '' + s4();			
 			return self.previous_random_id;
-		}else{
-			if(self.previous_random_id != null){
+		} else {
+			if ( self.previous_random_id != null ) {
 				return self.previous_random_id;
-			}else{
-				self.create_random_id(prefix, false);
+			} else {
+				self.create_random_id( prefix, false );
 			}
 		}
 	};
@@ -90,11 +90,13 @@ WPViews.AddonMapsEditor = function( $ ) {
 	* Recreates the input structure for the latitdue/longitude fields.
 	* @since 1.1.1
 	*/
-	self.recreate_input_structure = function(){
-		// Recreate input structure with new IDs
+	self.recreate_input_structure = function( input_name ) {
+		// Recreate input structure with new IDs and names
 		self.inputs_structure = '<a class="toolset-google-map-toggle-latlon js-toolset-google-map-toggle-latlon">' + toolset_google_address_i10n.showhidecoords + '</a>';
-		self.inputs_structure += '<div class="js-toolset-google-map-toggling-latlon toolset-google-map-toggling-latlon" style="display:none"><p><label for="'+self.create_random_id("toolset-google-map-lat")+'" class="toolset-google-map-label js-wpt-auxiliar-label">' + toolset_google_address_i10n.latitude + '</label><input id="'+self.create_random_id("toolset-google-map-lat", true)+'" class="js-toolset-google-map-latlon js-toolset-google-map-lat toolset-google-map-lat" type="text" value="" /></p>';
-		self.inputs_structure += '<p><label for="'+self.create_random_id("toolset-google-map-lon")+'" class="toolset-google-map-label js-wpt-auxiliar-label">' + toolset_google_address_i10n.longitude + '</label><input id="'+self.create_random_id("toolset-google-map-lon", true)+'" class="js-toolset-google-map-latlon js-toolset-google-map-lon toolset-google-map-lon" type="text" value="" /></p></div>';
+		self.inputs_structure += '<div class="js-toolset-google-map-toggling-latlon toolset-google-map-toggling-latlon" style="display:none">';
+		self.inputs_structure += '<p><label for="' + self.create_random_id( "toolset-google-map-lat" ) + '" class="toolset-google-map-label js-wpt-auxiliar-label">' + toolset_google_address_i10n.latitude + '</label><input id="' + self.create_random_id( "toolset-google-map-lat", true ) + '" name="toolset-extended-form-' + input_name + '[latitude]" class="js-toolset-google-map-latlon js-toolset-google-map-lat toolset-google-map-lat" type="text" value="" /></p>';
+		self.inputs_structure += '<p><label for="' + self.create_random_id( "toolset-google-map-lon" ) + '" class="toolset-google-map-label js-wpt-auxiliar-label">' + toolset_google_address_i10n.longitude + '</label><input id="' + self.create_random_id( "toolset-google-map-lon", true ) + '" name="toolset-extended-form-' + input_name + '[longitude]" class="js-toolset-google-map-latlon js-toolset-google-map-lon toolset-google-map-lon" type="text" value="" /></p>';
+		self.inputs_structure += '</div>';
 	};
 
 		
@@ -207,9 +209,10 @@ WPViews.AddonMapsEditor = function( $ ) {
 			return;
 		}
 		
-		var thiz_container = thiz.closest( '.js-toolset-google-map-container' ),
-		thiz_inputs_container = thiz.closest( '.js-toolset-google-map-inputs-container' ),
-		thiz_marker_options = {};
+		var thiz_container		= thiz.closest( '.js-toolset-google-map-container' ),
+		thiz_inputs_container	= thiz.closest( '.js-toolset-google-map-inputs-container' ),
+		thiz_marker_options		= {},
+		thiz_name				= thiz.attr( 'name' );
 		
 		if ( ! thiz.prop( 'disabled' ) ) {
 			thiz_marker_options = {
@@ -217,7 +220,7 @@ WPViews.AddonMapsEditor = function( $ ) {
 			};
 		}
 		
-		self.recreate_input_structure();
+		self.recreate_input_structure( thiz_name );
 		
 		$( self.preview_structure )
 			.appendTo( thiz_container );

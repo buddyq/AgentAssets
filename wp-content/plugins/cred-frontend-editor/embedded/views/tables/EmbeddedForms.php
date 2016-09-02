@@ -71,7 +71,7 @@ class CRED_Forms_List_Table extends WP_List_Table implements CRED_Singleton {
         submit_button(__('Apply', 'wp-cred'), 'button-secondary action', false, false, array('id' => "doaction$two"));
         echo "\n";
 
-        echo "<a style='margin-left:15px' class='button button-large cred-export-all' href='" . CRED_CRED::route('/Forms/exportAll?all&_wpnonce=' . wp_create_nonce('cred-export-all')) . "' target='_blank' title='" . esc_js(__('Export All Post Forms', 'wp-cred')) . "'>" . __('Export All Post Forms', 'wp-cred') . "</a>";
+        //echo "<a style='margin-left:15px' class='button button-large cred-export-all' href='" . CRED_CRED::route('/Forms/exportAll?all&_wpnonce=' . wp_create_nonce('cred-export-all')) . "' target='_blank' title='" . esc_js(__('Export All Post Forms', 'wp-cred')) . "'>" . __('Export All Post Forms', 'wp-cred') . "</a>";
     }
 
     /**
@@ -180,8 +180,8 @@ class CRED_Forms_List_Table extends WP_List_Table implements CRED_Singleton {
         }
 
         $form_types = apply_filters('cred_admin_form_type_options', array(
-            "new" => __('Create content', 'wp-cred'),
-            "edit" => __('Edit content', 'wp-cred')
+            "new" => __('Add new content', 'wp-cred'),
+            "edit" => __('Edit existing content', 'wp-cred')
                 ), '', null);
 
         foreach ($records as $rec) {

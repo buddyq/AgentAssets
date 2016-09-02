@@ -8,6 +8,7 @@ var OTGAccess = OTGAccess || {};
 * @todo AJAX messages management, including single messages container and tabs locking when needed
 *
 * @since 2.0
+* @fix 2.2
 */
 
 OTGAccess.AccessSettings = function( $ ) {
@@ -15,8 +16,9 @@ OTGAccess.AccessSettings = function( $ ) {
 	// @todo add proper mesage management
 	
 	var self = this;
-	
+	var myHistory = [];
 	self.spinner = '<span class="wpcf-loading ajax-loader js-otg-access-spinner"></span>';
+	self.section_status = '';
 	
 	self.spinner_placeholder = $(
 		'<div style="min-height: 150px;">' +
@@ -25,7 +27,24 @@ OTGAccess.AccessSettings = function( $ ) {
 		'</div>' +
 		'</div>'
 	);
-	
+
+	/*
+    * Disable / Enable dialog button
+     */
+    var toolset_access_disable_dialog_button = function( state ){
+		if ( state == 'enable' ){
+			$('.js-wpcf-access-process-button')
+                    .addClass('button-primary')
+                    .removeClass('button-secondary')
+                    .prop('disabled', false);
+		}else{
+			$('.js-wpcf-access-process-button')
+                    .addClass('button-secondary')
+                    .removeClass('button-primary')
+                    .prop('disabled', true);
+		}
+	}
+
 	self.glow_container = function( container, reason ) {
 		$( container ).addClass( reason );
 		setTimeout( function () {
@@ -44,7 +63,10 @@ OTGAccess.AccessSettings = function( $ ) {
 		var thiz = $( this ),
 		target = thiz.data( 'target' ),
 		current = $( '.js-otg-access-nav-tab.nav-tab-active' ).data( 'target' );
+
 		if ( ! thiz.hasClass( 'nav-tab-active' ) ) {
+			myHistory.push("page_im_on_now");
+    		window.history.replaceState(myHistory, "", $(this).attr('href'));
 			$( '.js-otg-access-nav-tab.nav-tab-active' ).removeClass( 'nav-tab-active' );
 			if ( $( '.js-otg-access-content .js-otg-access-settings-section-for-' + target ).length > 0 ) {
 				$( '.js-otg-access-content .js-otg-access-settings-section-for-' + current ).fadeOut( 'fast', function() {
@@ -179,8 +201,30 @@ OTGAccess.AccessSettings = function( $ ) {
 		var thiz = $( this ),
 		target = thiz.data( 'target' );
 		thiz.find( '.js-otg-access-settings-section-item-managed' ).toggle();
+		var status = 1;
+		if ( $( '.js-otg-access-settings-section-item-toggle-target-' + target ).css('display') == 'block' ){
+			status = 0;
+		}
 		$( '.js-otg-access-settings-section-item-toggle-target-' + target ).slideToggle();
+		toolset_access_save_section_status( target, status );
 	});
+
+	var toolset_access_save_section_status = function( target, status ){
+		var data = {
+			action:		'wpcf_access_save_section_status',
+			target:		target,
+			status:	status,
+			wpnonce:	wpcf_access_dialog_texts.otg_access_general_nonce,
+		};
+
+		$.ajax({
+            url:		ajaxurl,
+            type:		'POST',
+            dataType:	'json',
+            data:		data,
+            success:	function( response ) {}
+        });
+	}
 	
 	/**
 	* Save settings section 
@@ -249,43 +293,39 @@ OTGAccess.AccessSettings = function( $ ) {
 	
 	$( document ).on( 'click', '.js-otg-access-add-new-role', function( e ) {
 		e.preventDefault();
-        $( '.js-otg-access-new-role-wrap .js-otg-access-new-role-extra' )
-			.fadeIn( 'fast' )
-			.find( '.js-otg-access-new-role-name' )
-				.val('')
-				.focus();
-        $( '.js-otg-access-new-role-wrap .js-otg-access-message-container' ).html( '' );
+
+		$access_dialog_open(500);
+
+		$('.js-wpcf-access-gui-close .ui-button-text').html(wpcf_access_dialog_texts.wpcf_cancel);
+		$('.js-wpcf-access-process-button .ui-button-text').html(wpcf_access_dialog_texts.wpcf_ok);
+		$('div[aria-describedby="js-wpcf-access-dialog-container"] .ui-dialog-title').html(wpcf_access_dialog_texts.toolset_access_add_role);
+
+		OTGAccess.access_settings.access_control_dialog.html(  $( '.js-otg-access-new-role-wrap' ).html() );
+		$('.js-toolset-access-dialog').find( '.js-otg-access-new-role-name' ).val('').focus();
+		$('.js-toolset-access-dialog').find( '.js-otg-access-new-role-extra' ).fadeIn( 'fast' );
+		OTGAccess.access_settings.dialog_callback = $process_add_new_role;
     });
 
-	$( document ).on( 'click', '.js-otg-access-new-role-wrap .js-otg-access-new-role-cancel', function( e ) {
-		e.preventDefault();
-        $( '.js-otg-access-new-role-wrap .js-otg-access-new-role-apply' ).prop( 'disabled', true );
-        $( '.js-otg-access-new-role-wrap .js-otg-access-new-role-extra' )
-			.hide()
-			.find( '.js-otg-access-new-role-name' )
-				.val('');
-        $( '.js-otg-access-new-role-wrap .js-otg-access-message-container' ).html( '' );
-    });
+	/*
+	* Process new custom role
+	 */
+	$process_add_new_role = function( ){
 
-    $( document ).on( 'click', '.js-otg-access-new-role-wrap .js-otg-access-new-role-apply', function( e ) {
-		e.preventDefault();
-		var thiz = $( this ),
+		var thiz = $('.js-wpcf-access-process-button'),
 		data = {
 			action:		'wpcf_access_add_role',
-			role:		$( '.js-otg-access-new-role-wrap .js-otg-access-new-role-name' ).val(),
+			role:		$( '.js-toolset-access-dialog .js-otg-access-new-role-name' ).val(),
+			copy_of:	$( '.js-toolset-access-dialog .js-toolset-access-copy-caps-from' ).val(),
 			wpnonce:	wpcf_access_dialog_texts.otg_access_general_nonce,
 		},
 		data_for_events = {
 			section: 'custom-roles'
 		};
-		
-		spinnerContainer = $( self.spinner ).insertAfter( thiz ).show();
-        thiz
-			.prop( 'disabled', true )
-			.addClass( 'button-secondary' )
-			.removeClass( 'button-primary' );
-		
-        $( '.js-otg-access-new-role-wrap .js-otg-access-message-container' ).html( '' );
+
+
+        toolset_access_disable_dialog_button( '' );
+
+        $( '.js-toolset-access-dialog .js-otg-access-message-container' ).html( '' );
 
 		$.ajax({
             url:		ajaxurl,
@@ -294,34 +334,32 @@ OTGAccess.AccessSettings = function( $ ) {
             data:		data,
             success:	function( response ) {
 				if ( response.success ) {
-					$( '.js-otg-access-new-role-wrap .js-otg-access-new-role-name' ).val('');
+					$( '.js-toolset-access-dialog .js-otg-access-new-role-name' ).val('');
 					$( '.js-otg-access-settings-section-for-custom-roles' ).replaceWith( response.data.message );
 					$( document ).trigger( 'js_event_types_access_permission_table_loaded', [ data_for_events ] );
 					$( document ).trigger( 'js_event_types_access_custom_roles_updated' );
+					OTGAccess.access_settings.load_permission_tables( 'custom-roles' );
 				} else {
-					$( '.js-otg-access-new-role-wrap .js-otg-access-message-container' ).html( response.data.message );
+					$( '.js-toolset-access-dialog .js-otg-access-message-container' ).html('<p class="toolset-alert toolset-alert-error " style="display: block; opacity: 1;">' + response.data.message + '</p>');
+
 				}
             },
 			complete: function() {
-				spinnerContainer.remove();
+				$( '.js-toolset-access-dialog .wpcf-loading').remove();
 			}
         });
-    });
+	}
 
-    $( document ).on( 'keyup', '.js-otg-access-new-role-wrap .js-otg-access-new-role-name', function() {
+    $( document ).on( 'keyup', '#js-wpcf-access-dialog-container .js-otg-access-new-role-name', function() {
         $( '.js-otg-access-new-role-wrap .js-otg-access-message-container' ).html( '' );
         if ( $(this).val().length > 4 ) {
-            $( '.js-otg-access-new-role-wrap .js-otg-access-new-role-apply' )
-				.prop( 'disabled', false )
-				.addClass( 'button-primary' )
-				.removeClass( 'button-secondary' );
+            toolset_access_disable_dialog_button( 'enable' );
         } else {
-            $( '.js-otg-access-new-role-wrap .js-otg-access-new-role-apply' )
-				.prop( 'disabled', true )
-				.addClass( 'button-secondary' )
-				.removeClass( 'button-primary' );
+          	toolset_access_disable_dialog_button( '' );
         }
     });
+
+
 
     // DELETE ROLE - NOT SURE WHERE THIS IS USED ???
     $( document ).on( 'click', '#wpcf-access-delete-role', function() {
@@ -338,7 +376,7 @@ OTGAccess.AccessSettings = function( $ ) {
 		// ADD DEPENDENCY MESSAGE - to review
 		$( '.wpcf-access-type-item', container )
 				.find('.wpcf-access-mode')
-				.prepend('<div class="dep-message toolset-alert toolset-alert-info hidden"></div>');
+				.prepend('<div class="dep-message toolset-alert toolset-alert-info toolset-access-table-notification hidden"></div>');
 
 		// Disable admin checkboxes
 		$( ':checkbox[value="administrator"]', container )
@@ -394,6 +432,7 @@ OTGAccess.AccessSettings = function( $ ) {
 		self.dialog_callback = '';
 		self.dialog_callback_params = [];
 		self.access_control_dialog = $("#js-wpcf-access-dialog-container").dialog({
+			dialogClass   : 'js-toolset-access-dialog',
 			autoOpen:	false,
 			modal:		true,
 			minWidth:	450,
@@ -409,10 +448,12 @@ OTGAccess.AccessSettings = function( $ ) {
 						.prop('disabled', true)
 						.css({'marginLeft': '15px', 'display': 'inline'});
 				$('.js-wpcf-access-gui-close').css('display', 'inline');
+				$('.js-wpcf-access-process-button').removeClass('js-wpcf-access-process-button-red');
+				$('.js-otg-access-spinner').remove();
 			},
 			close:		function( event, ui ) {
 				$('body').removeClass('modal-open');
-				$( '.js-otg-access-spinner' ).remove();
+				$('.js-otg-access-spinner').remove();
 			},
 			buttons: [
 				{
@@ -515,6 +556,7 @@ jQuery( document ).ready( function( $ ) {
             var $this = $(this);
             var $tooltip = $('<div class="tooltip">' + $this.text() + '</div>');
 
+
             if ($this.children().outerWidth() < $this.children()[0].scrollWidth) {
                 $tooltip
                         .appendTo($this)
@@ -552,11 +594,13 @@ jQuery( document ).ready( function( $ ) {
 
             OTGAccess.access_settings.dialog_callback = $confirm_advaced_mode;
             OTGAccess.access_settings.dialog_callback_params[''] = '';
+			var notification_message = '<p>'+wpcf_access_dialog_texts.wpcf_advanced_mode3 + '</p><p><strong>' + wpcf_access_dialog_texts.wpcf_advanced_mode2 + '</strong></p>';
             if ($(this).data('status') === false) {
-                OTGAccess.access_settings.access_control_dialog.html(wpcf_access_dialog_texts.wpcf_advanced_mode1 + '<p>' + wpcf_access_dialog_texts.wpcf_advanced_mode2 + '</p>');
-            } else {
-                OTGAccess.access_settings.access_control_dialog.html(wpcf_access_dialog_texts.wpcf_advanced_mode3 + '<p>' + wpcf_access_dialog_texts.wpcf_advanced_mode2 + '</p>');
+				notification_message = '<p>'+wpcf_access_dialog_texts.wpcf_advanced_mode1 + '</p><p><strong>' + wpcf_access_dialog_texts.wpcf_advanced_mode2 + '</strong></p>';
             }
+            var output = '<div class="toolset-access-alarm-wrap-left"><i class="fa fa-exclamation-triangle fa-5x"></i></div>'+
+					'<div class="toolset-access-alarm-wrap-right">'+ notification_message +'</div>';
+			OTGAccess.access_settings.access_control_dialog.html(output);
             $('.js-wpcf-access-process-button')
                     .addClass('button-primary')
                     .removeClass('button-secondary')
@@ -590,7 +634,7 @@ jQuery( document ).ready( function( $ ) {
 
             $access_dialog_open(500);
 
-            $('.js-wpcf-access-gui-close .ui-button-text').html(wpcf_access_dialog_texts.wpcf_close);
+            $('.js-wpcf-access-gui-close .ui-button-text').html(wpcf_access_dialog_texts.wpcf_cancel);
             $('.js-wpcf-access-process-button .ui-button-text').html(wpcf_access_dialog_texts.wpcf_delete_role);
             $('div[aria-describedby="js-wpcf-access-dialog-container"] .ui-dialog-title').html(wpcf_access_dialog_texts.wpcf_delete_role);
 
@@ -604,6 +648,7 @@ jQuery( document ).ready( function( $ ) {
 
             OTGAccess.access_settings.dialog_callback = $confirm_remove_role;
             OTGAccess.access_settings.dialog_callback_params['role'] = $(this).data('role');
+            $('.js-wpcf-access-process-button').addClass('js-wpcf-access-process-button-red');
             $.ajax({
                 url: ajaxurl,
                 type: 'post',
@@ -637,7 +682,7 @@ jQuery( document ).ready( function( $ ) {
             data:		data,
             success:	function( response ) {
 				if ( response.success ) {
-					$( '.js-otg-access-settings-section-for-custom-roles' ).replaceWith( response.data.message );
+					OTGAccess.access_settings.load_permission_tables( 'custom-roles' );
 					OTGAccess.access_settings.access_control_dialog.dialog('close');
 					$( document ).trigger( 'js_event_types_access_permission_table_loaded', [ data_for_events ] );
 					$( document ).trigger( 'js_event_types_access_custom_roles_updated' );
@@ -765,7 +810,7 @@ jQuery( document ).ready( function( $ ) {
 
             $access_dialog_open(800);
 
-            $('.js-wpcf-access-gui-close .ui-button-text').html(wpcf_access_dialog_texts.wpcf_close);
+            $('.js-wpcf-access-gui-close .ui-button-text').html(wpcf_access_dialog_texts.wpcf_cancel);
             $('.js-wpcf-access-process-button .ui-button-text').html(wpcf_access_dialog_texts.wpcf_change_perms);
             $('div[aria-describedby="js-wpcf-access-dialog-container"] .ui-dialog-title').html(wpcf_access_dialog_texts.wpcf_change_perms);
 
@@ -970,8 +1015,10 @@ jQuery( document ).ready( function( $ ) {
                                 .addClass('button-primary')
                                 .removeClass('button-secondary')
                                 .prop('disabled', false);
-                        $('select[name="wpcf-access-existing-groups"]').show();
-                    }
+                        $('select[name="wpcf-access-existing-groups"]').removeClass('hidden').show();
+                    }else{
+                    	$('input[name="wpcf-access-new-group"]').focus();
+					}
                 }
             });
 
@@ -1022,7 +1069,7 @@ jQuery( document ).ready( function( $ ) {
                     .removeClass('button-primary ui-button-disabled ui-state-disabled')
                     .prop('disabled', true);
             if ($(this).val() == 'existing_group') {
-                $('select[name="wpcf-access-existing-groups"]').show();
+                $('select[name="wpcf-access-existing-groups"]').removeClass('hidden').show();
                 if ($('select[name="wpcf-access-existing-groups"]').val() != '') {
                     $('.js-wpcf-access-process-button')
                             .addClass('button-primary')
@@ -1030,7 +1077,7 @@ jQuery( document ).ready( function( $ ) {
                             .prop('disabled', false);
                 }
             } else {
-                $('input[name="wpcf-access-new-group"]').show();
+                $('input[name="wpcf-access-new-group"]').removeClass('hidden').show();
                 $('input[name="wpcf-access-new-group"]').focus();
                 if ($('input[name="wpcf-access-new-group"]').val() !== '') {
                     $('.js-wpcf-access-process-button')
@@ -1088,8 +1135,8 @@ jQuery( document ).ready( function( $ ) {
             $access_dialog_open(500);
 
             $('.js-wpcf-access-gui-close .ui-button-text').html(wpcf_access_dialog_texts.wpcf_cancel);
-            $('.js-wpcf-access-process-button .ui-button-text').html(wpcf_access_dialog_texts.wpcf_create_group);
-            $('div[aria-describedby="js-wpcf-access-dialog-container"] .ui-dialog-title').html(wpcf_access_dialog_texts.wpcf_set_wpml_settings);
+            $('.js-wpcf-access-process-button .ui-button-text').html(wpcf_access_dialog_texts.wpcf_save);
+            $('div[aria-describedby="js-wpcf-access-dialog-container"] .ui-dialog-title').html(wpcf_access_dialog_texts.wpcf_add_wpml_settings);
 
             OTGAccess.access_settings.access_control_dialog.html( OTGAccess.access_settings.spinner_placeholder );
             var group_id = '',
@@ -1097,6 +1144,7 @@ jQuery( document ).ready( function( $ ) {
             if (typeof $(this).data('group') !== 'undefined') {
                 group_id = $(this).data('group');
                 group_div_id = $(this).data('groupdiv');
+                $('div[aria-describedby="js-wpcf-access-dialog-container"] .ui-dialog-title').html(wpcf_access_dialog_texts.wpcf_set_wpml_settings);
                 $('.js-wpcf-access-process-button .ui-button-text').html(wpcf_access_dialog_texts.wpcf_modify_group);
             }
             var data = {
@@ -1209,7 +1257,10 @@ jQuery( document ).ready( function( $ ) {
 
             $('.js-wpcf-access-gui-close .ui-button-text').html(wpcf_access_dialog_texts.wpcf_cancel);
             $('.js-wpcf-access-process-button .ui-button-text').html(wpcf_access_dialog_texts.wpcf_set_errors);
-            $('div[aria-describedby="js-wpcf-access-dialog-container"] .ui-dialog-title').html(wpcf_access_dialog_texts.wpcf_set_errors);
+            $('div[aria-describedby="js-wpcf-access-dialog-container"] .ui-dialog-title').html('');
+            if( $(this).data('archive') == 1 ){
+            	$('div[aria-describedby="js-wpcf-access-dialog-container"] .ui-dialog-title').html( '');
+			}
 
             OTGAccess.access_settings.access_control_dialog.html( OTGAccess.access_settings.spinner_placeholder );
 
@@ -1454,22 +1505,21 @@ jQuery( document ).ready( function( $ ) {
 
         // Remove posts
         $(document).on('click', '.js-wpcf-unassign-access-post', function () {
-            var li = '.js-assigned-access-post-' + $(this).data('id');
-            $(li).remove();
+            var div = '.js-assigned-access-post-' + $(this).data('id');
+
             var data = {
                 action: 'wpcf_remove_postmeta_group',
                 wpnonce: $('#wpcf-access-error-pages').attr('value'),
-                id: $(this).data('id')
+                id: $(this).data('id'),
+                group_name: $('#wpcf-access-group-slug').val()
             };
+            $(div).animate({ opacity:0}, 100, function() {$(div).remove();});
             $.ajax({
                 url: ajaxurl,
                 type: 'post',
                 data: data,
                 cache: false,
                 success: function (data) {
-                    if ($('.js-wpcf-assigned-posts ul').is(':empty')) {
-                        $('.js-no-posts-assigned').fadeIn('fast');
-                    }
                 }
             });
             return false;
@@ -1505,6 +1555,7 @@ jQuery( document ).ready( function( $ ) {
                 cache: false,
                 success: function (data) {
                     OTGAccess.access_settings.access_control_dialog.html(data);
+                    $('.js-wpcf-access-process-button').addClass('js-wpcf-access-process-button-red');
                     if ($('.js-wpcf-assigned-posts ul').is(':empty')) {
                         $('.js-no-posts-assigned').show();
                     }
@@ -1565,6 +1616,7 @@ jQuery( document ).ready( function( $ ) {
 
             OTGAccess.access_settings.dialog_callback = $process_new_access_group;
             OTGAccess.access_settings.dialog_callback_params['id'] = [];
+
             $.ajax({
                 url: ajaxurl,
                 type: 'post',
@@ -1572,6 +1624,9 @@ jQuery( document ).ready( function( $ ) {
                 cache: false,
                 success: function (data) {
                     OTGAccess.access_settings.access_control_dialog.html(data);
+                     otgs_access_posts_group_select2( '.js-otgs-access-suggest-posts', 'wpcf_search_posts_for_groups' );
+
+
                     $('.js-wpcf-access-process-button')
                             .removeClass('button-primary')
                             .addClass('button-secondary')
@@ -1582,14 +1637,28 @@ jQuery( document ).ready( function( $ ) {
 
         });
 
+        $(document).on('select2:selecting', '.js-otgs-access-suggest-posts', function (e) {
+		   var data = e.params.args.data;
+		   var div = '.js-assigned-access-post-' + data.id;
+
+            if (typeof $(div).html() === 'undefined') {
+                $(".js-otgs-access-posts-listing").append('<div class="js-assigned-access-post js-assigned-access-post-' + data.id + '" data-newitem="1" data-postid="' + data.id + '" style="opacity:0;">' +
+                        data.name + ' <a href="" class="js-wpcf-unassign-access-post" data-id="' + data.id + '"><i class="fa fa-times"></i></a>' +
+                        '<input type="hidden" value="' + data.id + '" name="assigned-posts[]"></li>');
+						$(div).animate({ opacity:1}, 500, function() {});
+            }
+		});
+
+
+
         $process_new_access_group = function () {
             var posts = [];
 
-            if (typeof $('input[name="assigned-posts"]') !== 'undefined') {
-                $('input[name="assigned-posts[]"]').each(function () {
-                    posts.push($(this).val());
-                });
-            }
+            $('.js-assigned-access-post').each(function () {
+                 if ( typeof $(this).data('newitem') !== 'undefined' ){
+                 	posts.push($(this).data('postid'));
+				 }
+            });console.log(posts);
 
             var data = {
                 action: 'wpcf_process_new_access_group',
@@ -1648,7 +1717,7 @@ jQuery( document ).ready( function( $ ) {
 
             $('.js-wpcf-access-gui-close .ui-button-text').html(wpcf_access_dialog_texts.wpcf_cancel);
             $('.js-wpcf-access-process-button .ui-button-text').html(wpcf_access_dialog_texts.wpcf_modify_group);
-            $('div[aria-describedby="js-wpcf-access-dialog-container"] .ui-dialog-title').html(wpcf_access_dialog_texts.wpcf_custom_access_group);
+            $('div[aria-describedby="js-wpcf-access-dialog-container"] .ui-dialog-title').html(wpcf_access_dialog_texts.wpcf_custom_access_group_modify);
 
             OTGAccess.access_settings.access_control_dialog.html( OTGAccess.access_settings.spinner_placeholder );
 
@@ -1669,9 +1738,10 @@ jQuery( document ).ready( function( $ ) {
                 cache: false,
                 success: function (data) {
                     OTGAccess.access_settings.access_control_dialog.html(data);
-                    if ($('.js-wpcf-assigned-posts ul').is(':empty')) {
-                        $('.js-no-posts-assigned').show();
-                    }
+
+					otgs_access_posts_group_select2( '.js-otgs-access-suggest-posts', 'wpcf_search_posts_for_groups' );
+
+
                     $('.js-wpcf-access-process-button')
                             .addClass('button-primary')
                             .removeClass('button-secondary')
@@ -1682,12 +1752,13 @@ jQuery( document ).ready( function( $ ) {
         });
 
         $process_modify_access_group = function (params) {
-            var posts = [];
-            if (typeof $('input[name="assigned-posts"]') !== 'undefined') {
-                $('input[name="assigned-posts[]"]').each(function () {
-                    posts.push($(this).val());
-                });
-            }
+           var posts = [];
+
+            $('.js-assigned-access-post').each(function () {
+                 if ( typeof $(this).data('newitem') !== 'undefined' ){
+                 	posts.push($(this).data('postid'));
+				 }
+            });
 
             id = params['id'];
             var data = {
@@ -1713,6 +1784,10 @@ jQuery( document ).ready( function( $ ) {
                                 .find('h4')
                                 .eq(0)
                                 .html($('#wpcf-access-new-group-title').val());
+
+                         $('#js-box-' + params['divid'])
+                                .find('.toolset-access-posts-group-assigned-posts-list')
+                                .html(data);
                         OTGAccess.access_settings.access_control_dialog.dialog('close');
 						$( document ).trigger( 'js_event_types_access_custom_group_updated' );
                     } else {
@@ -1782,37 +1857,6 @@ jQuery( document ).ready( function( $ ) {
 
     });
 
-    wpcfAccess.Reset = function (object) {
-        $('#wpcf_access_admin_form')
-                .find('.dep-message')
-                .fadeOut('fast');
-
-        $.ajax({
-            url: object.attr('href') + '&button_id=' + object.attr('id'),
-            type: 'get',
-            dataType: 'json',
-            //            data: ,
-            cache: false,
-            beforeSend: function () {},
-            success: function (data) {
-                if (data !== null) {
-                    if (typeof data.output !== 'undefined' && typeof data.button_id !== 'undefined') {
-
-                        var parent = $('#' + data.button_id).closest('.js-wpcf-access-type-item');
-
-                        $.each(data.output, function (index, value) {
-                            object = parent.find('input[id*="_permissions_' + index + '_' + value + '_role"]');
-                            object
-                                    .trigger('click')
-                                    .prop('checked', true);
-                        });
-                    }
-                }
-            }
-        });
-        return false;
-    };
-
     wpcfAccess.ApplyLevels = function (object) {
 	var data_for_events = {
 		section: 'custom-roles'
@@ -1874,9 +1918,35 @@ jQuery( document ).ready( function( $ ) {
         });
     };
 
+	$(document).on("click", ".toolset-access-disabled-detector, .js-toolset-access-specific-user-link", function (e) {
+		var status = $(this).closest('.js-wpcf-access-type-item').find('.js-wpcf-enable-access').prop('checked');
+		if ( status ){
+			return;
+		}
+		$access_dialog_open(500);
+		$('.js-wpcf-access-gui-close .ui-button-text').html(wpcf_access_dialog_texts.wpcf_cancel);
+		$('.js-wpcf-access-process-button .ui-button-text').html(wpcf_access_dialog_texts.wpcf_enable_manage_by_button);
 
+		$('div[aria-describedby="js-wpcf-access-dialog-container"] .ui-dialog-title').html(' ');
+		$('.js-wpcf-access-process-button')
+                    .addClass('button-primary')
+                    .removeClass('button-secondary')
+                    .prop('disabled', false);
 
-// Enable/Disable inputs
+		OTGAccess.access_settings.access_control_dialog.html( '<div class="toolset-access-alarm-wrap-left"><i class="fa fa-exclamation-triangle fa-5x"></i></div>'+
+					'<div class="toolset-access-alarm-wrap-right">'+ wpcf_access_dialog_texts.wpcf_enable_manage_by_message +'</div>' );
+
+		OTGAccess.access_settings.dialog_callback = $toolset_access_enable_area;
+		OTGAccess.access_settings.dialog_callback_params['id'] = $(this).data('parent');
+	});
+
+	var $toolset_access_enable_area = function( params ){
+		var id = params['id'];
+		$('.'+id).find('.js-wpcf-enable-access').click();
+		$("#js-wpcf-access-dialog-container").dialog("close");
+	}
+
+	// Enable/Disable inputs
     $(document).on('change', '.js-wpcf-enable-access, .js-wpcf-follow-parent', function () {
         var $container = $(this).closest('.js-wpcf-access-type-item');
         var checked = $(this).is(':checked');
@@ -1887,12 +1957,25 @@ jQuery( document ).ready( function( $ ) {
         });
 
         if ($(this).is('.js-wpcf-enable-access')) {
-            if (checked) {
-
+            if (checked) {//console.log($tableInputs);
+				$container.find('.js-toolset-access-specific-user-link').removeClass('js-toolset-access-specific-user-disabled');
+				$container.find('.js-otg-access-settings-section-is-mamanged').hide();
                 wpcfAccess.EnableTableInputs($tableInputs, $container);
+                $.each($tableInputs, function () {
+					var cap = $(this).data('wpcfaccesscap');
+					if ( $(this).val() == 'guest' && (
+						cap == 'publish' || cap == 'delete_any' || cap == 'edit_any' || cap == 'delete_own' || cap == 'edit_own' || cap == 'read_private' ||
+						cap == 'assign_terms' || cap == 'delete_terms' || cap == 'edit_terms' || cap == 'manage_terms'
+						)){
+						$(this).prop('disabled',true);
+					}
+
+				});
                 wpcfAccess.enableElement($container.find('.js-wpcf-follow-parent'));
                 $container.find('.js-wpcf-access-reset').prop('disabled', false);
             } else {
+            	$container.find('.js-otg-access-settings-section-is-mamanged').show();
+            	$container.find('.js-toolset-access-specific-user-link').addClass('js-toolset-access-specific-user-disabled');
                 $container.find('.js-wpcf-access-reset').prop('disabled', true);
                 wpcfAccess.DisableTableInputs($tableInputs, $container);
                 wpcfAccess.disableElement($container.find('.js-wpcf-follow-parent'));
@@ -1962,12 +2045,11 @@ jQuery( document ).ready( function( $ ) {
                 thickOff = thickOff.concat(window[cap_inactive]);
             }
         }
-
         // FIND DEPENDABLES
         //
         // Check ONs
         $.each(thick, function (index, value) {
-            object.parents('table').find(':checkbox').each(function () {
+            object.parents('tr').find(':checkbox').each(function () {
 
                 if ($(this).attr('id') != object.attr('id')) {
 
@@ -1978,7 +2060,6 @@ jQuery( document ).ready( function( $ ) {
                         }
                         // Set element form name
                         $(this).attr('checked', 'checked').attr('name', $(this).data('wpcfaccessname'));
-                        wpcfAccess.ThickTd($(this), 'prev', true);
                     }
                 }
             });
@@ -1986,50 +2067,21 @@ jQuery( document ).ready( function( $ ) {
 
         // Check OFFs
         $.each(thickOff, function (index, value) {
-            object.parents('table').find(':checkbox').each(function () {
+            object.parents('tr').find(':checkbox').each(function () {
 
                 if ($(this).attr('id') != object.attr('id')) {
 
-                    if ($(this).val() == role && $(this).hasClass('wpcf-access-' + value)) {
+                    if ( $(this).val() == role && $(this).hasClass('wpcf-access-' + value)) {
 
                         // Mark for message
                         if ($(this).is(':checked')) {
                             message.push($(this).data('wpcfaccesscap'));
                         }
                         $(this).removeAttr('checked').attr('name', 'dummy');
-
-                        // Set element form name
-//                    var prevSet = $(this).parent().prev().find(':checkbox');
-                        var prevSet = $(this).closest('td').prev().find(':checkbox');
-
-                        if (prevSet.is(':checked')) {
-                            prevSet.attr('checked', 'checked').attr('name', prevSet.data('wpcfaccessname'));
-                        }
-                        wpcfAccess.ThickTd($(this), 'next', false);
                     }
                 }
             });
         });
-
-        // Thick all checkboxes
-        wpcfAccess.ThickTd(object, 'next', false);
-        wpcfAccess.ThickTd(object, 'prev', true);
-
-        // SET NAME
-        //
-        // Find previous if switched off
-        if (object.is(':checked')) {
-            object.attr('name', name);
-
-        } else {
-            object.attr('name', 'dummy');
-            object
-                    .closest('td')
-                    .prev()
-                    .find(':checkbox')
-                    .attr('checked', 'checked')
-                    .attr('name', name);
-        }
         // Set true if admnistrator
         if (object.val() == 'administrator') {
             object
@@ -2058,14 +2110,12 @@ jQuery( document ).ready( function( $ ) {
                 $(this)
                         .prop('checked', true)
                         .prop('name', 'dummy');
-//			$(this).parent().find('.wpcf-add-error-page,.error-page-name-wrap').hide();
             });
         } else {
             cbs.each(function () {
                 $(this)
                         .prop('checked', false)
                         .prop('name', 'dummy');
-//            $(this).parent().find('.wpcf-add-error-page,.error-page-name-wrap').attr('style','');
             });
         }
     };
@@ -2123,6 +2173,212 @@ jQuery( document ).ready( function( $ ) {
         }
         return update_message;
     }
+
+     $(document).on('click', '.js-toolset-access-specific-user-link', function (e) {
+
+            e.preventDefault();
+            var active_tab = $( '.js-otg-access-nav-tab.nav-tab-active' ).data( 'target' );
+ 			var status = $(this).closest('.js-otg-access-settings-section-item-content').find('.js-wpcf-enable-access').prop('checked');
+ 			if ( !status && ( active_tab == 'post-type' || active_tab == 'taxonomy') ){
+ 				return;
+			}
+            $access_dialog_open(500);
+
+            $('.js-wpcf-access-gui-close .ui-button-text').html(wpcf_access_dialog_texts.wpcf_cancel);
+            $('.js-wpcf-access-process-button .ui-button-text').html(wpcf_access_dialog_texts.wpcf_save);
+            var title = '"'+$(this).data('slugtitle')+'"';
+            if ( title.length > 15 ){
+            	title = '';
+			}
+            $('div[aria-describedby="js-wpcf-access-dialog-container"] .ui-dialog-title').html(wpcf_access_dialog_texts.otg_access_manage_specific_users.replace('%s',title));
+
+            OTGAccess.access_settings.access_control_dialog.html( OTGAccess.access_settings.spinner_placeholder );
+
+            var data = {
+                action: 'toolset_access_specific_users_popup',
+                wpnonce: $('#wpcf-access-error-pages').attr('value'),
+                id: $(this).data('id'),
+                groupid: $(this).data('groupid'),
+                option_name: $(this).data('option')
+            };
+
+            OTGAccess.access_settings.dialog_callback = $process_add_specific_users;
+            OTGAccess.access_settings.dialog_callback_params['id'] = $(this).data('id');
+            OTGAccess.access_settings.dialog_callback_params['groupid'] = $(this).data('groupid');
+            OTGAccess.access_settings.dialog_callback_params['option'] = $(this).data('option');
+
+            $.ajax({
+                url: ajaxurl,
+                type: 'post',
+                data: data,
+                cache: false,
+                success: function (data) {
+                    OTGAccess.access_settings.access_control_dialog.html(data);
+                    otgs_access_posts_group_select2( '#toolset-access-user-suggest-field', 'toolset_access_suggest_users' );
+					toolset_access_process_button_status(1);
+                }
+            });
+
+	 });
+
+	/*
+	 Process add/remove specific users
+	*/
+    $process_add_specific_users = function( params ){
+        var id = params['id'],
+        groupid = params['groupid'],
+        option_name = params['option'];
+
+        if ( id == '' || groupid == '' || option_name == '' ){
+            return;
+        }
+        var users = [];
+        $('.js-assigned-access-item').each(function () {
+                users.push($(this).data('itemid'))
+        });
+        var data = {
+            action: 'toolset_access_add_specific_users_to_settings',
+			wpnonce: $('#wpcf-access-error-pages').attr('value'),
+            id : id,
+            groupid : groupid,
+            option_name : option_name,
+            users : users
+        }
+        $.ajax({
+            url: ajaxurl,
+            type: 'post',
+            data: data,
+            dataType: "json",
+            cache: false,
+            success: function (data) {
+				var dep_message_show = false;
+            	$.each(data.options_texts, function( index, value ) {
+				  	$('.js-access-toolset-specific-users-list-'+id+'-'+groupid+'-'+index).html(value);
+				  	if ( !dep_message_show && typeof data.updated_sections !== 'undefined' ){
+				  		dep_message_show = true;
+				  		var update = $('.js-access-toolset-specific-users-list-'+id+'-'+groupid+'-'+index).parents('.wpcf-access-type-item').find('.dep-message');
+				  		update.html(data.updated_sections).show();
+					}
+				});
+
+				OTGAccess.access_settings.access_control_dialog.dialog('close');
+
+            }
+        });
+	}
+
+	 /*
+		Fix select2 on ui dialogs
+		https://github.com/select2/select2/issues/1246#issuecomment-71710835
+	 */
+	 var otgs_access_fix_select2_in_dialog = function(){
+		 //Enable selet2 dropdown fix
+		 if ($.ui && $.ui.dialog && $.ui.dialog.prototype._allowInteraction) {
+			 var ui_dialog_interaction = $.ui.dialog.prototype._allowInteraction;
+			 $.ui.dialog.prototype._allowInteraction = function(e) {
+				 if ($(e.target).closest('.select2-dropdown').length) return true;
+				 return ui_dialog_interaction.apply(this, arguments);
+			 };
+		 }
+	 }
+
+	 /*
+	 * Add selected post to group posts list
+	 */
+	$(document).on('select2:selecting', '#toolset-access-user-suggest-field', function (e) {
+	   var data = e.params.args.data;
+	   var div = '.js-assigned-access-item-' + data.id;
+		if (typeof $(div).html() === 'undefined') {
+			$('.js-no-posts-assigned').hide();
+			$(".js-otgs-access-posts-listing").prepend('<div class="js-assigned-access-item js-assigned-access-item-' + data.id + '" data-newitem="1" data-itemid="' + data.id + '" style="opacity:0;">' +
+					data.name + ' <a href="" class="js-wpcf-unassign-access-item" data-id="' + data.id + '"><i class="fa fa-times"></i></a></div>');
+			$(div).animate({ opacity:1}, 500, function() {});
+		}
+	});
+
+	// Remove items
+	$(document).on('click', '.js-wpcf-unassign-access-item', function () {
+		var div = '.js-assigned-access-item-' + $(this).data('id');
+		$(div).animate({ opacity:0}, 1000, function() {$(div).remove();});
+		return false;
+	});
+
+     /*
+		* Enable select2 for posts group
+	 */
+		var otgs_access_posts_group_select2 = function( object, action ){
+			var placeholder = wpcf_access_dialog_texts.otg_access_suggest_post_search_placeholder;
+			if ( action == 'toolset_access_suggest_users' ){
+				placeholder = wpcf_access_dialog_texts.otg_access_suggest_users_search_placeholder;
+			}
+			$(object).select2({
+				ajax: {
+					url: ajaxurl + '?action='+ action +'&wpnonce='+$('#wpcf-access-error-pages').attr('value'),
+					dataType: 'json',
+					delay: 250,
+					type: 'post',
+					data: function (params) {
+						if ( action == 'toolset_access_suggest_users' ){
+							var users = [];
+							$('.js-assigned-access-item').each(function () {
+									users.push($(this).data('itemid'));
+							});
+							return {
+								q: params.term,
+								assigned_users: users
+							};
+						}else{
+
+							var posts = [];
+							$('.js-assigned-access-post').each(function () {
+									posts.push($(this).data('postid'));
+							});
+							return {
+								q: params.term,
+								post_type: $('.js-otgs-access-suggest-posts-types').val(),
+								assigned_posts: posts
+							};
+						}
+					},
+					processResults: function (data, params) {
+					  $(object).val('');
+					  return {
+						results: data.items
+					  };
+					},
+					cache: true
+				  },
+				  dropdownCssClass: "js-toolset-access-select2-dropdown",
+				  escapeMarkup: function (markup) { return markup; },
+				  placeholder: placeholder,
+				  minimumInputLength: 2,
+				  triggerChange: true,
+				  templateSelection: function(data, container){return placeholder},
+				  //closeOnSelect: false,
+				  templateResult: function(repo){
+					  if (repo.loading) return wpcf_access_dialog_texts.otg_access_searching;
+					  var markup = '<div class="select2-result-repository clearfix">'+repo.name+'</div>';
+					  return markup;
+				  },
+			}).select2('val', []);
+
+			otgs_access_fix_select2_in_dialog();
+		}
+
+		var toolset_access_process_button_status = function( status ){
+			if ( status == '' ){
+				$('.js-wpcf-access-process-button')
+                            .removeClass('button-primary')
+                            .addClass('button-secondary')
+                            .prop('disabled', true);
+			}else{
+				$('.js-wpcf-access-process-button')
+                            .removeClass('button-secondary')
+                            .addClass('button-primary')
+                            .prop('disabled', false);
+			}
+		}
+
 
 // export it
     window.wpcfAccess = window.wpcfAccess || {};

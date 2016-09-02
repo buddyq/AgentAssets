@@ -5,7 +5,7 @@
  * Description: Enables a custom "supersize" lightbox view for Envira galleries.
  * Author:      Envira Gallery Team
  * Author URI:  http://enviragallery.com
- * Version:     1.1.2
+ * Version:     1.1.3
  * Text Domain: envira-supersize
  * Domain Path: languages
  *
@@ -30,7 +30,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 // Define necessary addon constants.
 define( 'ENVIRA_SUPERSIZE_PLUGIN_NAME', 'Envira Gallery - Supersize Addon' );
-define( 'ENVIRA_SUPERSIZE_PLUGIN_VERSION', '1.1.2' );
+define( 'ENVIRA_SUPERSIZE_PLUGIN_VERSION', '1.1.3' );
 define( 'ENVIRA_SUPERSIZE_PLUGIN_SLUG', 'envira-supersize' );
 
 add_action( 'plugins_loaded', 'envira_supersize_plugins_loaded' );
@@ -94,6 +94,8 @@ function envira_supersize_plugin_init() {
     add_filter( 'envira_gallery_output', 'envira_supersize_css', 10, 2 );
     add_action( 'envira_gallery_api_config_callback', 'envira_supersize_init' );
     add_action( 'envira_gallery_api_after_load', 'envira_supersize_load' );
+    add_filter( 'envirabox_theme', 'envira_supersize_disable_theme', 10, 2 );
+    add_filter( 'envirabox_wrap_css_classes', 'envira_supersize_wrap_css_class', 10, 2 );
 
 	// Albums
 	add_action( 'envira_albums_lightbox_box', 'envira_albums_supersize_setting' );
@@ -283,13 +285,36 @@ function envira_supersize_init( $data ) {
     margin: 0,
     padding: 0,
     autoCenter: true,
-    tpl: {
-        wrap: '<div class="envirabox-wrap envira-supersize" tabIndex="-1"><div class="envirabox-skin"><div class="envirabox-outer"><div class="envirabox-inner"></div></div></div></div>'
-    },
     <?php
     do_action( 'envira_supersize_init', $data );
     echo ob_get_clean();
 
+}
+
+/**
+ * Disables the theme so supersize can work correctly.
+ *
+ * @since 1.1.2
+ *
+ * @param string $theme the class of the currently enabled theme.
+ * @param array $data Data for the Envira gallery.
+ * @return string Empty string disables the theme.
+ */
+function envira_supersize_disable_theme( $theme, $data ) {
+    return '';
+}
+
+/**
+ * adds the supersize class to the template.
+ *
+ * @since 1.1.2
+ *
+ * @param string $css_classes the classes near envirabox-wrap.
+ * @param array $data Data for the Envira gallery.
+ * @return string added envira-supersize to the classes.
+ */
+function envira_supersize_wrap_css_class( $css_classes, $data ) {
+    return $css_classes . ' envira-supersize';
 }
 
 /**

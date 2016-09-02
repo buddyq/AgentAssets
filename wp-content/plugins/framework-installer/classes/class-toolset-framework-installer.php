@@ -73,9 +73,15 @@ class Toolset_Framework_Installer {
          */
         remove_filter( 'gettext', 'icl_sw_filters_gettext', 9, 3 );
         remove_filter( 'ngettext', 'icl_sw_filters_ngettext', 9, 5 );
-        remove_filter( 'gettext_with_context', 'icl_sw_filters_gettext_with_context', 1, 4 );        
+        remove_filter( 'gettext_with_context', 'icl_sw_filters_gettext_with_context', 1, 4 );         
         add_action ('wp_loaded', array($this,'wpvdemo_reenable_string_filters_after_import'),5);
         
+        /**
+         * Framework installer 2.0.3 +
+         * Remove unneeded setup notices appearing after import
+         * 
+         */
+        add_action ('wp_loaded', array($this,'wpvdemo_remove_all_unneeded_setup'), 888 );        
     }
 
     /**
@@ -3330,17 +3336,25 @@ class Toolset_Framework_Installer {
     	}
     
     }
-    function wpvdemo_reenable_string_filters_after_import() {
-    
+    function wpvdemo_reenable_string_filters_after_import() { 
     	$check_import_is_done_connected = get_option ( 'wpv_import_is_done' );
-    	if (('yes' == $check_import_is_done_connected) && (wpvdemo_wpml_is_active())) {
-    		/** Import is done and WPML is setup, bring back these filters */
-    		add_filter( 'gettext', 'icl_sw_filters_gettext', 9, 3 );
-    		add_filter( 'ngettext', 'icl_sw_filters_ngettext', 9, 5 );
-    		add_filter( 'gettext_with_context', 'icl_sw_filters_gettext_with_context', 1, 4 );
-    		
-    	}
-    	
+    	$sitepress_settings				= get_option ( 'icl_sitepress_settings' );
+    	if (('yes' == $check_import_is_done_connected ) && ( wpvdemo_wpml_is_active() ) ) {
+    		/** Import is done and WPML is setup*/
+    		//Check if migration is done
+    		$migration_done				= false;
+    		if (( isset( $sitepress_settings['st']['WPML_ST_Upgrade_Migrate_Originals_has_run'] ) ) &&
+    				( isset( $sitepress_settings['st']['WPML_ST_Upgrade_Db_Cache_Command_has_run'] ) ) )  {
+    			//Setting set, unset
+    			$migration_done			= true;
+    		}
+    		if ( true === $migration_done ) {
+    			//dB migration is done, safe to add these filters back
+			    add_filter( 'gettext', 'icl_sw_filters_gettext', 9, 3 );
+			    add_filter( 'ngettext', 'icl_sw_filters_ngettext', 9, 5 );
+			    add_filter( 'gettext_with_context', 'icl_sw_filters_gettext_with_context', 1, 4 );
+    		}
+    	}    	
     }
     
     /**
@@ -3417,7 +3431,25 @@ class Toolset_Framework_Installer {
     	}
     	
     	return $canonical_screen_id;    
-    }	
+    }
+    
+    /**
+     * @since    2.0.3
+     * frameworkinstaller-213: removed unneeded setup notices from
+     * different plugins since this is not used anymore (site is already setup after import)
+     */
+    public function wpvdemo_remove_all_unneeded_setup() {
     	
+    	$check_import_is_done_connected = get_option ( 'wpv_import_is_done' );
+    	if ( 'yes' == $check_import_is_done_connected ) {
+			//Import is completed
+    		if ( wpvdemo_woocommerce_is_active() ) {
+    			//WooCommerce activated, delete unneeded install notice
+    			if ( class_exists( 'WC_Admin_Notices' ) ) {
+    				WC_Admin_Notices::remove_notice( 'install' );
+    			}
+    		}
+    	}
+    }
 }
 ?>

@@ -2,9 +2,10 @@
 DDLayout.TextCell = function($)
 {
     var self = this;
-
+    
 
     self.init = function() {
+        
         self.editor = self.editor || {};
         jQuery(document).on('cell-text.dialog-open', self._dialog_open);
         jQuery(document).on('cell-text.dialog-close', self._dialog_close);
@@ -32,6 +33,8 @@ DDLayout.TextCell = function($)
         
         // disable full screen save.
         jQuery('#wp-fullscreen-save').hide();
+        
+        Toolset.hooks.doAction( 'toolset_text_editor_TinyMCE_init', 'visual-editor-html-editor' );
 
         // (Re)Initialize CodeMirror
         if( typeof self.editor.codemirror == 'undefined' ) {
@@ -39,9 +42,11 @@ DDLayout.TextCell = function($)
             self._visual_editor_html_editor_qt = quicktags( { id: 'visual-editor-html-editor', buttons: 'strong,em,link,block,del,ins,img,ul,ol,li,code,close' } );
             // The object is called WPV_Toolset. No need to worry. @see icl_editor_addon_plugin.js
             WPV_Toolset.add_qt_editor_buttons( self._visual_editor_html_editor_qt, self.editor.codemirror );
+            Toolset.hooks.doAction( 'toolset_text_editor_CodeMirror_init', 'visual-editor-html-editor' );
         } else {
             // Avoid loading previous content through Ctrl+Z
             self.editor.codemirror.clearHistory();
+            Toolset.hooks.doAction( 'toolset_text_editor_CodeMirror_init_only_buttons', 'visual-editor-html-editor' );
         }
 
         // Remove TinyMCE editing mode tabs
@@ -61,9 +66,17 @@ DDLayout.TextCell = function($)
                 } else {
                     self.editor.switch_to_codemirror();
                     self.editor.update_preferred( 'codemirror' );
+                    self.editor.codemirror.setOption("scrollbarStyle", 'native');
+
                 }
                 
-                jQuery( '.js-visual-editor-toggle' ).show();
+                jQuery( '.js-visual-editor-toggle' ).show(400, function(){
+                        if( self.editor.get_preferred() === 'codemirror' ){
+                            var info = self.editor.codemirror.getScrollInfo();
+                            self.editor.codemirror.scrollTo(info.left, info.height);
+                            self.editor.codemirror.scrollTo(info.left, info.top);
+                        }
+                });
                 jQuery( this ).hide();
             }
         } );
@@ -85,6 +98,7 @@ DDLayout.TextCell = function($)
             self.editor.switch_to_codemirror();
             jQuery( '.js-visual-editor-toggle[data-editor=codemirror]' ).hide();
         }
+        
         
         // We need special handling to install View forms as this uses colorbox.
         self._views_insert_form_function = window.wpv_insert_view_form_popup;

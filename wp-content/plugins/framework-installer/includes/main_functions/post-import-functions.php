@@ -1350,3 +1350,76 @@ function wpvdemo_log_refsites_to_toolset($file) {
 		
 	}
 }
+
+/**
+ * @since    2.0.3
+ * frameworkinstaller-218: Fixed fatal errors on multilingual site when FI is deactivated.
+ */
+function wpvdemo_wpml_st_setup_completed( $file ) {
+	global $frameworkinstaller, $wpdb, $sitepress;
+	if (is_object ( $frameworkinstaller )) {
+		if (method_exists ( $frameworkinstaller, 'is_discoverwp' )) {
+			$is_discover = $frameworkinstaller->is_discoverwp ();
+			if ( false === $is_discover ) {
+				//Issue is restricted to standalone import	
+				if (( defined( 'ICL_SITEPRESS_VERSION' )) &&  ( (defined( 'WPML_ST_VERSION' ) ))) {
+					// Multilingual site
+					$string_settings = get_option ( 'icl_sitepress_settings' );
+					if ( ! isset( $string_settings['st']['sw'] ) ) {
+						//Not yet set
+						$string_settings['st']['sw']	= array();
+						update_option ( 'icl_sitepress_settings', $string_settings );							
+					}											
+				}
+			}
+		}
+	}	
+}
+
+/**
+ * @since    2.0.3
+ * frameworkinstaller-213: Import WCML settings so WCML setup appears 'complete' after import.
+ */
+function wpvdemo_import_wcml_settings( $file ) {
+	
+	if (! (empty ( $file ))) {
+		/**
+		 * Multilingual WooCommerce sites only
+		 * 
+		 */
+		if ( ( wpvdemo_woocommerce_is_active() ) && ( wpvdemo_wpml_is_enabled() ) ) {
+			//WooCommerce + WPML enabled proceed...
+			$dirname_refsite= dirname ( $file );
+			$xml_file = $dirname_refsite . '/woocommerce_multilingual_settings.xml';
+
+			// Parse remote XML
+			$data = wpv_remote_xml_get ( $xml_file );
+			if (! ($data)) {
+				return;
+			}
+			
+			$xml = simplexml_load_string ( $data );
+			$import_data = wpv_admin_import_export_simplexml2array ( $xml );
+
+			//Let's update
+			if ((is_array($import_data)) && (!(empty($import_data)))) {
+				$option_name='_wcml_settings';
+				delete_option( $option_name );
+				update_option( $option_name , $import_data );
+			}
+
+		}
+	}
+}
+
+/**
+ * @since    2.0.3
+ * frameworkinstaller-213: Clear of any theme string scanning notices after import
+ */
+function wpvdemo_clear_any_string_scanning( $file ) {
+	
+	if ( wpvdemo_wpml_is_enabled() ) {
+		//Clear of any string scanning notices -not needed after import.
+		update_option( 'wpml_notices', array() );
+	}	
+}

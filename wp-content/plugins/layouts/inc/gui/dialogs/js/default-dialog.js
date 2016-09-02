@@ -16,10 +16,22 @@ DDLayout.DefaultDialog = function($)
 		jQuery(document).on('click', '.js-show-cell-dialog', {dialog: self}, function(event) {
 			event.preventDefault();
 			event.stopImmediatePropagation();
-
-            // clean up all create dialog events
-            DDLayout.create_cell_helper.show_new_dialog( event, this, event.data.dialog )
+                      
+            if(jQuery(this).data("cell-type") === 'child-layout' && DDLayout.local_settings.is_layout_assigned === true){
+                self.show_child_layout_pre_create_dialog(event, this, event.data.dialog );
+            } else {
+                // clean up all create dialog events
+                DDLayout.create_cell_helper.show_new_dialog( event, this, event.data.dialog );
+            }
 		});
+        jQuery(document).on('click', '#remove_assignments', function() {
+			event.preventDefault();
+			event.stopImmediatePropagation();
+            self.remove_assignments_for_layout();
+            jQuery(".js-where-used-ui").hide(400);
+            jQuery("#remove_assignments").remove();
+		});
+
 
 		jQuery(document).on('click', '.js-dialog-edit-save', {dialog: self}, function(event) {
 			event.preventDefault();
@@ -44,6 +56,65 @@ DDLayout.DefaultDialog = function($)
         // this trigger on any dialog when closes up.
         WPV_Toolset.Utils.eventDispatcher.listenTo(WPV_Toolset.Utils.eventDispatcher, 'color_box_closed', self.generic_dialog_close_callback);
 	};
+    
+    
+    self.remove_assignments_for_layout = function(){
+        var params = {
+            ddl_remove_all_layout_association_nonce:jQuery('#ddl_remove_all_layout_association_nonce').val()
+            , layout_id: DDLayout_settings.DDL_JS.layout_id
+            , action:'remove_all_layout_associations'
+        };
+        WPV_Toolset.Utils.do_ajax_post(params, {success:function(response){
+
+            DDLayout.local_settings.list_where_used = null;
+            DDLayout.PostTypes_Options.is_assigned  = false;
+            jQuery( '.assignment-list-in-editor-wrap' ).empty();
+        }});
+    };
+    
+    
+    self.show_child_layout_pre_create_dialog = function( event, handler, dialog ){
+                
+        var assignment_options_for_child_cell_dialog = new DDLayout.ViewLayoutManager.DialogView({
+                title:  DDLayout_settings.DDL_JS.strings.remove_assignments,
+                modal:true,
+                dialogClass: 'remove_assignments_dialog',
+                width: 300,
+                selector: '#ddl-remove-assigments-dialog-tpl',
+                buttons: [
+                    {
+                        class: 'button-primary pull-right',
+                        text: DDLayout_settings.DDL_JS.strings.unassign_layout_and_create_child_button,
+                        click: function () {
+                            // unassign all items                            
+                            self.remove_assignments_for_layout();
+                            DDLayout.create_cell_helper.show_new_dialog( event, handler, dialog );
+                            jQuery(this).ddldialog("close");
+                        }
+                    },
+                    {
+                        icons: {
+                            secondary: ""
+                        },
+                        class: 'pull-left',
+                        text: DDLayout_settings.DDL_JS.strings.dismiss_button,
+                        click: function () {
+                            jQuery(this).ddldialog("close");
+                        }
+                    },
+                ]
+            });
+            jQuery('.remove_assignments_dialog .ui-dialog-buttonset').css('float','none');
+
+            assignment_options_for_child_cell_dialog.$el.on('ddldialogclose', function (event) {
+
+                assignment_options_for_child_cell_dialog.remove();
+            });
+
+            assignment_options_for_child_cell_dialog.dialog_open();
+        
+        
+    };
 
     self.check_if_child_layout_and_assigned = function( data )
     {
@@ -58,6 +129,7 @@ DDLayout.DefaultDialog = function($)
         return false;
     };
 
+    
     self.generic_dialog_close_callback = function( event )
     {
         if( jQuery('.js-element-box-message-container').is('p') )
@@ -118,8 +190,8 @@ DDLayout.DefaultDialog = function($)
 		//self._display_info_box( jQuery(caller).data('cell-name'), cellDescription, cell_type );
 
 		self._set_dialog_content(cell_type);
-
-		if (cell_type == 'ddl-container') {
+		//TODO: remove me and change me with KIND
+		if ( _.keys(Toolset.hooks.applyFilters('ddl-get_containers_elements') ).indexOf( cell_type )  !== -1 ) {
 			self._initialize_container();
 		} else {
 			if (cell_type in self._dialog_defaults) {
@@ -196,6 +268,8 @@ DDLayout.DefaultDialog = function($)
 
 
 				var val = 'cell';
+                //TODO: eventually change next if with this:
+               // _.keys(Toolset.hooks.applyFilters('ddl-get_containers_elements') ).indexOf( self._cell_type )  !== -1
 				if ( self._cell_type == 'ddl-container') {
 					val = 'row';
 				}
@@ -303,6 +377,7 @@ DDLayout.DefaultDialog = function($)
 				}
 				return desc;
 			}();
+
 			var content = cell_view.model.get('content');
 
                  self.setCachedElement( cell_view.model.toJSON() );
@@ -367,8 +442,8 @@ DDLayout.DefaultDialog = function($)
 
             var target_cell = target_cell_view.model;
 
-            if (cell_type == 'ddl-container') {
-                self._handle_container_save(target_cell_view);
+            if ( _.keys(Toolset.hooks.applyFilters('ddl-get_containers_elements') ).indexOf( cell_type )  !== -1 ) {
+                self._handle_container_save( target_cell_view, cell_type );
 
             } else {
 
@@ -417,7 +492,6 @@ DDLayout.DefaultDialog = function($)
             }
 
 			Toolset.hooks.applyFilters('ddl-layouts-before-cell-save', target_cell, self.cached_element, this);
-
             DDLayout.ddl_admin_page.save_layout_from_dialog( caller, target_cell_view, self.cached_element, false, self );
         }
 
@@ -524,6 +598,8 @@ DDLayout.DefaultDialog = function($)
 	
 	self._initialize_dialog_from_content = function (content) {
 
+        if( typeof content === 'undefined' ) return;
+
 		self._content = content;
 
 		self._repeating_fields.initilize_from_content(content, self);
@@ -580,30 +656,32 @@ DDLayout.DefaultDialog = function($)
 		}
 
 	};
-	self._handle_container_save = function(target_cell_view) {
+	self._handle_container_save = function(target_cell_view, cell_type) {
 
 		DDLayout.ddl_admin_page.save_undo();
 
 		var number_of_rows = 1,
-			layout_type = jQuery('#ddl-default-edit .js-layout-type-selector:checked').val(),
+			layout_type = jQuery('.js-layout-type-selector:checked').val(),
 			container_width = DDLayout.ddl_admin_page._add_cell.getColumnsToAdd(),
 			row_divider = 1,
-			container = new DDLayout.models.cells.Container({
+			models = Toolset.hooks.applyFilters('ddl-get_containers_elements'),
+            model = models[cell_type],
+            container = new DDLayout.models.cells[model]({
 				name : jQuery('input[name="ddl-default-edit-cell-name"]').val(),
 				cssClass : "",
-				kind : "Container",
+				kind : model,
 				width : container_width
 			}),
 			container_columns = container_width,
 			$grid = null;
 
-        Toolset.hooks.applyFilters('ddl-layouts-before-container-model-set', container, container_columns, container_columns, this);
+		container = Toolset.hooks.applyFilters('ddl-layouts-before-container-model-set', container, container_columns, container_columns, this);
 
 		if (layout_type === 'fluid') {
 			$grid = jQuery('#js-fluid-grid-designer');
-			number_of_rows = $grid.data('rows');
-			container_columns = $grid.data('max-cols');
-			row_divider = $grid.data('max-cols') / $grid.data('cols');
+			number_of_rows = Toolset.hooks.applyFilters( 'ddl-container_number_of_rows', $grid.data('rows'), container );
+			container_columns = Toolset.hooks.applyFilters( 'ddl-container_container_columns', $grid.data('max-cols'), container );
+			row_divider = Toolset.hooks.applyFilters( 'ddl-container_row_divider', $grid.data('max-cols') / $grid.data('cols'), container );
 		}
 		else if (layout_type === 'fixed') {
 			$grid = jQuery('#js-fixed-grid-designer');
@@ -617,10 +695,8 @@ DDLayout.DefaultDialog = function($)
 		container.set('tag', jQuery('#ddl-default-edit select[name="ddl_tag_name"]').val());
 		container.set('row_divider', target_cell_view.model.get('row_divider'));
 
-		var target_cell = target_cell_view.model;
+		var target_cell = Toolset.hooks.applyFilters('ddl-layouts-before-cell-save', target_cell_view.model, container, this);
 		target_cell.selected_cell = true;
-
-        Toolset.hooks.applyFilters('ddl-layouts-before-cell-save', target_cell, container, this);
 
 		DDLayout.ddl_admin_page.replace_selected_cell(container, container_width);
 	};
@@ -649,6 +725,7 @@ DDLayout.DefaultDialog = function($)
 		else {
 			layout_type_select.prop('disabled', true);
 			jQuery('.js-layout-type-selector-fluid').prop('checked', true);
+            jQuery('.js-layout-type-selector').val('fluid');
 			$message.show();
 		}
 
@@ -763,7 +840,7 @@ DDLayout.DefaultDialog = function($)
 	self.save_and_close_dialog = function () {
 		self.disable_save_button(false);
 		jQuery('.js-dialog-edit-save').trigger('click');
-	}
+	};
 
 	self.init();
 };

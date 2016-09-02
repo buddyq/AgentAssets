@@ -17,7 +17,7 @@ DDLayout.models.cells.Container = DDLayout.models.abstract.Element.extend({
 		var self = this,
 		rows = new DDLayout.models.collections.Rows;
 
-		rows.addRows(amount, width, layout_type, row_divider, undefined, 'spacer');
+		rows.addRows(amount, width, layout_type, row_divider, undefined, 'spacer', 'Row');
 		
 		self.set( "Rows", rows );
 		

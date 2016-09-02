@@ -18,6 +18,7 @@ DDLayout.ImportLayouts = function($)
         $overwritten = 0,
         $deleted = 0,
         $saved_css = 0,
+        $saved_js = 0,
         $saved_layouts = 0,
         $skipped_layouts = 0,
         $show_log = false,
@@ -51,6 +52,9 @@ DDLayout.ImportLayouts = function($)
         if ( $saved_css != 0 ){
             out += '<br>' + ddl_import_texts.saved_css + ': ' + $saved_css;
         }
+        if ( $saved_js != 0 ){
+            out += '<br>' + ddl_import_texts.saved_js + ': ' + $saved_js;
+        }
         if ( $overwritten != 0 ){
             out += '<br>' + ddl_import_texts.overwritten_layouts + ': ' + $overwritten;
         }
@@ -63,6 +67,7 @@ DDLayout.ImportLayouts = function($)
         $overwritten = 0;
         $deleted = 0;
         $saved_css = 0;
+        $saved_js = 0;
         $saved_layouts = 0;
         $imported_layouts = [];
         $is_zip = 0;
@@ -119,7 +124,7 @@ DDLayout.ImportLayouts = function($)
                 else if ( $file[0].files[0].size > $max_upload_size ){
                     self.showmessage( DDLayout_settings.DDL_JS.file_to_big, 'warning');
                 }
-                else if ( extension != 'zip' && extension != 'ddl' && extension != 'css' ){
+                else if ( extension != 'zip' && extension != 'ddl' && extension != 'css' && extension != 'js' ){
                     self.showmessage( DDLayout_settings.DDL_JS.file_type_wrong, 'warning');
                 }
                 else
@@ -311,6 +316,7 @@ DDLayout.ImportLayouts = function($)
         $overwritten = 0;
         $deleted = 0;
         $saved_css = 0;
+        $saved_js = 0;
         $saved_layouts = 0;
         $('#import-layouts')[0].reset();
         $('.import-layouts-messages').html('');
@@ -326,6 +332,9 @@ DDLayout.ImportLayouts = function($)
         }
         if ( res.saved_css != 0 ){
             $saved_css+= res.saved_css;
+        }
+        if ( res.saved_js != 0 ){
+            $saved_js+= res.saved_js;
         }
         if ( res.overwritten != 0 ){
             $overwritten+= res.overwritten;

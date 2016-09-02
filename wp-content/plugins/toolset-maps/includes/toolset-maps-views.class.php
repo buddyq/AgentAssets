@@ -17,24 +17,19 @@ class Toolset_Addon_Maps_Views {
 	const option_name = 'wpv_addon_maps_options';
 
 	static $is_wpv_embedded	= false;
-	static $stored_options	= array();
 
 	function __construct() {
-		
-		self::$stored_options =		get_option( self::option_name, array() );
 		
 		add_action( 'init',			array( $this, 'init' ) );
 		add_action( 'admin_init',	array( $this, 'admin_init' ) );
 		
-		// API filters
-		add_filter( 'toolset_filter_toolset_maps_get_api_key', array( $this, 'toolset_filter_toolset_maps_get_api_key' ) );
-		
 		$this->enqueue_marker_clusterer_script = false;
+		
 	}
 
 	function init() {
 		
-		self::$is_wpv_embedded =	apply_filters( 'toolset_is_views_embedded_available', false );
+		self::$is_wpv_embedded = apply_filters( 'toolset_is_views_embedded_available', false );
 
 		// Shortcodes
 		add_shortcode( 'wpv-map-render',	array( $this, 'wpv_map_render_shortcode' ) );
@@ -53,9 +48,12 @@ class Toolset_Addon_Maps_Views {
 			/**
 			* Backwards compatibility
 			*
-			* From Views 2.0, the Toolset Maps settings are integrated in the Toolset Settings page entirely
+			* Before Views 2.0, the Toolset Maps settings are integrated in the Views Settings page.
 			*
-			* @todo adjust this once we bump the Views version
+			* From Views 2.0, the Toolset Maps settings are integrated in the Toolset Settings page entirely.
+			* From Toolset Maps 1.2 the Google Maps API key settings are registered globally for all Toolset integrations.
+			* The marker icons and stored data settings still belong to the Views integration.
+			* The legacy map setting is registered in Views entirely.
 			*/
 			if ( version_compare( WPV_VERSION, '2.0', '<' ) ) {
 				
@@ -69,14 +67,13 @@ class Toolset_Addon_Maps_Views {
 
 				add_filter( 'wpv_filter_wpv_settings_admin_tabs',						array( $this, 'register_settings_admin_tab' ) );
 				add_action( 'wpv_action_views_settings_addon_maps_section',				array( $this, 'wpv_addon_maps_options' ), 30 );
+				
+				add_filter( 'toolset_filter_toolset_maps_settings_link',				array( $this, 'toolset_maps_settings_link' ) );
 			
 			} else {
 				
-				// Register the Map section, if needed
-				add_filter( 'toolset_filter_toolset_register_settings_section',			array( $this, 'register_settings_maps_section' ), 60 );
-				// Register the custom sections
-				add_filter( 'toolset_filter_toolset_register_settings_maps_section',	array( $this, 'wpv_addon_maps_marker_options' ) );
-				add_filter( 'toolset_filter_toolset_register_settings_maps_section',	array( $this, 'wpv_addon_maps_api_key_options' ), 20 );
+				// Register the custom sections in the Map tab registered in Toolset_Addon_Maps_Common
+				add_filter( 'toolset_filter_toolset_register_settings_maps_section',	array( $this, 'wpv_addon_maps_marker_options' ), 20 );
 				add_filter( 'toolset_filter_toolset_register_settings_maps_section',	array( $this, 'wpv_addon_maps_cache_options' ), 30 );
 				
 			}
@@ -93,7 +90,6 @@ class Toolset_Addon_Maps_Views {
 
 		// AJAX callbacks for updating Toolset Maps settings
 		add_action( 'wp_ajax_wpv_addon_maps_update_marker',				array( $this, 'wpv_addon_maps_update_marker' ) );
-		add_action( 'wp_ajax_wpv_addon_maps_update_api_key',			array( $this, 'wpv_addon_maps_update_api_key' ) );
 		add_action( 'wp_ajax_wpv_addon_maps_get_stored_data',			array( $this, 'wpv_addon_maps_get_stored_data' ) );
 		add_action( 'wp_ajax_wpv_addon_maps_delete_stored_addresses',	array( $this, 'wpv_addon_maps_delete_stored_addresses' ) );
 		// AJAX callback to update map and marker counters
@@ -114,50 +110,23 @@ class Toolset_Addon_Maps_Views {
 		// Assets
 		$this->admin_register_assets();
 		add_action( 'admin_enqueue_scripts',	array( $this, 'admin_enqueue_scripts' ), 20 );
-		add_action( 'toolset_enqueue_scripts',	array( $this, 'toolset_enqueue_scripts' ) );
 		add_action( 'admin_footer',				array( $this, 'admin_render_dialogs' ), 50 );
 		
 		// Delete a registered marker icon when the image is deleted
 		add_action( 'delete_attachment', array( $this, 'wpv_addon_maps_delete_stored_icon_on_delete_attachment' ) );
 	}
 
-	function get_options() {
-		self::$stored_options = wp_parse_args(
-			get_option( self::option_name, array() ),
-			array(
-				'marker_images'		=> array(),
-				'map_counter'		=> 0,
-				'marker_counter'	=> 0,
-				'api_key'			=> ''
-			)
-		);
-
-		return self::$stored_options;
-	}
-
-	function set_options() {
-		update_option( self::option_name, self::$stored_options );
-	}
-
 	function admin_register_assets() {
-		wp_register_script( 'views-addon-maps-settings-script', TOOLSET_ADDON_MAPS_URL . '/resources/js/wpv_addon_maps_settings.js', array( 'jquery', 'underscore', 'quicktags', 'icl_media-manager-js' ), TOOLSET_ADDON_MAPS_VERSION, true );
-		$wpv_addon_maps_settings_localization = array(
-			'nonce'					=> wp_create_nonce( 'toolset_views_addon_maps_settings' ),
-			'global_nonce'			=> wp_create_nonce( 'toolset_views_addon_maps_global' ),
-			'setting_saved'			=> __( 'Settings saved', 'toolset-maps' )
-		);
-		wp_localize_script( 'views-addon-maps-settings-script', 'wpv_addon_maps_settings_local', $wpv_addon_maps_settings_localization );
-		
 		wp_register_script( 'views-addon-maps-dialogs-script', TOOLSET_ADDON_MAPS_URL . '/resources/js/wpv_addon_maps_dialogs.js', array( 'jquery', 'underscore', 'jquery-ui-dialog', 'jquery-ui-tabs', 'views-shortcodes-gui-script', 'jquery-geocomplete', 'wp-color-picker', 'icl_media-manager-js' ), TOOLSET_ADDON_MAPS_VERSION, true );
 		$types_postmeta_fields = apply_filters( 'toolset_filter_toolset_maps_get_types_postmeta_fields', array() );
 		$types_termmeta_fields = apply_filters( 'toolset_filter_toolset_maps_get_types_termmeta_fields', array() );
 		$types_usermeta_fields = apply_filters( 'toolset_filter_toolset_maps_get_types_usermeta_fields', array() );
-		$types_opt_array = array( 
+		$types_opt_array		= array( 
 			'toolset_map_postmeta_fields'	=> $types_postmeta_fields,
 			'toolset_map_termmeta_fields'	=> $types_termmeta_fields,
 			'toolset_map_usermeta_fields'	=> $types_usermeta_fields
 		);
-		$saved_options = $this->get_options();
+		$saved_options			= apply_filters( 'toolset_filter_toolset_maps_get_options', array() );
 		$wpv_addon_maps_dialogs_localization = array(
 			'insert_link'			=> __( 'Insert link', 'toolset-maps' ),
 			'close_dialog'			=> __( 'Close', 'toolset-maps' ),
@@ -309,14 +278,6 @@ class Toolset_Addon_Maps_Views {
 			wp_enqueue_style( 'wp-color-picker' );
 			wp_enqueue_media();
 			wp_enqueue_script( 'views-addon-maps-dialogs-script' );
-		}
-	}
-	
-	function toolset_enqueue_scripts( $page ) {
-		if ( $page == 'toolset-settings' ) {
-			wp_enqueue_style( 'wp-color-picker' );
-			wp_enqueue_media();
-			wp_enqueue_script( 'views-addon-maps-settings-script' );
 		}
 	}
 
@@ -523,7 +484,7 @@ class Toolset_Addon_Maps_Views {
 	}
 	
 	function wpv_addon_maps_delete_stored_icon_on_delete_attachment( $attachment_id ) {
-		$saved_options = $this->get_options();
+		$saved_options = apply_filters( 'toolset_filter_toolset_maps_get_options', array() );
 		if ( empty( $saved_options['marker_images'] ) ) {
 			return;
 		}
@@ -535,8 +496,7 @@ class Toolset_Addon_Maps_Views {
 			} else {
 				$saved_options['marker_images'] = array();
 			}
-			self::$stored_options = $saved_options;
-			$this->set_options();
+			do_action( 'toolset_filter_toolset_maps_update_options', $saved_options );
 		}
 	}
 
@@ -547,18 +507,10 @@ class Toolset_Addon_Maps_Views {
 		);
 		return $tabs;
 	}
-	
-	function register_settings_maps_section( $sections ) {
-		$sections['maps'] = array(
-			'slug'	=> 'maps',
-			'title'	=> __( 'Maps', 'wpv-views' )
-		);
-		return $sections;
-	}
 
 	// Legacy, neded for Views before 2.0
 	function wpv_addon_maps_options( $WPV_settings ) {
-		$saved_options = $this->get_options();
+		$saved_options = apply_filters( 'toolset_filter_toolset_maps_get_options', array() );
 		?>
 		<div class="wpv-setting-container js-wpv-setting-container">
 			<span style="display:inline-block;padding:0 8px 0 5px;margin-right:10px;background:#f1f1f1;border-radius:5px;box-shadow:inset 0 0 10px #c5c5c5;color:#F05A28;">
@@ -580,23 +532,23 @@ class Toolset_Addon_Maps_Views {
 		</div>
 		
 		<div class="wpv-setting-container js-wpv-setting-container">
-			<div class="wpv-settings-header">
-                <h2><?php _e( 'Map markers', 'toolset-maps' ); ?></h2>
-            </div>
-            <div class="wpv-setting">
-				<?php
-				$this->wpv_addon_maps_render_marker_options( $saved_options );
-				?>
-            </div>
-        </div>
-		
-		<div class="wpv-setting-container js-wpv-setting-container">
             <div class="wpv-settings-header">
                 <h2><?php _e( 'Google Maps API key', 'toolset-maps' ); ?></h2>
             </div>
             <div class="wpv-setting">
 				<?php
 				$this->wpv_addon_maps_render_api_key_options( $saved_options );
+				?>
+            </div>
+        </div>
+		
+		<div class="wpv-setting-container js-wpv-setting-container">
+			<div class="wpv-settings-header">
+                <h2><?php _e( 'Map markers', 'toolset-maps' ); ?></h2>
+            </div>
+            <div class="wpv-setting">
+				<?php
+				$this->wpv_addon_maps_render_marker_options( $saved_options );
 				?>
             </div>
         </div>
@@ -645,7 +597,7 @@ class Toolset_Addon_Maps_Views {
 	}
 	
 	function wpv_addon_maps_marker_options( $sections ) {
-		$saved_options = $this->get_options();
+		$saved_options = apply_filters( 'toolset_filter_toolset_maps_get_options', array() );
 		ob_start();
 		$this->wpv_addon_maps_render_marker_options( $saved_options );
 		$section_content = ob_get_clean();
@@ -684,36 +636,20 @@ class Toolset_Addon_Maps_Views {
 		<?php
 	}
 	
-	function wpv_addon_maps_api_key_options( $sections ) {
-		$saved_options = $this->get_options();
-		ob_start();
-		$this->wpv_addon_maps_render_api_key_options( $saved_options );
-		$section_content = ob_get_clean();
-			
-		$sections['maps-api-key'] = array(
-			'slug'		=> 'maps-api-key',
-			'title'		=> __( 'Google Map API key', 'toolset-maps' ),
-			'content'	=> $section_content
-		);
-		return $sections;
-	}
-	
 	function wpv_addon_maps_render_api_key_options( $saved_options ) {
 		?>
 		<p>
-			<?php _e( "You can use your Google Maps API key.", 'toolset-maps' ); ?>
+			<?php _e( "Set your Google Maps API key.", 'toolset-maps' ); ?>
 		</p>
 		<div class="js-wpv-map-plugin-form">
 			<p>
-				<input id="js-wpv-map-api-key" type="text" name="wpv-map-api-key" class="js-wpv-map-api-key" value="<?php echo esc_attr( $saved_options['api_key'] ); ?>" autocomplete="off" placeholder="<?php echo esc_attr( __( 'API key', 'toolset-maps' ) ); ?>" />
+				<input id="js-wpv-map-api-key" type="text" name="wpv-map-api-key" class="regular-text js-wpv-map-api-key" value="<?php echo esc_attr( $saved_options['api_key'] ); ?>" autocomplete="off" placeholder="<?php echo esc_attr( __( 'API key', 'toolset-maps' ) ); ?>" />
 			</p>
 			<p>
 				<?php
 				echo sprintf( 
-					__( 'A key helps you to avoid problems with the <a href="%1$s" target="_blank">Google Maps API quota limit</a>. You will need to create a <a href="%2$s" target="_blank">project in the Developers console</a> and then <a href="%3$s" target="_blank">create an API key</a>.', 'toolset-maps' ),
-					'https://developers.google.com/maps/documentation/geocoding/usage-limits',
-					'https://developers.google.com/console/help/new/',
-					'https://developers.google.com/console/help/new/#api-keys'
+					__( 'A Google Maps API key is <strong>required</strong> to use Toolset Maps. You will need to create a <a href="%1$s" target="_blank">project in the Developers console</a>, then create an API key and enable it for some specific API services.', 'toolset-maps' ),
+					'https://console.developers.google.com'
 				);
 				?>
 			</p>
@@ -727,24 +663,23 @@ class Toolset_Addon_Maps_Views {
 				);
 				echo sprintf(
 					__( 'You can find more information in %1$sour documentation%2$s.', 'toolset-maps' ),
-					'<a href="' . Toolset_Addon_Maps_Common::get_documentation_promotional_link( array( 'query' => $analytics_strings, 'anchor' => 'api-key' ), 'https://wp-types.com/documentation/user-guides/data-caching-for-google-maps-addresses/' ) . '" target="_blank">',
+					'<a href="' . Toolset_Addon_Maps_Common::get_documentation_promotional_link( array( 'query' => $analytics_strings, 'anchor' => 'api-key' ), 'https://wp-types.com/documentation/user-guides/display-on-google-maps/' ) . '" target="_blank">',
 					'</a>'
 				);
 				?>
 			</p>
 		</div>
-		<?php if ( version_compare( WPV_VERSION, '2.0', '<' ) ) { ?>
 		<p class="update-button-wrap">
 			<span class="js-wpv-messages"></span>
 			<button class="js-wpv-map-api-key-save button-secondary" disabled="disabled">
 				<?php _e( 'Save', 'toolset-maps' ); ?>
 			</button>
 		</p>
-		<?php }
+		<?php
 	}
 	
 	function wpv_addon_maps_cache_options( $sections ) {
-		$saved_options = $this->get_options();
+		$saved_options = apply_filters( 'toolset_filter_toolset_maps_get_options', array() );
 		ob_start();
 		$this->wpv_addon_maps_render_cache_options( $saved_options );
 		$section_content = ob_get_clean();
@@ -803,7 +738,7 @@ class Toolset_Addon_Maps_Views {
 		) {
 			wp_send_json_error();
 		}
-		$saved_options = $this->get_options();
+		$saved_options = apply_filters( 'toolset_filter_toolset_maps_get_options', array() );
 		switch ( $action ) {
 			case 'add':
 				if ( ! in_array( $target, $saved_options['marker_images'] ) ) {
@@ -822,20 +757,7 @@ class Toolset_Addon_Maps_Views {
 				wp_send_json_error();
 				break;
 		}
-		self::$stored_options = $saved_options;
-		$this->set_options();
-		wp_send_json_success();
-	}
-	
-	function wpv_addon_maps_update_api_key() {
-		wpv_ajax_authenticate( 'toolset_views_addon_maps_global', array( 'parameter_source' => 'post', 'type_of_death' => 'data' ) );
-		if ( ! isset( $_POST['api_key'] ) ) {
-			$_POST['api_key'] = '';
-		}
-		$saved_options = $this->get_options();
-		$saved_options['api_key'] = sanitize_text_field( $_POST['api_key'] );
-		self::$stored_options = $saved_options;
-		$this->set_options();
+		do_action( 'toolset_filter_toolset_maps_update_options', $saved_options );
 		wp_send_json_success();
 	}
 	
@@ -924,12 +846,11 @@ class Toolset_Addon_Maps_Views {
 			$update_data['marker_counter'] = intval( $_POST['marker_counter'] );
 		}
 		if ( $update ) {
-			$saved_options = $this->get_options();
+			$saved_options = apply_filters( 'toolset_filter_toolset_maps_get_options', array() );
 			foreach ( $update_data as $key => $value ) {
 				$saved_options[ $key ] = $value;
 			}
-			self::$stored_options = $saved_options;
-			$this->set_options();
+			do_action( 'toolset_filter_toolset_maps_update_options', $saved_options );
 		}
 		wp_send_json_success();
 	}
@@ -954,6 +875,10 @@ class Toolset_Addon_Maps_Views {
 					'draggable'				=> 'on',
 					'scrollwheel'			=> 'on',
 					'double_click_zoom'		=> 'on',
+					'map_type_control'		=> 'on',
+					'full_screen_control'	=> 'off',
+					'zoom_control'			=> 'on',
+					'street_view_control'	=> 'on',
 					'background_color'		=> '',
 					'cluster'				=> 'off',
 					'cluster_grid_size'		=> 60,
@@ -1016,6 +941,10 @@ class Toolset_Addon_Maps_Views {
 				'draggable'				=> $draggable,
 				'scrollwheel'			=> $scrollwheel,
 				'double_click_zoom'		=> $double_click_zoom,
+				'map_type_control'		=> $map_type_control,
+				'full_screen_control'	=> $full_screen_control,
+				'zoom_control'			=> $zoom_control,
+				'street_view_control'	=> $street_view_control,
 				'background_color'		=> $background_color,
 				'cluster'				=> $cluster,
 				'cluster_grid_size'		=> $cluster_grid_size,
@@ -1255,7 +1184,7 @@ class Toolset_Addon_Maps_Views {
 	}
 
 	function get_marker_options() {
-		$saved_options = $this->get_options();
+		$saved_options = apply_filters( 'toolset_filter_toolset_maps_get_options', array() );
 		$marker_options = array(
 			'' => '<span class="wpv-icon-img js-wpv-icon-img" data-img="' . TOOLSET_ADDON_MAPS_URL . '/resources/images/markers/default.png"  style="background-image:url(' . TOOLSET_ADDON_MAPS_URL . '/resources/images/markers/default.png' . ');"></span>'
 		);
@@ -1279,147 +1208,237 @@ class Toolset_Addon_Maps_Views {
 		}
 		return $marker_options;
 	}
+	
+	function get_missing_api_key_warning() {
+		$return = '';
+		$return .= '<div class="toolset-alert toolset-alert-wrning">';
+		$return .= '<p>';
+		$return .= __( 'A Google Maps API key is <strong>required</strong> to use Toolset Maps.', 'toolset-maps' );
+		$return .= '</p>';
+		$return .= '<p>';
+		$analytics_strings = array(
+			'utm_source'	=> 'toolsetmapsplugin',
+			'utm_campaign'	=> 'toolsetmaps',
+			'utm_medium'	=> 'views-integration-settings-for-api-key',
+			'utm_term'		=> 'our documentation'
+		);
+		$return .= sprintf(
+			__( 'You can find more information in %1$sour documentation%2$s.', 'toolset-maps' ),
+			'<a href="' . Toolset_Addon_Maps_Common::get_documentation_promotional_link( array( 'query' => $analytics_strings, 'anchor' => 'api-key' ), 'https://wp-types.com/documentation/user-guides/display-on-google-maps/' ) . '" target="_blank">',
+			'</a>'
+		);
+		$return .= '</p>';
+		$return .= '</div>';
+		return $return;
+	}
 
 	function wpv_shortcodes_get_wpv_map_render_data() {
 		$can_manage_options = current_user_can( 'manage_options' );
+		$maps_api_key = apply_filters( 'toolset_filter_toolset_maps_get_api_key', '' );
+		
 		$data = array(
 			'name'			=> __( 'Map', 'toolset-maps' ),
 			'label'			=> __( 'Map', 'toolset-maps' ),
-			'attributes'	=> array(
-				'map-options' => array(
-					'label'			=> __('Map', 'toolset-maps'),
-					'header'		=> __('Map', 'toolset-maps'),
-					'fields'		=> array(
-						'map_id' => array(
-							'label'			=> __( 'Map ID', 'toolset-maps'),
-							'type'			=> 'text',
-							'default'		=> '',
-							'required'		=> true,
-						),
-						'map_width' => array(
-							'label'			=> __( 'Map width', 'toolset-maps'),
-							'type'			=> 'text',
-							'default'		=> '',
-							'placeholder' 	=> '100%',
-							'description' 	=> __('You can use percentages or units. Raw numbers default to pixels.','toolset-maps'),
-						),
-						'map_height' => array(
-							'label'			=> __( 'Map height', 'toolset-maps'),
-							'type'			=> 'text',
-							'default'		=> '',
-							'placeholder'	=> '250px',
-							'description'	=> __('You can use percentages or units. Raw numbers default to pixels.','toolset-maps'),
-						),
+			'attributes'	=> array()
+		);
+		
+		if ( empty( $maps_api_key ) ) {
+			$data['attributes']['map-api-key'] = array(
+				'label'			=> __('Google Maps API', 'toolset-maps'),
+				'header'		=> __('Missing Google Maps API key', 'toolset-maps'),
+				'fields'		=> array(
+					'missing_api_key' => array(
+						'label'			=> __( 'Missing Google Maps API key', 'toolset-maps'),
+						'type'			=> 'callback',
+						'callback'		=> array( $this, 'get_missing_api_key_warning' )
 					),
+				)
+			);
+			return $data;
+		}
+		
+		$data['attributes']['map-options'] = array(
+			'label'			=> __('Map', 'toolset-maps'),
+			'header'		=> __('Map', 'toolset-maps'),
+			'fields'		=> array(
+				'map_id' => array(
+					'label'			=> __( 'Map ID', 'toolset-maps'),
+					'type'			=> 'text',
+					'default'		=> '',
+					'required'		=> true,
+					'description'	=> __( 'This is the map unique identifier, used to also add markers to this map.', 'toolset-maps' )
 				),
-				'zoom-options' => array(
-					'label'			=> __('Map zoom and center', 'toolset-maps'),
-					'header'		=> __('Map zoom and center', 'toolset-maps'),
-					'description'	=> __( 'The zoom levels can take a value from 0 up to a number that depends on the displayed location. It should be safe to use any number below 18. Zoom and center options can be combined in several ways.', 'toolset-maps' ),
-					'fields'		=> array(
-						'fitbounds' => array(
-							'label'			=> __( 'Adjust automatically to show all markers', 'toolset-maps'),
-							'type'			=> 'radio',
-							'options'		=> array(
-								'on'		=> __('On', 'toolset-maps'),
-								'off'		=> __('Off', 'toolset-maps'),
-							),
-							'default'		=> 'on',
-							'description'	=> __( 'Whether to set the highest zoom level and the best map center that can show all markers at once.', 'toolset-maps' ),
-						),
-						'general_zoom' => array(
-							'label'			=> __( 'Use this zoom level when there is more than one marker', 'toolset-maps'),
-							'type'			=> 'number',
-							'default'		=> '5',
-						),
-						'single_zoom' => array(
-							'label'			=> __( 'Use this zoom level when there is only one marker', 'toolset-maps'),
-							'type'			=> 'number',
-							'default'		=> '14',
-						),
-						'general_center_lat' => array(
-							'label'			=> __( 'Coordinates for the map center', 'toolset-maps'),
-							'type'			=> 'text',
-							'default'		=> '0',
-							'description'	=> __('Latitude for the center of the map.','toolset-maps'),
-						),
-						'general_center_lon' => array(
-							'label'			=> __( 'General centering - longitude', 'toolset-maps'),
-							'type'			=> 'text',
-							'default'		=> '0',
-							'description'	=> __('Longitude for the center of the map.','toolset-maps'),
-						),
-						'single_center' => array(
-							'label'			=> __( 'Center the map in the marker when there is only one', 'toolset-maps'),
-							'type'			=> 'radio',
-							'options'		=> array(
-								'on'		=> __('On', 'toolset-maps'),
-								'off'		=> __('Off', 'toolset-maps'),
-							),
-							'default'		=> 'on',
-							'description'	=> __( 'Will override the center coordinates set above', 'toolset-maps' )
-						),
-					),
+				'map_width' => array(
+					'label'			=> __( 'Map width', 'toolset-maps'),
+					'type'			=> 'text',
+					'default'		=> '',
+					'placeholder' 	=> '100%',
+					'description' 	=> __('You can use percentages or units. Raw numbers default to pixels.','toolset-maps'),
 				),
-				'marker-clustering'	=> array(
-					'label'			=> __('Marker clustering', 'toolset-maps'),
-					'header'		=> __('Marker clustering', 'toolset-maps'),
-					'fields'		=> array(
-						'cluster' => array(
-							'label'			=> __( 'When several markers are close, display as one \'cluster\' marker', 'toolset-maps'),
-							'type'			=> 'radio',
-							'options'		=> array(
-								'on'		=> __('On', 'toolset-maps'),
-								'off'		=> __('Off', 'toolset-maps'),
-							),
-							'default'		=> 'off',
-						),
-						'cluster_click_zoom' => array(
-							'label'			=> __( 'Zoom the map when clicking on a cluster icon', 'toolset-maps'),
-							'type'			=> 'radio',
-							'options'		=> array(
-								'on'		=> __('On', 'toolset-maps'),
-								'off'		=> __('Off', 'toolset-maps'),
-							),
-							'default'		=> 'on',
-						),
-					),
-				),
-				'extra-options' => array(
-					'label'			=> __('Map interaction', 'toolset-maps'),
-					'header'		=> __('Map interaction', 'toolset-maps'),
-					'fields'		=> array(
-						'draggable' => array(
-							'label'			=> __( 'Move inside the map by dragging it', 'toolset-maps'),
-							'type'			=> 'radio',
-							'options'		=> array(
-								'on'		=> __('On', 'toolset-maps'),
-								'off'		=> __('Off', 'toolset-maps'),
-							),
-							'default'		=> 'on',
-						),
-						'scrollwheel' => array(
-							'label'			=> __( 'Scroll inside the map to zoom it', 'toolset-maps'),
-							'type'			=> 'radio',
-							'options'		=> array(
-								'on'		=> __('On', 'toolset-maps'),
-								'off'		=> __('Off', 'toolset-maps'),
-							),
-							'default'		=> 'on',
-						),
-						'double_click_zoom' => array(
-							'label'			=> __( 'Double click on the map to zoom it', 'toolset-maps'),
-							'type'			=> 'radio',
-							'options'		=> array(
-								'on'		=> __('On', 'toolset-maps'),
-								'off'		=> __('Off', 'toolset-maps'),
-							),
-							'default'		=> 'on',
-						),
-					),
+				'map_height' => array(
+					'label'			=> __( 'Map height', 'toolset-maps'),
+					'type'			=> 'text',
+					'default'		=> '',
+					'placeholder'	=> '250px',
+					'description'	=> __('You can use percentages or units. Raw numbers default to pixels.','toolset-maps'),
 				),
 			),
 		);
+		
+		$data['attributes']['zoom-options'] = array(
+			'label'			=> __('Map zoom and center', 'toolset-maps'),
+			'header'		=> __('Map zoom and center', 'toolset-maps'),
+			'description'	=> __( 'The zoom levels can take a value from 0 up to a number that depends on the displayed location. It should be safe to use any number below 18. Zoom and center options can be combined in several ways.', 'toolset-maps' ),
+			'fields'		=> array(
+				'fitbounds' => array(
+					'label'			=> __( 'Adjust automatically', 'toolset-maps'),
+					'type'			=> 'radio',
+					'options'		=> array(
+						'on'		=> __('Adjust automatically to show all markers at once', 'toolset-maps'),
+						'off'		=> __('Set zoom center and center manually', 'toolset-maps'),
+					),
+					'default'		=> 'on',
+					'description'	=> __( 'Whether to set the highest zoom level and the best map center that can show all markers at once.', 'toolset-maps' ),
+				),
+				'general_zoom' => array(
+					'label'			=> __( 'Use this zoom level when there is more than one marker', 'toolset-maps'),
+					'type'			=> 'number',
+					'default'		=> '5',
+				),
+				'single_zoom' => array(
+					'label'			=> __( 'Use this zoom level when there is only one marker', 'toolset-maps'),
+					'type'			=> 'number',
+					'default'		=> '14',
+				),
+				'general_center_lat' => array(
+					'label'			=> __( 'Coordinates for the map center', 'toolset-maps'),
+					'type'			=> 'text',
+					'default'		=> '0',
+					'description'	=> __('Latitude for the center of the map.','toolset-maps'),
+				),
+				'general_center_lon' => array(
+					'label'			=> __( 'General centering - longitude', 'toolset-maps'),
+					'type'			=> 'text',
+					'default'		=> '0',
+					'description'	=> __('Longitude for the center of the map.','toolset-maps'),
+				),
+				'single_center' => array(
+					'label'			=> __( 'Map center with just one marker', 'toolset-maps'),
+					'type'			=> 'radio',
+					'options'		=> array(
+						'on'		=> __('Center the map in the marker when there is only one', 'toolset-maps'),
+						'off'		=> __('Force the map center setting even with just one marker', 'toolset-maps'),
+					),
+					'default'		=> 'on',
+					'description'	=> __( 'Will override the center coordinates set above.', 'toolset-maps' )
+				),
+			),
+		);
+		
+		$data['attributes']['marker-clustering'] = array(
+			'label'			=> __('Marker clustering', 'toolset-maps'),
+			'header'		=> __('Marker clustering', 'toolset-maps'),
+			'fields'		=> array(
+				'cluster' => array(
+					'label'			=> __( 'Cluster markers', 'toolset-maps'),
+					'type'			=> 'radio',
+					'options'		=> array(
+						'on'		=> __('When several markers are close, display as one \'cluster\' marker', 'toolset-maps'),
+						'off'		=> __('Always show each marker separatedly', 'toolset-maps'),
+					),
+					'default'		=> 'off',
+				),
+				'cluster_click_zoom' => array(
+					'label'			=> __( 'Clicking on a cluster icon', 'toolset-maps'),
+					'type'			=> 'radio',
+					'options'		=> array(
+						'on'		=> __('Zoom the map when clicking on a cluster icon', 'toolset-maps'),
+						'off'		=> __('Do nothing', 'toolset-maps'),
+					),
+					'default'		=> 'on',
+				),
+			),
+		);
+		
+		$data['attributes']['extra-options'] = array(
+			'label'			=> __('Map interaction', 'toolset-maps'),
+			'header'		=> __('Map interaction', 'toolset-maps'),
+			'fields'		=> array(
+				'draggable' => array(
+					'label'			=> __( 'Dragging a map', 'toolset-maps'),
+					'type'			=> 'radio',
+					'options'		=> array(
+						'on'		=> __('Move inside the map by dragging it', 'toolset-maps'),
+						'off'		=> __('Do nothing', 'toolset-maps'),
+					),
+					'default'		=> 'on',
+				),
+				'scrollwheel' => array(
+					'label'			=> __( 'Scroll inside a map', 'toolset-maps'),
+					'type'			=> 'radio',
+					'options'		=> array(
+						'on'		=> __('Scroll inside the map to zoom it', 'toolset-maps'),
+						'off'		=> __('Do nothing', 'toolset-maps'),
+					),
+					'default'		=> 'on',
+				),
+				'double_click_zoom' => array(
+					'label'			=> __( 'Double click on on a map', 'toolset-maps'),
+					'type'			=> 'radio',
+					'options'		=> array(
+						'on'		=> __('Double click on the map to zoom it', 'toolset-maps'),
+						'off'		=> __('Do nothing', 'toolset-maps'),
+					),
+					'default'		=> 'on',
+				),
+			),
+		);
+		
+		$data['attributes']['control-options'] = array(
+			'label'			=> __('Map controls', 'toolset-maps'),
+			'header'		=> __('Map controls', 'toolset-maps'),
+			'fields'		=> array(
+				'map_type_control' => array(
+					'label'			=> __( 'Map type control', 'toolset-maps'),
+					'type'			=> 'radio',
+					'options'		=> array(
+						'on'		=> __('Display the map type control to switch between roadmap, satellite or terrain views', 'toolset-maps'),
+						'off'		=> __('Do not show the map type control', 'toolset-maps'),
+					),
+					'default'		=> 'on',
+				),
+				/*
+				'full_screen_control' => array(
+					'label'			=> __( 'Full screen control', 'toolset-maps'),
+					'type'			=> 'radio',
+					'options'		=> array(
+						'on'		=> __('Display a full screen control', 'toolset-maps'),
+						'off'		=> __('Do not show a full screen control', 'toolset-maps'),
+					),
+					'default'		=> 'off',
+				),
+				*/
+				'zoom_control' => array(
+					'label'			=> __( 'Zoom controls', 'toolset-maps'),
+					'type'			=> 'radio',
+					'options'		=> array(
+						'on'		=> __('Display zoom controls to zoom in and out', 'toolset-maps'),
+						'off'		=> __('Do not show zoom controls', 'toolset-maps'),
+					),
+					'default'		=> 'on',
+				),
+				'street_view_control' => array(
+					'label'			=> __( 'Street view control', 'toolset-maps'),
+					'type'			=> 'radio',
+					'options'		=> array(
+						'on'		=> __('Display a street view control', 'toolset-maps'),
+						'off'		=> __('Do not show a street view control', 'toolset-maps'),
+					),
+					'default'		=> 'on',
+				),
+			),
+		);
+		
 		$marker_options = $this->get_marker_options();
 		$styling_fields = array();
 		if ( 
@@ -1469,65 +1488,87 @@ class Toolset_Addon_Maps_Views {
 
 	function wpv_shortcodes_get_wpv_map_marker_data() {
 		$can_manage_options = current_user_can( 'manage_options' );
+		$maps_api_key = apply_filters( 'toolset_filter_toolset_maps_get_api_key', '' );
+		
+		$data = array(
+			'name'			=> __( 'Marker', 'toolset-maps' ),
+			'label'			=> __( 'Marker', 'toolset-maps' ),
+			'attributes'	=> array()
+		);
+		
+		if ( empty( $maps_api_key ) ) {
+			$data['attributes']['map-api-key'] = array(
+				'label'			=> __('Google Maps API', 'toolset-maps'),
+				'header'		=> __('Missing Google Maps API key', 'toolset-maps'),
+				'fields'		=> array(
+					'missing_api_key' => array(
+						'label'			=> __( 'Missing Google Maps API key', 'toolset-maps'),
+						'type'			=> 'callback',
+						'callback'		=> array( $this, 'get_missing_api_key_warning' )
+					),
+				)
+			);
+			return $data;
+		}
+		
 		$analytics_strings = array(
 			'utm_source'	=> 'toolsetmapsplugin',
 			'utm_campaign'	=> 'toolsetmaps',
 			'utm_medium'	=> 'marker-shortcode-dialog',
 			'utm_term'		=> 'Learn about marker popups'
 		);
-		$data = array(
-			'name' => __( 'Marker', 'toolset-maps' ),
-			'label' => __( 'Marker', 'toolset-maps' ),
-			'attributes' => array(
-				'marker-options' => array(
-					'label' => __('Marker', 'toolset-maps'),
-					'header' => __('Marker', 'toolset-maps'),
-					'fields' => array(
-						'map_id' => array(
-							'label' => __( 'Map ID', 'toolset-maps'),
-							'type' => 'text',
-							'default' => '',
-							'required' => true,
-						),
-						'marker_id' => array(
-							'label' => __( 'Marker ID', 'toolset-maps'),
-							'type' => 'text',
-							'default' => '',
-							'required' => true,
-						),
-						'marker_position' => array(
-							'label' => __( 'Marker address comes from', 'toolset-maps' ),
-							'type' => 'radiohtml',
-							'options' => array(
-								'types_postmeta_field'	=> __( 'Google Maps post field: ', 'toolset-maps' ),
-								'types_termmeta_field'	=> __( 'Google Maps taxonomy field: ', 'toolset-maps' ),
-								'types_usermeta_field'	=> __( 'Google Maps user field: ', 'toolset-maps' ),
-								'generic_field'	=> __( 'Another custom field', 'toolset-maps' ),
-								'address'		=> __( 'An address', 'toolset-maps' ),
-								'latlon'		=> __( 'A pair of latitude and longitude coordinates', 'toolset-maps' )
-							),
-						),
-					)
+		
+		$data['attributes']['marker-options'] = array(
+			'label' => __('Marker', 'toolset-maps'),
+			'header' => __('Marker', 'toolset-maps'),
+			'fields' => array(
+				'map_id' => array(
+					'label' => __( 'Map ID', 'toolset-maps'),
+					'type' => 'text',
+					'default' => '',
+					'required' => true,
+					'description'	=> __( 'This is the unique identifier for the map that this marker belongs to.', 'toolset-maps' )
 				),
-				'data-options' => array(
-					'label' => __( 'Marker data', 'toolset-maps' ),
-					'header' => __( 'Marker data', 'toolset-maps' ),
-					'documentation' => '<a href="' . Toolset_Addon_Maps_Common::get_documentation_promotional_link( array( 'query' => $analytics_strings, 'anchor' => 'marker-title-and-popup' ) ) . '" target="_blank" title="' . esc_attr( __( 'Learn about marker popups', 'toolset-maps' ) ) . '">' . esc_html( __( 'Learn how to display rich content in the marker popups »', 'toolset-maps' ) ) . '</a>',
-					'fields' => array(
-						'marker_title' => array(
-							'label' => __( 'Text to display when hovering over the marker', 'toolset-maps'),
-							'type' => 'text',
-							'default' => '',
-						),
+				'marker_id' => array(
+					'label' => __( 'Marker ID', 'toolset-maps'),
+					'type' => 'text',
+					'default' => '',
+					'required' => true,
+					'description'	=> __( 'This is the marker unique identifier.', 'toolset-maps' )
+				),
+				'marker_position' => array(
+					'label' => __( 'Marker address comes from', 'toolset-maps' ),
+					'type' => 'radiohtml',
+					'options' => array(
+						'types_postmeta_field'	=> __( 'Google Maps post field: ', 'toolset-maps' ),
+						'types_termmeta_field'	=> __( 'Google Maps taxonomy field: ', 'toolset-maps' ),
+						'types_usermeta_field'	=> __( 'Google Maps user field: ', 'toolset-maps' ),
+						'generic_field'	=> __( 'Another custom field', 'toolset-maps' ),
+						'address'		=> __( 'An address', 'toolset-maps' ),
+						'latlon'		=> __( 'A pair of latitude and longitude coordinates', 'toolset-maps' )
 					),
-					'content' => array(
-						'label' => __( 'Popup content', 'toolset-maps' ),
-						'type'	=> 'textarea',
-						'description' => __( 'This will be displayed as a popup when someone clicks on the marker. You can add HTML and shortcodes here.', 'toolset-maps' ),
-					)
+				),
+			)
+		);
+		
+		$data['attributes']['data-options'] = array(
+			'label' => __( 'Marker data', 'toolset-maps' ),
+			'header' => __( 'Marker data', 'toolset-maps' ),
+			'documentation' => '<a href="' . Toolset_Addon_Maps_Common::get_documentation_promotional_link( array( 'query' => $analytics_strings, 'anchor' => 'marker-title-and-popup' ) ) . '" target="_blank" title="' . esc_attr( __( 'Learn about marker popups', 'toolset-maps' ) ) . '">' . esc_html( __( 'Learn how to display rich content in the marker popups »', 'toolset-maps' ) ) . '</a>',
+			'fields' => array(
+				'marker_title' => array(
+					'label' => __( 'Text to display when hovering over the marker', 'toolset-maps'),
+					'type' => 'text',
+					'default' => '',
 				),
 			),
+			'content' => array(
+				'label' => __( 'Popup content', 'toolset-maps' ),
+				'type'	=> 'textarea',
+				'description' => __( 'This will be displayed as a popup when someone clicks on the marker. You can add HTML and shortcodes here.', 'toolset-maps' ),
+			)
 		);
+		
 		$marker_options = $this->get_marker_options();
 		if ( 
 			count( $marker_options ) > 1 
@@ -1753,11 +1794,6 @@ class Toolset_Addon_Maps_Views {
 		}
 	}
 	
-	function toolset_filter_toolset_maps_get_api_key( $api_key ) {
-		$saved_options = $this->get_options();
-		return $saved_options['api_key'];
-	}
-	
 	function wpv_addon_maps_parametric_search_pretend_textfield_type( $field_properties ) {
 		if (
 			isset( $field_properties['type'] ) 
@@ -1766,6 +1802,11 @@ class Toolset_Addon_Maps_Views {
 			$field_properties['type'] = 'textfield';
 		}
 		return $field_properties;
+	}
+	
+	function toolset_maps_settings_link( $toolset_maps_settings_link ) {
+		$toolset_maps_settings_link = admin_url( 'admin.php?page=views-settings&tab=addon_maps' );
+		return $toolset_maps_settings_link;
 	}
 
 }

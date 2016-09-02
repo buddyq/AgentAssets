@@ -53,8 +53,14 @@ class WPDD_Layouts_CSSManager{
 
 	function css_dir()
 	{
-		return $this->uploads_obj()->basedir . self::CSS_TEMP_DIR;
+		return  $this->uploads_obj()->basedir . self::CSS_TEMP_DIR;
 	}
+
+    function css_url()
+    {
+        $protocol = is_ssl() ? 'https' : 'http';
+        return set_url_scheme( $this->uploads_obj()->baseurl . self::CSS_TEMP_DIR, $protocol );
+    }
 
 	function is_css_possible()
 	{
@@ -69,6 +75,8 @@ class WPDD_Layouts_CSSManager{
 
 	function handle_layout_css_fe()
 	{
+
+	    if( defined('DOING_AJAX') && DOING_AJAX ) return;
 
 		$options = $this->options_manager->get_options();
 
@@ -91,7 +99,7 @@ class WPDD_Layouts_CSSManager{
 				}
 				
 				if ($file_ok) {
-					wp_enqueue_style('wp_ddl_layout_fe_css', $this->uploads_obj()->baseurl . self::CSS_TEMP_DIR . '/' . $md5 . '.css', array(), WPDDL_VERSION, 'screen' );
+					wp_enqueue_style('wp_ddl_layout_fe_css', $this->css_url() . '/' . $md5 . '.css', array(), WPDDL_VERSION, 'screen' );
 				}
 
  			}

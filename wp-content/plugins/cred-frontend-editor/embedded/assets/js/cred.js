@@ -47,19 +47,24 @@ var _original_cred_autogenerate_password_scaffold;
         check_cred_form_type: function () {
             var is_user_form = jQuery('#cred_form_user_role').length > 0;
             jQuery('.cred_field_add_code').hide();
-            //console.log(jQuery('#cred_form_type'));
-            if (jQuery('#cred_form_type')) {
+            var _cred_form_type_obj = jQuery('input[name="_cred[form][type]"]');
+            if (_cred_form_type_obj) {
 
                 if (is_user_form) {
-                    jQuery('#cred_form_type').change(function () {
+                    jQuery('input[name="_cred[form][type]"]').change(function () {
                         var role = jQuery('#cred_form_user_role').val();
                         if (role == null)
                             role = "";
                         aux.reloadUserFields(role);
                     });
+                } else {
+                    jQuery('input[name="_cred[form][type]"]').change(function () {
+                        aux.check_cred_form_type();
+                    });
                 }
 
-                if ('new' == jQuery('#cred_form_type').val()) {
+                var _cred_form_type_selected = jQuery('input[name="_cred[form][type]"]:checked').val();
+                if ('new' == _cred_form_type_selected) {
                     jQuery('.cred_field_add_code').show();
                     //console.log("is new");
                     jQuery('.cred_notification_field_only_if_changed input[type=checkbox]').attr('disabled', 'disabled');
@@ -75,9 +80,17 @@ var _original_cred_autogenerate_password_scaffold;
                         });
                     }
 
+                    if (jQuery('#cred_post_status') && jQuery('#cred_post_status').length > 0) {
+                        $("#cred_post_status option").each(function () {
+                            if (jQuery(this).val() == 'original') {
+                                jQuery(this).remove();
+                            }
+                        });
+                    }
+
                 } else {
                     cred_field_add_code_buttons();
-                    //console.log("is edit");
+
                     jQuery('.cred_notification_field_only_if_changed').show();
                     jQuery('.cred_notification_field_only_if_changed input[type=checkbox]').removeAttr('disabled');
                     if (jQuery('.when_submitting_form_text').length) {
@@ -88,6 +101,11 @@ var _original_cred_autogenerate_password_scaffold;
                         aux.reloadUserFields("");
                         jQuery('#cred_form_user_role').change(function () {
                         });
+                    }
+
+                    if (jQuery('#cred_post_status') && jQuery('#cred_post_status').length > 0
+                            && jQuery("#cred_post_status option[value='original']").length <= 0) {
+                        jQuery($__my_option).appendTo("#cred_post_status");
                     }
                 }
             }
@@ -313,17 +331,21 @@ var _original_cred_autogenerate_password_scaffold;
                     });
 
                     var _buttons_fixed = false;
-
+                    
+                    //Add more space for buttons
+                    jQuery("#wp-content-editor-tools").css("padding-top", "7px");
+                    jQuery(".wp-media-buttons").css("position", "inherit");
+                    jQuery("#wp-content-wrap").addClass("postarea-withborder");
+                    jQuery("#post-status-info").addClass("postarea-withborder");
                     jQuery(window).scroll(function () {
 
                         // determine if the buttons should be fixed in position.
-
                         var _min = parseInt(jQuery("#wp-content-wrap").offset().top);
                         var _bottom = _min + jQuery("#wp-content-wrap").height() - jQuery("#post-status-info").height();
                         var _top = parseInt(jQuery("#wp-content-editor-tools").offset().top);
                         var _scroll_y = jQuery(window).scrollTop();
 
-                        if (!_buttons_fixed && _scroll_y > _top && _scroll_y < _bottom) {
+                        /*if (!_buttons_fixed && _scroll_y > _top && _scroll_y < _bottom) {
 
                             // The buttons should be fixed in position.
 
@@ -353,7 +375,7 @@ var _original_cred_autogenerate_password_scaffold;
 
                             jQuery("#wp-content-media-buttons").removeAttr('style');
                             _buttons_fixed = false;
-                        }
+                        }*/
 
                     });
 
@@ -1117,7 +1139,7 @@ var _original_cred_autogenerate_password_scaffold;
             return false;
         }
     };
-
+    
     // public methods / properties
     var self = {
         // add the extra Modules as part of main CRED Module
@@ -1364,7 +1386,8 @@ var _original_cred_autogenerate_password_scaffold;
                     contentdiv = $('#credformcontentdiv'),
                     accessmessdiv = $('#accessmessagesdiv'),
                     postdivrich = $('#postdivrich'),
-                    extradiv = $('#credextradiv'),
+                    extracssdiv = $('#credextracssdiv'),
+                    extrajsdiv = $('#credextrajsdiv'),
                     messagesdiv = $('#credmessagesdiv'),
                     notificationdiv = $('#crednotificationdiv'),
                     loader = $('#cred_ajax_loader_small_id');
@@ -1481,8 +1504,8 @@ var _original_cred_autogenerate_password_scaffold;
                                     if (undefined !== data['condition'])
                                     {
                                         (data['condition'])
-                                                ? $el.slideFadeDown('slow', 'quintEaseOut')
-                                                : $el.slideFadeUp('slow', 'quintEaseOut');
+                                                ? $el.slideFadeDown('slow')
+                                                : $el.slideFadeUp('slow');
                                     }
                                 } else
                                     $el.slideFadeDown('slow', 'quintEaseOut');
@@ -2017,7 +2040,13 @@ var _original_cred_autogenerate_password_scaffold;
                         event.preventDefault();
                         return aux.formPreview();
                     });
-
+                    
+                    //handle new preview button
+                    
+                    $('.cred-preview-button').unbind('click').bind('click', function (event) {
+                        event.preventDefault();
+                        return aux.formPreview();
+                    });
 
                     var _do_submit = function () {
                         var form_name_1 = $('#title').val();
@@ -2026,6 +2055,45 @@ var _original_cred_autogenerate_password_scaffold;
                             gui.Popups.alert({message: settings.locale.set_form_title, class: 'cred-dialog'});
                             return false;
                         }
+
+//                        if ($('#cred_post_type') && $('#cred_post_type').length > 0) {
+//                            var form_post_type = $('#cred_post_type').val();
+//                            if ($.trim(form_post_type) == '')
+//                            {
+//                                gui.Popups.alert({message: settings.locale.post_type_missing, class: 'cred-dialog'});
+//                                return false;
+//                            }
+//                        }
+                        if ($('input[name="_cred[form][type]"') && $('input[name="_cred[form][type]"').length > 0) {
+                            var form_post_type = $('input[name="_cred[form][type]"]:checked').val();
+                            if ($.trim(form_post_type) == '')
+                            {
+                                gui.Popups.alert({message: settings.locale.post_type_missing, class: 'cred-dialog'});
+                                return false;
+                            }
+                        }
+
+                        if ($('#cred_post_status') && $('#cred_post_status').length > 0) {
+                            var form_post_status = $('#cred_post_status').val();
+                            if ($.trim(form_post_status) == '')
+                            {
+                                gui.Popups.alert({message: settings.locale.post_status_missing, class: 'cred-dialog'});
+                                return false;
+                            }
+                        }
+
+                        if ($('#cred_form_success_action') && $('#cred_form_success_action').length > 0) {
+                            var form_post_action = $('#cred_form_success_action').val();
+                            if ($.trim(form_post_action) == '')
+                            {
+                                gui.Popups.alert({message: settings.locale.post_action_missing, class: 'cred-dialog'});
+                                return false;
+                            }
+                        }
+
+
+
+
 
                         if (self.doCheck())
                         {
@@ -2116,7 +2184,7 @@ var _original_cred_autogenerate_password_scaffold;
                         $('#cred-shortcodes-box-inner .cred-accordeon-item').removeClass('cred-accordeon-item-active') // remove active class from
                         $(this).closest('.cred-accordeon-item').addClass('cred-accordeon-item-active') // add .active class to parent .cred-fields-group-heading;
                         $('#cred-shortcodes-box-inner .cred-accordeon-item-inside').not(thisinside).stop(false).slideUp('fast');
-                        thisinside.stop(false).slideDown({duration: 'slow', easing: 'quintEaseOut'});
+                        thisinside.stop(false).slideDown({duration: 'slow'});
                     });
 
                     $cred_shortcodes_box.on('click', 'a.cred_field_add', function (e) {
@@ -2319,6 +2387,16 @@ var _original_cred_autogenerate_password_scaffold;
                         $('#cred-generic-shortcodes-box').__show();
                     });
 
+                    $_post.on('click', '#cred-access-button-button', function (e) {
+                        e.stopPropagation();
+                        e.preventDefault();
+                        /*cred_media_buttons*/$_post.find('.cred-media-button').css('z-index', 1);
+                        /*cred_popup_boxes*/$_post.find('.cred-popup-box').hide();
+
+                        $(this).closest('.cred-media-button').css('z-index', 100);
+                        $('#cred-access-box').__show();
+                    });
+                    
                     // re-generate scaffold when this option changes
                     $('#cred_include_captcha_scaffold').change(function () {
                         aux.genScaffold();
@@ -2399,7 +2477,107 @@ var _original_cred_autogenerate_password_scaffold;
                         /*cred_media_buttons*/$_post.find('.cred-media-button').css('z-index', 1);
                         /*cred_popup_boxes*/$_post.find('.cred-popup-box').hide();
                     });
-
+                    
+                    //remove margins and paddings from the submitbox meta
+                    
+                    $(".submitbox").parent().addClass("cred-meta-box-no-margins");
+                    
+                    extrajsdiv.addClass("closed");
+                    extracssdiv.addClass("closed");
+                    
+                    extrajsdiv.turnOnPushpin = function(){
+                        if(Object.keys(CodeMirrorEditors).length > 0 && CodeMirrorEditors["cred-extra-js-editor"].getValue().length > 0){
+                            this.find(".icon-pushpin").attr("style", "display: inline-block !important;");
+                        }else{
+                            this.turnOffPushpin();
+                        }
+                    };
+                    
+                    extrajsdiv.turnOffPushpin = function(){
+                        this.find(".icon-pushpin").attr("style", "display: none !important;");
+                    };
+                    
+                    extrajsdiv.toggleExpansion = function(){
+                        if(this.hasClass("closed")){
+                            this.removeClass("closed");
+                            this.turnOffPushpin();
+                        }else{
+                            this.addClass("closed");
+                            this.turnOnPushpin();
+                        }
+                    };
+                    
+                    extracssdiv.turnOnPushpin = function(){
+                        if(Object.keys(CodeMirrorEditors).length > 0 && CodeMirrorEditors["cred-extra-css-editor"].getValue().length > 0){
+                            this.find(".icon-pushpin").attr("style", "display: inline-block !important;");
+                        }else{
+                            this.turnOffPushpin();
+                        }
+                        
+                    };
+                    
+                    extracssdiv.turnOffPushpin = function(){
+                        this.find(".icon-pushpin").attr("style", "display: none !important;");
+                    };
+                    
+                    extracssdiv.toggleExpansion = function(){
+                        if(this.hasClass("closed")){
+                            this.removeClass("closed");
+                            this.turnOffPushpin();
+                        }else{
+                            this.addClass("closed");
+                            this.turnOnPushpin();
+                        }
+                    };
+                    
+                    setTimeout(function(){
+                        extracssdiv.turnOnPushpin();
+                        extrajsdiv.turnOnPushpin();
+                    }, 1000);
+                    
+                    extracssdiv.find(".handlediv").on("click", function(event){
+                        if(extracssdiv.hasClass("closed")){
+                            extracssdiv.turnOffPushpin();
+                        }else{
+                            extracssdiv.turnOnPushpin();
+                        }
+                    });
+                    
+                    extracssdiv.find("h2").on("click", function(event){
+                        extracssdiv.toggleExpansion();
+                    });
+                    
+                    extrajsdiv.find("h2").on("click", function(event){
+                        extrajsdiv.toggleExpansion();
+                    });
+                    
+                    extrajsdiv.find(".handlediv").on("click", function(event){
+                        if(extrajsdiv.hasClass("closed")){
+                            extrajsdiv.turnOffPushpin();
+                        }else{
+                            extrajsdiv.turnOnPushpin();
+                        }
+                    });
+                    
+                    $(extracssdiv).sortable({
+                        disabled: true
+                    });
+                    
+                    $(extrajsdiv).sortable({
+                        disabled: true
+                    });
+                
+                    var extrajsdiv_draghandle = extrajsdiv.find("h2");
+                    var extracssdiv_draghandle = extracssdiv.find("h2");
+                    
+                    $(extrajsdiv_draghandle).css('cursor', 'pointer');
+                    $(extrajsdiv_draghandle).removeClass("ui-sortable-handle");
+                    $(extrajsdiv_draghandle).removeClass("hndle");
+                    
+                    $(extracssdiv_draghandle).css('cursor', 'pointer');
+                    $(extracssdiv_draghandle).removeClass("ui-sortable-handle");
+                    $(extracssdiv_draghandle).removeClass("hndle");
+                    
                     // chain it
                     return this;
                 }
@@ -2413,7 +2591,7 @@ var _original_cred_autogenerate_password_scaffold;
              *  ===================== init layout ================================
              *
              */
-
+             
             // add explain texts for title and content
             if (settings._current_page == 'cred-form') {
                 $('#titlediv')
@@ -2427,17 +2605,23 @@ var _original_cred_autogenerate_password_scaffold;
 
             postdivrich
                     .prepend('<p class="cred-explain-text">' + settings.locale.content_explain_text + '</p>');
-
-            $_post
-                    .append('<input id="cred-submit" type="submit" class="button button-primary button-large" value="' + settings.locale.submit_but + '" />');
+            
+            //Now this is added already inside the save-form-meta-box template
+            //$_post
+            //        .append('<input id="cred-submit" type="submit" class="button button-primary button-large" value="' + settings.locale.submit_but + '" />');
 
             // reduce FOUC a bit
             // re-arrange meta boxes
             var pdro = postdivrich.detach().appendTo('#credformcontentdiv .inside');
-            if (extradiv.length > 0)
+            if (extracssdiv.length > 0)
             {
-                extradiv.insertAfter(postdivrich);
-                extradiv.addClass('cred-exclude');
+                extracssdiv.insertAfter(postdivrich);
+                extracssdiv.addClass('cred-exclude');
+            }
+            if (extrajsdiv.length > 0)
+            {
+                extrajsdiv.insertAfter(postdivrich);
+                extrajsdiv.addClass('cred-exclude');
             }
             $_post.find('.cred_related').removeClass('hide-if-js');
 
@@ -2455,59 +2639,93 @@ var _original_cred_autogenerate_password_scaffold;
             }
 
             // enable codemirror for main area
-            var text_button = utils.addEditorSwitchButton(settings.locale.text_button_title).addClass('switch-text').click(aux.toggleHighlight);
-            var syntax_button = utils.addEditorSwitchButton(settings.locale.syntax_button_title).addClass('switch-syntax').click(aux.toggleHighlight);
-            if (useCodeMirror)
-            {
-                utils.waitUntilElement('#ed_toolbar .ed_button', function () {
-                    syntax_button.trigger('click');
-                    aux.makeResizable($('#content'));
-                });
+            var text_button = utils.addEditorSwitchButton(settings.locale.text_button_title).addClass('switch-text').addClass("hidden").click(aux.toggleHighlight);
+            var syntax_button = utils.addEditorSwitchButton(settings.locale.syntax_button_title).addClass('switch-syntax').addClass("hidden").click(aux.toggleHighlight);
+            
+            utils.waitUntilElement('#ed_toolbar .ed_button', function () {
+                syntax_button.trigger('click');
+                aux.makeResizable($('#content'));
+            });
 
-                // for CodeMirror compability with Wordpress 'send_to_editor' function
-                // keep original function as 'cred_send_to_editor' for use if not CodeMirror editor
-                if (undefined === window.cred_send_to_editor) {
-                    window.cred_send_to_editor = window.send_to_editor;
-                    window.send_to_editor = function (content) {
-                        try {
-                            if (wpActiveEditor) {
-                                var cm = utils.isCodeMirror($('#' + wpActiveEditor));
-                                if (cm) {
-                                    utils.InsertAtCursor($('#' + wpActiveEditor), content.replace(/%%NL%%/g, NL));
-                                    try {
-                                        tb_remove();
-                                    } catch (e) {
-                                    }
-                                    ;
-                                    return;
+            // for CodeMirror compability with Wordpress 'send_to_editor' function
+            // keep original function as 'cred_send_to_editor' for use if not CodeMirror editor
+            if (undefined === window.cred_send_to_editor) {
+                window.cred_send_to_editor = window.send_to_editor;
+                window.send_to_editor = function (content) {
+                    try {
+                        if (wpActiveEditor) {
+                            var cm = utils.isCodeMirror($('#' + wpActiveEditor));
+                            if (cm) {
+                                utils.InsertAtCursor($('#' + wpActiveEditor), content.replace(/%%NL%%/g, NL));
+                                try {
+                                    tb_remove();
+                                } catch (e) {
                                 }
+                                ;
+                                return;
                             }
-                        } catch (e) {
                         }
-                        // if not used for CodeMirror, execute Wordpress standard function
-                        cred_send_to_editor(content);
+                    } catch (e) {
                     }
+                    // if not used for CodeMirror, execute Wordpress standard function
+                    cred_send_to_editor(content);
                 }
-            } else
-            {
-                utils.waitUntilElement('#ed_toolbar .ed_button', function () {
-                    text_button.trigger('click');
-                    aux.makeResizable($('#content'));
-                });
             }
 
             // enable CodeMirror for CSS/JS Editors
             aux.enableExtraCodeMirror();
-            if (extradiv.length > 0)
+            if (extracssdiv.length > 0)
             {
+                extracssdiv.find(".inside").addClass("cred-html-editor-container");
                 if ($('#cred-extra-css-editor').hasClass('cred-always-open') || $('#cred-extra-js-editor').hasClass('cred-always-open')) {
-                    extradiv.removeClass('closed');
+                    extracssdiv.removeClass('closed');
+                    extracssdiv.find(".icon-pushpin").attr("style", "display: none !important;");
                 } else {
                     // Delay hiding the section. Otherwise the codemirror
                     // control doesn't initialize correctly sometimes.
                     $(document).ready(function () {
                         _.delay(function () {
-                            extradiv.addClass('closed');
+                            extracssdiv.addClass('closed');
+                        }, 1000);
+                    });
+                }
+            }
+            
+            if (extrajsdiv.length > 0)
+            {
+                extrajsdiv.find(".inside").addClass("cred-html-editor-container");
+                if ($('#cred-extra-css-editor').hasClass('cred-always-open') || $('#cred-extra-js-editor').hasClass('cred-always-open')) {
+                    extrajsdiv.removeClass('closed');
+                } else {
+                    // Delay hiding the section. Otherwise the codemirror
+                    // control doesn't initialize correctly sometimes.
+                    $(document).ready(function () {
+                        _.delay(function () {
+                            extracssdiv.addClass('closed');
+                            if(extracssdiv.find("textarea").val().length > 0){
+                                extracssdiv.find(".icon-pushpin").attr("style", "display: inline-block !important;");
+                            }
+
+                        }, 1000);
+                    });
+                }
+            }
+            
+            if (extrajsdiv.length > 0)
+            {
+                extrajsdiv.find(".inside").addClass("cred-html-editor-container");
+                if ($('#cred-extra-css-editor').hasClass('cred-always-open') || $('#cred-extra-js-editor').hasClass('cred-always-open')) {
+                    extrajsdiv.removeClass('closed');
+                    extrajsdiv.find(".icon-pushpin").attr("style", "display: none !important;");
+                } else {
+                    // Delay hiding the section. Otherwise the codemirror
+                    // control doesn't initialize correctly sometimes.
+                    $(document).ready(function () {
+                        _.delay(function () {
+                            extrajsdiv.addClass('closed');
+                            if(extrajsdiv.find("textarea").val().length > 0){
+                                extrajsdiv.find(".icon-pushpin").attr("style", "display: inline-block !important;");
+                            }
                         }, 1000);
                     });
                 }
@@ -2550,9 +2768,12 @@ function cred_field_add_code_buttons() {
 function check_cred_form_type_for_notification() {
     var is_user_form = jQuery('#cred_form_user_role').length > 0;
     jQuery('.cred_field_add_code').hide();
-    //console.log(jQuery('#cred_form_type'));
-    if (jQuery('#cred_form_type')) {
-        if ('new' == jQuery('#cred_form_type').val()) {
+
+    var _cred_form_type_obj = jQuery('input[name="_cred[form][type]"]');
+    if (_cred_form_type_obj) {
+        var _cred_form_type_selected = jQuery('input[name="_cred[form][type]"]:checked').val();
+        if ('new' == _cred_form_type_selected) {
+
             jQuery('.cred_field_add_code').show();
             //console.log("is new");
             jQuery('.cred_notification_field_only_if_changed input[type=checkbox]').attr('disabled', 'disabled');
@@ -2568,7 +2789,20 @@ function check_cred_form_type_for_notification() {
             if (jQuery('.when_submitting_form_text').length) {
                 jQuery('.when_submitting_form_text').html('When a user is updated by this form');
             }
+
         }
+    }
+}
+
+function change_notification_to_info(item, data){
+    if(data["domRef"] == "#cred_notification_settings_panel_container"){
+        var item = jQuery(item);
+        var notification_message = item.find(".cred-notification");
+        jQuery(notification_message).addClass("hidden");
+        
+        item.find(".icon-warning-sign").each(function(){
+            jQuery(this).addClass("hidden");
+        });
     }
 }
 

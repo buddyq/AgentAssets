@@ -100,6 +100,7 @@ WPViews.ViewAddonMapsSettings = function( $ ) {
 	
 	$( document ).on( 'change keyup input cut paste', '#js-wpv-map-api-key', function() {
 		var thiz = $( this );
+		self.maybe_glow_api_key( thiz );
 		if ( thiz.val() != self.settings.api_key ) {
 			if ( self.legacy_mode_api_key ) {
 				// Legacy: we add a button on Views < 2.0
@@ -189,6 +190,15 @@ WPViews.ViewAddonMapsSettings = function( $ ) {
 	
 	self.api_key_debounce_update = _.debounce( self.save_api_key_options, 1000 );
 	
+	self.maybe_glow_api_key = function( api_key_field ) {
+		if ( api_key_field.val() == '' ) {
+			api_key_field.css( {'box-shadow': '0 0 5px 1px #f6921e'} );
+		} else {
+			api_key_field.css( {'box-shadow': 'none'} );
+		}
+		return self;
+	};
+	
 	$( document ).on( 'click', '#js-wpv-map-load-stored-data', function() {
 		var thiz = $( this ),
 		thiz_before = thiz.closest( '.js-wpv-map-load-stored-data-before' ),
@@ -273,7 +283,7 @@ WPViews.ViewAddonMapsSettings = function( $ ) {
 	// ------------------------------------
 	
 	self.init = function() {
-		
+		self.maybe_glow_api_key( $( '#js-wpv-map-api-key' ) );
 	};
 	
 	self.init();

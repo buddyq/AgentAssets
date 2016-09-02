@@ -19,7 +19,7 @@
 	</div>
 	<# if ( invisibility === undefined || invisibility === false ) { #>
 	<p class="add-row">
-		<button class="button-secondary add-row-button js-add-row js-highlight-row<#if ( layout_type == 'fixed' ) { #> add-row-button-fixed<# } else { #> add-row-button-fluid<# } #>" type="button"><i class="icon-plus fa fa-plus"></i></button><#if ( layout_type == 'fluid' ) { #><button class="button-secondary js-show-add-row-menu js-highlight-row add-row-menu-toggle" type="button"><i class="fa fa-caret-down js-icon-caret"></i></button><# } #>
+		<button class="button-secondary add-row-button js-add-row js-highlight-row<#if ( layout_type == 'fixed' ) { #> add-row-button-fixed<# } else { #> add-row-button-fluid<# } #>" type="button"><i class="icon-plus fa fa-plus"></i></button><#if ( layout_type == 'fluid' ) { #><button class="button-secondary js-show-add-row-menu js-highlight-row add-row-menu-toggle" type="button"><i class="fa fa-bars js-icon-caret"></i></button><# } #>
 	</p>
 	<# } #>
 </script>

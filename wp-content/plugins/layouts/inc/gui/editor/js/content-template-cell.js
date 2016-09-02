@@ -880,6 +880,7 @@ DDLayout.ContentTemplateCell = function($)
 
             self._wpv_inline_editor_qt = quicktags( { id: "wpv-ct-inline-editor-"+id, buttons: 'strong,em,link,block,del,ins,img,ul,ol,li,code,close' } );
             WPV_Toolset.add_qt_editor_buttons( self._wpv_inline_editor_qt, self._ct_code_mirror );
+            Toolset.hooks.doAction( 'toolset_text_editor_CodeMirror_init', "wpv-ct-inline-editor-"+id );
         }
 
         // Hide "CRED forms" button (it doesn't work at the moment)

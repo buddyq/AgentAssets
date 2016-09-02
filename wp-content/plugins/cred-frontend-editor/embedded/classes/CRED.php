@@ -83,14 +83,24 @@ final class CRED_CRED {
                     global $wpdb;
 
                     $post_type = isset($mypost) && isset($mypost->post_type) ? $mypost->post_type : 'post';
-
+                    
+                    //Adding auto-draft with each form render
                     $unique_value = md5(StaticClass::getIP());
-                    $unique_post_title = "Auto Draft {$unique_value}";
-                    $querystr = $wpdb->prepare("SELECT $wpdb->posts.ID FROM $wpdb->posts WHERE $wpdb->posts.post_status = 'auto-draft' AND $wpdb->posts.post_type = %s AND $wpdb->posts.post_title = %s ORDER by ID desc Limit 1", $post_type, $unique_post_title);
-                    $_myposts = $wpdb->get_results($querystr, OBJECT);
-
+                    $unique_post_title = "CRED Auto Draft {$unique_value}";
+                    
+                    /*$querystr = $wpdb->prepare("SELECT $wpdb->posts.ID FROM $wpdb->posts WHERE $wpdb->posts.post_status = 'auto-draft' AND $wpdb->posts.post_type = %s AND $wpdb->posts.post_title = %s ORDER by ID desc Limit 1", $post_type, $unique_post_title);
+                    $_myposts = $wpdb->get_results($querystr, OBJECT);*/
+                    
+                    $mypost = get_default_post_to_edit($post_type, true);
+                    $my_post = array(
+                        'ID' => $mypost->ID,
+                        'post_title' => $unique_post_title,
+                        'post_content' => '',
+                    );
+                    wp_update_post($my_post);
+                    
                     //Fix https://icanlocalize.basecamphq.com/projects/7393061-toolset/todo_items/192489607/comments
-                    if (!empty($_myposts)) {
+                    /*if (!empty($_myposts)) {
                         $mypost = get_post($_myposts[0]->ID);
                         $mypost->post_title = $unique_post_title;
                         $mypost->post_content = '';
@@ -105,10 +115,10 @@ final class CRED_CRED {
                         );
                         wp_update_post($my_post);
                         //################################################################################################
-                    }
+                    }*/
                 }
 
-                echo $mypost->ID;
+                echo json_encode(array("pid" => $mypost->ID, "form_index" => $_POST["form_index"]));
             }
             die(); // this is required to return a proper result
         }
@@ -150,7 +160,9 @@ final class CRED_CRED {
         CRED_Helper::setupCustomUserCaps();
         // setup extra admin hooks for other plugins
         CRED_Helper::setupExtraHooks();
-
+        //clear auto-drafting entries
+        CRED_Helper::clearCREDAutoDrafts();
+        
         if (is_admin()) {
 
             if (self::is_embedded()) {
@@ -301,6 +313,7 @@ final class CRED_CRED {
                             'help_target' => self::$help_link_target
                 ));
 
+                
                 $forms_model = CRED_Loader::get('MODEL/Forms');
                 $settings = $forms_model->getFormCustomField($post->ID, 'form_settings');
                 $scaffold_but = '';
@@ -313,15 +326,15 @@ final class CRED_CRED {
 
                 $preview_but = '';
                 ob_start();
-                ?><span id="cred-preview-button" class="cred-media-button">
-                    <a class='button cred-button' href="javascript:;" title='<?php _e('Preview', 'wp-cred'); ?>'><i class="icon-camera ont-icon-18"></i> <?php _e('Preview', 'wp-cred'); ?></a>
-                </span><?php
+                
                 $preview_but = ob_get_clean();
 
                 $addon_buttons['scaffold'] = $scaffold_but;
                 $addon_buttons['post_fields'] = $shortcode_but;
                 $addon_buttons['generic_fields'] = $shortcode2_but;
                 $addon_buttons['preview'] = $preview_but;
+                
+                    
                 $addon_buttons = apply_filters('cred_wpml_glue_generate_insert_button_block', $addon_buttons, $insert_after = 2);
                 $out = implode('&nbsp;', array_values($addon_buttons));
             }
@@ -380,6 +393,7 @@ final class CRED_CRED {
                     $addon_buttons['post_fields'] = $shortcode_but;
                     $addon_buttons['generic_fields'] = $shortcode2_but;
                     $addon_buttons['preview'] = $preview_but;
+                    
                     $addon_buttons = apply_filters('cred_wpml_glue_generate_insert_button_block', $addon_buttons, $insert_after = 2);
                     $out = implode('&nbsp;', array_values($addon_buttons));
                 }

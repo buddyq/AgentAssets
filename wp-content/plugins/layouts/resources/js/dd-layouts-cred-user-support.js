@@ -64,7 +64,8 @@ DDLayout.layouts_cred_user_support = function($)
 	};
 
     self.save_form = function () {
-        $('#cred-submit').click();
+        //$('#cred-submit').click();
+		$('form[name="post"]').submit();
     };
 	
 	self.get_css_settings = function () {
@@ -77,9 +78,16 @@ DDLayout.layouts_cred_user_support = function($)
 	};
 	
 	self.get_form_settings = function () {
+        
+        var $checked_user_roles = new Array();
+        
+        $(".roles_checkboxes:checked").each(function(){
+            $checked_user_roles.push($(this).val());
+        });
 		return {
 			'type' : $('#cred_form_type option:selected').val(),
-			'post_type' : $('#cred_post_type option:selected').text()
+			'post_type' : $('#cred_post_type option:selected').text(),
+            'user_role' : $checked_user_roles.join(', ')
 		};
 	};
 

@@ -60,9 +60,9 @@
             /* <![CDATA[ */
             (function (window, $, cred, undefined) {
 
-                $.fn.slideFadeDown = function (speed, easing, callback) {
+                $.fn.slideFadeDown = function (speed, callback) {
                     return this.each(function () {
-                        $(this).stop(true).animate({opacity: 'show', height: 'show'}, speed, easing || 'linear', function () {
+                        $(this).stop(true).animate({opacity: 'show', height: 'show'}, speed, function () {
                             if ($.browser && $.browser.msie) {
                                 this.style.removeAttribute('filter');
                             }
@@ -72,13 +72,13 @@
                         });
                     });
                 };
-                $.fn.slideFadeUp = function (speed, easing, callback) {
+                $.fn.slideFadeUp = function (speed, callback) {
                     return this.each(function () {
                         if ($(this).is(':hidden'))
                             $(this).hide(); // makes element not lose height if already hidden (eg by parent element)
                         else
                         {
-                            $(this).stop(true).animate({opacity: 'hide', height: 'hide'}, speed, easing || 'linear', function () {
+                            $(this).stop(true).animate({opacity: 'hide', height: 'hide'}, speed, function () {
                                 if ($.browser && $.browser.msie) {
                                     this.style.removeAttribute('filter');
                                 }
@@ -288,7 +288,7 @@
                         <option value='fade-slide'><?php _e('Fade-Slide', 'wp-cred'); ?></option>
                         <option value='slide'><?php _e('Slide', 'wp-cred'); ?></option>
                         <option value='fade'><?php _e('Fade', 'wp-cred'); ?></option>
-                        <option value='none'><?php _e('Use (user-defined) CSS', 'wp-cred'); ?></option>
+                        <option value='none'><?php _e('No Effect', 'wp-cred'); ?></option>
                     </select>
                 </div>
 

@@ -11,6 +11,8 @@ class WPDD_PostEditPageManager
     private $post_title = '';
     private $main_template = 'default';
 
+    private static $FORBIDDEN_ACTIONS = array('inline-save', 'heartbeat');
+
     private static $WHITE_LIST = array(
         'cred-form',
         'cred-user-form',
@@ -722,7 +724,9 @@ class WPDD_PostEditPageManager
     function wpddl_save_post($pidd){
         global $wpddlayout;
 
-        if ($_POST && isset($_POST['action']) && $_POST['action'] != 'inline-save') { // Don't save in quick edit mode.
+        if( user_can_assign_layouts() === false ){ return; } // prevent anything to happen since layout is always null here
+
+        if ($_POST && isset($_POST['action']) && in_array( $_POST['action'], self::$FORBIDDEN_ACTIONS ) === false ) { // Don't save in quick edit mode.
 
             $layout_data = $wpddlayout->post_types_manager->get_layout_to_type_object( get_post_type( $pidd ) );
             $layout_template = isset($_POST['layouts_template']) && $_POST['layouts_template'] ? $_POST['layouts_template'] : null;
@@ -757,7 +761,7 @@ class WPDD_PostEditPageManager
                 // when we set a non-layout template after a layout has been set
                 // Also check is combined_layouts_template = default, if true, only then remove layout assignment 
                 $meta = get_post_meta($pidd, WPDDL_LAYOUTS_META_KEY, true);
-                if( $meta && isset($_POST['combined_layouts_template']) && $_POST['combined_layouts_template'] === 'default' )
+                if(  isset($_POST['combined_layouts_template']) && $_POST['combined_layouts_template'] === 'default' || $meta )
                 {
                     if( isset($_POST['action']) && $_POST['action'] === 'wcml_update_product' ){
                         return;

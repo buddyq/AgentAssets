@@ -33,13 +33,19 @@ DDLayout.templateSelector = function($)
         }
 
         self._show_template_warning();
+        self.unselect_select2_onmouseleave();
 
         self.manage_if_layout_is_loop( jQuery('#js-layout-template-name option:selected') );
 
     };
 
+    self.unselect_select2_onmouseleave = function(){
+      $('.select2-with-searchbox').live("mouseleave", function() {
+         $(".select2-results>li.select2-highlighted").removeClass("select2-highlighted");
+      });
+    };
+
     self.wpddl_special_dropdown_option = function(){
-        alert('aaa');
         return false;
     }
 
@@ -144,9 +150,14 @@ DDLayout.templateSelector = function($)
                         $combinedLayoutTemplate.append('<option value="' + template + '">' + text + '</option>');
                     }
                 }
+                
+                if ( template != default_template ){
+                    is_hidden = 'class="option_hidden"';
+                    show_more_link = true;
+                }
+                
             } else {
                 // A template with a layout
-
                 if( adminpage === 'post-new-php' )
                 {
                     if (force_layout && template == default_template ) {
@@ -253,6 +264,7 @@ DDLayout.templateSelector = function($)
             jQuery('#js-combined-layout-template-name option').removeClass('option_hidden');
             $('#js-combined-layout-template-name').select2('val', self.selected_combined);
             $('#js-combined-layout-template-name').select2('open');
+            WPV_Toolset.Utils.eventDispatcher.trigger( 'ddl-layout-template-name-changed', jQuery('#js-layout-template-name').val() );
             $('.select2-results').scrollTop();
 
             return;

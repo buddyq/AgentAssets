@@ -596,3 +596,5 @@ div[data-option="wpddl_layouts_integration_notice_shown"]{margin-left:2px!import
 .ont-color-red{color:#aa0000;}
 .semi-bold{font-weight:600;}
 .ddl-dialog-content.ddl-create-layout-for-post-types p{padding-top:4px;}
+span.alert-text{font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", "Open Sans", sans-serif!important;}
+.ddl-center-align{text-align:center;position:relative;bottom:4px;}

@@ -217,6 +217,10 @@ DDLayout.views.LayoutView = Backbone.View.extend({
 
 		}
 
+        if( option && option.callback && typeof option.callback === 'function'){
+            option.callback.call(self);
+        }
+
 		return self;
 	},
 	afterRender:function(option)

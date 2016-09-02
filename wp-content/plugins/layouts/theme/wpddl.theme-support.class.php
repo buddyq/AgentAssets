@@ -18,6 +18,7 @@ class WPDD_Layouts_Theme
     private $messages = array();
     private $layouts_saved = 0;
     private $css_saved = 0;
+    private $js_saved = 0;
     private $layouts_deleted = 0;
     private $layouts_overwritten = 0;
     private $images_created = 0;
@@ -47,6 +48,7 @@ class WPDD_Layouts_Theme
         add_action('wp_ajax_dll_import_layouts', array($this, 'import_layouts_ajax_callback'));
         add_action('toolset-shutdown-hander', array(&$this, 'shut_down_handler'));
         add_filter('ddl-fix_toolset_association_on_import_export-data', array($this, 'set_toolset_association_default_args'), 8, 3);
+        add_filter( 'ddl-import_layouts_from_zip_file', array(&$this, 'import_manually_from_zip'), 10, 4 );
     }
 
     public static function getInstance()
@@ -57,6 +59,8 @@ class WPDD_Layouts_Theme
 
         return self::$instance;
     }
+
+
 
     function shut_down_handler()
     {
@@ -91,6 +95,7 @@ class WPDD_Layouts_Theme
         $overwritten = 0;
         $deleted = 0;
         $saved_css = 0;
+        $saved_js = 0;
         $saved_layouts = 0;
         $next_file = '';
         $total_files = 0;
@@ -133,6 +138,7 @@ class WPDD_Layouts_Theme
                         while (($zip_entry = zip_read($zip)) !== false) {
                             if (self::get_extension(zip_entry_name($zip_entry)) === 'ddl' ||
                                 self::get_extension(zip_entry_name($zip_entry)) === 'css' ||
+                                self::get_extension(zip_entry_name($zip_entry)) === 'js' ||
                                 self::get_extension(zip_entry_name($zip_entry)) === 'json'
                             ) {
                                 $total_files++;
@@ -165,8 +171,9 @@ class WPDD_Layouts_Theme
                     while (($zip_entry = zip_read($zip)) !== false) {
                         if ( $continue == 'true'
                             && ( self::get_extension(zip_entry_name($zip_entry)) === 'ddl'
-                                || self::get_extension(zip_entry_name($zip_entry)) === 'css' ||
-                                self::get_extension(zip_entry_name($zip_entry)) === 'json' )
+                                || self::get_extension(zip_entry_name($zip_entry)) === 'css'
+                                || self::get_extension(zip_entry_name($zip_entry)) === 'js' 
+                                || self::get_extension(zip_entry_name($zip_entry)) === 'json' )
                         ) {
                             zip_close($zip);
                             break;
@@ -184,12 +191,16 @@ class WPDD_Layouts_Theme
                             $data = @zip_entry_read($zip_entry, zip_entry_filesize($zip_entry));
                             $this->save_css($data, $overwrite);
                             $message = __(sprintf('File %s processed', zip_entry_name($zip_entry)), 'ddl-layouts');
-                        } elseif( self::get_extension(zip_entry_name($zip_entry)) === 'json' ){
+                        } elseif (self::get_extension(zip_entry_name($zip_entry)) === 'js') {
+                            $data = @zip_entry_read($zip_entry, zip_entry_filesize($zip_entry));
+                            $this->save_js($data, $overwrite);
+                            $message = __(sprintf('File %s processed', zip_entry_name($zip_entry)), 'ddl-layouts');
+                        }elseif( self::get_extension(zip_entry_name($zip_entry)) === 'json' ){
                             $data = @zip_entry_read($zip_entry, zip_entry_filesize($zip_entry));
                             apply_filters( 'ddl-layouts-save_imported_options', $data, $overwrite && $overwrite_assignment );
                             $message = __(sprintf('File %s processed', zip_entry_name($zip_entry)), 'ddl-layouts');
                         }
-                        if ( self::get_extension(zip_entry_name($zip_entry)) === 'ddl' || self::get_extension(zip_entry_name($zip_entry)) === 'css' || self::get_extension(zip_entry_name($zip_entry)) === 'json') {
+                        if ( self::get_extension(zip_entry_name($zip_entry)) === 'ddl' || self::get_extension(zip_entry_name($zip_entry)) === 'css' || self::get_extension(zip_entry_name($zip_entry)) === 'js' || self::get_extension(zip_entry_name($zip_entry)) === 'json') {
                             $continue = 'true';
 
                             if (isset($_POST['last_file']) && $_POST['last_file'] == 1 && $delete) {
@@ -256,6 +267,39 @@ class WPDD_Layouts_Theme
                 if (file_exists($file_name)) {
                     unlink($file_name);
                 }
+            } else if ($info['extension'] == 'js') {
+                global $wpddlayout;
+                $data = file_get_contents($file['tmp_name']);
+                $js = $wpddlayout->js_manager->get_layouts_js();
+                if ($data == $js) {
+                    $message = __("The JS you're trying to import is the same as saved in database.", 'ddl-layouts');
+                    $status = 'error';
+                } elseif (!empty($data) && !$overwrite) {
+                    $message = __("Layouts already has JS styling. Check &quotOverwrite any layout if it already exists&quot, if you want to overwrite this JS.", 'ddl-layouts');
+                    $status = 'error';
+                } else {
+                    $result = $this->handle_single_js($file, $overwrite);
+
+                    if ($result === false) {
+                        $message = __('There was a problem saving the JS.', 'ddl-layouts');
+                        $status = 'error';
+                    } else {
+                        if ($overwrite === false) {
+                            $js_message = __('The Layouts JS was created.', 'ddl-layouts');
+                        } else {
+                            $js_message = __('The Layouts JS was overwritten.', 'ddl-layouts');
+                        }
+
+                        $message = $js_message;
+
+                    }
+                    $this->handle_messages($result, $overwrite || $overwrite_assignment, $delete, true, $info['extension']);
+                }
+
+
+                if (file_exists($file_name)) {
+                    unlink($file_name);
+                }
             } elseif( $info['extension'] == 'json' ) {
                 $result = apply_filters( 'ddl-import-layouts-options-from-dir', dirname( $file['tmp_name'] ) );
                 $this->handle_messages($result, $overwrite || $overwrite_assignment, $delete, true, $info['extension']);
@@ -277,6 +321,7 @@ class WPDD_Layouts_Theme
         $overwritten = $this->layouts_overwritten;
         $deleted = $this->layouts_deleted;
         $saved_css = $this->css_saved;
+        $saved_js = $this->js_saved;
         $saved_layouts = $this->layouts_saved;
 
         $out = array(
@@ -286,6 +331,7 @@ class WPDD_Layouts_Theme
             'overwritten' => $overwritten,
             'deleted' => $deleted,
             'saved_css' => $saved_css,
+            'saved_js' => $saved_js,
             'saved_layouts' => $saved_layouts,
             'imported_layouts' => $this->imported_layouts
         );
@@ -344,7 +390,7 @@ class WPDD_Layouts_Theme
         $info = pathinfo($file['name']);
 
         if ($info['extension'] == 'zip') {
-            $result = $this->handle_zip_file($file, $overwrite, $delete, $overwrite_assignment);
+            $result = $this->handle_zip_file($file['tmp_name'], $overwrite, $delete, $overwrite_assignment);
 
             if ($delete) {
                 $this->handle_layouts_to_be_deleted();
@@ -383,6 +429,28 @@ class WPDD_Layouts_Theme
             }
 
             return true;
+        } else if ($info['extension'] == 'js') {
+            $result = $this->handle_single_js($file, $overwrite);
+
+            if ($result === false) {
+                $this->messages[] = (object)array(
+                    'result' => 'error',
+                    'message' => __('There was a problem saving the JS.', 'ddl-layouts')
+                );
+        } else {
+                if ($overwrite === false) {
+                    $js_message = __('The Layouts JS was created.', 'ddl-layouts');
+                } else {
+                    $js_message = __('The Layouts JS was overwritten.', 'ddl-layouts');
+                }
+
+            $this->messages[] = (object)array(
+                    'result' => 'updated',
+                    'message' => $js_message
+                );
+            }
+
+            return true;
         } else {
             $this->messages[] = (object)array(
                 'result' => 'error',
@@ -411,6 +479,15 @@ class WPDD_Layouts_Theme
         $data = file_get_contents($file['tmp_name']);
 
         $ret = $this->save_css($data, $overwrite);
+
+        return $ret;
+    }
+
+    private function handle_single_js($file, $overwrite = false)
+    {
+        $data = file_get_contents($file['tmp_name']);
+
+        $ret = $this->save_js($data, $overwrite);
 
         return $ret;
     }
@@ -501,28 +578,40 @@ class WPDD_Layouts_Theme
         }
     }
 
+    function import_manually_from_zip( $file, $overwrite, $delete, $overwrite_assignment ){
+
+        $result = $this->handle_zip_file($file, $overwrite, $delete, $overwrite_assignment);
+
+        if( $delete ){
+            $this->handle_layouts_to_be_deleted();
+        }
+
+        return $result;
+    }
+
     function handle_zip_file($file, $overwrite, $delete, $overwrite_assignment)
     {
-        $zip = zip_open(urldecode($file['tmp_name']));
+        $zip = zip_open(urldecode($file));
+        $ret = array();
         if (is_resource($zip)) {
             while (($zip_entry = zip_read($zip)) !== false) {
                 if (self::get_extension(zip_entry_name($zip_entry)) === 'ddl') {
                     $data = @zip_entry_read($zip_entry, zip_entry_filesize($zip_entry));
                     $name = self::get_file_nicename(zip_entry_name($zip_entry));
-                    $this->layout_handle_save($data, $name, $overwrite, $delete, $overwrite_assignment);
+                    $ret[] = $this->layout_handle_save($data, $name, $overwrite, $delete, $overwrite_assignment);
 
                 } elseif (self::get_extension(zip_entry_name($zip_entry)) === 'css') {
                     $data = @zip_entry_read($zip_entry, zip_entry_filesize($zip_entry));
-                    $this->save_css($data, $overwrite);
+                    $ret[] = $this->save_css($data, $overwrite);
                 }
                 elseif( self::get_extension(zip_entry_name($zip_entry)) === 'json' ){
                     $data = @zip_entry_read($zip_entry, zip_entry_filesize($zip_entry));
                     if( $data ){
-                        apply_filters( 'ddl-layouts-save_imported_options', $data, $overwrite && $overwrite_assignment );
+                        $ret[] = apply_filters( 'ddl-layouts-save_imported_options', $data, $overwrite && $overwrite_assignment );
                     }
                 }
             }
-            return true;
+            return $ret;
 
         } else {
             return false;
@@ -552,6 +641,23 @@ class WPDD_Layouts_Theme
         	}
         }
         /**END*/
+        
+        /** Emerson->layouts-904: Check if CSS and JS assets are 'checked' for importing in module manager */
+        /** Start */
+        if ($module_manager_import) {
+        	//Module manager import mode
+        	$import_css = false;
+        	$import_js	= false;        	
+        	if ( in_array( 'Layouts CSS', $layouts_selected_array ) ) {
+        		//Layouts CSS is included in selected array, import...
+        		$import_css = true;
+        	}
+        	if ( in_array( 'Layouts JS', $layouts_selected_array ) ) {
+        		//Layouts JS is included in selected array, import...
+        		$import_js = true;
+        	}        	
+        }
+        /** End */
         
         while (($currentFile = readdir($dir)) !== false) {
             $file = $dir_str . DIRECTORY_SEPARATOR . $currentFile;
@@ -591,10 +697,38 @@ class WPDD_Layouts_Theme
                     $ret[] = $save;
                 }
             } elseif (is_file($file) && pathinfo($file, PATHINFO_EXTENSION) === 'css') {
-                $data = @file_get_contents($file);
-                $save = $this->save_css($data, $overwrite);
+            	$save		= false;
+            	if ( false === $module_manager_import ) {
+            		//Not module manager import, do usual things
+            		$data = @file_get_contents($file);
+            		$save = $this->save_css($data, $overwrite);            		
+            	} elseif ( $module_manager_import ) {
+            		//Module manager import, verify if the module specifies css to be imported
+            		if ( true === $import_css ) {
+            			//Yes, proceed.
+            			$data = @file_get_contents($file);
+            			$save = $this->save_css($data, $overwrite);
+            		}
+            	}
                 if ($save) {
                     $ret[] = 'CSS';
+                }
+            } elseif (is_file($file) && pathinfo($file, PATHINFO_EXTENSION) === 'js') {
+            	$save = false;
+            	if ( false === $module_manager_import ) {
+            		//Not module manager import, do usual things
+                	$data = @file_get_contents($file);
+                	$save = $this->save_js($data, $overwrite);
+            	} elseif ( $module_manager_import ) {
+            		//Module manager import, verify if the module specifies JS to be imported
+            		if ( true === $import_js ) {
+            			//Yes, proceed.
+            			$data = @file_get_contents($file);
+            			$save = $this->save_js($data, $overwrite);
+            		}
+            	}
+                if ($save) {
+                    $ret[] = 'JS';
                 }
             } elseif( is_file($file) && pathinfo($file, PATHINFO_EXTENSION) === 'json' ){
                 $data = @file_get_contents($file);
@@ -620,7 +754,8 @@ class WPDD_Layouts_Theme
             'attachments' => $this->images_created,
             'failed' => 0,
             'errors' => array(),
-            WPDDL_ModuleManagerSupport::LAYOUTS_MODULE_MANAGER_CSS_ID => $this->css_saved
+            WPDDL_ModuleManagerSupport::LAYOUTS_MODULE_MANAGER_CSS_ID => $this->css_saved,
+        	WPDDL_ModuleManagerSupport::LAYOUTS_MODULE_MANAGER_JS_ID => $this->js_saved
         );
     }
 
@@ -629,6 +764,14 @@ class WPDD_Layouts_Theme
         global $wpddlayout;
         $save = $wpddlayout->css_manager->import_css($data, $overwrite);
         if ($save) $this->css_saved++;
+        return $save;
+    }
+
+    private function save_js($data, $overwrite)
+    {
+        global $wpddlayout;
+        $save = $wpddlayout->js_manager->import_js($data, $overwrite);
+        if ($save) $this->js_saved++;
         return $save;
     }
 
@@ -1161,6 +1304,12 @@ class WPDD_Layouts_Theme
         return $wpddlayout->get_layout_css();
     }
 
+    function get_layout_js()
+    {
+        global $wpddlayout;
+        return $wpddlayout->get_layout_js();
+    }
+
     /*
      * Set post type data for export. Get post type slug and track if batched.
      */
@@ -1226,6 +1375,16 @@ class WPDD_Layouts_Theme
                 'file_data' => $this->get_layout_css(),
                 'file_name' => 'layouts.css',
                 'title' => 'Layouts CSS',
+            );
+        }
+
+        $js = $this->get_layout_js();
+
+        if ($js) {
+            $results[] = array(
+                'file_data' => $this->get_layout_js(),
+                'file_name' => 'layouts.js',
+                'title' => 'Layouts JS',
             );
         }
 
@@ -1551,6 +1710,10 @@ class WPDD_Layouts_Theme
                 }
 
             }
+
+            $save = WPDD_Layouts_JsManager::getInstance()->import_js_from_theme($source_dir);
+
+            if ($save) $res[] = 'JS';
 
             $save = WPDD_Layouts_CSSManager::getInstance()->import_css_from_theme($source_dir);
 

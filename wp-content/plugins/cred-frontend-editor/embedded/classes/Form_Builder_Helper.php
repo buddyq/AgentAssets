@@ -440,13 +440,22 @@ class CRED_Form_Builder_Helper implements CRED_Friendly, CRED_FriendlyStatic {
     public function getLocalisedMessage($id) {
         static $messages = null;
         static $formData = null;
+        $formData = $this->friendGet($this->_formBuilder, '_formData');
+        $fields = $formData->getFields();
+        $messages = $fields['extra']->messages;
+        $messages['cred_message_no_recaptcha_keys'] = "no recaptcha keys found";
+        
+        //Commented due to wrong $formData passed when more than one CRED form is present.
+        //Commented by Ahmed Hussein
+        /*
         if (null == $formData) {
             $formData = $this->friendGet($this->_formBuilder, '_formData');
             $fields = $formData->getFields();
             $messages = $fields['extra']->messages;
             $messages['cred_message_no_recaptcha_keys'] = "no recaptcha keys found";
         }
-
+        */
+        
         $id = 'cred_message_' . $id;
         if (!isset($messages[$id]))
             return '';
@@ -754,7 +763,17 @@ class CRED_Form_Builder_Helper implements CRED_Friendly, CRED_FriendlyStatic {
 
         add_filter('upload_mimes', array('StaticClass', 'cred__add_custom_mime_types'));
 
-        $ret = wp_check_filetype($filename, StaticClass::$_allowed_mime_types);
+        $filename_to_check = "";
+
+        if (is_array($filename)) {
+            if (isset($filename[0]) && is_string($filename[0])) {
+                $filename_to_check = $filename[0];
+            }
+        } else {
+            $filename_to_check = $filename;
+        }
+
+        $ret = wp_check_filetype($filename_to_check, StaticClass::$_allowed_mime_types);
 
         return !empty($ret['ext']);
 
@@ -1354,11 +1373,27 @@ class CRED_Form_Builder_Helper implements CRED_Friendly, CRED_FriendlyStatic {
                     );
                     // track form data for notification mail
                     if ($track) {
+
+                        function cred__parent_sort(array $fields, array &$result = array(), $parent = 0, $depth = 0) {
+                            foreach ($fields as $key => $field) {
+                                if ($field['parent'] == $parent) {
+                                    $field['depth'] = $depth;
+                                    array_push($result, $field);
+                                    unset($fields[$key]);
+                                    cred__parent_sort($fields, $result, $field['term_id'], $depth + 1);
+                                }
+                            }
+                            return $result;
+                        }
+
+                        $result = array();
+                        $result = cred__parent_sort($field['all'], $result, 0, 0);
+
                         $tmp_data = array();
-                        foreach ($field['all'] as $tmp_tax) {
+                        foreach ($result as $tmp_tax) {
                             //if (in_array($tmp_tax['term_taxonomy_id'],$values))
                             if (in_array($tmp_tax['term_id'], $values))
-                                $tmp_data[] = $tmp_tax['name'];
+                                $tmp_data[] = str_repeat("- ", $tmp_tax['depth']) . $tmp_tax['name'];
                         }
                         // add also new terms created
                         foreach ($values as $val) {
@@ -2928,6 +2963,7 @@ class CRED_Form_Builder_Helper implements CRED_Friendly, CRED_FriendlyStatic {
         $value = '';
 
         $name_orig = $name;
+        $field["name"] = cred_translate($field["name"], $field["name"], $form->getForm()->post_type . "-". $form->getForm()->post_title ."-" . $form->getForm()->ID);
 
         if (!$is_tax) {
             // if not taxonomy field
@@ -2952,11 +2988,7 @@ class CRED_Form_Builder_Helper implements CRED_Friendly, CRED_FriendlyStatic {
                 );
 
                 $additional_options['preset_value'] = $placeholder;
-            }
-
-            if ($_POST && isset($_POST) && isset($_POST[$name_orig])) {
-                //cred_log("_POST");
-                //cred_log($_POST);
+            } elseif ($_POST && isset($_POST) && isset($_POST[$name_orig])) {
                 $data_value = $_POST[$name_orig];
             } elseif ($postData && isset($postData->fields[$name_orig])) {
                 //cred_log("POST DATA");
@@ -3145,11 +3177,12 @@ class CRED_Form_Builder_Helper implements CRED_Friendly, CRED_FriendlyStatic {
                             !empty($data_value) /* &&
                       (is_numeric($data_value) || is_int($data_value) || is_long($data_value)) */
                     ) {
-                        //https://icanlocalize.basecamphq.com/projects/7393061-toolset/todo_items/196169276/comments
-                        //Fixed Data values for data repetitive
                         if (is_array($data_value)) {
                             foreach ($data_value as $dv) {
-                                $value[] = array('timestamp' => $dv);
+                                if (isset($dv['datepicker']))
+                                    $value[] = array('timestamp' => $dv['datepicker']);
+                                else
+                                    $value[] = array('timestamp' => $dv);
                             }
                         } else {
                             $value['timestamp'] = $data_value;
@@ -3180,8 +3213,8 @@ class CRED_Form_Builder_Helper implements CRED_Friendly, CRED_FriendlyStatic {
                             $default[] = $option;
                         } else {
                             if (is_admin()) {
-                                //register strings on form save
-                                cred_translate_register_string('cred-form-' . $form->getForm()->post_title . '-' . $form->getForm()->ID, $field['slug'] . " " . $option['title'], $option['title'], false);
+                                if (isset($option['title']))
+                                    cred_translate_register_string('cred-form-' . $form->getForm()->post_title . '-' . $form->getForm()->ID, $field['slug'] . " " . $option['title'], $option['title'], false);
                             }
                             if (isset($option['title'])) {
                                 $option = $this->translate_option($option, $key, $form, $field);
@@ -3278,8 +3311,26 @@ class CRED_Form_Builder_Helper implements CRED_Friendly, CRED_FriendlyStatic {
                     $type = 'checkboxes';
                     $save_empty = isset($field['data']['save_empty']) ? $field['data']['save_empty'] : false;
                     $value = array();
-
+                    //StaticClass::_pre($field['data']['options']);
                     if (isset($data_value) && !empty($data_value)) {
+                        if (!is_array($data_value)) {
+                            foreach ($field['data']['options'] as $v => $v1) {
+                                if ($v1['set_value'] == $data_value) {
+                                    $data_value = array($v => $data_value);
+                                }
+                            }
+                        } else {
+                            if (count(array_filter(array_keys($data_value), 'is_string')) > 0) {
+                                $new_data_value = array();
+                                foreach ($field['data']['options'] as $v => $v1) {
+                                    if (in_array($v1['set_value'], $data_value)) {
+                                        $new_data_value[$v] = $v1['set_value'];
+                                    }
+                                }
+                                $data_value = $new_data_value;
+                                unset($new_data_value);
+                            }
+                        }
                         foreach ($data_value as $v => $v1) {
                             if ($save_empty || $field['cred_generic'] == 1) {
                                 $value[$v] = $v1;
@@ -3313,7 +3364,7 @@ class CRED_Form_Builder_Helper implements CRED_Friendly, CRED_FriendlyStatic {
                             $attributes[] = $index;
                         } elseif (isset($data_value) && isset($data_value[$index]) /* && in_array($index,$data_value) */) {
                             if (
-                                    !('yes' == $field['data']['save_empty'] && (0 === $data_value[$index] || '0' === $data_value[$index]))
+                                    !(isset($field['data']['save_empty']) && 'yes' == $field['data']['save_empty'] && (0 === $data_value[$index] || '0' === $data_value[$index]))
                             )
                                 $attributes[] = $index;
                         }
@@ -3328,7 +3379,8 @@ class CRED_Form_Builder_Helper implements CRED_Friendly, CRED_FriendlyStatic {
                 case 'checkbox':
                     $save_empty = isset($field['data']['save_empty']) ? $field['data']['save_empty'] : false;
                     //If save empty and $_POST is set but checkbox is not set data value 0
-                    if ($data_value == 1 &&
+                    if (isset($data_value) &&
+                            $data_value == 1 &&
                             $save_empty == 'no' &&
                             isset($_POST) && !empty($_POST) && !isset($_POST[$name_orig]))
                         $data_value = 0;
@@ -3412,6 +3464,9 @@ class CRED_Form_Builder_Helper implements CRED_Friendly, CRED_FriendlyStatic {
                     //if (isset($field['data']['repetitive']) && $field['data']['repetitive'] == 1)
                     if (isset($field['data']['repetitive']) && $field['data']['repetitive'] == 0 && isset($data_value[0]))
                         $data_value = $data_value[0];
+                    
+                    if (isset($field['data']['repetitive']) && $field['data']['repetitive'] == 1 && !isset($data_value[0]))
+                        $data_value = array($data_value);
 
                     if (isset($data_value)) {
                         if (is_string($data_value))
@@ -3439,8 +3494,6 @@ class CRED_Form_Builder_Helper implements CRED_Friendly, CRED_FriendlyStatic {
                     $attributes = array_merge($attributes, $additional_options);
                     break;
             }
-
-            cred_log($attributes);
 
             if (isset($attributes['make_readonly']) && !empty($attributes['make_readonly'])) {
                 unset($attributes['make_readonly']);

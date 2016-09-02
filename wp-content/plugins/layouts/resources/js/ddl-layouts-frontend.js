@@ -3,7 +3,8 @@ var DDLayout = DDLayout || {};
 jQuery(document).ready( function () {
     
    var video_embed = new DDLayout.EmbeddedManager(),
-	   menu_fix = new DDLayout.DropDownMenuFix();
+	   menu_fix = new DDLayout.DropDownMenuFix(),
+       tabs = new DDLayout.TabsHandler();
 });
 
 DDLayout.EmbeddedManager = function()
@@ -108,5 +109,23 @@ DDLayout.DropDownMenuFix = function()
 
 	self.init();
 };
+
+DDLayout.TabsHandler = function(){
+	var self = this, $disabled;
+
+	self.init = function(){
+        $disabled = jQuery('ul.nav li.disabled a');
+        self.handle_disabled_link();
+	};
+
+    self.handle_disabled_link = function(){
+        $disabled.on('click', function(event){
+            event.stopImmediatePropagation();
+            return false;
+        });
+    };
+
+	self.init();
+}
 
 

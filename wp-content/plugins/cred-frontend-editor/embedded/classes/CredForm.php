@@ -260,7 +260,7 @@ class CredForm {
     // parse field shortcodes [cred_field]
     public function cred_field_shortcodes($atts) {
 
-        $form = &$this->_formData;
+        $form = $this->_formData;
         $formHelper = $this->_formHelper;
         $_fields = $form->getFields();
         $form_type = $_fields['form_settings']->form['type'];
@@ -295,13 +295,13 @@ class CredForm {
         $value = str_replace("@_cred_rsq_@", "'", $value);
 
         if ($field == 'form_messages') {
-            /* $post_not_saved_singular = str_replace("%PROBLEMS_UL_LIST", "", $formHelper->getLocalisedMessage('post_not_saved_singular'));
-              $post_not_saved_plural = str_replace("%PROBLEMS_UL_LIST", "", $formHelper->getLocalisedMessage('post_not_saved_plural'));
-              return '<label id="wpt-form-message"
+            $post_not_saved_singular = str_replace("%PROBLEMS_UL_LIST", "", $formHelper->getLocalisedMessage('post_not_saved_singular'));
+            $post_not_saved_plural = str_replace("%PROBLEMS_UL_LIST", "", $formHelper->getLocalisedMessage('post_not_saved_plural'));
+            return '<label id="wpt-form-message-' . $form->getForm()->ID . '"
               data-message-single="' . esc_js($post_not_saved_singular) . '"
               data-message-plural="' . esc_js($post_not_saved_plural) . '"
-              style="display:none;" class="wpt-top-form-error wpt-form-error">test</label><!CRED_ERROR_MESSAGE!>'; */
-            return '<!CRED_ERROR_MESSAGE!>';
+              style="display:none;" class="wpt-top-form-error wpt-form-error"></label><!CRED_ERROR_MESSAGE!>';
+            //return '<!CRED_ERROR_MESSAGE!>';
         }
         // make boolean
         $escape = false; //(bool)(strtoupper($escape)==='TRUE');
@@ -805,6 +805,10 @@ class CredForm {
             return ''; //ignore not valid json
         }
 
+//        if (!StaticClass::$_reset_file_values && isset($_POST[$atts['field']])) {
+//            $field_data['default'] = $_POST[$atts['field']];
+//        }
+
         $formHelper = $this->_formHelper;
 
         $field = array(
@@ -1114,11 +1118,15 @@ class CredForm {
                 $enctype = 'enctype="multipart/form-data"';
             }
 
+            $action = str_replace(array('/', '?'), "", $this->form_properties['action']);
+
             $amp = '?';
             $_tt = '_tt=' . time();
 
-            if (!empty($_SERVER['QUERY_STRING']) &&
-                    stripos($this->form_properties['action'], $_SERVER['QUERY_STRING']) !== false)
+            //if (!empty($_SERVER['QUERY_STRING']) &&
+            //        stripos($action, $_SERVER['QUERY_STRING']) !== false)
+
+            if (strpos($this->form_properties['action'], '?') !== false)
                 $amp = '&';
 
             $this->_form_content = '<form ' . $enctype . ' ' .
@@ -1251,15 +1259,20 @@ class CredForm {
             $mytype = $this->transType($field['type']);
 
             $fieldConfig = new FieldConfig();
-            
+
             //TODO: remove from here and add to 'date' setDefaultValue for repetitive date is enought to get field['value']          
             if ($field['type'] == 'date' &&
                     isset($field['attr']['repetitive']) && $field['attr']['repetitive'] == 1) {
                 $fieldConfig->setDefaultValue('default', $field);
                 $_curr_value = $fieldConfig->getDefaultValue();
             } else {
-                $fieldConfig->setDefaultValue($field['type'], $field);
-                $_curr_value = $fieldConfig->getDefaultValue();
+                if ($field['type'] == 'checkbox') {
+                    $fieldConfig->setDefaultValue($field['type'], $field);
+                    $_curr_value = $field['value'];
+                } else {
+                    $fieldConfig->setDefaultValue($field['type'], $field);
+                    $_curr_value = $fieldConfig->getDefaultValue();
+                }
             }
 
             $fieldConfig->setOptions($field['name'], $field['type'], $field['value'], $field['attr']);
@@ -1267,9 +1280,6 @@ class CredForm {
             $fieldConfig->setName($field['name']);
             $this->cleanAttr($field['attr']);
             $fieldConfig->setAttr($field['attr']);
-
-            cred_log("_reset_file_values: " . StaticClass::$_reset_file_values);
-
             $fieldConfig->setValue($_curr_value);
             $fieldConfig->setDescription(!empty($field['description']) ? $field['description'] : "");
             $fieldConfig->setTitle($field['title']);
@@ -1499,7 +1509,7 @@ class CredForm {
      * @param type $values
      * @return boolean
      */
-    function validate($post_id, $values) {
+    function validate($post_id, $values, $is_user_form = false) {
         $form_id = $this->html_form_id;
         $valid = true;
         // Loop over fields
@@ -1527,8 +1537,8 @@ class CredForm {
             if (isset($field['plugin_type']) && $field['plugin_type'] == 'types') {
                 $field_name = $field['name'];
 
-                if (!isset($_POST[$field_name]))
-                    continue;
+                //if (!isset($_POST[$field_name]))
+                //continue;
 
                 /* 	
                   // Adjust field ID
@@ -1537,7 +1547,7 @@ class CredForm {
                   if ( $field['type'] == 'text' ) {
                   $field['type'] = 'textfield';
                   } */
-                $field = wpcf_fields_get_field_by_slug(str_replace('wpcf-', '', $field['name']));
+                $field = wpcf_fields_get_field_by_slug(str_replace('wpcf-', '', $field['name']), $is_user_form ? 'wpcf-usermeta' : 'wpcf-fields');
                 if (empty($field)) {
                     continue;
                 }

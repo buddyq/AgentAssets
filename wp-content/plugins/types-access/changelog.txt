@@ -1,3 +1,16 @@
+2.2
+* Added a new role-based system and deprecated the old level-based system
+* Added a new role management listing page and a form to add a new role
+* Revamped the Access Control graphical user interface
+* Improved the performance when loading WPML permissions on post listings
+* Improved the functionality to determine post ID on the front-end
+* Improved the post search functionality when adding or modifying post groups
+* Prepared for compatibility with WordPress 4.6
+* Fixed the permission preview issue
+* Fixed the CRED forms setting import issue
+* Fixed the custom capability deletion issue
+
+
 2.1 AKA Access Denied
 * Added an API to register custom tabs in the Access Control admin page.
 * Separated the Types fields and CRED forms settings into their own tabs on the Access Control admin page.

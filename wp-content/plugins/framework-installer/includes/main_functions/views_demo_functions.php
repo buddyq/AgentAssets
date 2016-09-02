@@ -2170,12 +2170,23 @@ function wpvdemo_remove_runtime_st_registration() {
 }
 
 function wpvdemo_remove_auto_register_types() {
-	$check_import_is_done = get_option('wpv_import_is_done');
-	if ('yes' != $check_import_is_done) {
+	$check_import_is_done_connected = get_option ( 'wpv_import_is_done' );
+	$sitepress_settings				= get_option ( 'icl_sitepress_settings' );
+	
+	//Check if migration is done
+	$migration_done				= false;
+	if (( isset( $sitepress_settings['st']['WPML_ST_Upgrade_Migrate_Originals_has_run'] ) ) &&
+			( isset( $sitepress_settings['st']['WPML_ST_Upgrade_Db_Cache_Command_has_run'] ) ) )  {
+				//Setting set, unset
+				$migration_done			= true;
+	}
+			
+	if ( ( 'yes' != $check_import_is_done_connected ) || ( false === $migration_done ) ) {
+		//Import is not yet done OR migration is not yet done, remove these filters to avoid errors		
 		remove_filter( 'types_post_type', 'wpcf_wpml_post_types_translate', 10, 3 );
 		remove_filter( 'types_taxonomy', 'wpcf_wpml_taxonomy_translate', 10, 3 );
 		remove_all_filters( 'wpml_translate_single_string');
-	}
+	}	
 }
 /** Native function to check if the WordPress is installed via Bedrock Boilerplate
  * https://roots.io/bedrock/
@@ -2278,4 +2289,25 @@ function wpvdemo_plugin_plugin_row_meta($plugin_meta, $plugin_file, $plugin_data
 
 	return $plugin_meta;	
 
+}
+
+function wpvdemo_disable_gettext_hooks_if_notsetup() {
+	$check_import_is_done_connected = get_option ( 'wpv_import_is_done' );
+	$sitepress_settings				= get_option ( 'icl_sitepress_settings' );
+	if (('yes' == $check_import_is_done_connected ) && ( wpvdemo_wpml_is_active() ) ) {
+		/** Import is done and WPML is setup*/
+		//Check if migration is done
+		$migration_done				= false;
+		if (( isset( $sitepress_settings['st']['WPML_ST_Upgrade_Migrate_Originals_has_run'] ) ) &&
+				( isset( $sitepress_settings['st']['WPML_ST_Upgrade_Db_Cache_Command_has_run'] ) ) )  {
+					//Setting set, unset
+					$migration_done			= true;
+				}
+				if ( false === $migration_done ) {
+					//dB migration is not yet removed these filters to prevent missing tables error.
+					remove_filter( 'gettext', 'icl_sw_filters_gettext', 9, 3 );
+					remove_filter( 'ngettext', 'icl_sw_filters_ngettext', 9, 5 );
+					remove_filter( 'gettext_with_context', 'icl_sw_filters_gettext_with_context', 1, 4 );
+				}
+	}
 }

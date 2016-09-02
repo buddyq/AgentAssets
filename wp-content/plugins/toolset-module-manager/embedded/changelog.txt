@@ -89,3 +89,9 @@ Changelog:
 
 * New: Support for new Toolset shared menu.
 * Usability: Added release notes link.
+
+1.6.6
+
+* New: Support for new Layouts JS.
+* New: Improved usability when doing a null import.
+* Fixed: Styling glitches on shared import/export screen.

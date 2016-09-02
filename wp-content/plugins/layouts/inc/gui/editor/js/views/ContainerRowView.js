@@ -78,7 +78,7 @@ DDLayout.views.ContainerRowView = DDLayout.views.RowView.extend({
 
         cells.addCells( 'Cell', 'spacer', row_width , layout_type, row_divider);
 
-        self.model.collection.addRowAfterAnother( self.model, cells, row_name, additional_css, layout_type, row_divider);
+        self.model.collection.addRowAfterAnother( self.model, cells, row_name, additional_css, layout_type, row_divider, self.model.get('kind'), self.model.get('row_type'));
 
         self.eventDispatcher.trigger("re_render_all");
     },

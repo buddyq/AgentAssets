@@ -191,7 +191,7 @@ DDLayout.AddCellHandler = function($)
 
 	self.getColumnsToAdd = function( )
 	{
-		return self._columns_to_add;
+		return Toolset.hooks.applyFilters('ddl-container_columns_to_add', self._columns_to_add );
 	};
 
 	self._initialize_events = function () {

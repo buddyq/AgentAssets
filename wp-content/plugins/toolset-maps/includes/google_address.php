@@ -97,7 +97,27 @@ class Toolset_Addon_Maps_Types {
 			'menu_title'	=> __( 'Display', 'toolset-maps' ),
 			'title'			=> __( 'Display', 'toolset-maps' )
 		);
-		$extra_content = '';
+		$extra_content			= '';
+		$extra_content_api_key	= '';
+		
+		$maps_api_key = apply_filters( 'toolset_filter_toolset_maps_get_api_key', '' );
+		if ( 
+			empty( $maps_api_key ) 
+			&& current_user_can( 'manage_options' ) 
+		) {
+			$analytics_strings = array(
+				'utm_source'	=> 'toolsetmapsplugin',
+				'utm_campaign'	=> 'toolsetmaps',
+				'utm_medium'	=> 'views-integration-settings-for-api-key',
+				'utm_term'		=> 'our documentation'
+			);
+			$extra_content_api_key = sprintf(
+				__( '<p><strong>You wil need a Google Maps API key</strong> to display Toolset Maps address fields on a map. Find more information in %1$sour documentation%2$s.</p>', 'toolset-maps' ),
+				'<a href="' . Toolset_Addon_Maps_Common::get_documentation_promotional_link( array( 'query' => $analytics_strings, 'anchor' => 'api-key' ), 'https://wp-types.com/documentation/user-guides/display-on-google-maps/' ) . '" target="_blank">',
+				'</a>'
+			);
+		}
+		
 		if ( class_exists( 'Toolset_Addon_Maps_Views' ) ) {
 			$analytics_strings = array(
 				'utm_source'	=> 'toolsetmapsplugin',
@@ -109,6 +129,7 @@ class Toolset_Addon_Maps_Types {
 					. '<p style="font-weight: bold;">'
 						. __( 'Want to show this address on a map?', 'toolset-maps' )
 					. '</p>'
+					. $extra_content_api_key
 					. '<p>'
 						. '<strong>' . __( '1. Display a Google Map', 'toolset-maps' ) . '</strong>'
 						. '<span style="display:block;margin-left: 14px;">'
@@ -141,6 +162,7 @@ class Toolset_Addon_Maps_Types {
 					. '<p style="font-weight: bold;">'
 						. __( 'Want to show this address on a map?', 'toolset-maps' )
 					. '</p>'
+					. $extra_content_api_key
 					. '<p>'
 						. '<strong>' . __( '1. Display a Google Map', 'toolset-maps' ) . '</strong>'
 						. '<span style="display:block;margin-left: 14px;">'
@@ -185,6 +207,7 @@ class Toolset_Addon_Maps_Types {
 						. '<p style="font-weight: bold;">'
 							. __( 'Wnat to show this address on a map?', 'toolset-maps' )
 						. '</p>'
+						. $extra_content_api_key
 						. '<p>'
 							. sprintf(
 								__( 'You need the %1$sViews plugin%2$s to display maps and add markers to them', 'toolset-maps' ),

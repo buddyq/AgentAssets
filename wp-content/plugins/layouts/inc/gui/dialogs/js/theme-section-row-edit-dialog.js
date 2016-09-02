@@ -1,4 +1,4 @@
-// row-edit-dialog.js
+var DDLayout = DDLayout || {};
 
 DDLayout.ThemeSectionRowDialog = function($)
 {

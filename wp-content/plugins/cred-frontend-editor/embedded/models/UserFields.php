@@ -156,7 +156,7 @@ final class CRED_User_Fields_Model extends CRED_Abstract_Model implements CRED_S
                                 (is_array($f['_wp_types_group_showfor']) && in_array($role, $f['_wp_types_group_showfor'])) ||
                                 (is_string($f['_wp_types_group_showfor']) && 'all' == $f['_wp_types_group_showfor'])
                                 )
-                                ) || (empty($role) && empty($type_form) || $type_form=='edit')) {
+                                ) || (empty($role) && empty($type_form) || $type_form == 'edit')) {
                             $fields = array_merge($fields, $f['fields']);
                         }
                     }
@@ -255,11 +255,7 @@ final class CRED_User_Fields_Model extends CRED_Abstract_Model implements CRED_S
         return $fields;
     }
 
-    public function getFields($autogenerate = array('username' => true, 'nickname' => true, 'password' => true), 
-                                $role = "", 
-                                $type_form = "", 
-                                $add_default = true, 
-                                $localized_message_callback = null) {
+    public function getFields($autogenerate = array('username' => true, 'nickname' => true, 'password' => true), $role = "", $type_form = "", $add_default = true, $localized_message_callback = null) {
         // ALL FIELDS
         $fields_all = array();
 
@@ -329,7 +325,11 @@ final class CRED_User_Fields_Model extends CRED_Abstract_Model implements CRED_S
                 $user_fields['user_pass2'] = array('post_type' => 'user', 'post_labels' => __('Repeat Password', 'wp-cred'), 'id' => 'user_pass2', 'wp_default' => true, 'slug' => 'user_pass2', 'type' => 'password', 'name' => __('Repeat Password', 'wp-cred'), 'description' => 'Repeat Password', 'data' => array('repetitive' => 0, 'validate' => array('required' => array('active' => 1, 'value' => true, 'message' => $message)), 'conditional_display' => array(), 'disabled_by_type' => 0));
             }
 
-            $user_fields['user_email'] = array('post_type' => 'user', 'post_labels' => __('Email', 'wp-cred'), 'id' => 'user_email', 'wp_default' => true, 'slug' => 'user_email', 'type' => 'email', 'name' => __('Email', 'wp-cred'), 'description' => 'Email', 'data' => array('repetitive' => 0, 'validate' => array('email' => array('active' => 1, 'message' => __('Please enter a valid email address', 'wp-cred')), 'required' => array('active' => 1, 'value' => true, 'message' => $message)), 'conditional_display' => array(), 'disabled_by_type' => 0));
+            $mail_localized_message = __('Please enter a valid email address', 'wp-cred');
+            if ($localized_message_callback) {
+                $mail_localized_message = call_user_func($localized_message_callback, 'enter_valid_email');
+            }
+            $user_fields['user_email'] = array('post_type' => 'user', 'post_labels' => __('Email', 'wp-cred'), 'id' => 'user_email', 'wp_default' => true, 'slug' => 'user_email', 'type' => 'email', 'name' => __('Email', 'wp-cred'), 'description' => 'Email', 'data' => array('repetitive' => 0, 'validate' => array('email' => array('active' => 1, 'message' => $mail_localized_message), 'required' => array('active' => 1, 'value' => true, 'message' => $message)), 'conditional_display' => array(), 'disabled_by_type' => 0));
             $user_fields['user_url'] = array('post_type' => 'user', 'post_labels' => __('Website', 'wp-cred'), 'id' => 'user_url', 'wp_default' => true, 'slug' => 'user_url', 'type' => 'textfield', 'name' => __('Website', 'wp-cred'), 'description' => 'Url', 'data' => array(/* 'repetitive' => 0, 'validate' => array ( 'required' => array ( 'active' => 1, 'value' => true, 'message' => __('This field is required','wp-cred') ) ), 'conditional_display' => array ( ), 'disabled_by_type' => 0 */));
         }
 
@@ -393,6 +393,11 @@ final class CRED_User_Fields_Model extends CRED_Abstract_Model implements CRED_S
 
     public function getAllFields() {
         return get_option('wpcf-fields');
+    }
+
+    public function suggestUserByName($text, $limit = 20) {
+        $fm = CRED_Loader::get('MODEL/UserForms');
+        return $fm->getUsers($text, $limit);
     }
 
 }

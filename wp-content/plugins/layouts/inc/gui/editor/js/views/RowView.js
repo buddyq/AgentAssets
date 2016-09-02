@@ -182,6 +182,16 @@ DDLayout.views.RowView = DDLayout.views.abstract.ElementView.extend({
             jQuery(e.target).trigger("open_row_context_menu", self);
         });
 
+        jQuery('.js-show-add-tab-menu', self.el).on('click', function(e){
+            e.stopImmediatePropagation();
+            jQuery(e.target).trigger("open_tab_context_menu", self);
+        });
+
+        jQuery('.js-show-add-panel-menu', self.el).on('click', function(e){
+            e.stopImmediatePropagation();
+            jQuery(e.target).trigger("open_panel_context_menu", self);
+        });
+
         jQuery('.js-show-add-special-row-menu', self.el).on('click', function(e){
             e.stopImmediatePropagation();
             jQuery(e.target).trigger("open_special_row_context_menu", self);
@@ -196,7 +206,7 @@ DDLayout.views.RowView = DDLayout.views.abstract.ElementView.extend({
             var count = self.model.collection.length + 1;
             var new_cells = new DDLayout.models.collections.Cells,
                 layout_type = self.model.get('layout_type'),
-                row_name = "Row " + count;
+                row_name = self.model.get('kind')+ ' ' + count;
 
             new_cells.layout = self.model.layout;
 
@@ -214,8 +224,7 @@ DDLayout.views.RowView = DDLayout.views.abstract.ElementView.extend({
                     new_cells.addCells( 'Cell', 'spacer', 1, layout_type, 1 );
                 }
             }
-
-            self.model.collection.addRowAfterAnother( self.model, new_cells, row_name, '', layout_type, self.getRowDivider());
+            self.model.collection.addRowAfterAnother( self.model, new_cells, row_name, '', layout_type, self.getRowDivider(), self.model.get('kind'), self.model.get('row_type'));
 
             self.eventDispatcher.trigger("re_render_all");
 
@@ -228,10 +237,6 @@ DDLayout.views.RowView = DDLayout.views.abstract.ElementView.extend({
             event.stopImmediatePropagation();
 
             DDLayout.ddl_admin_page.show_row_dialog('edit', self);
-        });
-        jQuery( '.js-row-css', self.el ).on('click', function(event){
-            event.stopImmediatePropagation();
-            DDLayout.ddl_admin_page.show_css_dialog(self);
         });
 
         var pencil_icon = self.$el.find( '.js-row-edit'),
@@ -290,7 +295,7 @@ DDLayout.views.RowView = DDLayout.views.abstract.ElementView.extend({
 
         cells.addCells( 'Cell', 'spacer', row_width, layout_type, row_divider);
 
-        self.model.collection.addRowAfterAnother( self.model, cells, row_name, additional_css, layout_type, row_divider);
+        self.model.collection.addRowAfterAnother( self.model, cells, row_name, additional_css, layout_type, row_divider, self.model.get('kind'), self.model.get('row_type'));
 
         self.eventDispatcher.trigger("re_render_all");
     },

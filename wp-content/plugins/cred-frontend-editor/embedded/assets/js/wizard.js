@@ -138,14 +138,24 @@
                                 var _tim = setInterval(function () {
                                     if (!self.steps[self.step - 1].completed)
                                     {
-                                        var $el = $('select[name="_cred[form][type]"]'), val = $.trim($el.val());
+                                        //var $el = $('select[name="_cred[form][type]"]'), val = $.trim($el.val());
+                                        var $el = $('input[name="_cred[form][type]"]'), val = $.trim($el.val());
                                         var is_user_form = $('#cred_form_user_role').length;
 
                                         if (is_user_form) {
                                             var $el2 = $('select[name="_cred[form][user_role][]"]'), val2 = $.trim($el2.val());
+                                            var $el3 = $('select[name="_cred[form][action]"]'), val3 = $.trim($el3.val());
+                                        } else {
+                                            var $el2 = $('select[name="_cred[post][post_type]"]'), val2 = $.trim($el2.val());
+                                            var $el3 = $('select[name="_cred[post][post_status]"]'), val3 = $.trim($el3.val());                                            
+                                            var $el4 = $('select[name="_cred[form][action]"]'), val4 = $.trim($el4.val());
                                         }
 
-                                        if (!is_user_form && '' != val || (is_user_form && '' != val && '' != val2 || ('' == val2 && val == 'edit')))
+                                        if (
+                                            !is_user_form && '' != val && '' != val2 && '' != val3 && '' != val4 ||
+                                            (is_user_form && '' != val && '' != val2 && '' != val3 || 
+                                            ('' == val2 && val == 'edit'))
+                                            )
                                         {
                                             clearInterval(_tim);
                                             self.steps[self.step - 1].completed = true;
@@ -168,48 +178,48 @@
                         }
                     },
                     // step 3
-                    {
-                        title: cred.settings.locale.step_3_title,
-                        completed: false,
-                        execute: function (prev)
-                        {
-                            // setup
-                            $('#postbox-container-2 #normal-sortables, #post-body-content').children(':not(.cred-not-hide)').hide();
-                            $('#credposttypediv').removeClass('closed').show();
-                            wizardPrevB.show();
-
-                            if (!self.steps[self.step - 1].completed)
-                            {
-                                wizardNextB.attr('disabled', 'disabled');
-                                checkClassButton(wizardNextB);
-                                wizardProgressbarInner.css('width', '60%');
-                                // keep checking
-                                var _tim = setInterval(function () {
-                                    if (!self.steps[self.step - 1].completed)
-                                    {
-                                        var $el = $('select[name="_cred[post][post_type]"]'), val = $.trim($el.val());
-                                        if ('' != val)
-                                        {
-                                            clearInterval(_tim);
-                                            self.steps[self.step - 1].completed = true;
-                                            self.completed_step = self.step;
-                                            wizardNextB.removeAttr('disabled');
-                                            checkClassButton(wizardNextB);
-                                        }
-                                    } else
-                                    {
-                                        clearInterval(_tim);
-                                    }
-                                }, 500);
-                            } else
-                            {
-                                self.steps[self.step - 1].completed = true;
-                                self.completed_step = self.step;
-                                wizardNextB.removeAttr('disabled');
-                                checkClassButton(wizardNextB);
-                            }
-                        }
-                    },
+//                    {
+//                        title: cred.settings.locale.step_3_title,
+//                        completed: false,
+//                        execute: function (prev)
+//                        {
+//                            // setup
+//                            $('#postbox-container-2 #normal-sortables, #post-body-content').children(':not(.cred-not-hide)').hide();
+//                            $('#credposttypediv').removeClass('closed').show();
+//                            wizardPrevB.show();
+//
+//                            if (!self.steps[self.step - 1].completed)
+//                            {
+//                                wizardNextB.attr('disabled', 'disabled');
+//                                checkClassButton(wizardNextB);
+//                                wizardProgressbarInner.css('width', '60%');
+//                                // keep checking
+//                                var _tim = setInterval(function () {
+//                                    if (!self.steps[self.step - 1].completed)
+//                                    {
+//                                        var $el = $('input[name="_cred[post][post_type]"]'), val = $.trim($el.val());
+//                                        if ('' != val)
+//                                        {
+//                                            clearInterval(_tim);
+//                                            self.steps[self.step - 1].completed = true;
+//                                            self.completed_step = self.step;
+//                                            wizardNextB.removeAttr('disabled');
+//                                            checkClassButton(wizardNextB);
+//                                        }
+//                                    } else
+//                                    {
+//                                        clearInterval(_tim);
+//                                    }
+//                                }, 500);
+//                            } else
+//                            {
+//                                self.steps[self.step - 1].completed = true;
+//                                self.completed_step = self.step;
+//                                wizardNextB.removeAttr('disabled');
+//                                checkClassButton(wizardNextB);
+//                            }
+//                        }
+//                    },
                     // step 4
                     {
                         title: cred.settings.locale.step_4_title,
@@ -382,7 +392,7 @@
                     for (var i = 0, l = self.steps.length; i < l; i++)
                     {
                         var progress_step = $('<span class="cred-progress-step">' + self.steps[i].title + '</span>');
-                        progress_step.insertBefore(wizardProgressbar).css({'left': Math.floor(100 * (i + 1) / l) + '%', 'margin-left': -progress_step.width() + 'px'});
+                        progress_step.insertBefore(wizardProgressbar).css({'left': Math.floor(100 * (i + 1) / l) + '%', 'margin-left': -progress_step.width() + 'px', 'white-space': 'nowrap'});
                     }
 
                     $('#post').on('click', '#cred_wizard_quit_button', function () {
@@ -460,9 +470,9 @@
                 },
                 init: function (step, new_form)
                 {
-                    if (_current_page == 'cred-user-form') {
-                        self.steps.splice(2, 1);
-                    }
+//                    if (_current_page == 'cred-user-form') {
+//                        self.steps.splice(2, 1);
+//                    }
                     // save data
                     newform = new_form;
                     if (step >= 0)

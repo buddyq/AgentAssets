@@ -32,6 +32,7 @@ final class TAccess_Loader
     
     public static function init()
     {
+        /** {ENCRYPTION PATCH HERE} **/
         self::_init_();
         // late init, to cope for any additional dependencies
         add_action( 'plugins_loaded', array( __CLASS__, '_init_' ), 7 );
@@ -40,6 +41,7 @@ final class TAccess_Loader
     
     public static function _init_()
     {
+        /** {ENCRYPTION PATCH HERE} **/
         // init dependencies paths, if any
         if (empty(self::$__dependencies__))
         {
@@ -65,6 +67,12 @@ final class TAccess_Loader
                             'path' => TACCESS_INCLUDES_PATH.'/Updater.php'
                         )
                     ),
+					'Cacher' => array(
+						array(
+                            'class' => 'Access_Cacher',
+                            'path' => TACCESS_INCLUDES_PATH.'/Cacher.php'
+                        )
+					),
                     'Helper' => array(
                         array(
                             'class' => 'Access_Helper',
@@ -133,20 +141,15 @@ final class TAccess_Loader
                         'version'=>WPCF_ACCESS_VERSION,
                         'dependencies'=>array('jquery', 'wp-pointer'),
                         'path'=>TACCESS_ASSETS_URL.'/js/utils.js'
-                    ),
-                    'types-suggest-dev'=>array(
-                        'version'=>WPCF_ACCESS_VERSION,
-                        'dependencies'=>array('jquery'),
-                        'path'=>TACCESS_ASSETS_URL.'/js/suggest.js'
-                    ),
+                    ),                   
                     'wpcf-access-dev'=>array(
                         'version'=>WPCF_ACCESS_VERSION,
-                        'dependencies'=>array('jquery', 'suggest', 'underscore', 'jquery-ui-dialog', 'jquery-ui-tabs', 'wp-pointer', 'toolset-utils', 'toolset-colorbox'),
+                        'dependencies'=>array('jquery', 'underscore', 'jquery-ui-dialog', 'jquery-ui-tabs', 'wp-pointer', 'toolset-utils', 'toolset-colorbox'),
                         'path'=>TACCESS_ASSETS_URL.'/js/basic.js',
 						'localization_name'=>'wpcf_access_dialog_texts',
 						'localization_data'=>array(
 							'otg_access_general_nonce'	=> wp_create_nonce( 'otg_access_general_nonce' ),
-							'wpcf_change_perms'			=> __("Change Permissions", 'wpcf-access'),
+							'wpcf_change_perms'			=> __("Change permissions", 'wpcf-access'),
 							'wpcf_close'				=> __("Close", 'wpcf-access'),
                             'wpcf_cancel'				=> __("Cancel", 'wpcf-access'),
                             'wpcf_group_exists'			=> __("Group already exists", 'wpcf-access'),
@@ -160,8 +163,9 @@ final class TAccess_Loader
                             'wpcf_info3'				=> __("PHP Archive", 'wpcf-access'),
                             'wpcf_info4'				=> __("View Archive", 'wpcf-access'),
                             'wpcf_info5'				=> __("Display: 'No posts found'", 'wpcf-access'),
-                            'wpcf_access_group'			=> __("Access group", 'wpcf-access'),
-                            'wpcf_custom_access_group'	=> __("Custom Access Group", 'wpcf-access'),
+                            'wpcf_access_group'			=> __("Post Group", 'wpcf-access'),
+                            'wpcf_custom_access_group'	=> __("Add New Post Group", 'wpcf-access'),
+                            'wpcf_custom_access_group_modify' => __("Modify Group", 'wpcf-access'),
                             'wpcf_add_group'			=> __("Add Group", 'wpcf-access'),
                             'wpcf_modify_group'			=> __("Modify Group", 'wpcf-access'),
                             'wpcf_remove_group'			=> __("Remove Group", 'wpcf-access'),
@@ -174,15 +178,25 @@ final class TAccess_Loader
                             'wpcf_advanced_mode2'		=> __("After clicking OK, any unsaved data will be lost.", 'wpcf-access'),
                             'wpcf_advanced_mode3'		=> __("You are about to disable the Advanced mode.", 'wpcf-access'),
                             'wpcf_advanced_mode'		=> __("Advanced mode", 'wpcf-access'),
-                            'wpcf_set_wpml_settings'	=> __("Set permission for languages", 'wpcf-access'),
+                            'wpcf_set_wpml_settings'	=> __("Modify WPML Group", 'wpcf-access'),
+                            'wpcf_add_wpml_settings'	=> __("Add WPML Group", 'wpcf-access'),
 							'wpcf_save1'				=> __("Save", 'wpcf-access'),
                             'wpcf_insert'				=> __("Insert conditional text",'wpcf-access'),
 							'wpcf_shortcodes_dialog_title' => __("Insert conditionaly-displayed text",'wpcf-access'),
 							'wpcf_create_group'			=> __("OK", 'wpcf-access'),
-							'wpcf_modify_group'			=> __("OK", 'wpcf-access'),
 							'wpcf_delete_group'			=> __("Remove group", 'wpcf-access'),
 							'otg_access_managed'		=> __( '(Managed by Access)', 'wpcf-access' ),
 							'otg_access_not_managed'	=> __( '(Not managed by Access)', 'wpcf-access' ),
+                            'toolset_access_add_role'	=> __( 'Add new role', 'wpcf-access' ),
+                            'otg_access_suggest_post_search_placeholder'	=> __( 'Type to search for posts...', 'wpcf-access' ),
+                            'otg_access_suggest_users_search_placeholder'	=> __( 'Type to search for users...', 'wpcf-access' ),
+                            'otg_access_searching'	=> __( 'Searching...', 'wpcf-access' ),
+                            'otg_access_remove'	=> __( 'Remove', 'wpcf-access' ),
+                            'otg_access_manage_specific_users' => __( 'Give %s permission to specific users', 'wpcf-access' ),
+                            'wpcf_set_errors_header' => __( 'Set single %s error', 'wpcf-access' ),
+                            'wpcf_set_errors_and_archive_header' => __( 'Set single %s and archive errors', 'wpcf-access' ),
+                            'wpcf_enable_manage_by_button' => __( 'Enable Access to manage', 'wpcf-access' ),
+                            'wpcf_enable_manage_by_message' => __( 'To change the access control, enable Access plugin to manage this.', 'wpcf-access' ),
 						)
                     )
                 ),
@@ -191,12 +205,7 @@ final class TAccess_Loader
                         'version'=>WPCF_ACCESS_VERSION,
                         'dependencies'=>null,
                         'path'=>TACCESS_ASSETS_URL.'/css/pre.css'
-                    ),
-                    'types-suggest-dev'=>array(
-                        'version'=>WPCF_ACCESS_VERSION,
-                        'dependencies'=>null,
-                        'path'=>TACCESS_ASSETS_URL.'/css/suggest.css'
-                    ),
+                    ),                    
                     'wpcf-access-dev'=>array(
                         'version'=>WPCF_ACCESS_VERSION,
                         'dependencies'=>array('font-awesome', 'wp-pointer', 'wp-jquery-ui-dialog', 'toolset-colorbox' ),
@@ -226,7 +235,7 @@ final class TAccess_Loader
     public static function loadAsset($qclass, $registerAs=false, $enqueueIt=true)
     {
         list($type, $class)=explode('/', $qclass, 2);
-        
+
         if ( 
             isset(self::$__assets__[$type]) && 
             isset(self::$__assets__[$type][$class]) 

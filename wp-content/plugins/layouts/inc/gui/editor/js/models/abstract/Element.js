@@ -16,7 +16,6 @@ DDLayout.models.abstract.Element = Backbone.Model.extend({
      * event object to trigger and listen to custom events
      */
     , initialize: function(){
-
         this.set_unique_id();
         this.setWidthToInt();
     },

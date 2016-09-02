@@ -5,7 +5,7 @@ Tags: CMS, Views, Demos, Download
 License: GPLv2
 Requires at least: 3.8.1
 Tested up to: 4.5.3
-Stable tag: 2.0.2
+Stable tag: 2.0.3
 
 Download complete reference sites for Types and Views.
 
@@ -338,3 +338,12 @@ Improved Layouts import calls.
   ==2.0.2==
  Added support for appending Google Analytics arguments on image links for dashboard tutorials.
  Fixed some outdated text on the plugin settings.
+ 
+  ==2.0.3==
+ Updated Installer code base to version 1.7.11+
+ Fixed compatibility issues with PHP 7.0.
+ Fixed issues with navigation menus on PHP 7.0
+ Fixed fatal errors when FI is deactivated on a multilingual refsite. 
+ Fixed any unneeded dashboard notices after import.
+ Compatibility with WPML 3.5.0 +
+ Fixed PHP notices when resetting a multilingual site.

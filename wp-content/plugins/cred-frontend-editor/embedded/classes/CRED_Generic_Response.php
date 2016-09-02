@@ -87,7 +87,7 @@ class CRED_Generic_Response {
                                     wptDate.init('body');
                                 }
 
-                                if (jQuery('.wpt-suggest-taxonomy-term').length)
+                                if (typeof jQuery('.wpt-suggest-taxonomy-term') && jQuery('.wpt-suggest-taxonomy-term').length)
                                     jQuery('.wpt-suggest-taxonomy-term').hide();
 
                                 jQuery(document).trigger('js_event_cred_ajax_form_response_completed');

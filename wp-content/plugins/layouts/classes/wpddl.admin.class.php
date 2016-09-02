@@ -11,7 +11,7 @@ class WPDDL_Admin{
             // common things to run upon init here
             if ( $this->page == WPDDL_LAYOUTS_POST_TYPE || $this->page == 'dd_layouts_edit'  ){
                 do_action('ddl-wpml-switcher-scripts');
-            } elseif ( $this->page == 'dd_layout_CSS' ){
+            } elseif ( $this->page == 'dd_layout_CSS_JS' ){
                 add_action('admin_init', array(&$this, 'init_layouts_css_gui') );
             } elseif  ( $this->page == 'toolset-export-import' ) {
                 add_action('admin_enqueue_scripts', array($this, 'import_export_enqueue_script'));
@@ -105,10 +105,10 @@ class WPDDL_Admin{
 
 
             $pages[] = array(
-                'slug' => 'dd_layout_CSS',
-                'menu_title' => __('Layouts CSS', 'ddl-layouts'),
-                'page_title' => __('Layouts CSS', 'ddl-layouts'),
-                'callback' => array($this, 'dd_layout_CSS'),
+                'slug' => 'dd_layout_CSS_JS',
+                'menu_title' => __('Layouts CSS and JS', 'ddl-layouts'),
+                'page_title' => __('Layouts CSS and JS', 'ddl-layouts'),
+                'callback' => array($this, 'dd_layout_CSS_JS'),
                 'capability' => DDL_EDIT
             );
 
@@ -116,7 +116,7 @@ class WPDDL_Admin{
     }
 
     private function init_layouts_css(){
-        include WPDDL_GUI_ABSPATH . 'CSS/wpddl.css-editor.class.php';
+        include WPDDL_GUI_ABSPATH . 'CSS/wpddl.css-js-editor.class.php';
         WPDDL_CSSEditor::getInstance();
     }
 
@@ -129,7 +129,7 @@ class WPDDL_Admin{
         || 'dd_layouts' === $this->page
         || $this->page === 'toolset-export-import'
         || $this->page === 'toolset-settings'
-        || $this->page === 'dd_layout_CSS';
+        || $this->page === 'dd_layout_CSS_JS';
     }
 
     public function create_layout_button()
@@ -227,7 +227,7 @@ class WPDDL_Admin{
         return $sections;
     }
 
-    public function dd_layout_CSS(){
+    public function dd_layout_CSS_JS(){
         WPDDL_CSSEditor::getInstance()->load_template();
     }
 

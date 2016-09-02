@@ -1373,13 +1373,15 @@ CRED.suggest_cache = false;
                                 }
                             }
                             item = $(item);                   // make it dom element
+                            change_notification_to_info(item, data);
                             container.append(item.hide());  // append item to container
                             model.mergeDom(key, item);      // merge item into model, silently
                             view.clearCaches();
                             model.trigger('change', {key: key, value: {}});   // trigger events
-                            view.sync(item);                // synchronize the view
+                            view.sync(item);  // synchronize the view
                             item.fadeIn('slow');    // show new item with effect
                             check_cred_form_type_for_notification();
+
                         }
                     },
                     // remove item from view/model
@@ -1387,8 +1389,8 @@ CRED.suggest_cache = false;
                         if (!data.bind)
                             return;
                         data = data.bind;
-                        var key = data['modelRef'], item = data['domRef'],
-                                view = this, model = view.model();
+                        var key = data['modelRef'], item = data['domRef'], row = data['domRow']
+                        view = this, model = view.model();
 
                         if (key && item)
                         {
@@ -1404,8 +1406,13 @@ CRED.suggest_cache = false;
                                         model.del(key);
                                         view.clearCaches();
                                         model.trigger('change', {key: key, value: {}});
+                                        $(row).fadeOut('slow', function () {
+                                            $(row).remove();
+                                            view.updateForm();
+                                        });
                                     });
                                 });
+
                             } else
                             {
                                 $(item).fadeOut('slow', function () { // go with style ;)
@@ -1414,8 +1421,14 @@ CRED.suggest_cache = false;
                                     model.del(key);
                                     view.clearCaches();
                                     model.trigger('change', {key: key, value: {}});
+                                    $(row).fadeOut('slow', function () {
+                                        $(row).remove();
+                                        view.updateForm();
+                                    });
                                 });
+
                             }
+
                         }
                     },
                     // remove gui element(s) according to binding
@@ -1436,6 +1449,22 @@ CRED.suggest_cache = false;
                             }
                         } else
                             $el.remove();
+                    },
+                    "enable": function ($el, data) {
+                        data = data.bind;
+                        if (data["condition"]) {
+                            data['condition'] = this._model.eval(data['condition']);
+                            if (undefined !== data['condition'])
+                            {
+                                if (data['condition']) {
+                                    $el.prop("disabled", false);
+                                } else {
+                                    $el.prop("disabled", true);
+                                }
+                            }
+                        } else {
+                            $el.prop("disabled", true);
+                        }
                     },
                     // remove gui element(s) according to binding using fadeOut
                     'removeFade': function ($el, data) {
@@ -2195,6 +2224,25 @@ CRED.suggest_cache = false;
                         this._selectorsCache = {}; // refresh cache;
                         delete this._selectorsCacheTime;
                         return this;
+                    },
+                    updateForm: function () {
+                        jQuery.ajax({
+                            url: document.location,
+                            data: this.serialize('#post'),
+                            type: 'post',
+                            success: function () {
+                                console.log("form updated");
+                            }
+                        });
+                    },
+                    serialize: function (what) {
+                        var values;
+
+                        // Get the parameters as an array
+                        values = jQuery(what).serializeArray();
+
+                        // Convert to URL-encoded string
+                        return jQuery.param(values);
                     },
                     // http://stackoverflow.com/questions/10892322/javascript-hashtable-use-object-key
                     // http://stackoverflow.com/questions/2937120/how-to-get-javascript-object-references-or-reference-count

@@ -67,9 +67,7 @@ DDLayout.ContainerDialog = function($)
 			href: '#ddl-container-edit',
 			closeButton:false,
 			onComplete: function() {
-				//jQuery('.js-popup-tabs').tabs(); // Initialize tabs
-				//jQuery('.js-popup-tabs').tabs( 'option', 'active', 0 ); // Activate the first tab
-				//codemirror_init( 'code-css-editor', 'css', $(this) );
+				
 			}
 		});
 

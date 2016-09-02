@@ -3,7 +3,7 @@
  Plugin Name: Toolset Module Manager
 Plugin URI: https://wp-types.com/home/toolset-components/
 Description: Create reusable modules comprising of Types, Views and CRED parts that represent complete functionality
-Version: 1.6.5
+Version: 1.6.6
 Author: OnTheGoSystems
 Author URI: http://www.onthegosystems.com/
 */
@@ -13,7 +13,7 @@ define('MODMAN_RUN_MODE','PLUGIN_MODE');
 
 // current version
 if (!(defined('MODMAN_VERSION'))) {
-define('MODMAN_VERSION','1.6.5');
+define('MODMAN_VERSION','1.6.6');
 }
 
 if (!(defined('MODMAN_NAME'))) {

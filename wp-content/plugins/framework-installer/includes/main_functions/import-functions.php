@@ -789,6 +789,22 @@ function wpvdemo_import_wpml($baseurl, $settings) {
 				
 			unset ( $data ['wpv_active_languages'] );
 				
+			/**
+			 * WPML 3.5.0:
+			 * WPML_ST_Upgrade_Migrate_Originals
+			 * WPML_ST_Upgrade_Db_Cache_Command
+			 * so icl_string_pages table is recreated after import
+			 */
+			
+			if ( isset( $data['st']['WPML_ST_Upgrade_Migrate_Originals_has_run'] ) ) {
+				//Setting set, unset
+				unset( $data['st']['WPML_ST_Upgrade_Migrate_Originals_has_run'] );				
+			}
+			if ( isset( $data['st']['WPML_ST_Upgrade_Db_Cache_Command_has_run'] ) ) {
+				//Setting set, unset
+				unset( $data['st']['WPML_ST_Upgrade_Db_Cache_Command_has_run'] );
+			}
+			
 			update_option ( 'icl_sitepress_settings', $data );
 			update_option ( 'icl_sitepress_backup_settings', $data);
 			update_option ( 'wpvdemo_sitepress_settings_set', 'yes');				

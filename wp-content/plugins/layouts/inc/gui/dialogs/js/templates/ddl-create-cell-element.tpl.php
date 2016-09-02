@@ -2,11 +2,14 @@
 global $wpddlayout;
 $icon = $this->get_cell_icon( $cell_info['cell-image-url'] );
 $has_default_icon = $this->has_icon_default();
-/*$class_move_icon = $has_default_icon ? 'ddl-move-icon-up' : '';
-$class_move_box = $has_default_icon ? 'ddl-move-box-down' : '';
-$class_limit_height = $has_default_icon ? 'ddl-max-height-150' : '';
-$class_move_name = $has_default_icon ? 'move-name-up' : '';*/
 ?>
+
+<script type="text/javascript">
+    var DDL_LayoutCellInfoObject = DDL_LayoutCellInfoObject || {};
+    if( DDL_LayoutCellInfoObject.hasOwnProperty("<?php echo $cell_type; ?>") === false ){
+        DDL_LayoutCellInfoObject["<?php echo $cell_type; ?>"] = "<?php echo $cell_info['allow-multiple'] ? 'yes' : 'no'; ?>";
+    }
+</script>
 
 <div class="grid-category-item js-grid-category-item js-tree-category-item">
     <a href="#" class="js-render-cell-tpl js-show-item-desc ddl-show-item-desc"

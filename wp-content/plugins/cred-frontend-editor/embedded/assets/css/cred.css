@@ -1,5 +1,77 @@
-.wp-media-buttons {
-    margin-left:10px;
+.clear {
+    clear: both;
+}
+.clearfix:after {
+    content: '';
+    display: table;
+    clear: both;
+}
+
+.icon-pushpin{
+    margin-right:5px;
+    color:green;
+    display:none;
+}
+
+.postarea-withborder{
+    width: 100%;
+    padding: 0px;
+    margin: 0px;
+    display: block;
+    border: solid 1px #ccc;
+}
+
+#post-status-info{
+    display:none;
+}
+
+.hidden{
+    display:none;
+}
+
+.cred-no-bottom-margin{
+    margin-bottom:0px !important;
+}
+
+.cred-meta-box-no-margins {
+    margin: 0 !important;
+    padding: 0 !important;
+}
+ 
+  
+#minor-publishing-actions{
+    margin-bottom: 20px;
+}
+
+.editor-tools-padding{
+    padding-top: 38px !important;
+}
+.cred_left_margin{
+    margin-left: 15px !important;
+}
+
+.cred_create_form_label{
+    font-weight: bold;
+}
+
+.cred_create_form-explain-text{
+    float: left;
+    width: 40%;
+    font-weight: bold;
+}
+
+.cred_form_input{
+    float:left;
+    width:60%;
+}
+
+.left-margin-second-child label label{
+    margin-left: 10px !important;
+}
+
+.cred-html-editor-container{
+    margin:0px !important;
+    padding:0px !important;
 }
 
 .wp-switch-editor {
@@ -74,10 +146,12 @@
 .cred-popup-box .icon-remove,
 .cred-popup-box .icon-refresh {
     position: relative;
-    top: 2px;
+    top: -2px;
     cursor: pointer;
     margin: 0 4px;
     font-size: 16px;
+    display: inline-block;
+    vertical-align: middle;
 }
 
 .postbox .icon-plus,
@@ -111,7 +185,7 @@
 #credformtypediv input[type=text],
 #credposttypediv input[type=text],
 #postdivrichwrap input[type=text],
-#crednotificationdiv input[type=text],
+/*#crednotificationdiv input[type=text],*/
 #credmessagesdiv input[type=text],
 #credformtypediv select,
 #credposttypediv select,
@@ -126,7 +200,8 @@
 }
 #crednotificationdiv input[type=text]
 {
-    width: 90%;
+    width: 95%;
+    width: calc(100% - 30px);
 }
 .cred_ajax_loader,
 .cred_ajax_loader_small
@@ -594,20 +669,66 @@
     z-index:10;position:relative;width:100%;display:block;overflow-y:auto;
 }
 
-#cred_notification_settings_panel,
-#cred_notification_settings_panel_container
-{
-    position:relative;
-}
 
+.cred-notification-settings-panel-header {
+    margin: 5px 0 30px;
+}
+.cred-explain-text + .cred-notification-add-button {
+    margin-top: 5px;
+}
 .cred_notification_settings_panel {
-    margin-bottom: 40px;
+    margin-bottom: 30px;
     padding: 0 10px 10px 10px;
-    border: 1px solid #ededed;
-    border-bottom-color: #ccc;
+    border: 1px solid #ddd;
 }
 .cred_notification_settings_panel:last-child {
     margin-bottom: 0;
+}
+
+.cred-notification-settings-footer {
+    clear: both;
+    border-top: 1px solid #ddd;
+    background: #f5f5f5;
+    margin: 10px -10px -10px -10px;
+    padding: 10px;
+}
+.cred-notification-settings-row {
+    padding: 10px;
+    border-bottom: 1px solid #ddd;
+}
+.cred-notification-settings-row .cred-notification-actions{
+    float: right;
+    width: 100px;
+    text-align: right;
+}
+
+.cred-notification-title {
+    max-width: calc(100% - 100px - 100px);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: block;
+    float: left;
+    font-size: 1.1em;
+}
+.cred-notification-status {
+    width: 100px;
+    display: block;
+    float: left;
+    font-size: 1.1em;
+}
+.cred-notification-action {
+    display: inline-block;
+    text-decoration: none;
+    margin: 0 4px;
+    cursor: pointer;
+}
+.cred-notification-action i {
+    font-size: 20px;
+    vertical-align: text-bottom;
+}
+.cred-notification-delete {
+    color: #aa0000;
 }
 
 #poststuff .cred-popup-heading h3,
@@ -697,13 +818,6 @@
     position:relative;
 }
 
-.cred_notification_settings_panel .cred-notification-remove-container
-{
-    text-align: right;
-    margin-bottom: 0;
-
-}
-
 .cred_notification_settings_panel:hover .cred-notification-remove-container
 {
     display:block;
@@ -716,10 +830,25 @@
 }
 
 label.cred-label {
-    position:relative;
-    display:inline-block;
-    vertical-align:middle;
+   display: block;
+    margin-bottom: 5px;
 }
+
+.cred_form_input label.cred-label {
+    vertical-align:top;
+}
+
+label.cred-label-chk {
+    position:relative;
+    display:block;
+    vertical-align:middle;
+    margin-bottom:5px;
+}
+
+.cred-fieldset table {
+    border-collapse: collapse;
+}
+
 
 input.cred-textfield
 {
@@ -789,7 +918,9 @@ input.cred-textfield:focus
     border:1px solid #ddd;
     margin:0;
     padding:0;
-    padding-bottom:10px;
+    /*padding-bottom:10px;*/
+    height:100%;
+    border-left: 30px solid #ccc;
 }
 .cred-editor-container{
     position:relative;
@@ -944,9 +1075,6 @@ border:1px solid #ddd;
     position: relative;
 }
 
-.cred-notification-add-container {
-    text-align: right;
-}
 
 .cred_notify_event_field_conditions_container_fields label {
     margin: 0 0 5px 0;
@@ -989,11 +1117,12 @@ border:1px solid #ddd;
     line-height: 1.7;
     margin: 10px 0;
 }
+
 .cred-notification.cred-error {
     color: #b94a48;
     background-color: #f2dede;
     border-color: #eed3d7;
-    margin: 10px 20px 15px 0;
+    margin: 10px 0;
 }
 .cred-notification.cred-error [class^="icon-"] {
     color: #b94a48;
@@ -1120,20 +1249,23 @@ body.post-type-cred-form .ui-dialog{z-index:99999;}
 /* ************************************************************************** *\
                 EDITOR Fixes
 \* ************************************************************************** */
-.wp-media-buttons {
-    width: 80% !important;
+#credformcontentdiv .wp-media-buttons {
+    margin-left: 7px;
+}
+/*.cred_related .wp-media-buttons {
+    width: 90% !important;
     position: absolute;
     bottom: 0;
 }
 
-.wp-media-buttons[style*="top"] {
+.cred_related .wp-media-buttons[style*="top"] {
     bottom: auto;
 }
 
-.wp-editor-wrap {
+.cred_related .wp-editor-wrap {
     margin-top: 20px;
 }
-
+*/
 /*Fix fullscreen*/
 /*div.mce-fullscreen {
     left: 160px !important;
@@ -1214,4 +1346,65 @@ html[dir='rtl'] .cred-help-link-white {
 
 html[dir='rtl'] .wp-switch-editor {
     float: left !important;
+}
+
+.cred-extra-editor-tab{
+    display: block;
+    margin: 0;
+    padding: 0 28px 0 0;
+    line-height: 35px;
+    border: solid 1px #ccc;
+    font-weight: bold;
+    cursor: pointer;
+    background: #e5e5e5;
+    background: -moz-linear-gradient(top, #e5e5e5 0%, #f4f4f4 100%);
+    background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#e5e5e5), color-stop(100%,#f4f4f4));
+    background: -webkit-linear-gradient(top, #e5e5e5 0%,#f4f4f4 100%);
+    background: -o-linear-gradient(top, #e5e5e5 0%,#f4f4f4 100%);
+    background: -ms-linear-gradient(top, #e5e5e5 0%,#f4f4f4 100%);
+    background: linear-gradient(to bottom, #e5e5e5 0%,#f4f4f4 100%);
+    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#e5e5e5', endColorstr='#f4f4f4',GradientType=0 );
+}
+
+#credextrajsdiv .button-link{
+    display: inline-block;
+    float: left;
+    width: 28px;
+    margin-right: 10px;
+    text-align: center;
+    border-right: solid 1px #ccc;
+}
+
+#credextracssdiv .button-link{
+    display: inline-block;
+    float: left;
+    width: 28px;
+    margin-right: 10px;
+    text-align: center;
+    border-right: solid 1px #ccc;
+}
+
+#credextrajsdiv{
+    margin-bottom:0px;
+}
+
+#credextrajsdiv, #credextracssdiv{
+    width: 100%;
+    padding: 0px;
+    margin: 0px;
+    display: block;
+    line-height: 35px;
+    border: solid 1px #ccc;
+    background: #e5e5e5;
+    background: -moz-linear-gradient(top, #e5e5e5 0%, #f4f4f4 100%);
+    background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#e5e5e5), color-stop(100%,#f4f4f4));
+    background: -webkit-linear-gradient(top, #e5e5e5 0%,#f4f4f4 100%);
+    background: -o-linear-gradient(top, #e5e5e5 0%,#f4f4f4 100%);
+    background: -ms-linear-gradient(top, #e5e5e5 0%,#f4f4f4 100%);
+    background: linear-gradient(to bottom, #e5e5e5 0%,#f4f4f4 100%);
+    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#e5e5e5', endColorstr='#f4f4f4',GradientType=0 )
+}
+
+.tablenav.top > .bulkactions {
+    margin-top:28px;
 }

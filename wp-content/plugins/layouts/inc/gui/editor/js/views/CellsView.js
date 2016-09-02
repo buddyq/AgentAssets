@@ -113,7 +113,7 @@ DDLayout.views.CellsView = DDLayout.views.abstract.CollectionView.extend({
         var count = 1;
         for (var i = 0; i < self.getElementCount(); i++) {
             var cell_view = self.getElementView(i);
-            if (cell_view.model.get('kind') == 'Container') {
+            if ( cell_view.model.hasRows() ) {
                 var rows_in_container = cell_view.get_total_rows();
                 if (rows_in_container > count) {
                     count = rows_in_container;
@@ -128,7 +128,7 @@ DDLayout.views.CellsView = DDLayout.views.abstract.CollectionView.extend({
     setCellsHeight: function () {
         var self = this;
 
-        if (self.model.where({kind: 'Container'}).length === 0) {
+        if ( typeof self.model.where('Rows', Backbone.Collection ) === 'undefined'  ) {
             self.$el.css('visibility', 'visible');
             return;
         }
@@ -138,7 +138,7 @@ DDLayout.views.CellsView = DDLayout.views.abstract.CollectionView.extend({
 
         for (var i = 0; i < self.getElementCount(); i++) {
             var cell_view = self.getElementView(i);
-            if (cell_view.model.get('kind') == 'Container') {
+            if ( cell_view.model.hasRows() ) {
                 var details = {};
                 details['view'] = cell_view;
                 details['pos'] = cell_view.get_top_and_bottom_cell_positions();
@@ -225,7 +225,7 @@ DDLayout.views.CellsView = DDLayout.views.abstract.CollectionView.extend({
 
         for (var i = 0; i < self.getElementCount(); i++) {
             var cell_view = self.getElementView(i);
-            if (cell_view.model.get('kind') != 'Container') {
+            if (cell_view.model.hasRows() === false ) {
 
                 var height = DDLayout.preview_manager.get_preview_height(cell_view);
                 if (height != undefined) {
@@ -239,7 +239,7 @@ DDLayout.views.CellsView = DDLayout.views.abstract.CollectionView.extend({
         if (max_height > 0) {
             for (var i = 0; i < self.getElementCount(); i++) {
                 var cell_view = self.getElementView(i);
-                if (cell_view.model.get('kind') != 'Container') {
+                if ( cell_view.model.hasRows() === false ) {
                     cell_view.$el.height(max_height);
                     cell_view.$el.data("computed_height", max_height);
                     cell_view.computed_height = max_height;

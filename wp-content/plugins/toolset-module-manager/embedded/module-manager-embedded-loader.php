@@ -5,7 +5,7 @@ Plugin URI: https://wp-types.com/home/toolset-components/
 Description: Create reusable modules comprising of Types, Views and CRED parts that represent complete functionality. 
 Author: OnTheGoSystems
 Author URI: http://www.onthegosystems.com
-Version: 1.6.4
+Version: 1.6.6
 */
 
 /** THIS FILE SHOULD ONLY EXISTS IN THE /embedded/ directory */

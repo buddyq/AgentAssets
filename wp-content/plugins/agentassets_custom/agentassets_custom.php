@@ -11,6 +11,12 @@ require_once( ABSPATH . 'wp-admin/includes/file.php' );
 require_once( ABSPATH . 'wp-admin/includes/media.php' );
 
 # Include Files
+define('AA_CUSTOM_RENDER_INSTANCE', 'aa-render-instance');
+include 'includes/AACRender.php';
+
+$render = AACRender::instance(AA_CUSTOM_RENDER_INSTANCE);
+$render->addTemplatePath(dirname(__FILE__). '/templates');
+
 include 'includes/shortcodes/register-form.php';
 include 'includes/shortcodes/profile-form.php';
 
@@ -19,7 +25,7 @@ include 'includes/filters.php';
 include 'includes/actions.php';
 include 'includes/widgets.php';
 
-const USE_EXPERIMENTAL = false;
+const USE_EXPERIMENTAL = true;
 if (USE_EXPERIMENTAL) {
     require_once(dirname(__FILE__) . '/includes/models/AgentInformationModel.php');
     require_once(dirname(__FILE__) . '/includes/models/PropertyDetailsModel.php');
@@ -36,6 +42,10 @@ if (USE_EXPERIMENTAL) {
     AAShortcodeModelMap::map('ContactInfo', ContactInfoModel::model());
 
     include 'includes/settings/site_settings.php';
+
+    include 'includes/shortcodes/aa-property-details.php';
+    include 'includes/shortcodes/aa-printable-info.php';
+    include 'includes/shortcodes/aa-contact-page.php';
 } else {
     include 'includes/shortcodes/agentinformation.php';
     include 'includes/shortcodes/theme_settings.php';
@@ -63,8 +73,6 @@ add_filter( 'wp_mail_content_type', 'custom_mi_agentassets_set_content_type' );
 function custom_mi_agentassets_set_content_type( $content_type ) {
 	return 'text/html';
 }
-
-
 
 function add_aa_custom_scripts_to_footer(){
 ?>

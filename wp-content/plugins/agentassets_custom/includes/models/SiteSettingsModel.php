@@ -5,17 +5,17 @@ require_once(dirname(dirname(__FILE__)) . '/validators/AAValidators.php');
 class SiteSettingsModel {
     const OPTION_PREFIX = 'agentassets_site_setting_';
 
-    protected static $_model = null;
+    protected static $_model = array();
     protected $_attributes;
 
     protected $_errors = array();
 
     public static function model($className = __CLASS__) {
-        if (is_null(self::$_model)) {
-            self::$_model = new $className();
-            self::$_model->load();
+        if (!isset(self::$_model[$className])) {
+            self::$_model[$className] = new $className();
+            self::$_model[$className]->load();
         }
-        return self::$_model;
+        return self::$_model[$className];
     }
 
     public function __get($key) {

@@ -111,146 +111,178 @@ function aag_manager_group_admin() {
     $notices = array();
     $view = 'list_view';
     $viewData = array();
+    $currentAction = empty($_GET['medma_group_action']) ? 'list' : $_GET['medma_group_action'];
+
     // controller
-    if (isset($_GET['medma_group_action'])) {
-        switch ($_GET['medma_group_action']) {
-            case 'editor' :
-                $errors = array();
-                $group = null;
-                if (isset($_GET['group_id'])) {
-                    $group = MedmaGroupModel::findOne('id = %d', array($_GET['group_id']));
-                    if (false === $group) {
-                        $group = null;
-                    }
+    switch ($currentAction) {
+        case 'editor' :
+            $errors = array();
+            $group = null;
+            if (isset($_GET['group_id'])) {
+                $group = MedmaGroupModel::findOne('id = %d', array($_GET['group_id']));
+                if (false === $group) {
+                    $group = null;
                 }
-                if (isset($_POST['MedmaGroup'])) {
-                    $group = MedmaGroupModel::validate($_POST['MedmaGroup'], $errors);
-                    if (!count($errors)) {
-                        if (empty($group->id)) {
-                            $result = MedmaGroupModel::insert(get_object_vars($group));
-                            if ($result) {
-                                $group->id = $result;
-                                $notices[] = array('class' => 'success', 'message' => 'Group has been successfully saved.');
-                            } else {
-                                $notices[] = array('class' => 'error', 'message' => 'Error! Can\'t save group.');
-                            }
+            }
+            if (isset($_POST['MedmaGroup'])) {
+                $group = MedmaGroupModel::validate($_POST['MedmaGroup'], $errors);
+                if (!count($errors)) {
+                    if (empty($group->id)) {
+                        $result = MedmaGroupModel::insert(get_object_vars($group));
+                        if ($result) {
+                            $group->id = $result;
+                            $notices[] = array('class' => 'success', 'message' => 'Group has been successfully saved.');
                         } else {
-                            $data = get_object_vars($group);
-                            unset($data['id']);
-                            $result = MedmaGroupModel::update($data, 'id = '.$group->id);
-                            if (false === $result) {
-                                $notices[] = array('class' => 'error', 'message' => 'Error! Can\'t save group.');
+                            $notices[] = array('class' => 'error', 'message' => 'Error! Can\'t save group.');
+                        }
+                    } else {
+                        $data = get_object_vars($group);
+                        unset($data['id']);
+                        $result = MedmaGroupModel::update($data, 'id = '.$group->id);
+                        if (false === $result) {
+                            $notices[] = array('class' => 'error', 'message' => 'Error! Can\'t save group.');
+                        } else {
+                            $notices[] = array('class' => 'success', 'message' => 'Group has been successfully saved.');
+                        }
+                    }
+                } else {
+                    foreach($errors as $error) {
+                        $notices[] = array('class' => 'error', 'message' => $error);
+                    }
+                }
+            } else if (is_null($group)) {
+                $group = MedmaGroupModel::touch();
+                $group->code = MedmaGroupModel::generateCode();
+            }
+
+            $view = 'form_view';
+            $viewData = array(
+                'group' => $group,
+                'errors' => $errors,
+            );
+            break;
+        case 'view' :
+            $group = null;
+            if (isset($_GET['group_id'])) {
+                $view = 'view';
+                $group = MedmaGroupModel::findOne('id = %d', array($_GET['group_id']));
+                if (false === $group) {
+                    $group = null;
+                } else {
+                    $subview = (isset($_GET['subview']) && 'themes' == $_GET['subview']) ? 'themes' : 'users';
+                    $list = array();
+                    if ($subview == 'users') {
+                        if (isset($_POST['new_group_user']) && 0 < $_POST['new_group_user']) {
+                            if (MedmaGroupModel::addRelatedUser($group->id, $_POST['new_group_user'])) {
+                                $notices[] = array('class' => 'success', 'message' => 'New user has been successfully append to group.');
                             } else {
-                                $notices[] = array('class' => 'success', 'message' => 'Group has been successfully saved.');
+                                $notices[] = array('class' => 'error', 'message' => 'Error! Can\'t append user to group.');
+                            }
+                        } else if (isset($_POST['bulk_action'])) {
+                            if ('delete' == $_POST['bulk_action']) {
+                                $ids = $_POST['group_users'];
+                                $result = MedmaGroupModel::removeRelatedUsers($group->id, $ids);
+                                if ($result) {
+                                    $notices[] = array('class' => 'success', 'message' => 'The users has been successfully deleted.');
+                                } else {
+                                    $notices[] = array('class' => 'error', 'message' => 'Error! Can\'t delete users.');
+                                }
+                            } else if ('giveRights' == $_POST['bulk_action']) {
+                                $ids = $_POST['group_users'];
+                                $result = MedmaGroupModel::updateAdminRights($group->id, $ids, 1);
+                                if ($result) {
+                                    $notices[] = array('class' => 'success', 'message' => 'Success');
+                                } else {
+                                    $notices[] = array('class' => 'error', 'message' => 'Error');
+                                }
+                            } else if ('disableRights' == $_POST['bulk_action']) {
+                                $ids = $_POST['group_users'];
+                                $result = MedmaGroupModel::updateAdminRights($group->id, $ids, 0);
+                                if ($result) {
+                                    $notices[] = array('class' => 'success', 'message' => 'Success');
+                                } else {
+                                    $notices[] = array('class' => 'error', 'message' => 'Error');
+                                }
                             }
                         }
-                    } else {
-                        foreach($errors as $error) {
-                            $notices[] = array('class' => 'error', 'message' => $error);
-                        }
-                    }
-                } else if (is_null($group)) {
-                    $group = MedmaGroupModel::touch();
-                    $group->code = MedmaGroupModel::generateCode();
-                }
 
-                $view = 'form_view';
-                $viewData = array(
-                    'group' => $group,
-                    'errors' => $errors,
-                );
-                break;
-            case 'view' :
-                $group = null;
-                if (isset($_GET['group_id'])) {
+                        $list = MedmaGroupModel::getRelatedUsers($group->id);
+                    }
+                    if ($subview == 'themes') {
+                        if (isset($_POST['new_group_theme']) && 0 < $_POST['new_group_theme']) {
+                            if (MedmaGroupModel::addRelatedTheme($group->id, $_POST['new_group_theme'])) {
+                                $notices[] = array('class' => 'success', 'message' => 'New theme has been successfully append to group.');
+                            } else {
+                                $notices[] = array('class' => 'error', 'message' => 'Error! Can\'t append theme to group.');
+                            }
+                        } else if (isset($_POST['bulk_action'])) {
+                            if ('delete' == $_POST['bulk_action']) {
+                                $ids = $_POST['group_themes'];
+                                $result = MedmaGroupModel::removeRelatedThemes($group->id, $ids);
+                                if ($result) {
+                                    $notices[] = array('class' => 'success', 'message' => 'The themes has been successfully deleted.');
+                                } else {
+                                    $notices[] = array('class' => 'error', 'message' => 'Error! Can\'t delete themes.');
+                                }
+                            }
+                        }
+                        $list = MedmaGroupModel::getRelatedThemes($group->id);
+                    }
+
                     $view = 'view';
-                    $group = MedmaGroupModel::findOne('id = %d', array($_GET['group_id']));
-                    if (false === $group) {
-                        $group = null;
-                    } else {
-                        $subview = (isset($_GET['subview']) && 'themes' == $_GET['subview']) ? 'themes' : 'users';
-                        $list = array();
-                        if ($subview == 'users') {
-                            if (isset($_POST['new_group_user']) && 0 < $_POST['new_group_user']) {
-                                if (MedmaGroupModel::addRelatedUser($group->id, $_POST['new_group_user'])) {
-                                    $notices[] = array('class' => 'success', 'message' => 'New user has been successfully append to group.');
-                                } else {
-                                    $notices[] = array('class' => 'error', 'message' => 'Error! Can\'t append user to group.');
-                                }
-                            } else if (isset($_POST['bulk_action'])) {
-                                if ('delete' == $_POST['bulk_action']) {
-                                    $ids = $_POST['group_users'];
-                                    $result = MedmaGroupModel::removeRelatedUsers($group->id, $ids);
-                                    if ($result) {
-                                        $notices[] = array('class' => 'success', 'message' => 'The users has been successfully deleted.');
-                                    } else {
-                                        $notices[] = array('class' => 'error', 'message' => 'Error! Can\'t delete users.');
-                                    }
-                                } else if ('giveRights' == $_POST['bulk_action']) {
-                                    $ids = $_POST['group_users'];
-                                    $result = MedmaGroupModel::updateAdminRights($group->id, $ids, 1);
-                                    if ($result) {
-                                        $notices[] = array('class' => 'success', 'message' => 'Success');
-                                    } else {
-                                        $notices[] = array('class' => 'error', 'message' => 'Error');
-                                    }
-                                } else if ('disableRights' == $_POST['bulk_action']) {
-                                    $ids = $_POST['group_users'];
-                                    $result = MedmaGroupModel::updateAdminRights($group->id, $ids, 0);
-                                    if ($result) {
-                                        $notices[] = array('class' => 'success', 'message' => 'Success');
-                                    } else {
-                                        $notices[] = array('class' => 'error', 'message' => 'Error');
-                                    }
-                                }
-                            }
-
-                            $list = MedmaGroupModel::getRelatedUsers($group->id);
-                        }
-                        if ($subview == 'themes') {
-                            if (isset($_POST['new_group_theme']) && 0 < $_POST['new_group_theme']) {
-                                if (MedmaGroupModel::addRelatedTheme($group->id, $_POST['new_group_theme'])) {
-                                    $notices[] = array('class' => 'success', 'message' => 'New theme has been successfully append to group.');
-                                } else {
-                                    $notices[] = array('class' => 'error', 'message' => 'Error! Can\'t append theme to group.');
-                                }
-                            } else if (isset($_POST['bulk_action'])) {
-                                if ('delete' == $_POST['bulk_action']) {
-                                    $ids = $_POST['group_themes'];
-                                    $result = MedmaGroupModel::removeRelatedThemes($group->id, $ids);
-                                    if ($result) {
-                                        $notices[] = array('class' => 'success', 'message' => 'The themes has been successfully deleted.');
-                                    } else {
-                                        $notices[] = array('class' => 'error', 'message' => 'Error! Can\'t delete themes.');
-                                    }
-                                }
-                            }
-                            $list = MedmaGroupModel::getRelatedThemes($group->id);
-                        }
-
-                        $view = 'view';
-                        $viewData = array(
-                            'group' => $group,
-                            'subview' => $subview,
-                            'list' => $list,
-                        );
-                    }
+                    $viewData = array(
+                        'group' => $group,
+                        'subview' => $subview,
+                        'list' => $list,
+                    );
                 }
-                if (empty($group)) {
-                    $group = MedmaGroupModel::touch();
-                    $group->code = MedmaGroupModel::generateCode();
-                    $notices[] = array('class' => 'error', 'message' => 'Error! Unknown group.');
-                    $viewData['groups'] = MedmaGroupModel::findAll();
-                }
-                break;
-            default:
-                $notices[] = array('class' => 'error', 'message' => 'Error! Unknown action.');
+            }
+            if (empty($group)) {
+                $group = MedmaGroupModel::touch();
+                $group->code = MedmaGroupModel::generateCode();
+                $notices[] = array('class' => 'error', 'message' => 'Error! Unknown group.');
                 $viewData['groups'] = MedmaGroupModel::findAll();
-        }
-    } else {
-        // default action - list
-        $viewData['groups'] = MedmaGroupModel::findAll();
+            }
+            break;
+        case 'list':
+            if (isset($_POST['bulk_action'])) {
+                switch ($_POST['bulk_action']) {
+                    case 'delete':
+                        if (isset($_POST['groups']) && is_array($_POST['$groups'])) {
+                            if (MedmaGroupModel::deleteAll($_POST['$groups'])) {
+                                $notices[] = array('class' => 'success', 'message' => 'The groups has been successfully removed.');
+                            }
+                        }
+                        break;
+                    case 'update_code':
+                        if (isset($_POST['groups']) && is_array($_POST['groups'])) {
+                            foreach($_POST['groups'] as $seed => $group_id) {
+                                MedmaGroupModel::update(array(
+                                    'code' => MedmaGroupModel::generateCode($seed),
+                                ), ' id = '.(int)$group_id);
+                            }
+                            $notices[] = array('class' => 'success', 'message' => 'The group codes has been successfully updated.');
+                        }
+                        break;
+                    default:
+                        $notices[] = array('class' => 'error', 'message' => 'Error! Unknown action.');
+                }
+            }
+            $viewData['groups'] = MedmaGroupModel::findAll();
+            break;
+        case 'remove':
+            if (isset($_GET['group_id'])) {
+                if (MedmaGroupModel::deleteAll(array((int)$_GET['group_id']))) {
+                    $notices[] = array('class' => 'success', 'message' => 'The group has been successfully removed.');
+                }
+            }
+            $viewData['groups'] = MedmaGroupModel::findAll();
+            break;
+        default:
+            $notices[] = array('class' => 'error', 'message' => 'Error! Unknown action.');
+            $viewData['groups'] = MedmaGroupModel::findAll();
     }
+
     // view
     ?>
     <div class="wrap">

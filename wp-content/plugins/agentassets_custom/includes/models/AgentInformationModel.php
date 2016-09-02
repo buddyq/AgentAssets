@@ -4,6 +4,18 @@ require_once "SiteSettingsModel.php";
 
 /**
  * Class AgentInformationModel
+ *
+ * @property string agent_name
+ * @property string designations
+ * @property string business_phone
+ * @property string mobile_phone
+ * @property int profile_picture
+ * @property string broker_name
+ * @property string broker_website
+ * @property int broker_logo
+ * @property string facebook
+ * @property string twitter
+ * @property string google_plus
  */
 class AgentInformationModel extends SiteSettingsModel {
     const OPTION_PREFIX = 'agentassets_agentinformation_';

@@ -1,5 +1,17 @@
 <?php
 
+/**
+ * Class ContactInfoModel
+ *
+ * @property int contact_image
+ * @property string contact_form_shortcode
+ * @property string google_map_address
+ * @property string google_map_bubble_marker_address
+ * @property string google_map_bubble_marker_city_state
+ * @property string google_map_bubble_marker_price
+ * @property string google_map_bubble_marker_agentname
+ */
+
 class ContactInfoModel extends SiteSettingsModel {
     const OPTION_PREFIX = 'agentassets_contactinfo_';
 

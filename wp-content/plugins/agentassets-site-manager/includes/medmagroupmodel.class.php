@@ -85,6 +85,16 @@ class MedmaGroupModel {
         return $group;
     }
 
+    public static function deleteAll($group_ids) {
+        global $wpdb;
+        $wpdb->query('DELETE FROM `'.$wpdb->base_prefix. 'medma_group_user`'
+            .' WHERE group_id IN ('.implode(', ', $group_ids). ')');
+        $wpdb->query('DELETE FROM `'.$wpdb->base_prefix. 'medma_group_theme`'
+            .' WHERE group_id IN ('.implode(', ', $group_ids). ')');
+        return $wpdb->query('DELETE FROM '.self::tableName()
+            .' WHERE id IN ('.implode(', ', $group_ids). ')');
+    }
+
     public static function getRelatedUsers($group_id) {
         $list = array();
 
@@ -180,8 +190,8 @@ class MedmaGroupModel {
         return $admin_groups;
     }
 
-    public static function generateCode() {
-        $code = md5(time());
+    public static function generateCode($seed = 0) {
+        $code = md5(time() - ($seed * 5));
         $code[4] = '-';
         $code[9] = '-';
 

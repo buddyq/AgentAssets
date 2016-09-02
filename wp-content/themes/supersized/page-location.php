@@ -6,9 +6,7 @@ get_header();
 	
 </div>
 <div class="content col-sm-12">
-    <?php
-        echo do_shortcode( '[custom_map]' );
-    ?>
+    <?php the_content(); ?>
 </div>
 
 <?php get_footer(); ?>

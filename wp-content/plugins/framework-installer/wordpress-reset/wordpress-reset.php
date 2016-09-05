@@ -9,7 +9,7 @@ if ( is_admin() ) :
 
 class WordPressReset {
 	// Action/Filter Hooks
-	function WordPressReset() {
+	function _construct() {
 		add_action( 'admin_menu', array( &$this, 'add_page' ) );
 		add_action( 'admin_init', array( &$this, 'admin_init' ) );
 		add_filter( 'favorite_actions', array( &$this, 'favorites' ), 100 );

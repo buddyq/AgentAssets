@@ -53,7 +53,7 @@ DDLayout.Dialogs.Prototype.prototype.init_buttons = function ($editWindow, mode,
     var $save_button,
         $save_and_close_button,
         $cancel = jQuery('.js-edit-dialog-close')
-        , has_settings = cellSettings.hasSettings === false ? false : true;
+        , has_settings = cellSettings && cellSettings.hasSettings === false ? false : true;
 
     $cancel.css('float', 'left');
 
@@ -179,7 +179,7 @@ DDLayout.Dialogs.Prototype.prototype.is_new_cell = function () {
 DDLayout.Dialogs.Prototype.setUpAdditionalClassInput = function( $input ){
 
         var $el = typeof $input !== 'undefined' ? $input : jQuery('.js-select2-tokenizer'),
-            classes = DDLayout_settings && DDLayout_settings.DDL_JS && DDLayout_settings.DDL_JS.layouts_css_properties ? DDLayout_settings.DDL_JS.layouts_css_properties.additionalCssClasses : [];
+            classes = typeof DDLayout_settings !== 'undefined' && DDLayout_settings.DDL_JS && DDLayout_settings.DDL_JS.layouts_css_properties ? DDLayout_settings.DDL_JS.layouts_css_properties.additionalCssClasses : [];
 
         if( $el.length ){
             return $el.select2({
@@ -191,6 +191,10 @@ DDLayout.Dialogs.Prototype.setUpAdditionalClassInput = function( $input ){
         }
 
     return null;
+};
+
+DDLayout.Dialogs.Prototype.prototype.get_dialog_selector = function(){
+        return jQuery('#cboxLoadedContent div.ddl-dialog:first-child');
 };
 
 // a wrapper for all generics for Layouts dialogs
@@ -402,6 +406,9 @@ DDLayout.Dialogs.DDL_Dialog = function($){
             var append_message = _.once( self.add_error_message_wrap_to_dialog_footer );
             append_message();
             self.set_cell_model();
+            
+            jQuery(".loader-overlay").hide();
+            
         });
 
         jQuery(document).on('cbox_cleanup', function() {
@@ -418,6 +425,8 @@ DDLayout.Dialogs.DDL_Dialog = function($){
 
             self.disable_enable_editing_elements_in_css_tab(false);
             jQuery('#js-row-edit-mode').show();
+            
+            jQuery(".loader-overlay").hide();
 
         });
 
@@ -435,6 +444,8 @@ DDLayout.Dialogs.DDL_Dialog = function($){
             jQuery('#ddl-default-edit').data('cell_view', undefined);
             jQuery('#ddl-container-edit').data('container_view', undefined);
             jQuery('#ddl-theme-section-row-edit').data('row_view',  undefined);
+            
+            jQuery(".loader-overlay").hide();
         });
 
 

@@ -1,4 +1,5 @@
 <?php
+/** {ENCRYPTION PATCH HERE} **/
 final class Access_Admin_Edit
 {
 /*
@@ -56,7 +57,25 @@ public static function wpcf_access_admin_edit_access( $enabled = true ) {
 			$section_classname[] = 'nav-tab-active';
 		}
 		$section_classname[] = 'js-wpcf-access-shortcuts js-otg-access-nav-tab';
-		$output .= '<a href="' . admin_url( 'admin.php?page=types_access&tab=' . $tab_section ) . '" data-target="' . esc_attr( $tab_section ) . '" class="' .  implode( ' ', $section_classname ) . '">' . esc_html( $tab_title ) . '</a>';
+		$title = '';
+		if ( $tab_section == 'post-type' ){
+			$title = __( 'Manage access control to posts, pages and custom post types', 'wpcf-access' );
+		}elseif ( $tab_section == 'types-fields' ){
+			$title = __( 'Control who can view and edit custom fields  ', 'wpcf-access' );
+		}elseif ( $tab_section == 'cred-forms' ){
+			$title = __( 'Choose who can use CRED forms on the front-end ', 'wpcf-access' );
+		}elseif ( $tab_section == 'taxonomy' ){
+			$title = __( 'Manage access control to tags, categories and custom taxonomies ', 'wpcf-access' );
+		}elseif ( $tab_section == 'custom-group' ){
+			$title = __( 'Manage read access to front-end pages ', 'wpcf-access' );
+		}elseif ( $tab_section == 'wpml-group' ){
+			$title = __( 'Set up access control to content according to language ', 'wpcf-access' );
+		}elseif ( $tab_section == 'custom-roles' ){
+			$title = __( 'Define custom user roles and set up their access to admin functions ', 'wpcf-access' );
+		}
+
+
+		$output .= '<a title="'.$title.'" href="' . admin_url( 'admin.php?page=types_access&tab=' . $tab_section ) . '" data-target="' . esc_attr( $tab_section ) . '" class="' .  implode( ' ', $section_classname ) . '">' . esc_html( $tab_title ) . '</a>';
 	}
 	$output .= '</p>';
 	
@@ -122,7 +141,7 @@ public static function otg_access_get_permission_table_for_posts() {
 	$roles					= Access_Helper::wpcf_get_editable_roles();
 	$post_types_available	= $model->getPostTypes();
 	$post_types_available 	= Access_Helper::wpcf_object_to_array( $post_types_available );
-	
+	$section_statuses = self::get_section_statuses();
 	$container_class = 'is-enabled';
 	$enabled = true;
 	
@@ -174,13 +193,15 @@ public static function otg_access_get_permission_table_for_posts() {
 			$post_types_available = $clone + $post_types_available;
 		}
 	}
-	
-	$output .= '<p class="otg-access-settings-section-description">' . __( 'Post Types not Managed by Access will inherit the same access rights as the standard WordPress Post', 'wpcf-access' ) . '</p>';
+	$output .= '<p class="toolset-access-tab-info">
+		'. __('Expand each of these post types to set their access control. Select the \'Managed by Access\' checkbox to customize the access rules. ', 'wpcf-access') .'<br>
+		<a href="https://wp-types.com/documentation/user-guides/setting-access-control/?utm_source=access&utm_medium=admin-tabs&utm_term=Access%20Control%20for%20Post%20types&utm_campaign=access" title="'. __('Access Control for Standard and Custom Content Types', 'wpcf-access') .'" target="_blank">'. __('Access Control for Standard and Custom Content Types', 'wpcf-access') .'</a>
+	</p>';
+	//$output .= '<p class="otg-access-settings-section-description">' . __( 'Post Types not Managed by Access will inherit the same access rights as the standard WordPress Post', 'wpcf-access' ) . '</p>';
 	
 	if ( ! empty( $post_types_available ) ) {
 		$permission_array = Access_Helper::wpcf_access_types_caps_predefined();
-		$permissions_array_default = $permission_array;
-		
+
 		$post_types_with_custom_group = Access_Helper::otg_access_get_post_types_with_custom_groups();
 		
 		foreach ( $post_types_available as $type_slug => $type_data ) {
@@ -202,15 +223,20 @@ public static function otg_access_get_permission_table_for_posts() {
 			if ( ! $is_managed ) {
 				$container_class = 'otg-access-settings-section-item-not-managed';
 			}
+			$is_section_opened = false;
+			if ( isset($section_statuses[$type_slug]) && $section_statuses[$type_slug] == 1 ){
+				$is_section_opened = true;
+			}
 
 			$output .= '<div class="otg-access-settings-section-item js-otg-access-settings-section-item wpcf-access-type-item '. $container_class .' wpcf-access-post-type-name-' . $type_slug . ' js-wpcf-access-type-item">';
 			$output .= '<h4 class="otg-access-settings-section-item-toggle js-otg-access-settings-section-item-toggle" data-target="' . esc_attr( $type_slug ) . '">' 
 				. $type_data['labels']['name'] 
-				. '<span class="otg-access-settings-section-item-managed js-otg-access-settings-section-item-managed">'
+				. '<span class="otg-access-settings-section-item-managed js-otg-access-settings-section-item-managed" style="display:'. ( !$is_section_opened?'block':'none') .'">'
 				. ( $is_managed ? __( '(Managed by Access)', 'wpcf-access' ) : __( '(Not managed by Access)', 'wpcf-access' ) )
 				. '</span>'
 				. '</h4>';
-			$output .= '<div class="otg-access-settings-section-item-content js-otg-access-settings-section-item-content wpcf-access-mode js-otg-access-settings-section-item-toggle-target-' . esc_attr( $type_slug ) . '" style="display:none">';
+			$output .= '<div class="otg-access-settings-section-item-content js-otg-access-settings-section-item-content wpcf-access-mode js-otg-access-settings-section-item-toggle-target-' . esc_attr( $type_slug ) . '" 
+				style="display:'. ( !$is_section_opened?'none':'block') .'">';
 			
 			if ( $type_slug == 'attachment' ) {
 				$output .= '<p class="otg-access-settings-section-description">' .
@@ -229,6 +255,12 @@ public static function otg_access_get_permission_table_for_posts() {
 			$output .= '' . __('Managed by Access', 'wpcf-access') . '</label>
 					</p>';
 
+			if ( $type_slug != 'post' && $type_slug != 'page' ){
+				$output .= '<p class="otg-access-settings-section-description js-otg-access-settings-section-is-mamanged"'. (!$is_managed ? '' : 'style="display:none;"') .'>'
+				. sprintf( __( 'Since %s are not managed by Access plugin, %s will have the same access rules as blog posts.', 'wpcf-access' ), $type_data['label'], $type_data['label']) . '</p>';
+			}
+
+
 			$permissions = ! empty( $type_data['_wpcf_access_capabilities']['permissions'] ) ? $type_data['_wpcf_access_capabilities']['permissions'] : array();
 
 			$output .= self::wpcf_access_permissions_table(
@@ -242,21 +274,21 @@ public static function otg_access_get_permission_table_for_posts() {
 						$post_types_settings, 
 						$type_data
 					);
-
-			$output .= '<p class="wpcf-access-buttons-wrap">';
-				$output .= self::wpcf_access_reset_button( $type_slug, 'type', $enabled, $is_managed );
-				$output .= self::wpcf_access_submit_button( $enabled, $is_managed, $type_data['labels']['name'] );
-			$output .= '</p>';
-			
 			if ( in_array( $type_slug, $post_types_with_custom_group ) ) {
 				$message = sprintf(
 					__( 'Some %1$s may have different read settings because they belong to a Custom Group. %2$sEdit Custom Groups%3$s', 'wpcf-access' ),
-						$type_data['labels']['name'], 
+						$type_data['labels']['name'],
 						'<a class="js-otg-access-manual-tab" data-target="custom-group" href="' . admin_url( 'admin.php?page=types_access&tab=custom-group' ) . '">',
 						'</a>'
 				);
-				$output .= '<div class="toolset-alert toolset-alert-info js-toolset-alert">' . $message . '</div>';
+				$output .= '<div class="toolset-alert toolset-alert-info js-toolset-alert toolset-access-post-groups-info">' . $message . '</div>';
 			}
+			$output .= '<p class="wpcf-access-buttons-wrap">';
+
+				$output .= self::wpcf_access_submit_button( $enabled, $is_managed, $type_data['labels']['name'] );
+			$output .= '</p>';
+			
+
 			
 			$output .= '</div><!-- wpcf-access-mode -->';
 			$output .= '</div><!-- wpcf-access-type-item -->';
@@ -286,7 +318,7 @@ public static function otg_access_get_permission_table_for_taxonomies() {
 	$taxonomies_settings	= $model->getAccessTaxonomies();
 	$taxonomies_available	= $model->getTaxonomies();
 	$taxonomies_available	= Access_Helper::wpcf_object_to_array( $taxonomies_available );
-	
+	$section_statuses = self::get_section_statuses();
 	
 	$container_class = 'is-enabled';
 	$enabled = true;
@@ -396,7 +428,10 @@ public static function otg_access_get_permission_table_for_taxonomies() {
 	}
 	
 	$custom_data = Access_Helper::wpcf_access_tax_caps();
-
+	$output .= '<p class="toolset-access-tab-info">
+		'. __('Expand each of these taxonomies to set their access control. Select the \'Managed by Access\' checkbox to customize the access rules. ', 'wpcf-access') .'<br>
+		<a href="https://wp-types.com/documentation/user-guides/setting-access-control/?utm_source=access&utm_medium=admin-tabs&utm_term=Access%20Control%20for%20Taxonomies&utm_campaign=access" title="'. __('Access Control for Taxonomy ', 'wpcf-access') .'" target="_blank">'. __('Access Control for Taxonomy', 'wpcf-access') .'</a>
+	</p>';
 	if ( ! empty( $taxonomies_available ) ) {
 		foreach ( $taxonomies_available as $tax_slug => $tax_data ) {
 			$mode = 'not_managed';
@@ -419,7 +454,7 @@ public static function otg_access_get_permission_table_for_taxonomies() {
 			
 			if ( isset( $tax_data['_wpcf_access_capabilities']['permissions'] ) ) {
 				foreach ( $tax_data['_wpcf_access_capabilities']['permissions'] as $cap_slug => $cap_data ) {
-					$custom_data[$cap_slug]['role'] = $cap_data['role'];
+					$custom_data[$cap_slug]['roles'] = $cap_data['roles'];
 					$custom_data[$cap_slug]['users'] = isset( $cap_data['users'] ) ? $cap_data['users'] : array();
 				}
 			}
@@ -429,16 +464,20 @@ public static function otg_access_get_permission_table_for_taxonomies() {
 			if ( ! $is_managed ) {
 				$container_class = 'otg-access-settings-section-item-not-managed';
 			}
+			$is_section_opened = false;
+			if ( isset($section_statuses[$tax_slug]) && $section_statuses[$tax_slug] == 1 ){
+				$is_section_opened = true;
+			}
 
 			$output .= '<div class="otg-access-settings-section-item js-otg-access-settings-section-item wpcf-access-type-item js-wpcf-access-type-item ' . $container_class . '">';
-			$output .= '<h4 class="otg-access-settings-section-item-toggle js-otg-access-settings-section-item-toggle" data-target="' . esc_attr( $tax_slug ) .'">' 
+			$output .= '<h4 class="otg-access-settings-section-item-toggle js-otg-access-settings-section-item-toggle" data-target="' . esc_attr( $tax_slug ) .'">'
 				. $tax_data['labels']['name'] 
-				. '<span class="otg-access-settings-section-item-managed js-otg-access-settings-section-item-managed">'
+				. '<span class="otg-access-settings-section-item-managed js-otg-access-settings-section-item-managed" style="display:'. ( !$is_section_opened?'block':'none') .'">'
 				. ( $is_managed ? __( '(Managed by Access)', 'wpcf-access' ) : __( '(Not managed by Access)', 'wpcf-access' ) )
 				. '</span>'
 				. '</h4>';
 
-			$output .= '<div class="otg-access-settings-section-item-content js-otg-access-settings-section-item-content wpcf-access-mode js-otg-access-settings-section-item-toggle-target-' . esc_attr( $tax_slug ) . '" style="display:none">';
+			$output .= '<div class="otg-access-settings-section-item-content js-otg-access-settings-section-item-content wpcf-access-mode js-otg-access-settings-section-item-toggle-target-' . esc_attr( $tax_slug ) . '" style="display:'. ( !$is_section_opened?'none':'block') .'">';
 			
 			// Add warning if shared and settings are different
 			$disable_same_as_parent = false;
@@ -469,18 +508,20 @@ public static function otg_access_get_permission_table_for_taxonomies() {
 			$output .= '/>' . __('Managed by Access', 'wpcf-access') . '</label>';
 			$output .= '</p>';
 
-			// 'Same as parent' checkbox
-			$output .= '<p>';
-			$output .= '<label><input type="checkbox" class="follow js-wpcf-follow-parent" name="types_access[tax][' . $tax_slug . '][mode]" value="follow"';
-			if ( ! $enabled ) {
-				$output .= ' disabled="disabled" readonly="readonly" checked="checked"';
-			} else if ( $disable_same_as_parent ) {
-				$output .= ' disabled="disabled" readonly="readonly"';
-			} else {
-				$output .= $mode == 'follow' ? ' checked="checked"' : '';
+			if ( $tax_slug != 'category' ){
+				// 'Same as parent' checkbox
+				$output .= '<p>';
+				$output .= '<label><input type="checkbox" class="follow js-wpcf-follow-parent" name="types_access[tax][' . $tax_slug . '][mode]" value="follow"';
+				if ( ! $enabled ) {
+					$output .= ' disabled="disabled" readonly="readonly" checked="checked"';
+				} else if ( $disable_same_as_parent ) {
+					$output .= ' disabled="disabled" readonly="readonly"';
+				} else {
+					$output .= $mode == 'follow' ? ' checked="checked"' : '';
+				}
+				$output .= ' />' . __('Same as Category', 'wpcf-access') . '</label>';
+				$output .= '</p>';
 			}
-			$output .= ' />' . __('Same as Parent', 'wpcf-access') . '</label>';
-			$output .= '</p>';
 
 			$output .= '<div class="wpcf-access-mode-custom">';
 			$output .= self::wpcf_access_permissions_table(
@@ -491,12 +532,13 @@ public static function otg_access_get_permission_table_for_taxonomies() {
 				$tax_slug, 
 				$enabled,
 				$is_managed, 
-				$taxonomies_settings
+				$taxonomies_settings,
+				array(),
+				'tax'
 			);
 			$output .= '</div>	<!-- .wpcf-access-mode-custom -->';
 			
 			$output .= '<p class="wpcf-access-buttons-wrap">';
-			$output .= self::wpcf_access_reset_button( $tax_slug, 'tax', $enabled );
 			$output .= self::wpcf_access_submit_button( $enabled, $is_managed, $tax_data['labels']['name'] );
 			$output .= '</p>';
 			
@@ -521,7 +563,8 @@ public static function otg_access_get_permission_table_for_third_party( $current
 	$roles				= Access_Helper::wpcf_get_editable_roles();
 	$settings_access	= $model->getAccessTypes();
 	$third_party		= $model->getAccessThirdParty();
-	
+	$section_statuses = self::get_section_statuses();
+
 	$enabled = true;
 	$current_tab = esc_attr( $current_tab );
 	
@@ -530,10 +573,22 @@ public static function otg_access_get_permission_table_for_third_party( $current
 	} else {
 		$areas			= apply_filters( 'types-access-area-for-' . $current_tab, array() );
 	}
-	
+
 	$output .= '<div class="js-otg-access-settings-tab-section js-otg-access-settings-section-for-' . $current_tab . '" data-tab="' . $current_tab . '">';
 	$has_output = false;
-	
+
+	if ( $current_tab == 'types-fields' ){
+		$output .= '<p class="toolset-access-tab-info">
+			'. __('Expand each of these field groups to set their access control.', 'wpcf-access') .'<br>
+			<a href="https://wp-types.com/documentation/user-guides/access-control-for-user-fields/?utm_source=access&utm_medium=admin-tabs&utm_term=Access%20Control%20for%20Fields&utm_campaign=access" title="'. __('Access Control for Fields', 'wpcf-access') .'" target="_blank">'. __('Access Control for Fields', 'wpcf-access') .'</a>
+		</p>';
+	}
+	if ( $current_tab == 'cred-forms' ){
+		$output .= '<p class="toolset-access-tab-info">
+			'. __('Expand each of these groups of forms (for posts and for users) to set their access control on the front-end.', 'wpcf-access') .'<br>
+			<a href="https://wp-types.com/documentation/user-guides/access-control-for-cred-forms/?utm_source=access&utm_medium=admin-tabs&utm_term=Access%20Control%20for%20Cred&utm_campaign=access" title="'. __('Access Control for CRED Forms', 'wpcf-access') .'" target="_blank">'. __('Access Control for CRED Forms', 'wpcf-access') .'</a>
+		</p>';
+	}
 	foreach ( $areas as $area ) {
 		// Do not allow Types IDs for post types or taxonomies
 		if ( in_array( $area['id'], array( 'types', 'tax' ) ) )
@@ -548,14 +603,18 @@ public static function otg_access_get_permission_table_for_third_party( $current
 		) {
 			continue;
 		}
-		
+		$output .= '<h3>' . $area['name'] . '</h3>';
 		$has_output = true;
 		
 		foreach ( $groups as $group ) {
+			$is_section_opened = false;
+			if ( isset($section_statuses[$group['id']]) && $section_statuses[$group['id']] == 1 ){
+				$is_section_opened = true;
+			}
 
 			$output .= '<div class="otg-access-settings-section-item is-enabled js-otg-access-settings-section-item wpcf-access-type-item js-wpcf-access-type-item">';
 			$output .= '<h4 class="otg-access-settings-section-item-toggle js-otg-access-settings-section-item-toggle" data-target="' . esc_attr( $group['id'] ) .'">' . $group['name'] . '</h4>';
-			$output .= '<div class="otg-access-settings-section-item-content js-otg-access-settings-section-item-content wpcf-access-mode js-otg-access-settings-section-item-toggle-target-' . esc_attr( $group['id'] ) . '" style="display:none">';
+			$output .= '<div class="otg-access-settings-section-item-content js-otg-access-settings-section-item-content wpcf-access-mode js-otg-access-settings-section-item-toggle-target-' . esc_attr( $group['id'] ) . '" style="display:'. ( !$is_section_opened?'none':'block') .'">';
 
 			$caps = array();
 			$caps_filter = apply_filters( 'types-access-cap', array(), $area['id'], $group['id'] );
@@ -563,11 +622,21 @@ public static function otg_access_get_permission_table_for_third_party( $current
 			foreach ( $caps_filter as $cap_slug => $cap ) {
 				$caps[ $cap['cap_id'] ] = $cap;
 				if ( isset( $cap['default_role'] ) ) {
+					// @since 2.2, convert minimal role to minimal capability
+					if ( $cap['default_role'] == 'guest' ){
+						$cap['default_role'] = 'read';
+					}
+					elseif ( $cap['default_role'] == 'administrator' ){
+						$cap['default_role'] = 'delete_users';
+					}
+					else{
+						$cap['default_role'] = 'edit_posts';
+					}
 					$caps[ $cap['cap_id'] ]['role'] = $cap['role'] = $cap['default_role'];
 				}
 				$saved_data[ $cap['cap_id'] ] =
 						isset( $third_party[ $area['id'] ][ $group['id'] ]['permissions'][ $cap['cap_id'] ] ) ?
-						$third_party[ $area['id'] ][ $group['id'] ]['permissions'][ $cap['cap_id'] ] : array( 'role' => $cap['role'] );
+						$third_party[ $area['id'] ][ $group['id'] ]['permissions'][ $cap['cap_id'] ] : array( 'roles' => Access_Helper::toolset_access_get_roles_by_role($cap['default_role']) );
 			}
 			// Add registered via other hook
 			if ( ! empty( $wpcf_access->third_party[ $area['id'] ][ $group['id'] ]['permissions'] ) ) {
@@ -594,7 +663,10 @@ public static function otg_access_get_permission_table_for_third_party( $current
 					$area['id'], 
 					$group['id'],
 					true, 
-					$settings_access
+					$settings_access,
+					array(),
+					array(),
+					'third_party'
 				);
 			}
 
@@ -621,7 +693,7 @@ public static function otg_access_get_permission_table_for_third_party( $current
 
 public static function otg_access_get_permission_table_for_custom_groups() {
 	$output = '';
-	
+	$section_statuses = self::get_section_statuses();
 	$output .= '<div class="js-otg-access-settings-tab-section js-otg-access-settings-section-for-custom-group" data-tab="custom-group">';
 	
 	$model = TAccess_Loader::get('MODEL/Access');
@@ -650,11 +722,44 @@ public static function otg_access_get_permission_table_for_custom_groups() {
 			$group_div_id = str_replace('%','',$group_slug);
 			$group['id'] = $group_slug;
 			$group['name']= $group_data['title'];
-			
+			$is_section_opened = false;
+			if ( isset($section_statuses[$group_div_id]) && $section_statuses[$group_div_id] == 1 ){
+				$is_section_opened = true;
+			}
+
 			$group_output .= '<div id="js-box-' . $group_div_id . '" class="otg-access-settings-section-item is-enabled js-otg-access-settings-section-item wpcf-access-type-item js-wpcf-access-type-item wpcf-access-custom-group">';
 			$group_output .= '<h4 class="otg-access-settings-section-item-toggle js-otg-access-settings-section-item-toggle" data-target="' . esc_attr( $group_div_id ) .'">' . $group['name'] . '</h4>';
-			$group_output .= '<div class="otg-access-settings-section-item-content js-otg-access-settings-section-item-content wpcf-access-mode js-otg-access-settings-section-item-toggle-target-' . esc_attr( $group_div_id ) . '" style="display:none">';
-			
+			$group_output .= '<div class="otg-access-settings-section-item-content js-otg-access-settings-section-item-content wpcf-access-mode js-otg-access-settings-section-item-toggle-target-' . esc_attr( $group_div_id ) . '" style="display:'. ( !$is_section_opened?'none':'block') .'">';
+
+			$group_output .= '<div class="toolset-access-posts-group-info">
+				<div class="toolset-access-posts-group-assigned-posts-list">';
+			$_post_types = Access_Helper::wpcf_object_to_array( $model->getPostTypes() );
+			$post_types_array = array();
+		    foreach ( $_post_types  as $post_type ) {
+		        $post_types_array[] = $post_type['name'];
+            }
+            $args = array( 'post_type' => $post_types_array, 'posts_per_page' => 0, 'meta_key' => '_wpcf_access_group', 'meta_value' => $group['id']);
+			$the_query = new WP_Query( $args );
+			if ( $the_query->have_posts() ) {
+				$group_output .= '<strong>'. __('Posts in this Post Group', 'wpcf-access') .':</strong> ';
+				$posts_list = '';
+				$show_assigned_posts = 4;
+				while ( $the_query->have_posts() && $show_assigned_posts != 0  ) {
+					$the_query->the_post();
+					$posts_list .= get_the_title().', ';
+					$show_assigned_posts --;
+				}
+				$group_output .= substr($posts_list, 0, -2);
+				if ( $the_query->found_posts > 4 ){
+					$group_output .= sprintf( __( ' and %d more', 'wpcf-access' ), ($the_query->found_posts - 2));
+				}
+			}
+			$group_output .= '</div>
+				<div class="toolset-access-posts-group-moddify-button">
+					<input data-group="' . $group_slug . '" data-groupdiv="' . $group_div_id . '" type="button" value="' . __('Modify Group', 'wpcf-access') . '"  class="js-wpcf-modify-group button-secondary" />
+				</div>
+			</div>';
+
 			$caps = array();
 			$saved_data = array();
 
@@ -666,7 +771,7 @@ public static function otg_access_get_permission_table_for_custom_groups() {
 			$def = array(
 				'read' => array(
 					'title' => __('Read', 'wpcf-access'),
-					'role' => 'guest',
+					'role' => 'read',
 					'predefined' => 'read',
 					'cap_id' => 'group')
 				);
@@ -679,30 +784,35 @@ public static function otg_access_get_permission_table_for_custom_groups() {
 
 			$group_output .= '<p class="wpcf-access-buttons-wrap">';
 			$group_output .= '<span class="ajax-loading spinner"></span>';
-			$group_output .= '<input data-group="' . $group_slug . '" data-groupdiv="' . $group_div_id . '" type="button" value="' . __('Modify Group', 'wpcf-access') . '"  class="js-wpcf-modify-group button-secondary" /> ';
-			$group_output .= '<input data-group="' . $group_slug . '" data-target="custom-group" data-section="'. base64_encode('custom-group') .'" data-groupdiv="' . $group_div_id . '"  type="button" value="' . __('Remove Group', 'wpcf-access') . '"  class="js-wpcf-remove-group button-secondary" /> ';
 			$group_output .= self::wpcf_access_submit_button($enabled, true, $group['name']);
 			$group_output .= '</p>';
 			$group_output .= '<input type="hidden" name="groupvalue-' . $group_slug . '" value="' . $group_data['title'] .'">';
+			$group_output .= '<div class="toolset-access-post-group-remove-group">
+				<a href="#" data-group="' . $group_slug . '" data-target="custom-group" data-section="'. base64_encode('custom-group') .'" data-groupdiv="' . $group_div_id . '"  class="js-wpcf-remove-group"><i class="fa fa-trash"></i> ' . __('Remove Group', 'wpcf-access') . '</a></div>';
 			$group_output .= '</div>	<!-- .wpcf-access-mode  -->';
+
 			$group_output .= '</div>	<!-- .wpcf-access-custom-group -->';
+
 		}
 	}
-
+	$output .= '<p class="toolset-access-tab-info">
+		'. __('Create \'post groups\', which hold together content that will share the same front-end access control. Then, set the access control for each group', 'wpcf-access') .'<br>
+		<a href="https://wp-types.com/documentation/user-guides/limiting-read-access-specific-content/?utm_source=access&utm_medium=admin-tabs&utm_term=Access%20Control%20for%20Post%20groups&utm_campaign=access" title="'. __('Limiting read access to specific content', 'wpcf-access') .'" target="_blank">'. __('Limiting read access to specific content', 'wpcf-access') .'</a>
+	</p>';
 	if ( $group_count > 0 ){
-		$output .= '<p>'
-			. '<button data-label="' . esc_attr( __('Add Group','wpcf-access') ) . '" value="' . esc_attr( __('Add custom group', 'wpcf-access') ) .'" class="button button-large button-secondary wpcf-add-new-access-group js-wpcf-add-new-access-group">'
+		$output .= '<p class="toolset-access-align-right">'
+			. '<button data-label="' . esc_attr( __('Add Group','wpcf-access') ) . '" value="' . esc_attr( __('Add Post Group', 'wpcf-access') ) .'" class="button button-large button-secondary wpcf-add-new-access-group js-wpcf-add-new-access-group">'
 			. '<i class="icon-plus fa fa-plus"></i>'
-			. esc_html( __('Add custom group', 'wpcf-access') ) 
+			. esc_html( __('Add Post Group', 'wpcf-access') )
 			. '</button>'
 			. '</p>';
 		$output .= $group_output;
 	} else {
-		  $output .= '<div class="otg-access-no-custom-groups js-otg-access-no-custom-groups"><p>'. __('No custom groups found.', 'wpcf-access') .'</p><p>'
+		  $output .= '<div class="otg-access-no-custom-groups js-otg-access-no-custom-groups"><p>'. __('No Post Groups found.', 'wpcf-access') .'</p><p>'
 			.'<a href="" data-label="'.__('Add Group','wpcf-access').'"
 			class="button button-secondary js-wpcf-add-new-access-group">'
 			. '<i class="icon-plus fa fa-plus"></i>'
-			. __('Create your first custom group', 'wpcf-access') .'</a></p></div>';
+			. __('Add your first Post Group', 'wpcf-access') .'</a></p></div>';
 	}
 	
 	$output .= '</div>';
@@ -714,11 +824,17 @@ public static function otg_access_get_permission_table_for_wpml() {
 	$output = '';
 	
 	$output .= '<div class="js-otg-access-settings-tab-section js-otg-access-settings-section-for-wpml-group" data-tab="wpml-group">';
-	
+
 	$model = TAccess_Loader::get('MODEL/Access');
 	if ( apply_filters( 'otg_access_filter_is_wpml_installed', false ) ) {
+		$section_statuses = self::get_section_statuses();
 		$group_count = 0;
-		$group_output = '<p><button " style="background-image: url('.ICL_PLUGIN_URL . '/res/img/icon.png'.')" class="button button-large button-secondary wpcf-add-new-access-group wpcf-add-new-wpml-group js-wpcf-add-new-wpml-group js-wpcf-add-new-wpml-group-placeholder">'
+		$group_output = '<p class="toolset-access-tab-info">
+		'. __('Create \'permission per language\', where you select the post types and languages that you want to control. Then, choose who can access it.', 'wpcf-access') .'<br>
+		<a href="https://wpml.org/documentation/translating-your-contents/how-to-use-access-plugin-to-create-editors-for-specific-language/?utm_source=access&utm_medium=admin-tabs&utm_term=Access%20Control%20for%20WPML%20groups&utm_campaign=access" title="'. __('Creating Editors for Specific Language', 'wpcf-access') .'" target="_blank">'. __('Creating Editors for Specific Language', 'wpcf-access') .'</a>
+		</p>';
+		$group_output .= '<p class="toolset-access-align-right">
+				<button " style="background-image: url('.ICL_PLUGIN_URL . '/res/img/icon.png'.')" class="button button-large button-secondary wpcf-add-new-access-group wpcf-add-new-wpml-group js-wpcf-add-new-wpml-group js-wpcf-add-new-wpml-group-placeholder">'
 			. __('Create permission for languages', 'wpcf-access') .'</button></p>';
 		//WPML groups
 		$settings_access = $model->getAccessTypes();
@@ -761,18 +877,27 @@ public static function otg_access_get_permission_table_for_wpml() {
 				}
 
 				if ( count( $languages ) == 0 ) {
-					self::otg_access_remove_wrong_wpml_group( $group_slug );
-					continue;
+					//self::otg_access_remove_wrong_wpml_group( $group_slug );
+					//continue;
 				}
 
 				$group_div_id = str_replace('%','',$group_slug);
 				$group['id'] = $group_slug;
 				$group['name']= $group_data['title'];
-					
+				$is_section_opened = false;
+				if ( isset($section_statuses[$group_div_id]) && $section_statuses[$group_div_id] == 1 ){
+					$is_section_opened = true;
+				}
+
 				$group_output .= '<div id="js-box-' . $group_div_id . '" class="otg-access-settings-section-item is-enabled js-otg-access-settings-section-item wpcf-access-type-item js-wpcf-access-type-item wpcf-access-custom-group">';
 				$group_output .= '<h4 class="otg-access-settings-section-item-toggle js-otg-access-settings-section-item-toggle" data-target="' . esc_attr( $group_div_id ) .'">' . $group['name'] . '</h4>';
-				$group_output .= '<div class="otg-access-settings-section-item-content js-otg-access-settings-section-item-content wpcf-access-mode js-otg-access-settings-section-item-toggle-target-' . esc_attr( $group_div_id ) . '" style="display:none">';
-							
+				$group_output .= '<div class="otg-access-settings-section-item-content js-otg-access-settings-section-item-content wpcf-access-mode js-otg-access-settings-section-item-toggle-target-' . esc_attr( $group_div_id ) . '" style="display:'. ( !$is_section_opened?'none':'block') .'">';
+
+				$group_output .= '<div class="toolset-access-posts-group-info">					
+					<div class="toolset-access-posts-group-moddify-button">
+						<input data-group="' . $group_slug . '" data-groupdiv="' . $group_div_id . '" type="button" value="' . __('Modify WPML Group', 'wpcf-access') . '"  class="js-wpcf-add-new-wpml-group button-secondary" />
+					</div>
+				</div>';
 				$caps = array();
 				$saved_data = array();
 
@@ -783,43 +908,44 @@ public static function otg_access_get_permission_table_for_wpml() {
 						'delete_own'	=> $group_data['permissions']['delete_own'],
 						'edit_any'		=> $group_data['permissions']['edit_any'],
 						'delete_any'	=> $group_data['permissions']['delete_any'],
+						'publish'	=> $group_data['permissions']['publish'],
 					 );
 				}
 
 				$def = array(
 					'read' => array(
 						'title'			=> __('Read', 'wpcf-access'),
-						'role'			=> $group_data['permissions']['read']['role'],
+						'role'			=> 'edit_posts',
 						'predefined'	=> 'read',
 						'cap_id'		=> 'group'
 					),
 					'edit_own' => array(
 						'title'			=> __('Edit and translate own', 'wpcf-access'),
-						'role'			=> $group_data['permissions']['edit_own']['role'],
+						'role'			=> 'edit_posts',
 						'predefined'	=> 'edit_own',
 						'cap_id'		=> 'group'
 					),
 					'delete_own' => array(
 						'title'			=> __('Delete own', 'wpcf-access'),
-						'role'			=> $group_data['permissions']['delete_own']['role'],
+						'role'			=> 'edit_posts',
 						'predefined'	=> 'delete_own',
 						'cap_id'		=> 'group'
 					),
 					'edit_any' => array(
 						'title'			=> __('Edit and translate any', 'wpcf-access'),
-						'role'			=> $group_data['permissions']['edit_any']['role'],
+						'role'			=> 'edit_posts',
 						'predefined'	=> 'edit_any',
 						'cap_id'		=> 'group'
 					),
 					'delete_any' => array(
 						'title'			=> __('Delete any', 'wpcf-access'),
-						'role'			=> $group_data['permissions']['delete_any']['role'],
+						'role'			=> 'edit_posts',
 						'predefined'	=> 'delete_any',
 						'cap_id'		=> 'group'
 					),
 					'publish' => array(
 						'title'			=> __('Publish', 'wpcf-access'),
-						'role'			=> $group_data['permissions']['publish']['role'],
+						'role'			=> 'edit_posts',
 						'predefined'	=> 'publish',
 						'cap_id'		=> 'group'
 					)
@@ -838,10 +964,10 @@ public static function otg_access_get_permission_table_for_wpml() {
 
 				$group_output .= '<p class="wpcf-access-buttons-wrap">';
 				$group_output .= '<span class="ajax-loading spinner"></span>';
-				$group_output .= '<input data-group="' . $group_slug . '" data-groupdiv="' . $group_div_id . '" type="button" value="' . __('Modify languages', 'wpcf-access') . '"  class="js-wpcf-add-new-wpml-group button-secondary" /> ';
-				$group_output .= '<input data-group="' . $group_slug . '" data-target="wpml-group" data-section="'. base64_encode('wpml-group') .'" data-groupdiv="' . $group_div_id . '"  type="button" value="' . __('Remove language permission', 'wpcf-access') . '"  class="js-wpcf-remove-group button-secondary" /> ';
 				$group_output .= self::wpcf_access_submit_button($enabled, true, '');
 				$group_output .= '</p>';
+				$group_output .= '<div class="toolset-access-post-group-remove-group">
+				<a href="#" data-group="' . $group_slug . '" data-target="wpml-group" data-section="'. base64_encode('wpml-group') .'" data-groupdiv="' . $group_div_id . '"  class="js-wpcf-remove-group"><i class="fa fa-trash"></i> ' . __('Remove Group', 'wpcf-access') . '</a></div>';
 				$group_output .= '</div>	<!-- .wpcf-access-mode  -->';
 				$group_output .= '</div>	<!-- .wpcf-access-wpml-group -->';
 			}
@@ -849,7 +975,10 @@ public static function otg_access_get_permission_table_for_wpml() {
 		if ( $group_count > 0 ) {
 			$output .= $group_output;
 		} else {
-			  $output .= '<div class="otg-access-no-custom-groups js-otg-access-no-custom-groups"><p>'. __('No permission for languages found.', 'wpcf-access')
+			  $output .= '<div class="otg-access-no-custom-groups js-otg-access-no-custom-groups"><p class="toolset-access-tab-info">
+				'. __('Create \'permission per language\', where you select the post types and languages that you want to control. Then, choose who can access it.', 'wpcf-access') .'<br>
+				<a href="https://wpml.org/documentation/translating-your-contents/how-to-use-access-plugin-to-create-editors-for-specific-language/?utm_source=access&utm_medium=admin-tabs&utm_term=Access%20Control%20for%20WPML%20group&utm_campaign=access" title="'. __('Creating Editors for Specific Language', 'wpcf-access') .'" target="_blank">'. __('Creating Editors for Specific Language', 'wpcf-access') .'</a></p>
+				<p>'. __('No permission for languages found.', 'wpcf-access')
 			.'</p><p><a href="#" data-label="'.__('Add Group','wpcf-access').'"
 			class="button button-secondary js-wpcf-add-new-wpml-group js-wpcf-add-new-wpml-group-placeholder">'
 			. '<i class="icon-plus fa fa-plus"></i>'
@@ -869,16 +998,13 @@ public static function otg_access_get_permission_table_for_wpml() {
 
 public static function otg_access_get_permission_table_for_custom_roles() {
 	$roles = Access_Helper::wpcf_get_editable_roles();
-	$enabled = true; // WTF
 	$output = '';
 	
 	$output .= '<div class="js-otg-access-settings-tab-section js-otg-access-settings-section-for-custom-roles" data-tab="custom-roles">';
 	
-    $output .= self::wpcf_access_admin_set_custom_roles_level_form( $roles, $enabled );
+    $output .= self::wpcf_access_admin_set_custom_roles_level_form( $roles );
     $output .= wp_nonce_field('wpcf-access-edit', '_wpnonce', true, false);
-	
-	$output .= self::wpcf_access_new_role_form($enabled);
-	
+
 	$output .= '</div>';
 	
 	return $output;
@@ -1081,7 +1207,6 @@ public static function wpcf_access_admin_edit_access_types_item($type_slug, $rol
             . self::wpcf_access_admin_roles_dropdown($roles,
                     'wpcf_access_bulk_set[' . $type_slug . ']', array(),
                     '-- ' . __('Choose user type', 'wpcf-access') . ' --', $enabled);
-    $output .= self::wpcf_access_reset_button($type_slug, 'type', $enabled);
     $output .= '<table class="wpcf-access-caps-wrapper">';
     foreach ($data as $cap_slug => $cap_data)
     {
@@ -1143,28 +1268,6 @@ public static function wpcf_access_admin_edit_access_tax_item($type_slug, $roles
 }
 
 /**
- * Reset caps button.
- *
- * @param type $type_slug
- * @param type $type
- * @return string
- */
-public static function wpcf_access_reset_button( $type_slug, $type = 'type', $enabled = true, $managed = true ) {
-    $output = '';
-    $output .= '<input type="submit" id="wpcf-access-reset-' . md5($type_slug . $type)
-			. '" class="button button-secondary wpcf-access-reset js-wpcf-access-reset"';
-	$output .= ' href="'
-					. admin_url('admin-ajax.php?action=wpcf_access_ajax_reset_to_default&amp;_wpnonce='
-					. wp_create_nonce('wpcf_access_ajax_reset_to_default') . '&amp;type='
-					. $type . '&amp;type_slug=' . $type_slug . '')
-			. '" onclick="if (confirm(\''
-			. addslashes(__('Are you sure? All permission settings for this type will change to their default values.', 'wpcf-access'))
-			. '\')) { wpcfAccess.Reset(jQuery(this)); } return false;"';
-    $output .= ' value="' . __('Reset to defaults', 'wpcf-access') . '" />';
-    return $output;
-}
-
-/**
  * Submit button.
  *
  * @param type $enabled
@@ -1190,185 +1293,95 @@ public static function wpcf_access_submit_button( $enabled = true, $managed = tr
  */
 public static function wpcf_access_admin_set_custom_roles_level_form($roles, $enabled = true)
 {
-    $levels = Access_Helper::wpcf_access_role_to_level_map();
-    $builtin_roles = array();
-    $default_roles = Access_Helper::wpcf_get_default_roles();
-    $custom_roles = array();
     $output = '';
 
-    foreach ($roles as $role => $details)
-    {
-        if (!in_array($role, $default_roles))
-        {
-            $compare = 'init';
-            foreach ($details['capabilities'] as $capability => $true) {
-                if (strpos($capability, 'level_') !== false && $true) {
-                    $current_level = intval(substr($capability, 6));
-                    if ($compare === 'init' || $current_level > intval($compare)) {
-                        $compare = $current_level;
-                    }
-                }
-            }
-            $level = $compare !== 'init' ? $compare : 'not_set';
-            $custom_roles[$level][$role] = $details;
-            //$custom_roles[$level][$role]['name'] = taccess_t($details['name'], $details['name']);
-            $custom_roles[$level][$role]['level'] = $compare !== 'init' ? $compare : 'not_set';
-        }
-        else if (isset($levels[$role]))
-        {
-            $level = intval(substr($levels[$role], 6));
-            $builtin_roles[$level][$role] = $details;
-            $builtin_roles[$level][$role]['name'] = translate_user_role($details['name']);
-            $builtin_roles[$level][$role]['level'] = $level;
-        }
-    }
-
     $advanced_mode = get_option('otg_access_advaced_mode', 'false');
-
-    if ( $advanced_mode == 'true' ){
-        $advanced_mode_text = __('Enabled', 'wpcf-access');
+    if ( $advanced_mode != 'true' ){
+        $advanced_mode_text = __('Enable advanced mode', 'wpcf-access');
     }else{
-        $advanced_mode_text = __('Disabled', 'wpcf-access');
+        $advanced_mode_text = __('Disable advanced mode', 'wpcf-access');
     }
        
     $output .= '<div id="wpcf-access-custom-roles-wrapper">';
+	$output .= '<p class="toolset-access-tab-info">
+		'. __('Create custom user roles. Then, grant privileges for them.', 'wpcf-access') .'<br>
+		<a href="https://wp-types.com/documentation/user-guides/managing-wordpress-admin-capabilities-access/?utm_source=access&utm_medium=admin-tabs&utm_term=Access%20Control%20for%20Custom%20roles&utm_campaign=access" title="'. __('Managing WordPress Admin Capabilities', 'wpcf-access') .'" target="_blank">'. __('Managing WordPress Admin Capabilities', 'wpcf-access') .'</a>
+	</p>';
+	$output .= '<p class="toolset-access-align-right">
+			<button class="button button-large button-secondary js-otg-access-add-new-role otg-access-add-new-role"><i class="icon-plus fa fa-plus"></i>' .
+		 __('Add a new role', 'wpcf-access') . '</button></p>';
+
+    $output .= '<div id="wpcf-access-custom-roles-table-wrapper">';
+    $output .= '<table class="wpcf-access-custom-roles-table wp-list-table widefat fixed striped">
+				<thead>
+					<tr><th class="manage-column column-title column-primary">'. __('Role', 'wpcf-access') .'</th></tr>
+				</thead>
+				<tbody>';
+	$ordered_roles = self::toolset_access_order_wp_roles();
+
+
+	//TODO: monitor this, check if this part do not overload big daabase
+	$users_count = count_users();
+
+	foreach ( $ordered_roles as $role => $role_info ){
+		if ( $role == 'guest') continue;
+
+		$output .= '<tr>';
+
+		$role_link_class = 'wpcf-access-view-caps';
+		if ( isset($role_info['capabilities']['wpcf_access_role']) || $advanced_mode == 'true' ) {
+			$role_link_class = 'wpcf-access-change-caps';
+		}
+
+		$output .= '<td class="title column-title has-row-actions column-primary page-title">
+						<div class="wpcf-access-roles wpcf-access-roles-custom">
+						     <span><a href="#" class="'. $role_link_class .'" data-role="' . sanitize_title($role) . '">' .
+						     taccess_t($role_info['name'], $role_info['name']) . '</a>' .
+						     (isset($users_count['avail_roles'][$role])? ' ('.$users_count['avail_roles'][$role].')':' (0)')
+						     . '</span>
+					 	</div>
+					 	<div class="row-actions"><span class="edit">';
+
+		if ( isset($role_info['capabilities']['wpcf_access_role']) || $advanced_mode == 'true' ) {
+			//Change Caps link
+			$output .= ' <span><a href="#" class="wpcf-access-change-caps" data-role="' . sanitize_title($role) . '">' . __('Change permissions', 'wpcf-access') . '</a></span> ';
+			$output .= ' <span> | <a href="#" data-role="' . sanitize_title($role) . '" class="wpcf-access-delete-role js-wpcf-access-delete-role">' .
+			__('Delete role', 'wpcf-access') . '</a></span> ';
+		} else {
+			$output .= ' <span><a href="#" class="wpcf-access-view-caps" data-role="' . sanitize_title($role) . '">' . __('View permissions', 'wpcf-access') . '</a></span> ';
+		}
+		$output .= ' <span> | <a href="users.php?role='. $role .'">' . __('View users', 'wpcf-access') . '</a></span> ';
+		$output .= '</div></td></tr>';
+	}
 	
-	if ( empty( $custom_roles ) ) {
-        $output .= '<p class="toolset-alert toolset-alert-info">'
-                . __('No custom roles defined.', 'wpcf-access') .
-				'</p>';
-    }
-	
-	$output .= '<p>' . __('The user level determines which actions can be performed by each user in the WordPress admin.', 'wpcf-access') . '</p>';
-    
+    $output .= '</tbody>';
+    $output .= '<tfoot>
+					<tr class="manage-column column-title column-primary sortable desc"><td>'. __('Role', 'wpcf-access') .'</td></tr>
+				</tfoot></table>';
+    $output .= '</div>';
     $output .= '<p>'. __('Advanced mode', 'wpcf-access') .': <button data-status="'. ( $advanced_mode == 'true' ? 'true':'false') .'" value="'. $advanced_mode_text .
     '" class="button button-large button-secondary js-otg_access_enable_advanced_mode"><i class="fa icon-'. ( $advanced_mode != 'true' ? 'lock fa-lock':'unlock fa-unlock') .'"></i>'. $advanced_mode_text .'</button></p>';
-    $output .= '<div id="wpcf-access-custom-roles-table-wrapper">';
-    $output .= '<table class="wpcf-access-custom-roles-table"><tbody>';
-    for ($index = 10; $index >= 0; $index--)
-    {
-        $level_empty = true;
-        $row = '<tr>
-					<td>
-						<div class="wpcf-access-roles-level">'
-						    . sprintf(__('Level %d', 'wpcf-access'), $index)
-					 . '</div>
-					</td>
-					<td>';
-						if (isset($builtin_roles[$index])) {
-							$level_empty = false;
-							foreach ($builtin_roles[$index] as $role => $details) {
-								$row .= '<div class="wpcf-access-roles wpcf-access-roles-builtin">';
-									$row .= '<span>' . $details['name'] . '</span>';
-									$row .= '<span>: : <a href="#" class="wpcf-access-view-caps" data-role="' . sanitize_title($role) . '">' . __('View permissions', 'wpcf-access') . '</a></span>';
-								$row .= '</div>';
-							}
-						}
-        if (isset($custom_roles[$index]))
-        {
-            $level_empty = false;
-            foreach ($custom_roles[$index] as $role => $details) {
-                $dropdown = '<div class="wpcf-access-custom-roles-select-wrapper js-access-custom-roles-selection">'
-						      . '<select name="roles[' . $role . ']" class="wpcf-access-custom-roles-select">';
-                for ($index2 = 10; $index2 > -1; $index2--)
-                {
-                    $dropdown .= '<option value="' . $index2 . '"';
-                    if ($index == $index2) {
-                        $dropdown .= ' selected="selected"';
-                    }
-                    if (!$enabled) {
-                        $dropdown .= ' disabled="disabled"';
-                    }
-                    $dropdown .= '>' . sprintf(__('Level %d', 'wpcf-access'), $index2);
-                    $dropdown .= '</option>';
-                }
-                $dropdown .= '</select>';
-                $dropdown .= '<div class="button-group">
-								<button ' . 'class="wpcf-access-change-level-cancel button button-secondary">' . __('Cancel') . '</button>
-								<button ' . 'class="wpcf-access-change-level-apply button button-primary" data-message="' . __('By changing the level, you will reset the capabilities. Are you sure you want to do this?', 'wpcf-access') . '">' . __('Apply', 'wpcf-access') . '</button>
-							</div>'
-						. '</div>';
-                $row .= '<div class="wpcf-access-roles wpcf-access-roles-custom">
-							<span>' . taccess_t($details['name'], $details['name']) . '</span> ';
-                if ( isset($details['capabilities']['wpcf_access_role']) || $advanced_mode == 'true' ) {
-	                $row .= '<span>: : <a href="javascript:;" class="wpcf-access-change-level">' . __('Change level', 'wpcf-access') . '</a></span>';
-	                $row .= $dropdown;
-
-					//Change Caps link
-					$row .= ' <span>: : <a href="#" class="wpcf-access-change-caps" data-role="' . sanitize_title($role) . '">' . __('Change permissions', 'wpcf-access') . '</a></span> ';
-	                $row .= ' <span>: : <a ';
-	                if ($enabled) {
-						$row .= 'href="#" data-role="' . sanitize_title($role) . '" class="wpcf-access-delete-role js-wpcf-access-delete-role"';
-	                } else {
-
-	                    $row .= 'href="javascript:;"';
-	                }
-	                $row .= '>' . __('Delete role', 'wpcf-access') . '</a></span> ';
-	                
-                } else {
-
-                	$row .= ' <span>: : <a href="#" class="wpcf-access-view-caps" data-role="' . sanitize_title($role) . '">' . __('View permissions', 'wpcf-access') . '</a></span> ';
-				}
-                $row .= '</div>';
-            }
-        }
-        $row .= '</td></tr>';
-        if (!$level_empty) {
-            $output .= $row;
-        }
-    }
-
-    if (isset($custom_roles['not_set']))
-    {
-        $output .= '<tr><td><div class="wpcf-access-roles-level">'
-                . __('Undefined', 'wpcf-access') . '</div></td><td>';
-        foreach ($custom_roles['not_set'] as $role => $details)
-        {
-            $dropdown = '<div class="wpcf-access-custom-roles-select-wrapper js-access-custom-roles-selection">'
-						. '<select name="roles[' . $role . ']" class="wpcf-access-custom-roles-select">';
-						for ($index2 = 10; $index2 >= 0; $index2--) {
-							$dropdown .= '<option value="' . $index2 . '"';
-							if ($index2 == 1) {
-								$dropdown .= ' selected="selected"';
-							}
-							if (!$enabled) {
-								$dropdown .= ' disabled="disabled"';
-							}
-							$dropdown .= '>'
-									. sprintf(__('Level %d', 'wpcf-access'), $index2)
-									. '</option>';
-						}
-            $dropdown .= '</select>
-							<button class="wpcf-access-change-level-apply button-primary">' . __('Apply', 'wpcf-access') . '</button>
-							<button class="wpcf-access-change-level-cancel button-secondary">' . __('Cancel') . '</button>'
-					. '</div>';
-            $output .= '<div class="wpcf-access-roles wpcf-access-roles-custom"><span>'
-                    . $details['name'] . '</span>';
-            if ( isset($details['capabilities']['wpcf_access_role']) || $advanced_mode == 'true' ) {
-	            $output .= '<span>: : <a href="javascript:;" class="wpcf-access-change-level">' . __('Change level', 'wpcf-access') . '</a></span>';
-	            $output .= $dropdown;
-
-				//Change Caps link
-				$output .= ' <span>: : <a href="#" class="wpcf-access-change-caps" data-role="' . sanitize_title($role) . '">' . __('Change permissions', 'wpcf-access') . '</a></span> ';
-	            $output .= ' <span>: : <a ';
-	            if ($enabled) {
-					$output .= 'href="#" data-role="' . sanitize_title($role) . '" class="wpcf-access-delete-role js-wpcf-access-delete-role"';
-	            } else {
-	                $output .= 'href="javascript:;"';
-	            }
-	            $output .= '>' . __('Delete role', 'wpcf-access') . '</a></span> ';	                
-            } else {
-                $output .= ' <span>: : <a href="#" class="wpcf-access-view-caps" data-role="' . sanitize_title($role) . '">' . __('View permissions', 'wpcf-access') . '</a></span> ';
-			}
-                    
-            
-            
-        }
-        $output .= '</div></td></tr>';
-    }
-    $output .= '</tbody></table>';
     $output .= '</div>';
-    $output .= '</div>';
+    $output .= '<div id="wpcf-access-new-role" class="wpcf-access-new-role-wrap js-otg-access-new-role-wrap">
+		<table class="otg-access-new-role-extra js-otg-access-new-role-extra"  style="display:none">';
+			$output .= '<tr>
+						<td width="50%"><label for="otg-access-new-role-name">'. __( 'Role name (at least 5 characters)', 'wpcf-access' ) .'</label></td>
+						<td><input type="text" name="types_access[new_role]" class="js-otg-access-new-role-name" id="otg-access-new-role-name" value="" /></td>
+						</tr>
+						<tr>
+						<td><label for="toolset-access-copy-caps-from">'. __( 'Copy privileges from', 'wpcf-access' ) .':</label></td>
+						<td>
+							<select id="toolset-access-copy-caps-from" class="js-toolset-access-copy-caps-from toolset-access-copy-caps-from">
+							<option value="">' . __('None', 'wpcf-access') . '</options>';
+							$ordered_roles = self::toolset_access_order_wp_roles();
+							foreach ( $ordered_roles as $role => $role_info ){
+								$output .= '<option value="'.$role.'">'.ucwords($role).'</option>';
+							}
+							$output .= '</select>
+						</td>
+		</table>
+		<div class="ajax-response js-otg-access-message-container"></div>
+   		</div>	<!-- #wpcf-access-new-role -->';
     return $output;
 }
 
@@ -1376,23 +1389,24 @@ public static function wpcf_access_admin_set_custom_roles_level_form($roles, $en
  * Get Content Template title
  * @param $id
  *
+ * @todo check whether we should restrct to, mmm, published CTs...
  */
 public static function get_content_template_name( $id ) {
 	global $wpdb;
-	$template_list = wp_cache_get( 'access_templates_list' );
-	if ( false === $template_list ) {
-		$template_list = $wpdb->get_results( "SELECT ID,post_title FROM  `$wpdb->posts` WHERE post_type =  'view-template'" );
-		$new_template_new_list = array();
-		for ($i=0, $templates_count=count($template_list);$i<$templates_count;$i++) {
-			$new_template_new_list[$template_list[$i]->ID] = $template_list[$i]->post_title;
+	$cached_content_template_list = Access_Cacher::get( 'content_templates_available' );
+	if ( false === $cached_content_template_list ) {
+		$available_content_template_list = $wpdb->get_results( "SELECT ID, post_title FROM {$wpdb->posts} WHERE post_type = 'view-template'" );
+		$caching_content_template_list = array();
+		foreach ( $available_content_template_list as $template_to_cache ) {
+			$caching_content_template_list[ $template_to_cache->ID ] = $template_to_cache->post_title;
 		}
-		wp_cache_add( 'access_templates_list', $new_template_new_list);
-		if ( isset($new_template_new_list[$id]) ){
-			return 	$new_template_new_list[$id];
+		Access_Cacher::set( 'content_templates_available', $caching_content_template_list);
+		if ( isset( $caching_content_template_list[ $id ] ) ) {
+			return $caching_content_template_list[ $id ];
 		}
-	}else{
-		if ( isset($template_list[$id]) ){
-			return $template_list[$id];
+	} else {
+		if ( isset( $cached_content_template_list[ $id ] ) ) {
+			return $cached_content_template_list[ $id ];
 		}
 	}
 	return '';
@@ -1410,6 +1424,14 @@ public static function get_view_name( $id ) {
 	}
 }
 
+public static function toolset_access_check_for_cap( $cap, $role ){
+	$output = false;
+	if ( isset($role['capabilities'][$cap]) ){
+		$output = true;
+	}
+	return $output;
+}
+
 /**
  * HTML formatted permissions table.
  *
@@ -1419,294 +1441,38 @@ public static function get_view_name( $id ) {
  * @return string
  */
 public static function wpcf_access_permissions_table($roles, $permissions, $settings,
-        $group_id, $id, $enabled = true, $managed = true, $custom_errors = array(), $type_data = array()) {
+        $group_id, $id, $enabled = true, $managed = true, $custom_errors = array(), $type_data = array(), $area = 'types' ) {
+	$output = '';
+	global $wpcf_access;
 
-    $ordered_roles = Access_Helper::wpcf_access_order_roles_by_level($roles);
-    $default_roles = Access_Helper::wpcf_get_default_roles();
-    $output = '';
-    $output .= '<table class="wpcf-access-table js-access-table">';
-		$output .= '<tr>';
-			$output .= '<th>' . __('Action', 'wpcf-access') . '</th>';
-			foreach ($ordered_roles as $levels => $roles_data)
-			{
-				if (empty($roles_data))
-					continue;
+	$ordered_roles = self::toolset_access_order_wp_roles();
+	$ordered_roles['guest'] = array( 'name' => __('Guest', 'wpcf-access'), 'permissions_group' => 6, 'capabilities' => array( 'read' => 1) );
 
-				$title = '';
-				foreach ($roles_data as $role => $details)
-				{
-					if (in_array($role, $default_roles))
-						$title .= '<p class="access-role-name-wrap js-tooltip"><span class="access-role-name">' . translate_user_role($details['name']) . '</span></p>';
-					else
-						$title .= '<p class="access-role-name-wrap js-tooltip"><span class="access-role-name">' . taccess_t($details['name'], $details['name']) . '</span></p>';
-				}
-				$output .= '<th>' . $title . '</th>';
-			}
-			// Add Guest
-			$output .= '<th>' . __('Guest', 'wpcf-access') . '</th>';
-			$output .= '<th>' . __('Specific user', 'wpcf-access') . '</th>';
+	$settings = array_reverse($settings);
+	$default_roles = Access_Helper::wpcf_get_default_roles();
 
-			if ( $group_id == 'types' && $id != 'attachment') {
-				$output .= '<th>' . __('When disabled', 'wpcf-access') . '</th>';
-			}
-		$output .= '</tr>';
-    $output .= '<tbody>';
-    foreach ($settings as $permission_slug => $data)
-    {
-        // Change slug for 3rd party
-        if (!in_array($group_id, array('types', 'tax'))) {
-            $permission_slug = $data['cap_id'];
-			$managed = true;
-        }
-        $check = true;
-        $output .= '<tr>';
-		$output .= '<td class="wpcf-access-table-action-title">' . $data['title'] . '</td>';
-        $name = 'types_access[' . $group_id . '][' . $id . '][permissions]' . '[' . $permission_slug . '][role]';
-		
-        // If no settings saved use default setting [role]
-        $role_check = !empty($permissions[$permission_slug]['role']) ? $permissions[$permission_slug]['role'] : $data['role'];
-		$template_link = '';
-		
-		if ( isset($custom_errors['_custom_read_errors'][$id]) && $permission_slug == 'read' ) {
-			$current_custom_errors = $custom_errors['_custom_read_errors'][$id]['permissions']['read'];
-			$current_custom_errors_value = $custom_errors['_custom_read_errors_value'][$id]['permissions']['read'];
+	$output .= '<table class="wpcf-access-table js-access-table  wp-list-table widefat fixed striped">';
+
+	// Table Header
+	$output .= '<tr>';
+		$role_column_class = '';
+		if ( count($settings) <= 2 ){
+			$role_column_class = ' class="toolset-access-roles-column-fixed-width"';
 		}
-		if ( isset($custom_errors['_archive_custom_read_errors'][$id]) && $permission_slug == 'read' ) {
-		
-			$current_archive_custom_errors = $custom_errors['_archive_custom_read_errors'][$id]['permissions']['read'];
-			$current_archive_custom_errors_value = $custom_errors['_archive_custom_read_errors_value'][$id]['permissions']['read'];
-		}
-
-        foreach ($ordered_roles as $levels => $roles_data)
-        {
-            if (empty($roles_data))
-                continue;
-            $addon = '';
-			
-            // Render only first (built-in)
-            $role = key($roles_data);
-            $details = array_shift($roles_data);
-
-			if ( $permission_slug == 'read'  && $role != 'administrator' && $id != 'attachment' ) {
-				$addon_id = $group_id . '_' . $id . '_error_page_' . $permission_slug . '_' . $role . '_role';
-				$error_value_value = $error_type_value = $archive_error_value_value = $archive_error_type_value = $text = $archive_text =  '';
-
-				$link_title = '';
-				if ( isset($current_custom_errors[$role]) && !empty($current_custom_errors[$role]) ) {
-					$error_type_value = $current_custom_errors[$role];
-					$error_value_value = $current_custom_errors_value[$role];
-					if ( $error_type_value == 'error_404' ) {
-						$text = '404';
-						$link_title = __('Show 404 - page not found','wpcf-access');
-					} elseif ( $error_type_value == 'error_ct' ) {
-						$text = __('Template', 'wpcf-access').': '. self::get_content_template_name($error_value_value);
-						$link_title = __('Show Content Template','wpcf-access').' - '.self::get_content_template_name($error_value_value);
-					} else {
-						$text = __('PHP Template', 'wpcf-access').': '. $error_value_value;
-						$link_title = __('Show Page template','wpcf-access').' - '. $error_value_value;
-					}
-				}
-				elseif ( isset($current_custom_errors['everyone']) && !empty($current_custom_errors['everyone']) ) {
-					if ( $error_type_value == 'error_404' ) {
-						$link_title = __('Show 404 - page not found','wpcf-access');
-					} elseif ( $error_type_value == 'error_ct' ) {
-						$link_title = __('Show Content Template','wpcf-access').' - '.self::get_content_template_name($error_value_value);
-					} else {
-						$link_title = __('Show Page template','wpcf-access').' - '. $error_value_value;
-					}
-				}
-				
-				//Set Archive Errors
-				if ( isset($current_archive_custom_errors[$role]) && !empty($current_archive_custom_errors[$role]) && isset($type_data['has_archive']) && $type_data['has_archive'] == 1  ) {
-					$archive_error_type_value = $current_archive_custom_errors[$role];
-					$archive_error_value_value = $current_archive_custom_errors_value[$role];
-					if ( $archive_error_type_value == 'default_error' ) {
-						$archive_text = __('Display: \'No posts found\'','wpcf-access');
-					} elseif ( $archive_error_type_value == 'error_ct' ) {
-						$archive_text = __('View Archive', 'wpcf-access').': '. self::get_view_name($archive_error_value_value);
-					} elseif ( $archive_error_type_value == 'error_php' ) {
-						$archive_text = __('PHP Archive', 'wpcf-access').': '. preg_replace("/.*(\/.*\/)/","$1",$archive_error_value_value);
-					}else{
-						$archive_text = '';	
-					}
-					
-				}
-				
-				
-				$is_archive = '';
-				$archive_vars = '';
-				if( isset($type_data['has_archive']) && $type_data['has_archive'] == 1 ){
-					$is_archive = 1;
-					$link_title = ' title="'.__('Set errors','wpcf-access').'" ';
-				}else{
-					if ( !empty($link_title) ){
-					$link_title = ' title="'.__('Set single page error','wpcf-access').'. ('.$link_title.')" ';
-					}else{
-						$link_title = ' title="'.__('Set single page error','wpcf-access').'" ';
-					}	
-				}
-				$error_type = 'types_access_error_type[' . $group_id . '][' . $id . '][permissions]' . '[' . $permission_slug . '][' . $role . ']';
-				$error_value = 'types_access_error_value[' . $group_id . '][' . $id . '][permissions]' . '[' . $permission_slug . '][' . $role . ']';
-				$archive_error_type = 'types_access_archive_error_type[' . $group_id . '][' . $id . '][permissions]' . '[' . $permission_slug . '][' . $role . ']';
-				$archive_error_value = 'types_access_archive_error_value[' . $group_id . '][' . $id . '][permissions]' . '[' . $permission_slug . '][' . $role . ']';
-//				$hide_link = $check ? ' style="display:none;" ' : '';
-		        $addon = '<a '.$link_title.'class="wpcf-add-error-page js-wpcf-add-error-page"'
-		        	.' data-typename="' . $error_type . '" data-valuename="' . $error_value . '"  data-curtype="'. $error_type_value . '" data-curvalue="'. $error_value_value . '"'
-		        	.' data-archivetypename="' . $archive_error_type . '" data-archivevaluename="' . $archive_error_value . '"  data-archivecurtype="'. $archive_error_type_value . '" data-archivecurvalue="'. $archive_error_value_value . '"'
-					. ' data-posttype="'.$id.'" data-archive="'.$is_archive.'" data-forall="0" href=""><i class="icon-edit fa fa-pencil-square-o"></i></a>';
-						
-						//Labels
-						$addon .= '<p class="error-page-name-wrap js-tooltip"><span class="error-page-name js-error-page-name">' . $text . '</span></p>'
-						. '<p class="error-page-name-wrap js-tooltip"><span class="error-page-name js-archive_error-page-name">' . $archive_text . '</span></p>'
-						//Errors inputs
-						. '<input type="hidden" name="' . $error_type . '" value="' . $error_type_value.'">
-						<input type="hidden" name="' . $error_value . '" value="' . $error_value_value .'">';
-						if( isset($type_data['has_archive']) && $type_data['has_archive'] == 1 ){
-							$addon .= '<input type="hidden" name="' . $archive_error_type . '" value="' . $archive_error_type_value.'">
-							<input type="hidden" name="' . $archive_error_value . '" value="' . $archive_error_value_value .'">';
-						}	
+		$output .= '<th'.$role_column_class.'>&nbsp;</th>';
+		foreach ($settings as $permission_slug => $data){
+			if ( isset($custom_errors['_custom_read_errors'][$id]) && $permission_slug == 'read' ) {
+				$current_custom_errors = $custom_errors['_custom_read_errors'][$id]['permissions']['read'];
+				$current_custom_errors_value = $custom_errors['_custom_read_errors_value'][$id]['permissions']['read'];
 			}
+			if ( isset($custom_errors['_archive_custom_read_errors'][$id]) && $permission_slug == 'read' ) {
+				$current_archive_custom_errors = $custom_errors['_archive_custom_read_errors'][$id]['permissions']['read'];
+				$current_archive_custom_errors_value = $custom_errors['_archive_custom_read_errors_value'][$id]['permissions']['read'];
+			}
+			$title = $data['title'];
 
-            $att_id = $group_id . '_' . $id . '_permissions_' . $permission_slug . '_' . $role . '_role';
-            $attributes = $check ? ' checked="checked" ' : '';
-            $attributes .=!$managed ? ' readonly="readonly" disabled="disabled" ' : '';
-            $output .= '<td><div class="error-page-set-wrap"><input type="checkbox" name="';
-            $output .= $role_check == $role ? $name : 'dummy';
-            $output .= '" id="' . $att_id . '" value="' . $role . '"'
-                    . $attributes . ' class="wpcf-access-check-left wpcf-access-'
-                    . $permission_slug . '" data-wpcfaccesscap="'
-                    . $permission_slug . '" data-wpcfaccessname="'
-                    . $name . '" ' . 'onclick="wpcfAccess.AutoThick(jQuery(this), \''
-                    . $permission_slug . '\', \''
-                    . $name . '\');"';
-            if (!$enabled) {
-                $output .= ' disabled="disabled" readonly="readonly"';
-            }
-            $output .= '/>'. $addon .'</div></td>';
-            // Turn off onwards checking
-            if ($role_check == $role) {
-                $check = false;
-            }
-        }
-        // Add Guest
-        $name = 'types_access[' . $group_id . '][' . $id . '][permissions]' . '[' . $permission_slug . '][role]';
-        $attributes = $check ? ' checked="checked"' : '';
-        $attributes .=!$managed ? ' readonly="readonly" disabled="disabled"' : '';
-		$addon = '';
-		if ( $permission_slug == 'read' && $id != 'attachment'  ) {
-				$addon_id = $group_id . '_' . $id . '_error_page_' . $permission_slug . '_' . $role . '_role';
-				$error_value_value = $error_type_value = $archive_error_value_value = $archive_error_type_value = $text = $archive_text =  '';
-				$link_title = '';
-				if ( isset($current_custom_errors['guest']) && !empty($current_custom_errors['guest']) ) {
-					$error_type_value = $current_custom_errors['guest'];
-					$error_value_value = $current_custom_errors_value['guest'];
-						if ( $error_type_value == 'error_404' ) {
-							$text = '404';
-							$link_title = __('Show 404 - page not found','wpcf-access');
-						} elseif ( $error_type_value == 'error_ct' ) {
-							$text = __('Template', 'wpcf-access').': '.self::get_content_template_name($error_value_value);
-							$link_title = __('Show Content Template','wpcf-access').' - '.self::get_content_template_name($error_value_value);
-						} else {
-							$text = __('PHP Template', 'wpcf-access').': '. $error_value_value;
-							$link_title = __('Show Page template','wpcf-access').' - '. $error_value_value;
-						}
-				}
-				elseif ( isset($current_custom_errors['everyone']) && !empty($current_custom_errors['everyone']) ) {
-					
-					if ( $error_type_value == 'error_404' ) {
-						$link_title = __('Show 404 - page not found','wpcf-access');
-					} elseif ( $error_type_value == 'error_ct' ) {
-						$link_title = __('Show Content Template','wpcf-access').' - '.self::get_content_template_name($error_value_value);
-					} else {
-						$link_title = __('Show Page template','wpcf-access').' - '. $error_value_value;
-					}
-				}
-				//Set Archive Errors
-				if ( isset($current_archive_custom_errors['guest']) && !empty($current_archive_custom_errors['guest']) && isset($type_data['has_archive']) && $type_data['has_archive'] == 1  ) {
-					$archive_error_type_value = $current_archive_custom_errors['guest'];
-					$archive_error_value_value = $current_archive_custom_errors_value['guest'];
-					if ( $archive_error_type_value == 'default_error' ) {
-						$archive_text = __('Display: \'No posts found\'','wpcf-access');
-					} elseif ( $archive_error_type_value == 'error_ct' ) {
-						$archive_text = __('View Archive', 'wpcf-access').': '. self::get_view_name($archive_error_value_value);
-					} elseif ( $archive_error_type_value == 'error_php' ) {
-						$archive_text = __('PHP Archive', 'wpcf-access').': '. preg_replace("/.*(\/.*\/)/","$1",$archive_error_value_value);
-					}else{
-						$archive_text = '';	
-					}
-					
-				}
-				
-				
-				$is_archive = '';
-				$archive_vars = '';
-				if( isset($type_data['has_archive']) && $type_data['has_archive'] == 1 ){
-					$is_archive = 1;
-					$link_title = ' title="'.__('Set errors','wpcf-access').'" ';
-				}else{
-					if ( !empty($link_title) ){
-					$link_title = ' title="'.__('Set single page error','wpcf-access').'. ('.$link_title.')" ';
-					}else{
-						$link_title = ' title="'.__('Set single page error','wpcf-access').'" ';
-					}	
-				}
-				$error_type = 'types_access_error_type[' . $group_id . '][' . $id . '][permissions]' . '[' . $permission_slug . '][guest]';
-				$error_value = 'types_access_error_value[' . $group_id . '][' . $id . '][permissions]' . '[' . $permission_slug . '][guest]';
-				$archive_error_type = 'types_access_archive_error_type[' . $group_id . '][' . $id . '][permissions]' . '[' . $permission_slug . '][guest]';
-				$archive_error_value = 'types_access_archive_error_value[' . $group_id . '][' . $id . '][permissions]' . '[' . $permission_slug . '][guest]';
-				$hide_link = $check ? ' style="display:none;" ' : '';
-		        $addon = '<a '.$link_title.'class="wpcf-add-error-page js-wpcf-add-error-page"'
-		        	.' data-typename="' . $error_type . '" data-valuename="' . $error_value . '"  data-curtype="'. $error_type_value . '" data-curvalue="'. $error_value_value . '"'
-		        	.' data-archivetypename="' . $archive_error_type . '" data-archivevaluename="' . $archive_error_value . '"  data-archivecurtype="'. $archive_error_type_value . '" data-archivecurvalue="'. $archive_error_value_value . '"'
-					. ' data-posttype="'.$id.'" data-archive="'.$is_archive.'" data-forall="0" href=""><i class="icon-edit fa fa-pencil-square-o"></i></a>';
-						
-						//Labels
-						$addon .= '<p class="error-page-name-wrap js-tooltip"><span class="error-page-name js-error-page-name">' . $text . '</span></p>'
-						. '<p class="error-page-name-wrap js-tooltip"><span class="error-page-name js-archive_error-page-name">' . $archive_text . '</span></p>'
-						//Errors inputs
-						. '<input type="hidden" name="' . $error_type . '" value="' . $error_type_value.'">
-						<input type="hidden" name="' . $error_value . '" value="' . $error_value_value .'">';
-						if( isset($type_data['has_archive']) && $type_data['has_archive'] == 1 ){
-							$addon .= '<input type="hidden" name="' . $archive_error_type . '" value="' . $archive_error_type_value.'">
-							<input type="hidden" name="' . $archive_error_value . '" value="' . $archive_error_value_value .'">';
-						}	
-		}
-        $output .= '<td><div class="error-page-set-wrap"><input type="checkbox" name="';
-        $output .= $role_check == 'guest' ? $name : 'dummy';
-        $output .= '" id="' . $group_id . '_' . $id . '_permissions_'
-                . $permission_slug . '_guest_role" value="guest"'
-                . $attributes . ' class="wpcf-access-check-left wpcf-access-'
-                . $permission_slug . '" data-wpcfaccesscap="'
-                . $permission_slug . '" data-wpcfaccessname="'
-                . $name . '" ' . 'onclick="wpcfAccess.AutoThick(jQuery(this), \''
-                . $permission_slug . '\', \''
-                . $name . '\');"';
-        if (!$enabled) {
-            $output .= ' disabled="disabled" readonly="readonly"';
-        }
-        $output .= ' />'.$addon;
+			if ( $group_id == 'types' && $id != 'attachment' && $permission_slug == 'read') {
 
-        // Add admin if all disabled
-        $output .= '<input type="hidden" name="types_access[' . $group_id . '][' . $id . '][__permissions]' . '[' . $permission_slug . '][role]" value="administrator" />';
-        $output .= '</div></td>';
-
-        $data['users'] = !empty($permissions[$permission_slug]['users']) ? $permissions[$permission_slug]['users'] : array();
-        $output .= '<td>'
-                . '<input type="hidden" class="wpcf-access-name-holder" name="wpcf_access_'
-                . $id . '_' . $permission_slug . '" data-wpcfaccesscap="'
-                . $permission_slug . '" data-wpcfaccessname="'
-                . 'types_access[' . $group_id . ']['
-                . $id . ']'
-                . '[permissions][' . $permission_slug . ']" value="types_access[' . $group_id . ']['
-                . $id . ']'
-                . '[permissions][' . $permission_slug . ']" />'
-                . self::wpcf_access_admin_users_form($data,
-                        'types_access[' . $group_id . '][' . $id . '][permissions]'
-                        . '[' . $permission_slug . ']', $enabled, $managed)
-                . '</td>';
-
-		if ( $permission_slug == 'read'  && $id != 'attachment'  ) {
-    		$addon_id = $group_id . '_' . $id . '_error_page_' . $permission_slug . '_' . $role . '_role';
 				$link_title = '';
 				$error_value_value = $error_type_value = $archive_error_value_value = $archive_error_type_value = $text = $archive_text =  '';
 				if ( isset($current_custom_errors['everyone']) && !empty($current_custom_errors['everyone']) ) {
@@ -1735,33 +1501,28 @@ public static function wpcf_access_permissions_table($roles, $permissions, $sett
 					} elseif ( $archive_error_type_value == 'error_php' ) {
 						$archive_text = __('PHP Archive', 'wpcf-access').': '. preg_replace("/.*(\/.*\/)/","$1",$archive_error_value_value);
 					}else{
-						$archive_text = '';	
+						$archive_text = '';
 					}
-					
+
 				}
-				
-				
+
+
 				$is_archive = '';
 				$archive_vars = '';
+
 				if( isset($type_data['has_archive']) && $type_data['has_archive'] == 1 ){
 					$is_archive = 1;
-					$link_title = ' title="'.__('Set errors','wpcf-access').'" ';
-				}else{
-					if ( !empty($link_title) ){
-					$link_title = ' title="'.__('Set single page error','wpcf-access').'. ('.$link_title.')" ';
-					}else{
-						$link_title = ' title="'.__('Set single page error','wpcf-access').'" ';
-					}	
 				}
+				$link_title = ' title="'. sprintf( __('Choose what to display to people who don’t have read permission for %s','wpcf-access'), $id) .'" ';
 				$error_type = 'types_access_error_type[' . $group_id . '][' . $id . '][permissions]' . '[' . $permission_slug . '][everyone]';
 				$error_value = 'types_access_error_value[' . $group_id . '][' . $id . '][permissions]' . '[' . $permission_slug . '][everyone]';
 				$archive_error_type = 'types_access_archive_error_type[' . $group_id . '][' . $id . '][permissions]' . '[' . $permission_slug . '][everyone]';
 				$archive_error_value = 'types_access_archive_error_value[' . $group_id . '][' . $id . '][permissions]' . '[' . $permission_slug . '][everyone]';
-		        $addon = '<a '.$link_title.'class="wpcf-add-error-page js-wpcf-add-error-page"'
+		        $addon = ' <a '.$link_title.'class="wpcf-add-error-page js-wpcf-add-error-page"'
 		        	.' data-typename="' . $error_type . '" data-valuename="' . $error_value . '"  data-curtype="'. $error_type_value . '" data-curvalue="'. $error_value_value . '"'
 		        	.' data-archivetypename="' . $archive_error_type . '" data-archivevaluename="' . $archive_error_value . '"  data-archivecurtype="'. $archive_error_type_value . '" data-archivecurvalue="'. $archive_error_value_value . '"'
 					. ' data-posttype="'.$id.'" data-archive="'.$is_archive.'" data-forall="1" href=""><i class="icon-edit fa fa-pencil-square-o"></i></a>';
-						
+
 						//Labels
 						$addon .= '<p class="error-page-name-wrap js-tooltip"><span class="error-page-name js-error-page-name">' . $text . '</span></p>'
 						. '<p class="error-page-name-wrap js-tooltip"><span class="error-page-name js-archive_error-page-name">' . $archive_text . '</span></p>'
@@ -1771,13 +1532,222 @@ public static function wpcf_access_permissions_table($roles, $permissions, $sett
 						if( isset($type_data['has_archive']) && $type_data['has_archive'] == 1 ){
 							$addon .= '<input type="hidden" name="' . $archive_error_type . '" value="' . $archive_error_type_value.'">
 							<input type="hidden" name="' . $archive_error_value . '" value="' . $archive_error_value_value .'">';
-						}	
-				$output .= '<td>' . $addon . '</td>';
+						}
+				//Custom error, when disabled for role
+				$title .= $addon;
+
+			}
+			$output .= '<th>' . $title . '</th>';
+		}
+	$output .= '</tr>';
+	
+	foreach( $ordered_roles as $role => $roles_data ){
+		$output .= '<tr>';
+		$output .= '<td class="wpcf-access-table-action-title">';
+			if (in_array($role, $default_roles))
+				$output .= translate_user_role($roles_data['name']);
+			else
+				$output .= taccess_t($roles_data['name'], $roles_data['name']);
+		$output .= '</td>';
+
+		foreach ( $settings as $permission_slug => $data ){
+
+			if ( isset($custom_errors['_custom_read_errors'][$id]) && $permission_slug == 'read' ) {
+				$current_custom_errors = $custom_errors['_custom_read_errors'][$id]['permissions']['read'];
+				$current_custom_errors_value = $custom_errors['_custom_read_errors_value'][$id]['permissions']['read'];
+			}
+			if ( isset($custom_errors['_archive_custom_read_errors'][$id]) && $permission_slug == 'read' ) {
+
+				$current_archive_custom_errors = $custom_errors['_archive_custom_read_errors'][$id]['permissions']['read'];
+				$current_archive_custom_errors_value = $custom_errors['_archive_custom_read_errors_value'][$id]['permissions']['read'];
+			}
+			// Change slug for 3rd party
+			if (!in_array($group_id, array('types', 'tax'))) {
+				$permission_slug = $data['cap_id'];
+				$managed = true;
+			}
+			$option_enabled = false;
+			if ( isset( $permissions[$permission_slug]['roles'] ) ){
+				if ( is_string($permissions[$permission_slug]['roles']) ){
+					$permissions[$permission_slug]['roles'] = Access_Helper::toolset_access_get_roles_by_role($permissions[$permission_slug]['roles']);
+				}
+				if ( in_array($role, $permissions[$permission_slug]['roles']) !== false ){
+					$option_enabled = true;
+				}
+			}elseif( isset($settings[$permission_slug]['roles']) ){
+				if ( in_array($role, $settings[$permission_slug]['roles']) !== false ){
+					$option_enabled = true;
+				}
+			}else{
+				//Set permissions by predefined role capabilities
+				if( isset($settings[$permission_slug]['role']) ){
+					$option_enabled = self::toolset_access_check_for_cap( $settings[$permission_slug]['role'], $roles_data );
+				}
+			}
+
+
+			$name = 'types_access[' . $group_id . '][' . $id . '][permissions]' . '[' . $permission_slug . '][roles][]';
+
+			$addon = '';
+			if ( $permission_slug == 'read'  && $role != 'administrator' && $id != 'attachment' ) {
+				$addon_id = $group_id . '_' . $id . '_error_page_' . $permission_slug . '_' . $role . '_role';
+				$error_value_value = $error_type_value = $archive_error_value_value = $archive_error_type_value = $text = $archive_text =  '';
+
+				$link_title = '';
+
+				if ( isset($current_custom_errors[$role]) && !empty($current_custom_errors[$role]) ) {
+					$error_type_value = $current_custom_errors[$role];
+					$error_value_value = $current_custom_errors_value[$role];
+					if ( $error_type_value == 'error_404' ) {
+						$text = '404';
+						$link_title = __('Show 404 - page not found','wpcf-access');
+					} elseif ( $error_type_value == 'error_ct' ) {
+						$text = __('Template', 'wpcf-access').': '. self::get_content_template_name($error_value_value);
+						$link_title = __('Show Content Template','wpcf-access').' - '.self::get_content_template_name($error_value_value);
+					} else {
+						$text = __('PHP Template', 'wpcf-access').': '. $error_value_value;
+						$link_title = __('Show Page template','wpcf-access').' - '. $error_value_value;
+					}
+				}
+				elseif ( isset($current_custom_errors['everyone']) && !empty($current_custom_errors['everyone']) ) {
+					if ( $error_type_value == 'error_404' ) {
+						$link_title = __('Show 404 - page not found','wpcf-access');
+					} elseif ( $error_type_value == 'error_ct' ) {
+						$link_title = __('Show Content Template','wpcf-access').' - '.self::get_content_template_name($error_value_value);
+					} else {
+						$link_title = __('Show Page template','wpcf-access').' - '. $error_value_value;
+					}
+				}
+
+				//Set Archive Errors
+				if ( isset($current_archive_custom_errors[$role]) && !empty($current_archive_custom_errors[$role]) && isset($type_data['has_archive']) && $type_data['has_archive'] == 1  ) {
+					$archive_error_type_value = $current_archive_custom_errors[$role];
+					$archive_error_value_value = $current_archive_custom_errors_value[$role];
+					if ( $archive_error_type_value == 'default_error' ) {
+						$archive_text = __('Display: \'No posts found\'','wpcf-access');
+					} elseif ( $archive_error_type_value == 'error_ct' ) {
+						$archive_text = __('View Archive', 'wpcf-access').': '. self::get_view_name($archive_error_value_value);
+					} elseif ( $archive_error_type_value == 'error_php' ) {
+						$archive_text = __('PHP Archive', 'wpcf-access').': '. preg_replace("/.*(\/.*\/)/","$1",$archive_error_value_value);
+					}else{
+						$archive_text = '';
+					}
+
+				}
+
+
+				$is_archive = '';
+				$archive_vars = '';
+				if( isset($type_data['has_archive']) && $type_data['has_archive'] == 1 ){
+					$is_archive = 1;
+				}
+				$link_title = ' title="'. sprintf( __('Choose what to display to people who don’t have read permission for %s','wpcf-access'), $id) .'" ';
+
+				$error_type = 'types_access_error_type[' . $group_id . '][' . $id . '][permissions]' . '[' . $permission_slug . '][' . $role . ']';
+				$error_value = 'types_access_error_value[' . $group_id . '][' . $id . '][permissions]' . '[' . $permission_slug . '][' . $role . ']';
+				$archive_error_type = 'types_access_archive_error_type[' . $group_id . '][' . $id . '][permissions]' . '[' . $permission_slug . '][' . $role . ']';
+				$archive_error_value = 'types_access_archive_error_value[' . $group_id . '][' . $id . '][permissions]' . '[' . $permission_slug . '][' . $role . ']';
+
+		        $addon = '<a '.$link_title.'class="wpcf-add-error-page js-wpcf-add-error-page"'
+		        	.' data-typename="' . $error_type . '" data-valuename="' . $error_value . '"  data-curtype="'. $error_type_value . '" data-curvalue="'. $error_value_value . '"'
+		        	.' data-archivetypename="' . $archive_error_type . '" data-archivevaluename="' . $archive_error_value . '"  data-archivecurtype="'. $archive_error_type_value . '" data-archivecurvalue="'. $archive_error_value_value . '"'
+					. ' data-posttype="'.$id.'" data-archive="'.$is_archive.'" data-forall="0" href=""><i class="icon-edit fa fa-pencil-square-o"></i></a>';
+
+						//Labels
+						$addon .= '<p class="error-page-name-wrap js-tooltip"><span class="error-page-name js-error-page-name">' . $text . '</span></p>'
+						. '<p class="error-page-name-wrap js-tooltip"><span class="error-page-name js-archive_error-page-name">' . $archive_text . '</span></p>'
+						//Errors inputs
+						. '<input type="hidden" name="' . $error_type . '" value="' . $error_type_value.'">
+						<input type="hidden" name="' . $error_value . '" value="' . $error_value_value .'">';
+						if( isset($type_data['has_archive']) && $type_data['has_archive'] == 1 ){
+							$addon .= '<input type="hidden" name="' . $archive_error_type . '" value="' . $archive_error_type_value.'">
+							<input type="hidden" name="' . $archive_error_value . '" value="' . $archive_error_value_value .'">';
+						}
+
+			}
+			$att_id = $group_id . '_' . $id . '_permissions_' . $permission_slug . '_' . $role . '_role';
+            $attributes = $option_enabled ? ' checked="checked" ' : '';
+            $attributes .= !$managed ? ' readonly="readonly" disabled="disabled" ' : '';
+            $tooltip = '';
+            if ( $managed && $role == 'guest' && $permission_slug != 'read' && ( $group_id == 'types' || $group_id == 'tax' ) ){
+            	$attributes .= ' readonly="readonly" disabled="disabled" ';
+            	$tooltip = ' title="'. __('This option doesn\'t work for Guests', 'wpcf-access') .'"';
+
+			}
+			if ( $role != 'administrator' ){
+				$output .= '<td class="wpcf-access-table-option-cell"'.$tooltip.'><div class="error-page-set-wrap"><input type="checkbox" name="'. $name .'" id="' . $att_id . '" value="' . $role . '"'
+						. $attributes . ' class="wpcf-access-check-left wpcf-access-'
+						. $permission_slug . '" data-wpcfaccesscap="'
+						. $permission_slug . '" data-wpcfaccessname="'
+						. $name . '" ' . 'onclick="wpcfAccess.AutoThick(jQuery(this), \''
+						. $permission_slug . '\', \''
+						. $name . '\');"';
+				if (!$enabled) {
+					$output .= ' disabled="disabled" readonly="readonly"';
+				}
+				$output .= '/>'. $addon .'<span class="toolset-access-disabled-detector" data-parent="js-otg-access-settings-section-item-toggle-target-' . esc_attr( $id ) . '"></span></div></td>';
+			}else{
+				$output .= '<td class="wpcf-access-table-option-cell"'.$tooltip.'><div class="error-page-set-wrap"><input type="checkbox" name="'. $name .'" id="' . $att_id . '" value="' . $role . '"'
+						. $attributes . ' class="wpcf-access-check-left wpcf-access-'
+						. $permission_slug . '" ';
+				if (!$enabled) {
+					$output .= ' disabled="disabled" readonly="readonly"';
+				}
+				$output .= '/><input type="hidden" name="'. $name .'" id="' . $att_id . '" value="' . $role . '"'
+						. $attributes . ' class="wpcf-access-check-left wpcf-access-'
+						. $permission_slug . '" data-wpcfaccesscap="'
+						. $permission_slug . '" data-wpcfaccessname="'
+						. $name . '" ';
+				$output .= '/><span class="toolset-access-disabled-detector" data-parent="js-otg-access-settings-section-item-toggle-target-' . esc_attr( $id ) . '"></span></div></td>';
+			}
+
+
 		}
 		$output .= '</tr>';
-    }
-    $output .= '</tbody>';
-    $output .= '</table>';
+	}
+
+	//Specific users row
+	$output .= '<tr class="toolset-access-specific-users-row">';
+		$output .= '<th>&nbsp;</th>';
+		foreach ($settings as $permission_slug => $data){
+			$users_list = '';
+
+			//Fix users array
+			if ( isset($permissions[$permission_slug]['users']) && !empty($permissions[$permission_slug]['users']) && is_string($permissions[$permission_slug]['users']) && !empty($area) ){
+				$model = TAccess_Loader::get('MODEL/Access');
+				$permissions[$permission_slug]['users'] = explode(',', $permissions[$permission_slug]['users']);
+				$_temp_settings_global = $model->getAccessSettings();
+				$_temp_settings = $_temp_settings_global->$area;
+				$_temp_settings[$group_id][$id]['permissions'][$permission_slug]['users'] = $permissions[$permission_slug]['users'];
+				$_temp_settings_global->$area = $_temp_settings;
+				$model->updateAccessSettings($_temp_settings_global);
+			}
+
+			if ( isset($permissions[$permission_slug]['users']) && is_array($permissions[$permission_slug]['users']) && count($permissions[$permission_slug]['users']) > 0 ){
+				$args = array(
+					'orderby' => 'user_login',
+					'include' => array_slice($permissions[$permission_slug]['users'], 0, 2)
+				);
+				$user_query = new WP_User_Query( $args );
+				foreach ( $user_query->results as $user ) {
+					$users_list .= $user->data->user_login.'<br>';
+				}
+				$users_list .= ( (count($permissions[$permission_slug]['users']) > 2)? 'and '.(count($permissions[$permission_slug]['users'])-2).' more':'');
+			}
+			$link_disabled = !$managed ? ' js-toolset-access-specific-user-disabled' : '';
+
+			$output .= '<td>
+				<a href="#" title="'.__('Specific users', 'wpcf-access').'" class="js-toolset-access-specific-user-link'.$link_disabled.'"  data-parent="js-otg-access-settings-section-item-toggle-target-' . esc_attr( $id ) . '" data-slugtitle="'.$data['title'].'" data-option="'. $permission_slug .'" data-id="'. $id .'" data-groupid="'. $group_id .'">
+					<i class="icon-user-plus fa fa-user-plus"></i>
+				</a>
+				<span class="js-access-toolset-specific-users-list js-access-toolset-specific-users-list-'. $id.'-'. $group_id.'-'. $permission_slug.' access-toolset-specific-users-list">'. $users_list .'</span>
+				</td>';
+		}
+	$output .= '</td>';
+
+
+	$output .= '</table>';
+
     return $output;
 }
 
@@ -1818,31 +1788,70 @@ public static function wpcf_access_suggest_user( $enabled = true, $managed = fal
     return $output;
 }
 
-/**
- * New role form.
- *
- * @return string
- */
-public static function wpcf_access_new_role_form( $enabled ) {
-    $output = '';
-    $output .= '<div id="wpcf-access-new-role" class="wpcf-access-new-role-wrap js-otg-access-new-role-wrap">';
-		$output .= '<button class="button button-large button-secondary js-otg-access-add-new-role"';
-		if ( ! $enabled ) {
-			$output .= ' disabled="disabled" readonly="readonly"';
-		}
-		$output .= '><i class="icon-plus fa fa-plus"></i>' . __('Add a new role', 'wpcf-access') . '</button>';
-
-		$output .= '<div class="otg-access-new-role-extra js-otg-access-new-role-extra" style="display:none">';
-			$output .= '<input type="text" name="types_access[new_role]" class="js-otg-access-new-role-name" value="" /> ';
-			$output .= '<button class="button-secondary js-otg-access-new-role-cancel">' . __('Cancel', 'wpcf-access') . '</button> ';
-			$output .= '<button class="button-secondary js-otg-access-new-role-apply" disabled="disabled">' . __('Create role', 'wpcf-access') . '</button> ';
-			$output .= '<p>'
-				. __( 'Give the new role a name (5 characters minimum)', 'wpcf-access' )
-				. '</p>';
-		$output .= '</div>';
-		$output .= '<div class="ajax-response js-otg-access-message-container"></div>';
-    $output .= '</div>	<!-- #wpcf-access-new-role -->';
-    return $output;
+	/**
+	 * @sinse 2.2
+	 * return array of opened sections
+	 * @return mixed
+	 */
+public static function get_section_statuses(){
+	global $current_user;
+	$user_id = $current_user->ID;
+	$sections_array = get_user_meta( $user_id, 'wpcf_access_section_status', true );
+	return $sections_array;
 }
+
+/**
+ * @since 2.2
+ * Order wp_roles array
+ * order: administrator, super users, admins, editors, all other users
+*/
+public static function toolset_access_order_wp_roles( $invalidate = false ){
+
+	$ordered_roles = Access_Cacher::get( 'toolset_access_ordered_roles' );
+	if ( false === $ordered_roles || $invalidate = true  ) {
+		global $wp_roles;
+		if ( ! isset( $wp_roles ) || empty($wp_roles) ) {
+            $wp_roles = new WP_Roles();
+		}
+
+		$roles = $wp_roles->roles;
+		$group1 = $group2 = $group3 = $group4 = $group5 = $group6 = array();
+		ksort($roles);
+		foreach ( $roles as $role => $role_info ){
+			if ( $role == 'administrator' ){
+				$group1[$role] = $role_info;
+				$group1[$role]['permissions_group'] = 1;
+			}
+			elseif ( isset( $role_info['capabilities']['manage_network']) || isset( $role_info['capabilities']['manage_sites'])
+				|| isset( $role_info['capabilities']['manage_network_users'] ) || isset( $role_info['capabilities']['manage_network_plugins'] )
+				|| isset( $role_info['capabilities']['manage_network_themes'] ) || isset( $role_info['capabilities']['manage_network_options'] ) ){
+				$group2[$role] = $role_info;
+				$group2[$role]['permissions_group'] = 2;
+			}
+			elseif ( isset( $role_info['capabilities']['delete_users'] ) ){
+				$group3[$role] = $role_info;
+				$group3[$role]['permissions_group'] = 3;
+			}
+			elseif ( isset( $role_info['capabilities']['edit_others_pages'] ) || isset( $role_info['capabilities']['edit_others_posts'] ) ){
+				$group4[$role] = $role_info;
+				$group4[$role]['permissions_group'] = 4;
+			}
+			elseif ( isset( $role_info['capabilities']['edit_pages'] ) || isset( $role_info['capabilities']['edit_posts'] ) ){
+				$group5[$role] = $role_info;
+				$group5[$role]['permissions_group'] = 5;
+			}
+			else{
+				$group6[$role] = $role_info;
+				$group6[$role]['permissions_group'] = 6;
+			}
+		}
+		$ordered_roles = array_merge($group1, $group2, $group3, $group4, $group5, $group6);
+		$ordered_roles['guest'] = array( 'name' => __('Guest', 'wpcf-access'), 'permissions_group' => 6, 'capabilities' => array('read'=>1) );
+		Access_Cacher::set( 'toolset_access_ordered_roles', $ordered_roles  );
+	}
+
+	return $ordered_roles;
+}
+
 
 }

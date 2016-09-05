@@ -7,6 +7,7 @@ class WPDD_Layouts {
 	private $registed_cells = null;
 	private $layouts_editor_page = false;
 	public $css_manager;
+    public $js_manager;
 	private $scripts_manager;
 	public $post_types_manager;
 	public $frameworks_options_manager;
@@ -20,11 +21,16 @@ class WPDD_Layouts {
     private $ddl_caps;
 	private $options;
 
+	static $containers_elements = array();
+
 	function __construct(){
 
         add_filter('ddl-get_layout_settings', array(__CLASS__, 'get_layout_settings'), 10, 3 );
-
+        add_filter('ddl-containers_elements', array(__CLASS__, 'get_containers_elements'), 10, 1 );
+        
 		do_action('ddl-before_init_layouts_plugin');
+
+        self::set_containers_elements();
 
         $this->plugin_localization();
 
@@ -60,6 +66,7 @@ class WPDD_Layouts {
 		$this->wpddl_init();
 
 		$this->css_manager = WPDD_Layouts_CSSManager::getInstance();
+        $this->js_manager = WPDD_Layouts_JsManager::getInstance();
 
 		$this->frameworks_options_manager = WPDD_Layouts_CSSFrameworkOptions::getInstance();
 
@@ -212,7 +219,22 @@ class WPDD_Layouts {
     {
         // TODO: Implement __clone() method.
     }
-    
+
+    static function set_containers_elements(){
+        self::$containers_elements = apply_filters('ddl-set_containers_elements', array(
+            'ddl-container' => 'Container',
+            'row' => 'ContainerRow',
+            'tabs-cell' => 'Tabs',
+            'tabs-tab' => 'Tab',
+			'accordion-cell' => 'Accordion',
+            'accordion-panel' => 'Panel'
+        ));
+    }
+
+    static function get_containers_elements( $array = array() ){
+        return self::$containers_elements;
+    }
+
     function init_scripts(){
         
     }
@@ -474,10 +496,20 @@ class WPDD_Layouts {
         }
 
 		$templates = wp_get_theme()->get_page_templates();
+        // is integration plugin installed
+        $current_theme = wp_get_theme();
+
+        $all_templates = array();
+        if(defined('TOOLSET_INTEGRATION_PLUGIN_THEME_NAME') && TOOLSET_INTEGRATION_PLUGIN_THEME_NAME === $current_theme['Name']){
+            foreach($templates as $file_name=>$template_name){
+                $all_templates[] = $file_name;
+            }
+        }
 
 		$ret->layout_templates = self::templates_have_layout( $templates );
 		$ret->template_option = $template_option;
 
+        $ret->layout_templates = array_merge($all_templates,$ret->layout_templates);
 		return $ret;
 	}
 
@@ -1102,6 +1134,10 @@ class WPDD_Layouts {
 	function get_layout_css()
 	{
 		return $this->css_manager->get_layouts_css();
+	}
+    function get_layout_js()
+	{
+		return $this->js_manager->get_layouts_js();
 	}
 
     function get_where_used( $layout_id,

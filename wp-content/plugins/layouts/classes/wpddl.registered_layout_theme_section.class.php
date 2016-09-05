@@ -83,6 +83,7 @@ class WPDD_layout_theme_section extends WPDD_layout_element {
 		$this->set_theme_section($theme_section);
 		$this->theme_section_data = $theme_section_data;
 		$this->row_data = $row_data;
+        $this->context = null;
 	}
 
 	function frontend_render($target) {
@@ -147,4 +148,8 @@ class WPDD_layout_theme_section extends WPDD_layout_element {
 	function is_row_with_child(){
 		return false;
 	}
+
+    function set_context($context) {
+        $this->context = $context;
+    }
 }

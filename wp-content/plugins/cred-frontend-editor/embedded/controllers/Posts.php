@@ -59,6 +59,33 @@ final class CRED_Posts_Controller extends CRED_Abstract_Controller {
         die();
     }
 
+    public function suggestUserByName($get, $post) {
+        if (!current_user_can(CRED_CAPABILITY))
+            wp_die();
+
+        if (!isset($get['q'])) {
+            echo '';
+            die();
+        }
+
+        $q = sanitize_text_field($get['q']);
+        $results = CRED_Loader::get('MODEL/UserFields')->suggestUserByName($q, 20);
+
+        $output = '';
+        /* foreach ($results as $result)
+          $output.=$result->post_title."\n"; */
+        $results2 = array();
+        if (is_array($results)) {
+            foreach ($results as $userdata) {
+                $result = $userdata->data;
+                $results2[] = array('display' => $result->user_login, 'val' => $result->ID);
+            }
+            $output = json_encode($results2);
+        }
+        echo $output;
+        die();
+    }
+
     public function suggestPostsByTitle($get, $post) {
         if (!current_user_can(CRED_CAPABILITY))
             wp_die();
@@ -71,6 +98,11 @@ final class CRED_Posts_Controller extends CRED_Abstract_Controller {
         $post_type = null;
         if (isset($get['cred_post_type']))
             $post_type = sanitize_text_field($get['cred_post_type']);
+        
+        //Force to search post
+        if ($post_type == null) 
+            $post_type = 'post';
+        
         $q = sanitize_text_field($get['q']);
         $results = CRED_Loader::get('MODEL/Fields')->suggestPostsByTitle($q, $post_type, 20);
         $output = '';
@@ -195,10 +227,10 @@ final class CRED_Posts_Controller extends CRED_Abstract_Controller {
                     $redirect_url = apply_filters('cred_redirect_after_delete_action', $redirect_url, $post_id);
 
                 if ($redirect_url)
-                    $redirect_url = '"' . preg_replace("/\"/","", $redirect_url) . '"';
+                    $redirect_url = '"' . preg_replace("/\"/", "", $redirect_url) . '"';
                 else
                     $redirect_url = 'false';
-                
+
                 $fm = CRED_Loader::get('MODEL/Forms');
                 if ($get['cred_action'] == 'delete')
                     $result = $fm->deletePost($post_id, true);  // delete
@@ -213,7 +245,7 @@ final class CRED_Posts_Controller extends CRED_Abstract_Controller {
             }
             //echo json_encode($result); 
 
-            if ($result) {               
+            if ($result) {
                 if (array_key_exists('_cred_link_id', $get))
                     $jsfuncs['parent._cred_cred_delete_post_handler'] = array('false', '"' . urldecode($get['_cred_link_id']) . '"', $redirect_url, '101');
                 else

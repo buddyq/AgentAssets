@@ -67,6 +67,7 @@ if ( empty( $post_expiration_time ) ) {
 $options = apply_filters('cred_pe_post_expiration_post_status', $cred_post_expiration->getActionPostStatus());
 ?>
             <select id="cred_post_expiration_post_status" name="cred_pe[<?php echo $action_field_name; ?>][post_status]">
+                <!--<option value="" selected="selected"><?php echo __('-- Select action --', 'wp-cred'); ?></option>-->
             <?php foreach ($options as $value => $text) { ?>
                 <option value="<?php echo $value; ?>" <?php if ($value == $post_expiration_action['post_status']) echo 'selected="selected"'; ?>><?php echo $text; ?></option>
                 <?php } ?>

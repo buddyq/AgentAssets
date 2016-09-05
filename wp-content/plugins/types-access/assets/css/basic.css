@@ -15,12 +15,32 @@
     /*display: block;*/
 }
 
+
+.toolset-access-table-notification{
+	left:50% !important;
+	margin-left:-20% !important;
+}
+
 .ac_results{
 	/**
 	* Commented out because it breaks autocomplete suggestions in, well, everywhere, if any result is longer.
 	* Adjust to specific place if needed, using the resultsClass option.
 	*/
 	/*width:200px !important;*/
+}
+
+/* Alarm notification */
+.toolset-access-alarm-wrap-left{
+	float: left;
+	width: 125px;
+}
+.toolset-access-alarm-wrap-left i{
+	margin: 40px;
+}
+.toolset-access-alarm-wrap-right{
+	float: left;
+	width: 300px;
+	padding-left: 16pxt;
 }
 
 .otg-access-mightlong-list {
@@ -101,12 +121,40 @@ h4.otg-access-settings-section-item-toggle {
 		margin: 0;
 		padding: 10px 20px;
 		transition: border 1s linear;
+		position:relative;
 	}
 	
 		.otg-access-settings-section-item.otg-access-settings-section-item-saved .otg-access-settings-section-item-content {
 			border-top: solid 1px #7ad03a;
 		}
-	
+
+	.toolset-access-posts-group-info{
+		background-color: #fff;
+		border: solid 1px #E5E5E5;
+		margin: 0;
+		padding: 10px 20px;
+		transition: border 1s linear;
+		text-align:right;
+	}
+		.toolset-access-posts-group-assigned-posts-list{
+			float:left;
+			line-height:30px;
+			font-size:14px;
+		}
+		.toolset-access-post-group-remove-group{
+			border-top:  solid 1px #E5E5E5;
+			margin-left:-20px;
+			padding-right:20px;
+			padding-top:10px;
+			float:left;
+			width:100%;
+			padding-left:20px;
+		}
+		.js-wpcf-remove-group{
+			color: #a00;
+			text-decoration: none;
+		}
+
 	.otg-access-settings-section-item .otg-access-settings-section-item-managed {
 		display: block;
 		float: right;
@@ -141,10 +189,14 @@ h3.wpcf-section-header{
 		margin: 0;
 	}
 
-	.wpcf-access-custom-roles-table td {
+	.wpcf-access-custom-roles-table tbody td {
 		padding: 5px;
-		border-bottom: 1px solid #E5E5E5;
+		padding-left:15px;
 		vertical-align: top;
+	}
+
+	.wpcf-access-custom-roles-table th td{
+
 	}
 
 	.wpcf-access-custom-roles-table .wpcf-access-roles-builtin {
@@ -260,10 +312,11 @@ h3.wpcf-section-header{
 	.wpcf-access-table td,
 	.wpcf-access-table th {
 		text-align: left;
-		padding: 5px 15px 5px 5px;
-		vertical-align: top;
+		vertical-align:top;
 	}
-
+	.wpcf-access-table td{
+		height:59px;
+	}
 	.wpcf-access-table input[type=checkbox] {
 		/*margin-top: 5px;*/
 	}
@@ -272,6 +325,14 @@ h3.wpcf-section-header{
 			max-width: 120px;
 			padding-top: 8px;
 			min-width:100px;
+			font-weight:bold;
+		}
+
+		.wpcf-access-mode table td.wpcf-access-table-option-cell{
+			text-align:left;
+		}
+		.wpcf-access-mode table tbody th{
+			text-align:left;
 		}
 
 span.wpcf-access-shortcut-section {
@@ -295,7 +356,7 @@ span.wpcf-access-shortcut-section {
 }
 
 a.wpcf-access-delete-role {
-    color: red;
+    color: #aa0000;
     text-decoration: none;
 }
 
@@ -449,7 +510,26 @@ button i,
 .error-page-set-wrap {
 	min-width: 45px;
 	white-space: nowrap;
+	position: relative;
 }
+span.toolset-access-disabled-detector {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    opacity: 0;
+    cursor: pointer;
+}
+
+input+span.toolset-access-disabled-detector {
+    display: none;
+}
+
+input[disabled]+span.toolset-access-disabled-detector {
+    display: inline;
+}
+
 
 .error-page-name-wrap,
 .access-role-name-wrap {
@@ -458,19 +538,20 @@ button i,
 	cursor: default;
 }
 
-.error-page-name-wrap {
-	margin-top: 5px;
+.error-page-name-wrap{
+	margin: 0px !important;
+	padding:0px;
 	display:none;
 }
 
 .is-enabled .error-page-name-wrap {
-		display: block;
+	display: block;
 }
-
 
 .error-page-name,
 .access-role-name {
 	display: block;
+	margin-top:0px;
 	max-width: 200px;
 	white-space: nowrap;
 	overflow: hidden;
@@ -571,7 +652,12 @@ button i,
 .toolset-alert.dep-message {
 	position: absolute;
 	left: 200px;
-    margin-top:-10px;
+    margin-top:4px;
+}
+
+.toolset-access-post-groups-info{
+	float:left;
+	margin-top:-6px !important;
 }
 
 .error-page-name,
@@ -725,7 +811,7 @@ html[dir='rtl'] button i {
 .wpcf-access-capability-tabs a{
     display: block;
     color: #444;
-    font-family: "Open Sans",sans-serif;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", "Open Sans", sans-serif;
     font-size: 13px;
     line-height: 2em;
     text-decoration: none;
@@ -817,3 +903,120 @@ a{
 		float: left;
 		padding: 0 10px;
 	}
+
+.otg-access-new-role-extra{
+	font-weight:bold;
+}
+.otg-access-new-role-extra td{
+	line-height:50px;
+}
+.otg-access-new-role-extra td:nth-child(1){
+	text-align:right;
+	padding-right:10px;
+}
+
+.toolset-access-new-role-header{
+	margin-bottom:25px;
+	text-align:right;
+}
+
+.wpcf-access-roles-custom{
+	font-weight:bold;
+}
+.js-wpcf-access-gui-close{
+	position: absolute;
+    left: 0px;
+}
+.js-toolset-access-dialog .ui-dialog-buttonpane{
+	height:24px;
+	padding-top:12px;
+}
+
+.js-wpcf-access-process-button-red{
+	background: #aa0000 !important;
+	border-color: #aa0000 !important;
+	text-shadow: none  !important;
+	box-shadow: 0 1px 0 #aa0000 !important;
+}
+
+.toolset-access-align-right{
+	text-align: right;
+	width:30%;
+	display:inline-block;
+	float:right;
+}
+.toolset-access-specific-users-row td{
+		vertical-align: top;
+}
+.toolset-access-specific-users-row a{
+	font-size:16px;
+	color: #000;
+}
+/* Css for select2 4+*/
+.js-toolset-access-select2-dropdown.select2-close-mask{
+    z-index: 100110 !important;
+}
+.js-toolset-access-select2-dropdown.select2-results{
+    z-index: 100111 !important;
+}
+.js-toolset-access-select2-dropdown{
+    z-index: 100111 !important;
+
+}
+#toolset-access-user-suggest-field{
+	display:inline-block;
+    width:399px;
+}
+
+.otgs-access-posts-listing{
+	border:1px solid #ccc;
+	clear:both;
+	width:466px;
+	min-height:150px;
+	margin-left:1px;
+	max-height:250px;
+	overflow-y: scroll;
+}
+.otgs-access-users-listing{
+	width:475px;
+}
+.js-assigned-access-item, .js-assigned-access-post{
+	border-bottom:1px solid #ccc;
+	padding:10px;
+}
+.js-wpcf-unassign-access-item i, .js-wpcf-unassign-access-post i{
+	float:right;
+	margin-right:10px;
+	margin-top:2px;color:#aa0000;
+}
+.access-toolset-specific-users-list{
+	display:block;
+}
+
+.toolset-access-roles-column-fixed-width{
+	width: 20% !important;
+
+}
+.toolset-access-nag{
+	position: relative;
+}
+.js-toolset-access-dismiss-update-notice-notice{
+	position: absolute;
+	top:10px;
+	right:10px;
+	color: #666;
+	font-size:17px;
+}
+
+#wpcf-access-set_error_page select, #wpcf-access-set_error_page select option{
+	width: 100%;
+}
+.toolset-access-tab-info{
+	display:inline-block;
+	width:60%;
+	font-weight: bold;
+}
+
+.js-toolset-access-specific-user-disabled{
+	color: #ccc !important;
+}

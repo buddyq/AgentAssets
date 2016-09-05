@@ -2,7 +2,6 @@
 // register the container
 class WPDD_layout_container_factory extends WPDD_layout_cell_factory
 {
-
     public function get_cell_info($template)
     {
         $template['cell-image-url'] = DDL_ICONS_SVG_REL_PATH.'grid-cell.svg';
@@ -18,7 +17,7 @@ class WPDD_layout_container_factory extends WPDD_layout_cell_factory
         return $template;
     }
 
-    private function _dialog_template()
+    protected function _dialog_template()
     {
         global $wpddl_features;
         $hide = $wpddl_features->is_feature('fixed-layout') ? '' : ' class="hidden" ';
@@ -59,7 +58,7 @@ class WPDD_layout_container_factory extends WPDD_layout_cell_factory
                             <div class="grid-info-wrap">
                                 <span id="js-fluid-grid-info-container" class="grid-info"></span>
                             </div>
-                            <div id="js-fluid-grid-designer" class="grid-designer"
+                            <div id="js-fluid-grid-designer" class="grid-designer js-fluid-grid-designer-el"
                                  data-rows="2"
                                  data-cols="4"
                                  data-max-cols="12"

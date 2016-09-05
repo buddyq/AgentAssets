@@ -13,21 +13,21 @@ public static function init()
         add_action('wpcf_access_late_init', array(__CLASS__,'wpcf_access_user_can_upload_files'));
     else
         add_action('wpcf_access_late_init', array(__CLASS__, 'wpcf_access_user_can_upload_files_update'));
-    
+
     add_action('types_access_check_override', array(__CLASS__, 'wpcf_access_files_override'), 10, 2);
 }
 
 /**
  * Handle uploads.
- * 
+ *
  * Set 'upload_files' capability for current user on 'init' hook.
  * After we set default capabilities, we dynamically set upload_files
  * to match current action.
- * 
+ *
  * @global type $current_user
- * @global type $wpcf_access 
+ * @global type $wpcf_access
  */
-public static function wpcf_access_user_can_upload_files() 
+public static function wpcf_access_user_can_upload_files()
 {
     global $wpcf_access;
     $current_user = wp_get_current_user();
@@ -59,7 +59,7 @@ public static function wpcf_access_user_can_upload_files()
 
     // If rule for post_type exists - follow it
     if (!empty($current_user->allcaps) && !empty($post_type)) {
-        
+
         // TODO Monitor this
         $post_type_obj = get_post_type_object($post_type);
         if (is_null($post_type_obj)) {
@@ -71,10 +71,13 @@ public static function wpcf_access_user_can_upload_files()
             $cap_found = Access_Helper::wpcf_access_search_cap($post_type_obj->cap->edit_posts);
             if (!empty($cap_found)) {
                 $wpcf_access->upload_files['cap_found'] = $cap_found;
-                $allow = Access_Helper::wpcf_access_is_role_ranked_higher($role,
-                        $cap_found['role']);
+                if ( $role == 'administrator' ){
+                    $allow = true;
+                }else{
+                    $allow = (in_array( $role, $cap_found['roles']) !== FALSE ? true : false);
+                }
                 if (!$allow) {
-                    $allow = in_array($current_user->ID, $cap_found['users']);
+                    $allow = (in_array( $current_user->ID, $cap_found['users']) !== FALSE ? true : false);
                 }
                 if (!$allow) {
                     unset($current_user->allcaps['upload_files']);
@@ -97,11 +100,11 @@ public static function wpcf_access_user_can_upload_files()
 
 /**
  * Filters exceptions check.
- * 
+ *
  * @param type $args
- * @return type 
+ * @return type
  */
-public static function wpcf_access_exceptions_upload_files($args) 
+public static function wpcf_access_exceptions_upload_files($args)
 {
     global $wpcf_access;
     $capability_requested = $args[0];
@@ -180,7 +183,7 @@ public static function wpcf_access_exceptions_upload_files($args)
                 //
                 //
                 //
-                
+
                 // No matter if Media post_type is registered,
                 // on upload screens we always convert capability to match
                 // parent post type
@@ -229,13 +232,13 @@ public static function wpcf_access_exceptions_upload_files($args)
 
 /**
  * Override 'upload_files' check.
- * 
+ *
  * Fixes upload_files check.
- * 
+ *
  * @param type $null
- * @param type $parse_args 
+ * @param type $parse_args
  */
-public static function wpcf_access_upload_files_check_override($null, $parse_args = array()) 
+public static function wpcf_access_upload_files_check_override($null, $parse_args = array())
 {
     // Fix upload files
     if (isset($parse_args['cap']) && $parse_args['cap'] == 'upload_files') {
@@ -247,18 +250,18 @@ public static function wpcf_access_upload_files_check_override($null, $parse_arg
 
 /**
  * Updated upload_files filter.
- * 
+ *
  * WP introduced built-in Media post type. This sometimes overlaps with
  * upload_files capability. We must see how and if we need to make any decisions
  * how these two capabilities should work in conjuction.
- * 
+ *
  * Debug property
  * $wpcf_access->upload_files
- * 
+ *
  * @since WP 3.5
- * @global type $wpcf_access 
+ * @global type $wpcf_access
  */
-public static function wpcf_access_user_can_upload_files_update() 
+public static function wpcf_access_user_can_upload_files_update()
 {
     global $wpcf_access;
     $wpcf_access->upload_files['new_media_post_type'] = true;
@@ -267,18 +270,18 @@ public static function wpcf_access_user_can_upload_files_update()
 
 /**
  * WP 3.5 This is fix for inserting to editor.
- * 
+ *
  * New GUI checks if current use can 'edit_post' with certain ID
  * even if attachment is in question.
- * 
+ *
  * Access logic requires that attachment in this case can be inserted
  * in parent post if user can edit parent post_type.
- * 
+ *
  * @param type $null
  * @param type $parse_args
- * @return type 
+ * @return type
  */
-public static function wpcf_access_files_override($null, $parse_args) 
+public static function wpcf_access_files_override($null, $parse_args)
 {
     // To check if on media upload screen use
     // either basename($_SERVER['SCRIPT_NAME']) == 'async-upload.php'

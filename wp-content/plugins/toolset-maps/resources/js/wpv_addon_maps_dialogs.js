@@ -440,26 +440,40 @@ WPViews.AddonMapsDialogs = function( $ ) {
 	$( document ).on( 'js_event_wpv_shortcode_gui_dialog_opened', function( event, data ) {
 		switch ( data.shortcode ) {
 			case 'wpv-map-render':
-				// Set current active editor
-				self.current_active_editor = window.wpcfActiveEditor;
-				// Preload the map ID
-				$( '.js-wpv-shortcode-gui-attribute-wrapper-for-map_id #wpv-map-render-map_id' ).val( 'map-' + ( self.map_counter + 1 ) );
-				// Hide advanced options that are shown on demand: zoom and center
-				$( '.js-wpv-shortcode-gui-attribute-wrapper-for-general_zoom, .js-wpv-shortcode-gui-attribute-wrapper-for-general_center_lat, .js-wpv-shortcode-gui-attribute-wrapper-for-general_center_lon, .js-wpv-shortcode-gui-attribute-wrapper-for-single_center' ).hide();
-				// Hide advanced options that are shown on demand: cluster
-				$( '.js-wpv-shortcode-gui-attribute-wrapper-for-cluster_click_zoom' ).hide();
-				$( '.js-wpv-shortcode-gui-attribute-wrapper-for-general_center_lon h3' ).remove();
-				self.init_cluster_options();
-				self.init_marker_icons( 'map' );
-				self.init_colorpicker();
+				if ( $( '.js-wpv-shortcode-gui-attribute-wrapper-for-missing_api_key' ).length > 0 ) {
+					$( '.js-wpv-shortcode-gui-attribute-wrapper-for-missing_api_key h3' ).remove();
+					$( '.js-wpv-shortcode-gui-button-insert' )
+						.prop( 'disabled', true )
+						.toggleClass( 'button-secondary button-primary' );
+				} else {
+					// Set current active editor
+					self.current_active_editor = window.wpcfActiveEditor;
+					// Preload the map ID
+					$( '.js-wpv-shortcode-gui-attribute-wrapper-for-map_id #wpv-map-render-map_id' ).val( 'map-' + ( self.map_counter + 1 ) );
+					// Hide advanced options that are shown on demand: zoom and center
+					$( '.js-wpv-shortcode-gui-attribute-wrapper-for-general_zoom, .js-wpv-shortcode-gui-attribute-wrapper-for-general_center_lat, .js-wpv-shortcode-gui-attribute-wrapper-for-general_center_lon, .js-wpv-shortcode-gui-attribute-wrapper-for-single_center' ).hide();
+					// Hide advanced options that are shown on demand: cluster
+					$( '.js-wpv-shortcode-gui-attribute-wrapper-for-cluster_click_zoom' ).hide();
+					$( '.js-wpv-shortcode-gui-attribute-wrapper-for-general_center_lon h3' ).remove();
+					self.init_cluster_options();
+					self.init_marker_icons( 'map' );
+					self.init_colorpicker();
+				}
 				break;
 			case 'wpv-map-marker':
-				// Set current active editor
-				self.current_active_editor = window.wpcfActiveEditor;
-				self.init_ids_for_marker();
-				self.init_sources_for_marker();
-				self.init_marker_icons( 'marker' );
-				self.init_marker_icons_inherit();
+				if ( $( '.js-wpv-shortcode-gui-attribute-wrapper-for-missing_api_key' ).length > 0 ) {
+					$( '.js-wpv-shortcode-gui-attribute-wrapper-for-missing_api_key h3' ).remove();
+					$( '.js-wpv-shortcode-gui-button-insert' )
+						.prop( 'disabled', true )
+						.toggleClass( 'button-secondary button-primary' );
+				} else {
+					// Set current active editor
+					self.current_active_editor = window.wpcfActiveEditor;
+					self.init_ids_for_marker();
+					self.init_sources_for_marker();
+					self.init_marker_icons( 'marker' );
+					self.init_marker_icons_inherit();
+				}
 				break;
 		}
 	});

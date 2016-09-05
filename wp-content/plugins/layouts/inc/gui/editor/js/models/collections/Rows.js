@@ -10,14 +10,18 @@ DDLayout.models.collections.Rows = Backbone.Collection.extend({
     {
         return this.collection.length;
     },
-	addRowAfterAnother:function( prev_row, cells, row_name, additional_css, layout_type, row_divider, type )
+	addRowAfterAnother:function( prev_row, cells, row_name, additional_css, layout_type, row_divider, kind, row_type )
 	{
 		var self = this,
 			index = self.indexOf( prev_row ),
 			len = self.length,
-			row = new DDLayout.models.cells.Row( {kind : 'Row',
+			row_kind = kind ? kind : 'Row',
+            css_class = row_type +'-' + layout_type,
+			row_type = row_type ? row_type : 'row',
+			row = new DDLayout.models.cells[kind]( {kind : row_kind,
 												  Cells : cells,
-												  cssClass : 'row-' + layout_type,
+				                                   row_type: row_type,
+												  cssClass : css_class,
 												  name : row_name,
 												  additionalCssClasses: additional_css,
 												  row_divider: row_divider} );
@@ -60,7 +64,7 @@ DDLayout.models.collections.Rows = Backbone.Collection.extend({
 
 		return self;
 	},
-	addRows:function( amount, width, layout_type, row_divider, cellKind, cellType )
+	addRows:function( amount, width, layout_type, row_divider, cellKind, cellType, kind, row_type )
 	{
 		var self = this,
 			row,
@@ -68,6 +72,8 @@ DDLayout.models.collections.Rows = Backbone.Collection.extend({
 			row_width = width,
 			cell_kind = cellKind ? cellKind : 'Cell',
 			cell_type = cellType ? cellType : 'undefined',
+			row_kind = kind ? kind : 'Row',
+            row_type = row_type ? row_type : 'row',
             layout = layout_type || DDLayout.ddl_admin_page.getLayoutType();
 		
 		for( var i = 1; i <= amount; i++)
@@ -79,10 +85,11 @@ DDLayout.models.collections.Rows = Backbone.Collection.extend({
 
 			cells.addCells( cell_kind, cell_type, row_width, layout_type, row_divider );
 			
-			row = new DDLayout.models.cells.Row( {	kind:'Row',
+			row = new DDLayout.models.cells[row_kind]( {kind:row_kind,
 													Cells:cells,
-													cssClass:'row-'+layout,
-													name:'Row ' + i,
+													row_type: row_type,
+													cssClass: row_type ? row_type +'-' : 'row-'+layout,
+													name:row_kind + ' ' + i,
 													row_divider: row_divider} );
 			
 			row.setLayoutType( layout );
@@ -133,7 +140,7 @@ DDLayout.models.collections.Rows = Backbone.Collection.extend({
 		return -1;
 		
 	},
-	
+
 	find_cell_of_type : function ( cell_type ) {
 		var self = this;
 		

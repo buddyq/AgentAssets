@@ -149,6 +149,9 @@ class WPVDemo_WordPress_Reset extends WordPressReset
 		remove_all_filters('pre_update_option_rewrite_rules');
 		remove_all_filters('post_link');
 		remove_all_filters('home_url');
+		remove_all_filters('locale');
+		remove_all_filters('option_rewrite_rules');
+		remove_all_actions('shutdown');
 	}
 		
 	// admin_print_scripts action hook operations

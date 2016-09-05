@@ -365,11 +365,15 @@
                                         <span ><?php _e('Edit another post', 'wp-cred'); ?></span></label>
                                     <div class='cred-edit-other-post-more2' style='display:inline-block'>
                                         <div style='display:inline-block' class='cred_ajax_loader_small cred-form-addtional-loader2'></div>
-                                        <select class="cred-edit-post-select2" name="cred-edit-post-select-<?php echo $id; ?>">
-                                            <optgroup label="<?php echo esc_attr(__('Select post', 'wp-cred')); ?>">
-                                                <option value='' disabled selected style='display:none;'><?php _e('Select post', 'wp-cred'); ?></option>
-                                            </optgroup>
-                                        </select>
+                                        <?php if (false) : ?>
+                                            <select class="cred-edit-post-select2" name="cred-edit-post-select-<?php echo $id; ?>">
+                                                <optgroup label="<?php echo esc_attr(__('Select post', 'wp-cred')); ?>">
+                                                    <option value='' disabled selected style='display:none;'><?php _e('Select post', 'wp-cred'); ?></option>
+                                                </optgroup>
+                                            </select>
+                                        <?php endif; ?>
+                                        <input  type='text' id='cred-edit-post-select2' name='cred-edit-post-select2' value='' placeholder="<?php echo esc_attr(__('Type some characters..', 'wp-cred')); ?>" />
+
                                     </div>
                                 </td>
                             </tr>
@@ -469,11 +473,14 @@
                                         <span ><?php _e('Edit another user', 'wp-cred'); ?></span></label>
                                     <div class='cred-edit-other-user-more2' style='display:inline-block'>
                                         <div style='display:inline-block' class='cred_ajax_loader_small cred-form-addtional-loader2'></div>
-                                        <select class="cred-edit-user-select2" name="cred-edit-user-select-<?php echo $id; ?>">
-                                            <optgroup label="<?php echo esc_attr(__('Select user', 'wp-cred')); ?>">
-                                                <option value='' disabled selected style='display:none;'><?php _e('Select user', 'wp-cred'); ?></option>
-                                            </optgroup>
-                                        </select>
+                                        <?php if (false) : ?>
+                                            <select class="cred-edit-user-select2" name="cred-edit-user-select-<?php echo $id; ?>">
+                                                <optgroup label="<?php echo esc_attr(__('Select user', 'wp-cred')); ?>">
+                                                    <option value='' disabled selected style='display:none;'><?php _e('Select user', 'wp-cred'); ?></option>
+                                                </optgroup>
+                                            </select>
+                                        <?php endif; ?>
+                                        <input  type='text' id='cred-edit-user-select' name='cred-edit-user-select2' value='' placeholder="<?php echo esc_attr(__('Type some characters..', 'wp-cred')); ?>" />
                                     </div>
                                 </td>
                             </tr>

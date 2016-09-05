@@ -1,83 +1,124 @@
 /* Auxilliary plugins and functions */
-(function(window, $, undefined){
-var thisExportName='cred_extra';
+(function (window, $, undefined) {
+    var thisExportName = 'cred_extra';
 
-if (window[thisExportName]) return;
+    if (window[thisExportName])
+        return;
 
-    function hasUIEffect(effect) { return $.effects && $.effects[effect]; }
+    function hasUIEffect(effect) {
+        return $.effects && $.effects[effect];
+    }
 
-    $.fn.fadeToggle = function(speed, easing, callback) {
-        return this.each(function(){$(this).stop(true).animate({opacity: 'toggle'}, speed, easing || 'linear', function() {
-                if ($.browser && $.browser.msie) { this.style.removeAttribute('filter'); }
-                if ($.isFunction(callback)) { callback.call(this); }
-            });
+//    $.fn.fadeToggle = function(speed, easing, callback) {
+//        return this.each(function(){$(this).stop(true).animate({opacity: 'toggle'}, speed, easing || 'linear', function() {
+//                if ($.browser && $.browser.msie) { this.style.removeAttribute('filter'); }
+//                if ($.isFunction(callback)) { callback.call(this); }
+//            });
+//        });
+//    };
+//    $.fn.slideFadeToggle = function(speed, easing, callback) {
+//        return this.each(function(){$(this).stop(true).animate({opacity: 'toggle', height: 'toggle'}, speed, easing || 'linear', function() {
+//                if ($.browser && $.browser.msie) { this.style.removeAttribute('filter'); }
+//                if ($.isFunction(callback)) { callback.call(this); }
+//            });
+//        });
+//    };
+    $.fn.slideFadeDown = function (speed, callback) {
+        return this.each(function () {
+
+            $(this).stop(true, true)
+                    .animate({
+                        height: "toggle",
+                        opacity: "toggle"
+                    }, speed, function () {
+                        if ($.browser && $.browser.msie) {
+                            this.style.removeAttribute('filter');
+                        }
+                        if ($.isFunction(callback)) {
+                            callback.call(this);
+                        }
+                    });
+
+//            $(this).stop(true).animate({opacity: 'show', height: 'show'}, speed, function () {
+//                if ($.browser && $.browser.msie) {
+//                    this.style.removeAttribute('filter');
+//                }
+//                if ($.isFunction(callback)) {
+//                    callback.call(this);
+//                }
+//            });
         });
     };
-    $.fn.slideFadeToggle = function(speed, easing, callback) {
-        return this.each(function(){$(this).stop(true).animate({opacity: 'toggle', height: 'toggle'}, speed, easing || 'linear', function() {
-                if ($.browser && $.browser.msie) { this.style.removeAttribute('filter'); }
-                if ($.isFunction(callback)) { callback.call(this); }
-            });
-        });
-    };
-    $.fn.slideFadeDown = function(speed, easing, callback) {
-        return this.each(function(){$(this).stop(true).animate({opacity: 'show', height: 'show'}, speed, easing || 'linear', function() {
-                if ($.browser && $.browser.msie) { this.style.removeAttribute('filter'); }
-                if ($.isFunction(callback)) { callback.call(this); }
-            });
-        });
-    };
-    $.fn.slideFadeUp = function(speed, easing, callback) {
-        return this.each(function(){
+    $.fn.slideFadeUp = function (speed, callback) {
+        return this.each(function () {
             if ($(this).is(':hidden'))
                 $(this).hide(); // makes element not lose height if already hidden (eg by parent element)
             else
             {
-                $(this).stop(true).animate({opacity: 'hide', height: 'hide'}, speed, easing || 'linear', function() {
-                    if ($.browser && $.browser.msie) { this.style.removeAttribute('filter'); }
-                    if ($.isFunction(callback)) { callback.call(this); }
-                });
+                $(this).stop(true, true)
+                        .animate({
+                            height: "hide",
+                            opacity: "hide"
+                        }, speed, function () {
+                            if ($.browser && $.browser.msie) {
+                                this.style.removeAttribute('filter');
+                            }
+                            if ($.isFunction(callback)) {
+                                callback.call(this);
+                            }
+                        });
+
+//                $(this).stop(true).animate({opacity: 'hide', height: 'hide'}, speed, function () {
+//                    if ($.browser && $.browser.msie) {
+//                        this.style.removeAttribute('filter');
+//                    }
+//                    if ($.isFunction(callback)) {
+//                        callback.call(this);
+//                    }
+//                });
             }
         });
     };
 
-    $.fn.__show=function()
+    $.fn.__show = function ()
     {
-        if (hasUIEffect('scale'))
-            $(this).stop(true,true).show({
-                effect:'scale',
-                direction:'both',
-                scale:'box',
-                origin:['top','left'],
-                easing:'expoEaseOut',
-                speed:'slow'
-                }, function (event) {
-                var class_name = $(this).prop('class');
-                Toolset.hooks.doAction( class_name.split(' ')[0] + '_show');
-            });
-        else $(this).show(400, function (event) {
+//        if (hasUIEffect('scale'))
+//            $(this).stop(true,true).show({
+//                effect:'scale',
+//                direction:'both',
+//                scale:'box',
+//                origin:['top','left'],
+//                easing:'expoEaseOut',
+//                speed:'slow'
+//                }, function (event) {
+//                var class_name = $(this).prop('class');
+//                Toolset.hooks.doAction( class_name.split(' ')[0] + '_show');
+//            });
+//        else 
+        $(this).show(400, function (event) {
             var class_name = $(this).prop('class');
-            Toolset.hooks.doAction( class_name.split(' ')[0] + '_show');
+            Toolset.hooks.doAction(class_name.split(' ')[0] + '_show');
         });
     };
 
-    $.fn.__hide=function()
+    $.fn.__hide = function ()
     {
-        if (hasUIEffect('scale'))
-            $(this).stop(true,true).hide({
-                effect:'scale',
-                direction:'both',
-                scale:'box',
-                origin:['top','left'],
-                easing:'expoEaseOut',
-                speed:'slow'
-            }, function (event) {
-                var class_name = $(this).prop('class');
-                Toolset.hooks.doAction( class_name.split(' ')[0] + '_hide');
-            });
-        else $(this).hide(400, function (event) {
+//        if (hasUIEffect('scale'))
+//            $(this).stop(true,true).hide({
+//                effect:'scale',
+//                direction:'both',
+//                scale:'box',
+//                origin:['top','left'],
+//                easing:'expoEaseOut',
+//                speed:'slow'
+//            }, function (event) {
+//                var class_name = $(this).prop('class');
+//                Toolset.hooks.doAction( class_name.split(' ')[0] + '_hide');
+//            });
+//        else 
+        $(this).hide(400, function (event) {
             var class_name = $(this).prop('class');
-            Toolset.hooks.doAction( class_name.split(' ')[0] + '_hide');
+            Toolset.hooks.doAction(class_name.split(' ')[0] + '_hide');
         });
     };
 
@@ -94,37 +135,31 @@ if (window[thisExportName]) return;
 
             //provide some reasonable defaults to any unspecified options below
             var settings = $.extend({
-
                 //
                 //Requires jQuery UI: provide a message to display to the user when the file download is being prepared before the browser's dialog appears
                 //
                 preparingMessageHtml: null,
-
                 //
                 //Requires jQuery UI: provide a message to display to the user when a file download fails
                 //
                 failMessageHtml: null,
-
                 //
                 //the stock android browser straight up doesn't support file downloads initiated by a non GET: http://code.google.com/p/android/issues/detail?id=1780
                 //specify a message here to display if a user tries with an android browser
                 //if jQuery UI is installed this will be a dialog, otherwise it will be an alert
                 //
                 androidPostUnsupportedMessageHtml: "Unfortunately your Android browser doesn't support this type of file download. Please try again with a different browser.",
-
                 //
                 //Requires jQuery UI: options to pass into jQuery UI Dialog
                 //
-                dialogOptions: { modal: true },
-
+                dialogOptions: {modal: true},
                 //
                 //a function to call after a file download dialog/ribbon has appeared
                 //Args:
                 //  url - the original url attempted
                 //
                 successCallback: function (url) { },
-
-                beforeDownloadCallback : false,
+                beforeDownloadCallback: false,
                 //
                 //a function to call after a file download dialog/ribbon has appeared
                 //Args:
@@ -134,45 +169,37 @@ if (window[thisExportName]) return;
                 //  url             - the original url attempted
                 //
                 failCallback: false,
-
                 //failBeforeDownloadCallback : false,
 
                 //
                 // the HTTP method to use. Defaults to "GET".
                 //
                 httpMethod: "GET",
-
                 //
                 // if specified will perform a "httpMethod" request to the specified 'fileUrl' using the specified data.
                 // data must be an object (which will be $.param serialized) or already a key=value param string
                 //
                 data: null,
-
                 //
                 //a period in milliseconds to poll to determine if a successful file download has occured or not
                 //
                 checkInterval: 100,
-
                 //
                 //the cookie name to indicate if a file download has occured
                 //
                 cookieName: "__CREDExportDownload",
-
                 //
                 //the cookie value for the above name to indicate that a file download has occured
                 //
                 cookieValue: "true",
-
                 //
                 //the cookie path for above name value pair
                 //
                 cookiePath: "/",
-
                 //
                 //the title for the popup second window as a download is processing in the case of a mobile browser
                 //
                 popupWindowTitle: "Initiating file download...",
-
                 //
                 //Functionality to encode HTML entities for a POST, need this if data is an object with properties whose values contains strings with quotation marks.
                 //HTML entity encoding is done by replacing all &,<,>,',",\r,\n characters.
@@ -221,10 +248,10 @@ if (window[thisExportName]) return;
             //wire up a jquery dialog to display the preparing message if specified
             var $preparingDialog = null;
             /*if (settings.preparingMessageHtml) {
-
-                $preparingDialog = $("<div>").html(settings.preparingMessageHtml).dialog(settings.dialogOptions);
-
-            }*/
+             
+             $preparingDialog = $("<div>").html(settings.preparingMessageHtml).dialog(settings.dialogOptions);
+             
+             }*/
 
             if (settings.beforeDownloadCallback) {
 
@@ -232,24 +259,23 @@ if (window[thisExportName]) return;
             }
 
             var internalCallbacks = {
-
                 onSuccess: function (url) {
 
                     //remove the perparing message if it was specified
                     /*if ($preparingDialog) {
-                        $preparingDialog.dialog('close');
-                    };*/
+                     $preparingDialog.dialog('close');
+                     };*/
 
                     settings.successCallback(url);
 
                 },
-
                 onFail: function (responseHtml, url) {
 
                     //remove the perparing message if it was specified
                     if ($preparingDialog) {
                         $preparingDialog.dialog('close');
-                    };
+                    }
+                    ;
 
                     //wire up a jquery dialog to display the fail message if specified
                     if (settings.failMessageHtml) {
@@ -277,9 +303,9 @@ if (window[thisExportName]) return;
 
 
             var $iframe,
-                downloadWindow,
-                formDoc,
-                $form;
+                    downloadWindow,
+                    formDoc,
+                    $form;
 
             if (httpMethodUpper === "GET") {
 
@@ -316,9 +342,9 @@ if (window[thisExportName]) return;
 
                     //create a temporary iframe that is used to request the fileUrl as a GET request
                     $iframe = $("<iframe>")
-                        .hide()
-                        .attr("src", fileUrl)
-                        .appendTo("body");
+                            .hide()
+                            .attr("src", fileUrl)
+                            .appendTo("body");
                 }
 
             } else {
@@ -332,7 +358,8 @@ if (window[thisExportName]) return;
                         var kvp = this.split("=");
 
                         var key = settings.encodeHTMLEntities ? htmlSpecialCharsEntityEncode(decodeURIComponent(kvp[0])) : decodeURIComponent(kvp[0]);
-                        if (!key) return;
+                        if (!key)
+                            return;
                         var value = kvp[1] || '';
                         value = settings.encodeHTMLEntities ? htmlSpecialCharsEntityEncode(decodeURIComponent(kvp[1])) : decodeURIComponent(kvp[1]);
 
@@ -344,9 +371,9 @@ if (window[thisExportName]) return;
 
                     $form = $("<form>").appendTo("body");
                     $form.hide()
-                        .attr('method', settings.httpMethod)
-                        .attr('action', fileUrl)
-                        .html(formInnerHtml);
+                            .attr('method', settings.httpMethod)
+                            .attr('action', fileUrl)
+                            .html(formInnerHtml);
 
                 } else {
 
@@ -426,8 +453,7 @@ if (window[thisExportName]) return;
                                 return;
                             }
                         }
-                    }
-                    catch (err) {
+                    } catch (err) {
 
                         //500 error less than IE9
                         internalCallbacks.onFail('', fileUrl);
@@ -454,7 +480,7 @@ if (window[thisExportName]) return;
 
             function cleanUp(isFailure) {
 
-                setTimeout(function() {
+                setTimeout(function () {
 
                     if (downloadWindow) {
 
@@ -477,359 +503,362 @@ if (window[thisExportName]) return;
 
             function htmlSpecialCharsEntityEncode(str) {
                 return str.replace(/&/gm, '&amp;')
-                    .replace(/\n/gm, "&#10;")
-                    .replace(/\r/gm, "&#13;")
-                    .replace(/</gm, '&lt;')
-                    .replace(/>/gm, '&gt;')
-                    .replace(/"/gm, '&quot;')
-                    .replace(/'/gm, '&apos;'); //single quotes just to be safe
+                        .replace(/\n/gm, "&#10;")
+                        .replace(/\r/gm, "&#13;")
+                        .replace(/</gm, '&lt;')
+                        .replace(/>/gm, '&gt;')
+                        .replace(/"/gm, '&quot;')
+                        .replace(/'/gm, '&apos;'); //single quotes just to be safe
             }
         }
     });
-    
-
-/*
- *	jquery.suggest 1.1b - 2007-08-06
- * Patched by Mark Jaquith with Alexander Dick's "multiple items" patch to allow for auto-suggesting of more than one tag before submitting
- * See: http://www.vulgarisoip.com/2007/06/29/jquerysuggest-an-alternative-jquery-based-autocomplete-library/#comment-7228
- *
- *	Uses code and techniques from following libraries:
- *	1. http://www.dyve.net/jquery/?autocomplete
- *	2. http://dev.jquery.com/browser/trunk/plugins/interface/iautocompleter.js
- *
- *	All the new stuff written by Peter Vulgaris (www.vulgarisoip.com)
- *	Feel free to do whatever you want with this file
- *
- */
-
-	$.cred_suggest = function(input, options) {
-		var $input, $results, timeout, prevLength, cache, cacheSize;
-
-		$input = $(input).attr("autocomplete", "off");
-		$results = $(document.createElement("ul"));
-
-		timeout = false;		// hold timeout ID for suggestion results to appear
-		prevLength = 0;			// last recorded length of $input.val()
-		cache = [];				// cache MRU list
-		cacheSize = 0;			// size of cache in chars (bytes?)
-
-		$results.addClass(options.resultsClass).appendTo('body');
 
 
-		resetPosition();
-		$(window)
-			.load(resetPosition)		// just in case user is changing size of page while loading
-			.resize(resetPosition);
+    /*
+     *	jquery.suggest 1.1b - 2007-08-06
+     * Patched by Mark Jaquith with Alexander Dick's "multiple items" patch to allow for auto-suggesting of more than one tag before submitting
+     * See: http://www.vulgarisoip.com/2007/06/29/jquerysuggest-an-alternative-jquery-based-autocomplete-library/#comment-7228
+     *
+     *	Uses code and techniques from following libraries:
+     *	1. http://www.dyve.net/jquery/?autocomplete
+     *	2. http://dev.jquery.com/browser/trunk/plugins/interface/iautocompleter.js
+     *
+     *	All the new stuff written by Peter Vulgaris (www.vulgarisoip.com)
+     *	Feel free to do whatever you want with this file
+     *
+     */
 
-		$input.blur(function() {
-			setTimeout(function() { $results.hide() }, 200);
-		});
+    $.cred_suggest = function (input, options) {
+        var $input, $results, timeout, prevLength, cache, cacheSize;
 
+        $input = $(input).attr("autocomplete", "off");
+        $results = $(document.createElement("ul"));
 
-		// help IE users if possible
-		if ( $.browser && $.browser.msie ) {
-			try {
-				$results.bgiframe();
-			} catch(e) { }
-		}
+        timeout = false;		// hold timeout ID for suggestion results to appear
+        prevLength = 0;			// last recorded length of $input.val()
+        cache = [];				// cache MRU list
+        cacheSize = 0;			// size of cache in chars (bytes?)
 
-		// I really hate browser detection, but I don't see any other way
-		if ($.browser && $.browser.mozilla)
-			$input.keypress(processKey);	// onkeypress repeats arrow keys in Mozilla/Opera
-		else
-			$input.keydown(processKey);		// onkeydown repeats arrow keys in IE/Safari
-
-
-
-
-		function resetPosition() {
-			// requires jquery.dimension plugin
-			var offset = $input.offset();
-			$results.css({
-				top: (offset.top + input.offsetHeight) + 'px',
-				left: offset.left + 'px'
-			});
-		}
+        $results.addClass(options.resultsClass).appendTo('body');
 
 
-		function processKey(e) {
+        resetPosition();
+        $(window)
+                .load(resetPosition)		// just in case user is changing size of page while loading
+                .resize(resetPosition);
 
-			// handling up/down/escape requires results to be visible
-			// handling enter/tab requires that AND a result to be selected
-			if ((/27$|38$|40$/.test(e.keyCode) && $results.is(':visible')) ||
-				(/^13$|^9$/.test(e.keyCode) && getCurrentResult())) {
-
-				if (e.preventDefault)
-					e.preventDefault();
-				if (e.stopPropagation)
-					e.stopPropagation();
-
-				e.cancelBubble = true;
-				e.returnValue = false;
-
-				switch(e.keyCode) {
-
-					case 38: // up
-						prevResult();
-						break;
-
-					case 40: // down
-						nextResult();
-						break;
-
-					case 9:  // tab
-					case 13: // return
-						selectCurrentResult();
-						break;
-
-					case 27: //	escape
-						$results.hide();
-						break;
-
-				}
-
-			} else if ($input.val().length != prevLength) {
-
-				if (timeout)
-					clearTimeout(timeout);
-				timeout = setTimeout(suggest, options.delay);
-				prevLength = $input.val().length;
-
-			}
+        $input.blur(function () {
+            setTimeout(function () {
+                $results.hide()
+            }, 200);
+        });
 
 
-		}
+        // help IE users if possible
+        if ($.browser && $.browser.msie) {
+            try {
+                $results.bgiframe();
+            } catch (e) {
+            }
+        }
+
+        // I really hate browser detection, but I don't see any other way
+        if ($.browser && $.browser.mozilla)
+            $input.keypress(processKey);	// onkeypress repeats arrow keys in Mozilla/Opera
+        else
+            $input.keydown(processKey);		// onkeydown repeats arrow keys in IE/Safari
 
 
-		function suggest() {
 
-			var q = $.trim($input.val()), multipleSepPos, items;
 
-			if ( options.multiple ) {
-				multipleSepPos = q.lastIndexOf(options.multipleSep);
-				if ( multipleSepPos != -1 ) {
-					q = $.trim(q.substr(multipleSepPos + options.multipleSep.length));
-				}
-			}
-			if (q.length >= options.minchars) {
+        function resetPosition() {
+            // requires jquery.dimension plugin
+            var offset = $input.offset();
+            $results.css({
+                top: (offset.top + input.offsetHeight) + 'px',
+                left: offset.left + 'px'
+            });
+        }
 
-				cached = checkCache(q);
 
-				if (cached) {
+        function processKey(e) {
 
-					displayItems(cached['items']);
+            // handling up/down/escape requires results to be visible
+            // handling enter/tab requires that AND a result to be selected
+            if ((/27$|38$|40$/.test(e.keyCode) && $results.is(':visible')) ||
+                    (/^13$|^9$/.test(e.keyCode) && getCurrentResult())) {
 
-				} else {
+                if (e.preventDefault)
+                    e.preventDefault();
+                if (e.stopPropagation)
+                    e.stopPropagation();
 
-					if (options.onStart)
+                e.cancelBubble = true;
+                e.returnValue = false;
+
+                switch (e.keyCode) {
+
+                    case 38: // up
+                        prevResult();
+                        break;
+
+                    case 40: // down
+                        nextResult();
+                        break;
+
+                    case 9:  // tab
+                    case 13: // return
+                        selectCurrentResult();
+                        break;
+
+                    case 27: //	escape
+                        $results.hide();
+                        break;
+
+                }
+
+            } else if ($input.val().length != prevLength) {
+
+                if (timeout)
+                    clearTimeout(timeout);
+                timeout = setTimeout(suggest, options.delay);
+                prevLength = $input.val().length;
+
+            }
+
+
+        }
+
+
+        function suggest() {
+
+            var q = $.trim($input.val()), multipleSepPos, items;
+
+            if (options.multiple) {
+                multipleSepPos = q.lastIndexOf(options.multipleSep);
+                if (multipleSepPos != -1) {
+                    q = $.trim(q.substr(multipleSepPos + options.multipleSep.length));
+                }
+            }
+            if (q.length >= options.minchars) {
+
+                cached = checkCache(q);
+
+                if (cached) {
+
+                    displayItems(cached['items']);
+
+                } else {
+
+                    if (options.onStart)
                     {
                         options.onStart.call(this);
                     }
-                    $.get(options.source, {q: q}, function(txt) {
+                    $.get(options.source, {q: q}, function (txt) {
 
-						$results.hide();
+                        $results.hide();
 
-						items = parseTxt(txt, q);
+                        items = parseTxt(txt, q);
 
-						displayItems(items);
-						addToCache(q, items, items.length /*txt.length*/);
+                        displayItems(items);
+                        addToCache(q, items, items.length /*txt.length*/);
 
                         if (options.onComplete)
                         {
                             options.onComplete.call(this);
                         }
 
-					});
+                    });
 
-				}
+                }
 
-			} else {
+            } else {
 
-				$results.hide();
+                $results.hide();
 
-			}
+            }
 
-		}
+        }
 
 
-		function checkCache(q) {
-			var i;
-			for (i = 0; i < cache.length; i++)
-				if (cache[i]['q'] == q) {
-					cache.unshift(cache.splice(i, 1)[0]);
-					return cache[0];
-				}
+        function checkCache(q) {
+            var i;
+            for (i = 0; i < cache.length; i++)
+                if (cache[i]['q'] == q) {
+                    cache.unshift(cache.splice(i, 1)[0]);
+                    return cache[0];
+                }
 
-			return false;
+            return false;
 
-		}
+        }
 
-		function addToCache(q, items, size) {
-			var cached;
-			while (cache.length && (cacheSize + size > options.maxCacheSize)) {
-				cached = cache.pop();
-				cacheSize -= cached['size'];
-			}
+        function addToCache(q, items, size) {
+            var cached;
+            while (cache.length && (cacheSize + size > options.maxCacheSize)) {
+                cached = cache.pop();
+                cacheSize -= cached['size'];
+            }
 
-			cache.push({
-				q: q,
-				size: size,
-				items: items
-				});
+            cache.push({
+                q: q,
+                size: size,
+                items: items
+            });
 
-			cacheSize += size;
+            cacheSize += size;
 
-		}
+        }
 
-		function displayItems(items) {
-			var html = '', i;
-			if (!items)
-				return;
+        function displayItems(items) {
+            var html = '', i;
+            if (!items)
+                return;
 
-			if (!items.length) {
-				$results.hide();
-				return;
-			}
+            if (!items.length) {
+                $results.hide();
+                return;
+            }
 
-			resetPosition(); // when the form moves after the page has loaded
+            resetPosition(); // when the form moves after the page has loaded
 
-			for (i = 0; i < items.length; i++)
-				html += '<li data-val="'+items[i].val+'">' + items[i].display + '</li>';
+            for (i = 0; i < items.length; i++)
+                html += '<li data-val="' + items[i].val + '">' + items[i].display + '</li>';
 
-			$results.html(html).show();
+            $results.html(html).show();
 
-			$results
-				.children('li')
-				.mouseover(function() {
-					$results.children('li').removeClass(options.selectClass);
-					$(this).addClass(options.selectClass);
-				})
-				.click(function(e) {
-					e.preventDefault();
-					e.stopPropagation();
-                    e._cred_specific=true;
-					selectCurrentResult();
-				});
+            $results
+                    .children('li')
+                    .mouseover(function () {
+                        $results.children('li').removeClass(options.selectClass);
+                        $(this).addClass(options.selectClass);
+                    })
+                    .click(function (e) {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        e._cred_specific = true;
+                        selectCurrentResult();
+                    });
 
-		}
+        }
 
-		function parseTxt(txt, q) {
+        function parseTxt(txt, q) {
 
-			var items = [];//, tokens = txt.split(options.delimiter), i, token;
+            var items = [];//, tokens = txt.split(options.delimiter), i, token;
             /*
-			// parse returned data for non-empty items
-			for (i = 0; i < tokens.length; i++) {
-				token = $.trim(tokens[i]);
-				if (token) {
-					token = token.replace(
-						new RegExp(q, 'ig'),
-						function(q) { return '<span class="' + options.matchClass + '">' + q + '</span>' }
-						);
-					items[items.length] = token;
-				}
-			}
-            */
-            items=$.parseJSON(txt);
-			return items;
-		}
+             // parse returned data for non-empty items
+             for (i = 0; i < tokens.length; i++) {
+             token = $.trim(tokens[i]);
+             if (token) {
+             token = token.replace(
+             new RegExp(q, 'ig'),
+             function(q) { return '<span class="' + options.matchClass + '">' + q + '</span>' }
+             );
+             items[items.length] = token;
+             }
+             }
+             */
+            items = $.parseJSON(txt);
+            return items;
+        }
 
-		function getCurrentResult() {
-			var $currentResult;
-			if (!$results.is(':visible'))
-				return false;
+        function getCurrentResult() {
+            var $currentResult;
+            if (!$results.is(':visible'))
+                return false;
 
-			$currentResult = $results.children('li.' + options.selectClass);
+            $currentResult = $results.children('li.' + options.selectClass);
 
-			if (!$currentResult.length)
-				$currentResult = false;
+            if (!$currentResult.length)
+                $currentResult = false;
 
-			return $currentResult;
+            return $currentResult;
 
-		}
+        }
 
-		function selectCurrentResult() {
+        function selectCurrentResult() {
 
-			$currentResult = getCurrentResult();
+            $currentResult = getCurrentResult();
 
-			if ($currentResult) {
-				if ( options.multiple ) {
-					if ( $input.val().indexOf(options.multipleSep) != -1 ) {
-						$currentVal = $input.val().substr( 0, ( $input.val().lastIndexOf(options.multipleSep) + options.multipleSep.length ) );
-					} else {
-						$currentVal = "";
-					}
-					$input.val( $currentVal + $currentResult.attr('data-val') + options.multipleSep);
-					$input.focus();
-				} else {
-					$input.val($currentResult.attr('data-val'));
-					$input.focus();
-				}
-				$results.hide();
+            if ($currentResult) {
+                if (options.multiple) {
+                    if ($input.val().indexOf(options.multipleSep) != -1) {
+                        $currentVal = $input.val().substr(0, ($input.val().lastIndexOf(options.multipleSep) + options.multipleSep.length));
+                    } else {
+                        $currentVal = "";
+                    }
+                    $input.val($currentVal + $currentResult.attr('data-val') + options.multipleSep);
+                    $input.focus();
+                } else {
+                    $input.val($currentResult.attr('data-val'));
+                    $input.focus();
+                }
+                $results.hide();
 
-				if (options.onSelect)
-					options.onSelect.apply($input[0]);
+                if (options.onSelect)
+                    options.onSelect.apply($input[0]);
 
-			}
+            }
 
-		}
+        }
 
-		function nextResult() {
+        function nextResult() {
 
-			$currentResult = getCurrentResult();
+            $currentResult = getCurrentResult();
 
-			if ($currentResult)
-				$currentResult
-					.removeClass(options.selectClass)
-					.next()
-						.addClass(options.selectClass);
-			else
-				$results.children('li:first-child').addClass(options.selectClass);
+            if ($currentResult)
+                $currentResult
+                        .removeClass(options.selectClass)
+                        .next()
+                        .addClass(options.selectClass);
+            else
+                $results.children('li:first-child').addClass(options.selectClass);
 
-		}
+        }
 
-		function prevResult() {
-			var $currentResult = getCurrentResult();
+        function prevResult() {
+            var $currentResult = getCurrentResult();
 
-			if ($currentResult)
-				$currentResult
-					.removeClass(options.selectClass)
-					.prev()
-						.addClass(options.selectClass);
-			else
-				$results.children('li:last-child').addClass(options.selectClass);
+            if ($currentResult)
+                $currentResult
+                        .removeClass(options.selectClass)
+                        .prev()
+                        .addClass(options.selectClass);
+            else
+                $results.children('li:last-child').addClass(options.selectClass);
 
-		}
-	}
+        }
+    }
 
-	$.fn.cred_suggest = function(source, options) {
+    $.fn.cred_suggest = function (source, options) {
 
-		if (!source)
-			return;
+        if (!source)
+            return;
 
-		options = options || {};
-		options.multiple = options.multiple || false;
-		options.multipleSep = options.multipleSep || ", ";
-		options.source = source;
-		options.delay = options.delay || 100;
-		options.resultsClass = options.resultsClass || 'ac_results';
-		options.selectClass = options.selectClass || 'ac_over';
-		options.matchClass = options.matchClass || 'ac_match';
-		options.minchars = options.minchars || 2;
-		options.delimiter = options.delimiter || '\n';
-		options.onSelect = options.onSelect || false;
-		options.onStart = options.onStart || false;
-		options.onComplete = options.onComplete || false;
-		options.maxCacheSize = options.maxCacheSize || 65536;
+        options = options || {};
+        options.multiple = options.multiple || false;
+        options.multipleSep = options.multipleSep || ", ";
+        options.source = source;
+        options.delay = options.delay || 100;
+        options.resultsClass = options.resultsClass || 'ac_results';
+        options.selectClass = options.selectClass || 'ac_over';
+        options.matchClass = options.matchClass || 'ac_match';
+        options.minchars = options.minchars || 2;
+        options.delimiter = options.delimiter || '\n';
+        options.onSelect = options.onSelect || false;
+        options.onStart = options.onStart || false;
+        options.onComplete = options.onComplete || false;
+        options.maxCacheSize = options.maxCacheSize || 65536;
 
-		this.each(function() {
-			new $.cred_suggest(this, options);
-		});
+        this.each(function () {
+            new $.cred_suggest(this, options);
+        });
 
-		return this;
+        return this;
 
-	};
+    };
 
     // animation easing functions
-    ;$.extend($.easing, {linear:function(a,b,c,d){return c+d*a},backEaseIn:function(a,b,c,d){var e=c+d,f=1.70158;return e*(a/=1)*a*((f+1)*a-f)+c},backEaseOut:function(a,b,c,d){var e=c+d,f=1.70158;return e*((a=a/1-1)*a*((f+1)*a+f)+1)+c},backEaseInOut:function(a,b,c,d){var e=c+d,f=1.70158;return(a/=.5)<1?e/2*a*a*(((f*=1.525)+1)*a-f)+c:e/2*((a-=2)*a*(((f*=1.525)+1)*a+f)+2)+c},bounceEaseIn:function(a,b,c,d){var e=c+d,f=this.bounceEaseOut(1-a,1,0,d);return e-f+c},bounceEaseOut:function(a,b,c,d){var e=c+d;return a<1/2.75?e*7.5625*a*a+c:a<2/2.75?e*(7.5625*(a-=1.5/2.75)*a+.75)+c:a<2.5/2.75?e*(7.5625*(a-=2.25/2.75)*a+.9375)+c:e*(7.5625*(a-=2.625/2.75)*a+.984375)+c},circEaseIn:function(a,b,c,d){var e=c+d;return-e*(Math.sqrt(1-(a/=1)*a)-1)+c},circEaseOut:function(a,b,c,d){var e=c+d;return e*Math.sqrt(1-(a=a/1-1)*a)+c},circEaseInOut:function(a,b,c,d){var e=c+d;return(a/=.5)<1?-e/2*(Math.sqrt(1-a*a)-1)+c:e/2*(Math.sqrt(1-(a-=2)*a)+1)+c},cubicEaseIn:function(a,b,c,d){var e=c+d;return e*(a/=1)*a*a+c},cubicEaseOut:function(a,b,c,d){var e=c+d;return e*((a=a/1-1)*a*a+1)+c},cubicEaseInOut:function(a,b,c,d){var e=c+d;return(a/=.5)<1?e/2*a*a*a+c:e/2*((a-=2)*a*a+2)+c},elasticEaseIn:function(a,b,c,d){var e=c+d;if(a==0)return c;if(a==1)return e;var f=.25,g,h=e;return h<Math.abs(e)?(h=e,g=f/4):g=f/(2*Math.PI)*Math.asin(e/h),-(h*Math.pow(2,10*(a-=1))*Math.sin((a*1-g)*2*Math.PI/f))+c},elasticEaseOut:function(a,b,c,d){var e=c+d;if(a==0)return c;if(a==1)return e;var f=.25,g,h=e;return h<Math.abs(e)?(h=e,g=f/4):g=f/(2*Math.PI)*Math.asin(e/h),-(h*Math.pow(2,-10*a)*Math.sin((a*1-g)*2*Math.PI/f))+e},expoEaseIn:function(a,b,c,d){var e=c+d;return a==0?c:e*Math.pow(2,10*(a-1))+c-e*.001},expoEaseOut:function(a,b,c,d){var e=c+d;return a==1?e:d*1.001*(-Math.pow(2,-10*a)+1)+c},expoEaseInOut:function(a,b,c,d){var e=c+d;return a==0?c:a==1?e:(a/=.5)<1?e/2*Math.pow(2,10*(a-1))+c-e*5e-4:e/2*1.0005*(-Math.pow(2,-10*--a)+2)+c},quadEaseIn:function(a,b,c,d){var e=c+d;return e*(a/=1)*a+c},quadEaseOut:function(a,b,c,d){var e=c+d;return-e*(a/=1)*(a-2)+c},quadEaseInOut:function(a,b,c,d){var e=c+d;return(a/=.5)<1?e/2*a*a+c:-e/2*(--a*(a-2)-1)+c},quartEaseIn:function(a,b,c,d){var e=c+d;return e*(a/=1)*a*a*a+c},quartEaseOut:function(a,b,c,d){var e=c+d;return-e*((a=a/1-1)*a*a*a-1)+c},quartEaseInOut:function(a,b,c,d){var e=c+d;return(a/=.5)<1?e/2*a*a*a*a+c:-e/2*((a-=2)*a*a*a-2)+c},quintEaseIn:function(a,b,c,d){var e=c+d;return e*(a/=1)*a*a*a*a+c},quintEaseOut:function(a,b,c,d){var e=c+d;return e*((a=a/1-1)*a*a*a*a+1)+c},quintEaseInOut:function(a,b,c,d){var e=c+d;return(a/=.5)<1?e/2*a*a*a*a*a+c:e/2*((a-=2)*a*a*a*a+2)+c},sineEaseIn:function(a,b,c,d){var e=c+d;return-e*Math.cos(a*(Math.PI/2))+e+c},sineEaseOut:function(a,b,c,d){var e=c+d;return e*Math.sin(a*(Math.PI/2))+c},sineEaseInOut:function(a,b,c,d){var e=c+d;return-e/2*(Math.cos(Math.PI*a)-1)+c}})
+    //;$.extend($.easing, {linear:function(a,b,c,d){return c+d*a},backEaseIn:function(a,b,c,d){var e=c+d,f=1.70158;return e*(a/=1)*a*((f+1)*a-f)+c},backEaseOut:function(a,b,c,d){var e=c+d,f=1.70158;return e*((a=a/1-1)*a*((f+1)*a+f)+1)+c},backEaseInOut:function(a,b,c,d){var e=c+d,f=1.70158;return(a/=.5)<1?e/2*a*a*(((f*=1.525)+1)*a-f)+c:e/2*((a-=2)*a*(((f*=1.525)+1)*a+f)+2)+c},bounceEaseIn:function(a,b,c,d){var e=c+d,f=this.bounceEaseOut(1-a,1,0,d);return e-f+c},bounceEaseOut:function(a,b,c,d){var e=c+d;return a<1/2.75?e*7.5625*a*a+c:a<2/2.75?e*(7.5625*(a-=1.5/2.75)*a+.75)+c:a<2.5/2.75?e*(7.5625*(a-=2.25/2.75)*a+.9375)+c:e*(7.5625*(a-=2.625/2.75)*a+.984375)+c},circEaseIn:function(a,b,c,d){var e=c+d;return-e*(Math.sqrt(1-(a/=1)*a)-1)+c},circEaseOut:function(a,b,c,d){var e=c+d;return e*Math.sqrt(1-(a=a/1-1)*a)+c},circEaseInOut:function(a,b,c,d){var e=c+d;return(a/=.5)<1?-e/2*(Math.sqrt(1-a*a)-1)+c:e/2*(Math.sqrt(1-(a-=2)*a)+1)+c},cubicEaseIn:function(a,b,c,d){var e=c+d;return e*(a/=1)*a*a+c},cubicEaseOut:function(a,b,c,d){var e=c+d;return e*((a=a/1-1)*a*a+1)+c},cubicEaseInOut:function(a,b,c,d){var e=c+d;return(a/=.5)<1?e/2*a*a*a+c:e/2*((a-=2)*a*a+2)+c},elasticEaseIn:function(a,b,c,d){var e=c+d;if(a==0)return c;if(a==1)return e;var f=.25,g,h=e;return h<Math.abs(e)?(h=e,g=f/4):g=f/(2*Math.PI)*Math.asin(e/h),-(h*Math.pow(2,10*(a-=1))*Math.sin((a*1-g)*2*Math.PI/f))+c},elasticEaseOut:function(a,b,c,d){var e=c+d;if(a==0)return c;if(a==1)return e;var f=.25,g,h=e;return h<Math.abs(e)?(h=e,g=f/4):g=f/(2*Math.PI)*Math.asin(e/h),-(h*Math.pow(2,-10*a)*Math.sin((a*1-g)*2*Math.PI/f))+e},expoEaseIn:function(a,b,c,d){var e=c+d;return a==0?c:e*Math.pow(2,10*(a-1))+c-e*.001},expoEaseOut:function(a,b,c,d){var e=c+d;return a==1?e:d*1.001*(-Math.pow(2,-10*a)+1)+c},expoEaseInOut:function(a,b,c,d){var e=c+d;return a==0?c:a==1?e:(a/=.5)<1?e/2*Math.pow(2,10*(a-1))+c-e*5e-4:e/2*1.0005*(-Math.pow(2,-10*--a)+2)+c},quadEaseIn:function(a,b,c,d){var e=c+d;return e*(a/=1)*a+c},quadEaseOut:function(a,b,c,d){var e=c+d;return-e*(a/=1)*(a-2)+c},quadEaseInOut:function(a,b,c,d){var e=c+d;return(a/=.5)<1?e/2*a*a+c:-e/2*(--a*(a-2)-1)+c},quartEaseIn:function(a,b,c,d){var e=c+d;return e*(a/=1)*a*a*a+c},quartEaseOut:function(a,b,c,d){var e=c+d;return-e*((a=a/1-1)*a*a*a-1)+c},quartEaseInOut:function(a,b,c,d){var e=c+d;return(a/=.5)<1?e/2*a*a*a*a+c:-e/2*((a-=2)*a*a*a-2)+c},quintEaseIn:function(a,b,c,d){var e=c+d;return e*(a/=1)*a*a*a*a+c},quintEaseOut:function(a,b,c,d){var e=c+d;return e*((a=a/1-1)*a*a*a*a+1)+c},quintEaseInOut:function(a,b,c,d){var e=c+d;return(a/=.5)<1?e/2*a*a*a*a*a+c:e/2*((a-=2)*a*a*a*a+2)+c},sineEaseIn:function(a,b,c,d){var e=c+d;return-e*Math.cos(a*(Math.PI/2))+e+c},sineEaseOut:function(a,b,c,d){var e=c+d;return e*Math.sin(a*(Math.PI/2))+c},sineEaseInOut:function(a,b,c,d){var e=c+d;return-e/2*(Math.cos(Math.PI*a)-1)+c}})
 
 })(window, jQuery);

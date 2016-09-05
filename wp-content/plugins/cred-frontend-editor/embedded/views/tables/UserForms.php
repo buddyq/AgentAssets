@@ -20,7 +20,7 @@ class CRED_User_Forms_List_Table extends WP_List_Table implements CRED_Singleton
     }
 
     function no_items() {
-        _e('No forms were found.', 'wp-cred');
+        _e('No User Forms were found.', 'wp-cred');
     }
 
     function get_bulk_actions() {
@@ -71,7 +71,7 @@ class CRED_User_Forms_List_Table extends WP_List_Table implements CRED_Singleton
         submit_button(__('Apply', 'wp-cred'), 'button-secondary action', false, false, array('id' => "doaction$two"));
         echo "\n";
 
-        echo "<a style='margin-left:15px' class='button button-large cred-export-all' href='" . CRED_CRED::route('/Forms/exportAll?all&type=user&_wpnonce=' . wp_create_nonce('cred-export-all')) . "' target='_blank' title='" . esc_js(__('Export All User Forms', 'wp-cred')) . "'>" . __('Export All User Forms', 'wp-cred') . "</a>";
+        //echo "<a style='margin-left:15px' class='button button-large cred-export-all' href='" . CRED_CRED::route('/Forms/exportAll?all&type=user&_wpnonce=' . wp_create_nonce('cred-export-all')) . "' target='_blank' title='" . esc_js(__('Export All User Forms', 'wp-cred')) . "'>" . __('Export All User Forms', 'wp-cred') . "</a>";
     }
 
     /**
@@ -111,6 +111,8 @@ class CRED_User_Forms_List_Table extends WP_List_Table implements CRED_Singleton
         global $wpdb, $_wp_column_headers;
 
         $screen = get_current_screen();
+        
+        $src = array_key_exists('s', $_GET) ? $_GET['s'] : "";
 
         // sorting
         $orderby = (!empty($_GET['orderby']) ) ? $_GET['orderby'] : 'post_title';
@@ -139,10 +141,11 @@ class CRED_User_Forms_List_Table extends WP_List_Table implements CRED_Singleton
         $this->items = array();
         $fm = CRED_Loader::get('MODEL/UserForms');
         /* -- Fetch the items -- */
-        $totalitems = $fm->getFormsCount(); //count($this->items);        
+        $totalitems = $fm->getFormsCount($src); //count($this->items);        
         if (($paged - 1) * $perpage > $totalitems)
             $paged = 1;
-        $this->items = $fm->getFormsForTable($paged, $perpage, $orderby, $order);
+        $this->items = $fm->getFormsForTable($paged, $perpage, $orderby, $order, $src);
+        if ($totalitems==0) $totalitems = .1;
         /* -- Register the pagination -- */
         //How many pages do we have in total?
         $totalpages = ceil($totalitems / $perpage);
@@ -304,7 +307,7 @@ class CRED_User_Forms_List_Table extends WP_List_Table implements CRED_Singleton
      * @since 3.1.0
      * @access protected
      */
-    function pagination($which) {
+    function pagination_simple($which) {
         if (empty($this->_pagination_args)) {
             return;
         }
@@ -382,4 +385,96 @@ class CRED_User_Forms_List_Table extends WP_List_Table implements CRED_Singleton
         echo $this->_pagination;
     }
 
+    function pagination($which) {
+        if (empty($this->_pagination_args))
+            return;
+
+        $total_items = $this->_pagination_args['total_items'];
+        $total_pages = $this->_pagination_args['total_pages'];
+        $per_page = $this->_pagination_args['per_page'];
+        $paged = $this->_pagination_args['paged'];
+        $posttype = 'cred-user-form';
+        $show_private = isset($this->_pagination_args['show_private']) ? $this->_pagination_args['show_private'] : false;
+
+        $output = '<span class="displaying-num">' . sprintf(_n('1 item', '%s items', $total_items), number_format_i18n($total_items)) . '</span>';
+
+        $current = $this->get_pagenum();
+
+        $current_url = ( is_ssl() ? 'https://' : 'http://' ) . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
+        $current_url = remove_query_arg(array('hotkeys_highlight_last', 'hotkeys_highlight_first'), $current_url);
+        $current_url = remove_query_arg(array('posttype', 'show_private'), $current_url);
+        $current_url = add_query_arg('posttype', $posttype, $current_url);
+        $current_url = add_query_arg('show_private', $show_private, $current_url);
+
+        $js = "";
+        $search = "";
+        if ('top' == $which) {
+            $search_url = remove_query_arg('paged', $current_url);
+            $search = '<div style="margin-bottom:5px;"><label for="post-search-input" class="screen-reader-text">Search Posts:</label>
+	<input type="search" value="" name="s" id="search-input">
+	<input type="button" value="Search User Forms" class="button" id="search-submit"></div>';
+            $js = '<script>
+                    function dosubmit() {
+                        var src = jQuery("#search-input").val();
+                        window.location = "' . $search_url . '&s="+src;
+                    }
+                    jQuery("#search-submit").click(function() {
+                        dosubmit();
+                        return false;
+                    });
+                    jQuery("#search-input").keypress(function (e) {
+                        if (e.which == 13) {
+                          dosubmit();
+                          return false;
+                        }
+                      });
+                    </script>';
+        }
+
+        //cred-155
+        //Fixed pagination issue
+        //$current_url = esc_url($current_url);
+        $page_links = array();
+
+        $disable_first = $disable_last = '';
+        if ($current == 1)
+            $disable_first = ' disabled';
+        if ($current == $total_pages)
+            $disable_last = ' disabled';
+
+        $page_links[] = sprintf("<a class='%s' title='%s' href='%s'>%s</a>", 'first-page' . $disable_first, esc_attr__('Go to the first page'), esc_url(remove_query_arg('paged', $current_url)), '&laquo;'
+        );
+
+        $page_links[] = sprintf("<a class='%s' title='%s' href='%s'>%s</a>", 'prev-page' . $disable_first, esc_attr__('Go to the previous page'), esc_url(add_query_arg('paged', max(1, $current - 1), $current_url)), '&lsaquo;'
+        );
+
+        if ('bottom' == $which)
+            $html_current_page = $current;
+        else
+            $html_current_page = sprintf("<input class='current-page' title='%s' type='text' name='paged' value='%s' size='%d' />", esc_attr__('Current page'), $current, strlen($total_pages)
+            );
+
+        $html_total_pages = sprintf("<span class='total-pages'>%s</span>", number_format_i18n($total_pages));
+        $page_links[] = '<span class="paging-input">' . sprintf(_x('%1$s of %2$s', 'paging'), $html_current_page, $html_total_pages) . '</span>';
+
+        $page_links[] = sprintf("<a class='%s' title='%s' href='%s'>%s</a>", 'next-page' . $disable_last, esc_attr__('Go to the next page'), esc_url(add_query_arg('paged', min($total_pages, $current + 1), $current_url)), '&rsaquo;'
+        );
+
+        $page_links[] = sprintf("<a class='%s' title='%s' href='%s'>%s</a>", 'last-page' . $disable_last, esc_attr__('Go to the last page'), esc_url(add_query_arg('paged', $total_pages, $current_url)), '&raquo;'
+        );
+
+        $pagination_links_class = 'pagination-links';
+        if (!empty($infinite_scroll))
+            $pagination_links_class = ' hide-if-js';
+        $output .= "\n<span class='$pagination_links_class'>" . join("\n", $page_links) . '</span>';
+
+        if ($total_pages)
+            $page_class = $total_pages < 2 ? ' one-page' : '';
+        else
+            $page_class = ' no-pages';
+
+        $this->_pagination = "<div class='tablenav-pages{$page_class}' style='height:auto;margin:5px;'>$search<div style='clear:both;'></div><div style='float:right;'>$output</div></div>$js";
+
+        echo $this->_pagination;
+    }
 }

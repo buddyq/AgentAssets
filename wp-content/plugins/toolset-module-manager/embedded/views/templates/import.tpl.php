@@ -9,6 +9,25 @@ if ( true === $shared_import_menu) {
 	$url = admin_url( 'admin.php?page=toolset-export-import&tab=modules_import' );
 	$mm_url = admin_url( 'admin.php?page=ModuleManager_Modules' );
 }
+/**
+ * Module Manager 1.6.6
+ * Checking null import
+ */
+$null_import	= false;
+if ( isset( $_GET['step'] ) ) {
+	//Step set
+	//Check for null import
+	if ( ( isset( $_FILES['import-file']['error']) && $_FILES['import-file']['error']>0 ) ) {
+		//Null import
+		$null_import	= true;
+	}
+}
+if ( true === $null_import ) {
+	if ( isset( $_GET['step'] ) ) {
+		unset( $_GET['step'] );
+		echo "<div class='error'><p>".__('Upload Error','module-manager')."</p></div>";
+	}
+}
 ?>
 <div class="import-module">
 
@@ -519,3 +538,25 @@ if ((is_array($custom_import_messages)) && (!(empty($custom_import_messages)))) 
 			<?php
 			break;
 	} ?>
+<?php 
+$we_are_step1_2 = false;
+if ( ( isset( $_GET['page'] ) ) && ( isset( $_GET['tab'] ) ) && ( isset( $_GET['step'] ) ) ) {
+	$loaded_page	= $_GET['page'];
+	$loaded_tab		= $_GET['tab'];
+	$loaded_step	= intval( $_GET['step'] );
+	if ( ( 'toolset-export-import' == $loaded_page ) && ( 'modules_import' == $loaded_tab ) && ( ( 1 == $loaded_step ) || ( 2 == $loaded_step ) ) ) {
+		$we_are_step1_2 = true;
+	}
+}
+if ( false === $we_are_step1_2 ) {
+	//Two divs needed
+?>	
+</div></div>
+<?php 
+} elseif ( true === $we_are_step1_2 ) {
+	//Only one div needed
+?>
+</div>
+<?php 
+}
+?>

@@ -13,6 +13,10 @@ define ( 'WPDLL_VIEWS_CONTENT_GRID_CELL', 'http://wp-types.com/documentation/use
 define ( 'WPDLL_VIEWS_LOOP_CELL', 'http://wp-types.com/documentation/user-guides/wordpress-archive-cell/' );
 define ( 'WPDLL_COMMENTS_CELL', 'http://wp-types.com/documentation/user-guides/comments-cell?utm_source=layoutsplugin&utm_campaign=layouts&utm_medium=comments-cell&utm_term=help-link' );
 define ( 'WPDLL_CRED_CELL', 'http://wp-types.com/documentation/user-guides/cred-form-cell?utm_source=layoutsplugin&utm_campaign=layouts&utm_medium=cred-cell&utm_term=help-link' );
+define('WPDLL_WIDGET_AREA_CELL', 'https://wp-types.com/documentation/user-guides/widget-area-cell/?utm_source=layoutsplugin&utm_campaign=layouts&utm_medium=cred-cell&utm_term=help-link');
+define('WPDLL_ACCORDION_CELL_HELP', 'https://wp-types.com/documentation/user-guides/accordion-cell/?utm_source=layoutsplugin&utm_campaign=layouts&utm_medium=cred-cell&utm_term=help-link');
+define('WPDLL_TABS_CELL_HELP', 'https://wp-types.com/documentation/user-guides/tabs-cell/?utm_source=layoutsplugin&utm_campaign=layouts&utm_medium=cred-cell&utm_term=help-link');
+
 
 function ddl_add_help_link_to_dialog($link, $text, $same_line = false) {
     if( $same_line == false ):?>

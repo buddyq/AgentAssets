@@ -107,9 +107,9 @@ class WPDDL_Settings {
         }
 
         $menu_item_definitions[] = array(
-	    'title' => __( 'Layouts CSS Editor', 'wpv-views' ),
+	    'title' => __( 'Layouts CSS and JS Editor', 'wpv-views' ),
 	    'menu_id' => 'toolset_layouts_edit_css',
-	    'href' => admin_url().'admin.php?page=dd_layout_CSS'
+	    'href' => admin_url().'admin.php?page=dd_layout_CSS_JS'
 	);
 
 	return $menu_item_definitions;

@@ -534,6 +534,7 @@ class DDL_GroupedLayouts
     private $loop_manager;
     private $post_types = array();
     private $to_single = array();
+    private $parents = array();
     private $not_assigned = array();
     private $to_loops = array();
 
@@ -731,8 +732,9 @@ class DDL_GroupedLayouts
 
         if ($item->is_parent) {
             $item->children = self::get_children($layout, $this->layouts);
+            $item->all_children_assigned = self::all_children_assigned($item->children);
         }
-
+        
         if (property_exists($layout, 'parent') && $layout->parent) {
             $parent = get_post(WPDD_Layouts::get_layout_parent($item->ID, $layout));
             $item->is_child = true;
@@ -767,6 +769,24 @@ class DDL_GroupedLayouts
         return $item;
     }
 
+    function all_children_assigned($children){
+        
+        $all_assigned = false;
+        global $wpddlayout;
+        foreach($children as $child){
+            
+            $where_used = $wpddlayout->get_where_used($child);
+            $used_for_loops = $this->loop_manager->get_layout_loops_labels($child);
+
+            if(count($where_used) === 0 && count($used_for_loops)===0){
+                return false;
+            } else {
+                $all_assigned = true;
+            }
+        }
+        return $all_assigned;
+    }
+
     function process_item_single_assignments( $item, $types, $loops, $args ){
 
         global $wpddlayout;
@@ -792,9 +812,14 @@ class DDL_GroupedLayouts
             }
 
         } elseif ($item->is_parent || (!$posts_ids && !$types && !$loops)) {
-            $item->count = 0;
-            $this->not_assigned[] = (array)$item;
-        }
+            
+            if($item->is_parent && $item->all_children_assigned === true){
+                $this->parents[] = (array)$item;
+            } else {
+                $item->count = 0;
+                $this->not_assigned[] = (array)$item;
+            }
+        } 
 
         return $item;
     }
@@ -826,7 +851,7 @@ class DDL_GroupedLayouts
             }
         }
 
-        $ret = $this->return_default_groups( $this->not_assigned, $this->to_single, $this->post_types, $this->to_loops );
+        $ret = $this->return_default_groups($this->parents, $this->not_assigned, $this->to_single, $this->post_types, $this->to_loops );
 
         return apply_filters( 'ddl_get_layouts_listing_groups', $ret, $this );
     }
@@ -865,7 +890,7 @@ class DDL_GroupedLayouts
             $item = $this->process_item_single_assignments( $item, $types, $loops, $args );
         }
 
-        return $this->return_default_groups_with_count( $this->not_assigned, $this->to_single, $this->post_types, $this->to_loops );
+        return $this->return_default_groups_with_count($this->parents, $this->not_assigned, $this->to_single, $this->post_types, $this->to_loops );
     }
 
     public function get_archive_link( $type ){
@@ -896,9 +921,15 @@ class DDL_GroupedLayouts
         );
     }
 
-    private function return_default_groups($one, $two, $three, $four){
-
+    private function return_default_groups($zero, $one, $two, $three, $four){
+        
         return array(
+            array(
+                'id' => 0,
+                'name' => __("Parents with all children assigned", 'ddl-layouts'),
+                'kind' => 'Group',
+                'items' => $zero
+            ),
             array(
                 'id' => 1,
                 'name' => __("Layouts not being used anywhere", 'ddl-layouts'),
@@ -926,8 +957,8 @@ class DDL_GroupedLayouts
         );
     }
 
-    public function return_default_groups_with_count( $one, $two, $three, $four ){
-            $ret = $this->return_default_groups($one, $two, $three, $four);
+    public function return_default_groups_with_count($zero, $one, $two, $three, $four ){
+            $ret = $this->return_default_groups($zero, $one, $two, $three, $four);
             $ret['count_assignments'] = array_reduce($ret, array(&$this, 'count_children_items'), 0);
             $ret['count_children'] = array_reduce($ret, array(&$this, 'count_children'), 0);
             return $ret;

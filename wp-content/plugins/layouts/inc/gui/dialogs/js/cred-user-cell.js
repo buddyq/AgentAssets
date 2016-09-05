@@ -333,19 +333,17 @@ DDLayout.CredUserCell = function ($)
     }
 
     self.preview = function (content) {
-        
         var preview = jQuery('#ddl-cred-user-preview').html();
-
+        
         // find what the cred for does.
         var found = false;
         var cred_user_id = content.ddl_layout_cred_user_id;
         $('.js-ddl-cred-user-select > option').each(function () {
-
-            if ($(this).val() == cred_user_id) {
+            if ($(this).val() == cred_user_id) {                
                 var type = $(this).data('type');
                 var post_type = $(this).data('post-type');
                 var level = $(this).data('user-level');
-
+                
                 preview = preview.replace('%EDIT%', type);
                 preview = preview.replace('%POST_TYPE%', level || post_type);
 
@@ -438,12 +436,12 @@ DDLayout.CredUserInIfame = function ($)
     }
 
     self.close_iframe = function (callback) {
-        jQuery("#ddl-layout-toolset-iframe").on('load', function () {
+        /*jQuery("#ddl-layout-toolset-iframe").on('load', function () {
             // Wait for a reload.
             jQuery("#ddl-layout-toolset-iframe").off('load');
             self.remove_loading_overlay();
             callback();
-        });
+        });*/
 
         self.add_loading_overlay();
         jQuery("#ddl-layout-toolset-iframe").hide();
@@ -458,20 +456,32 @@ DDLayout.CredUserInIfame = function ($)
         jQuery('#ddl-default-edit #ddl-default-edit-cell-name').val(form_name);
 
         var form_settings = cred_user_iframe.get_form_settings();
-
         // update data for option
         $('.js-ddl-cred-user-select > option').each(function () {
             if ($(this).val() == _cred_user_id) {
                 var type = form_settings.type == 'new' ? $('.js-ddl-cred-user-select').data('new') : $('.js-ddl-cred-user-select').data('edit');
                 $(this).data('type', type);
                 $(this).data('post-type', form_settings.post_type);
+                if(form_settings.user_role !==''){
+                    $(this).data('user-level', form_settings.user_role);
+                }
             }
         });
-
         cred_user_iframe.save_form();
 
-        //callback();
-    }
+        /*_.defer(function(){
+            self.remove_loading_overlay();
+            if( typeof callback === 'function') {
+                callback.call( this );
+            }
+        });*/
+        _.delay(function(){
+            self.remove_loading_overlay();
+            if( typeof callback === 'function') {
+                callback.call( this );
+            }
+        }, 500);
+    };
 
     var _dismiss_distraction = function (context) {
         if (!context)

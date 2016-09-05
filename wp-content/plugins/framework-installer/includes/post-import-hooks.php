@@ -93,6 +93,16 @@ add_action('wpv_demo_import_finishing','wpvdemo_adjust_widget_body_text_func',5,
 
 //Let's update any widgets used with WPML after import...
 add_action('wpv_demo_import_finishing','wpvdemo_log_refsites_to_toolset',250,1);
+
+//Let's marked the WPML string translation as setup complete because no need to run it after import
+add_action('wpv_demo_import_finishing','wpvdemo_wpml_st_setup_completed', 300 , 1 );
+
+//Import WCML settings from the refsites server.
+add_action('wpv_demo_import_finishing','wpvdemo_import_wcml_settings', 305 , 1 );
+
+//Clear of any string scanning notices after import
+add_action('wpv_demo_import_finishing','wpvdemo_clear_any_string_scanning', 310 , 1 );
+
 /** POST IMPORT HOOKS HERE
  *
  * - END

@@ -13,7 +13,7 @@ final class Access_Model implements TAccess_Singleton
     public function __construct()
     {
         global $wpdb;
-        
+        /** {ENCRYPTION PATCH HERE} **/
         $this->wpdb=$wpdb;
     }
     
@@ -54,85 +54,107 @@ final class Access_Model implements TAccess_Singleton
 		do_action( 'otg_access_action_access_roles_updated', $settings, $updated );
         return $updated;
     }
+
+    /*
+    * @since 2.2
+     * check and convert old options form to role based
+     */
+    public function getAccessSettings(){
+        global $wpcf_access;
+        if ( empty($wpcf_access->settings) ){
+            $access_settings = get_option('toolset-access-options');
+            if ( empty($access_settings) ){
+                $access_types = get_option('wpcf-access-types', array());
+                $access_taxs = get_option('wpcf-access-taxonomies', array());
+                $access_third_party = get_option('wpcf-access-3rd-party', array());
+                $access_settings = Access_Helper::toolset_access_convert_options_format( $access_types, $access_taxs, $access_third_party );
+                Access_Helper::toolset_access_fix_old_access_roles();
+                self::updateAccessSettings($access_settings);
+            }
+        }else{
+            $access_settings = $wpcf_access->settings;
+        }
+        return $access_settings;
+    }
+
+    public function updateAccessSettings($settings)
+    {
+        return update_option('toolset-access-options', $settings);
+    }
     
     public function getAccessTypes()
     {
-        $access_types = get_option('wpcf-access-types', array());
-        
-        /*
-        // merge with Access settings saved in Types tables, since Access is standalone now
-       $isTypesActive = Access_Helper::wpcf_access_is_wpcf_active();
-        
-        if ($isTypesActive)
-        {
-            $wpcf_types = $this->getWpcfTypes();
-            
-            //taccess_log(array($access_types, $wpcf_types));
-            
-            foreach ($wpcf_types as $t=>$d)
-            {
-                if (isset($d['_wpcf_access_capabilities']))
-                {
-                    if (!isset($access_types[$t]))
-                        $access_types[$t] = $d['_wpcf_access_capabilities'];
-                    unset($wpcf_types[$t]['_wpcf_access_capabilities']);
-                }
-            }
-            $this->updateWpcfTypes($wpcf_types);
-        }
-        //taccess_log($access_types);
-        */
-        return $access_types;
+       global $wpcf_access;
+       if ( !isset( $wpcf_access->settings ) ){
+            $wpcf_access = new stdClass;
+       }
+       if ( !isset( $wpcf_access->settings->types ) ){
+            $wpcf_access->settings = new stdClass;
+            $wpcf_access->settings = self::getAccessSettings();
+       }
+       if ( !isset( $wpcf_access->settings->types ) ){
+           $wpcf_access->settings->types = array();
+       }
+
+       $access_types = $wpcf_access->settings->types;
+
+       return $access_types;
     }
     
-    public function updateAccessTypes($settings)
+    public function updateAccessTypes($update_settings)
     {
-        return update_option('wpcf-access-types', $settings);
-    }
-    
+        //TODO
+        global $wpcf_access;
+        $settings = $wpcf_access->settings;
+        $settings->types = $update_settings;
+        return update_option('toolset-access-options', $settings);
+    }   
+
     public function getAccessTaxonomies()
     {
-        $access_taxs = get_option('wpcf-access-taxonomies', array());
-        
-        /*
-        // merge with Access settings saved in Types tables, since Access is standalone now
-        $isTypesActive = Access_Helper::wpcf_access_is_wpcf_active();
-        
-        if ($isTypesActive)
-        {
-            $wpcf_taxs = $this->getWpcfTaxonomies();
-            
-            //taccess_log(array($access_taxs, $wpcf_taxs));
-            
-            foreach ($wpcf_taxs as $t=>$d)
-            {
-                if (isset($d['_wpcf_access_capabilities']))
-                {
-                    if (!isset($access_taxs[$t]))
-                        $access_taxs[$t] = $d['_wpcf_access_capabilities'];
-                    unset($wpcf_taxs[$t]['_wpcf_access_capabilities']);
-                }
-            }
-            $this->updateWpcfTaxonomies($wpcf_taxs);
+        global $wpcf_access;
+        if ( !isset( $wpcf_access->settings->tax ) ){
+            $wpcf_access->settings = new stdClass;
+            $wpcf_access->settings = self::getAccessSettings();
         }
-        //taccess_log($access_taxs);
-        */
+        if ( !isset( $wpcf_access->settings->tax ) ){
+           $wpcf_access->settings->tax = array();
+        }
+        $access_taxs = $wpcf_access->settings->tax;
+
         return $access_taxs;
     }
     
-    public function updateAccessTaxonomies($settings)
+    public function updateAccessTaxonomies($update_settings)
     {
-        return update_option('wpcf-access-taxonomies', $settings);
+        //TODO
+        global $wpcf_access;
+        $settings = $wpcf_access->settings;
+        $settings->tax = $update_settings;
+        return update_option('toolset-access-options', $settings);
     }
     
     public function getAccessThirdParty()
     {
-        return get_option('wpcf-access-3rd-party', array());
+        global $wpcf_access;
+        if ( !isset( $wpcf_access->settings->third_party ) ){
+            $wpcf_access->settings = new stdClass;
+            $wpcf_access->settings = self::getAccessSettings();
+        }
+        if ( !isset( $wpcf_access->settings->third_party ) ){
+           $wpcf_access->settings->third_party = array();
+        }
+        $third_party = $wpcf_access->settings->third_party;
+        return $third_party;
     }
     
-    public function updateAccessThirdParty($settings)
+    public function updateAccessThirdParty($update_settings)
     {
-        return update_option('wpcf-access-3rd-party', $settings);
+        //TODO
+        global $wpcf_access;
+        $settings = $wpcf_access->settings;
+        $settings->third_party = $update_settings;
+        return update_option('toolset-access-options', $settings);
     }
     
     public function getWpcfTypes()

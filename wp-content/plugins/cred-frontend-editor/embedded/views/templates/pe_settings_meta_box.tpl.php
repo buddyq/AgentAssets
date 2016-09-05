@@ -18,4 +18,3 @@ if (!isset($schedules))
         <input type="hidden" name="cred_settings_action" value="cron" />
     <?php } ?>
 </div>
-

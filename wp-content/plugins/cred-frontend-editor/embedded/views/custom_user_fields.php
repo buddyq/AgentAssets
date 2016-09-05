@@ -31,7 +31,7 @@ wp_print_scripts( 'thickbox' );
 
 <div class="wrap">
     <?php screen_icon('cred-frontend-editor'); ?>
-    <h2><?php _e('Manage Other User Meta Fields with CRED','wp-cred') ?></h2><br />
+    <h2><?php _e('Manage non-Toolset User Fields with CRED','wp-cred') ?></h2><br />
     <form id="custom_fields" action="" method="post">
     <?php
     //print_r(CRED_Loader::get('MODEL/Fields')->getCustomFields());

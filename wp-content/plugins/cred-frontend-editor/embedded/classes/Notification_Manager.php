@@ -186,8 +186,10 @@ final class CRED_Notification_Manager {
         $is_user_form = self::get_form_type($params['form_id']) == CRED_USER_FORMS_CUSTOM_POST_NAME;
         switch (apply_filters('cred_notification_event_type', $notification['event']['type'], $notification, $form_id, $post->ID)) {
             case 'form_submit':
-                if (self::$event && 'form_submit' == self::$event)
+                if (self::$event && 'form_submit' == self::$event) {
+                    //$notification['event']['condition'] = null;
                     return self::evaluateConditions($notification, $fields, $snapshot);
+                }
                 break;
             case 'post_modified':
                 if ($is_user_form || ($post->post_status == $notification['event']['post_status'] && $post->post_status != $snapshot['post_status'])) {
@@ -367,9 +369,11 @@ final class CRED_Notification_Manager {
         cred_log(self::$event);
         cred_log("####################################################################");
 
-
         $notificationsToSent = array();
         foreach ($notification->notifications as $ii => $notif) {
+            if (isset($notif['disabled']) && $notif['disabled'] == 1) 
+                continue;
+            
             $send_notification = false;
             cred_log($notif);
             if (isset(self::$event) &&
@@ -785,6 +789,9 @@ final class CRED_Notification_Manager {
         foreach ($notificationsToSent as $notification_counter => $notification) {
             cred_log($notification);
 
+            //Checks for old notification (back compatibility)
+            $notification_name = isset($notification['name']) ? $notification['name'] : '';
+            $mailer->setNotificationName($notification_name);
             $mailer->setNotificationNum($notification_counter);
 
             // bypass if nothing

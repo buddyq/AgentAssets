@@ -28,6 +28,18 @@ jQuery( document ).ready(function($) {
 				}
 			}).change();
 		}
+		
+		
+		$(document).on("change", ".cred_notify_by_date", function(event){
+			if($(event.target).is(":checked")){
+				$(event.target).closest(".cred_expiration_period_amount").prop("disabled", false);
+				$(event.target).closest(".cred_expiration_period_by").prop("disabled", false);
+			}else{
+				$(event.target).closest(".cred_expiration_period_amount").prop("disabled", true);
+				$(event.target).closest(".cred_expiration_period_by").prop("disabled", true);
+			}
+		});
+		
 	} catch(e) {}
 
 	function enablePlaceholders() {

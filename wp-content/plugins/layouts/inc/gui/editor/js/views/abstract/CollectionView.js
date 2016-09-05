@@ -69,14 +69,16 @@ DDLayout.views.abstract.CollectionView = Backbone.View.extend({
     ,appendModelElement:function( opt )
     {
 
-        var self = this, view, el, options, current = opt && opt.current ? opt.current : undefined;
+        var undefined, self = this, view, el, options, current = opt && opt.current ? opt.current : undefined;
 
 		self.model.each(function(model){
 			try{
 
-                var container = undefined, invisibility = undefined;
+                var container = undefined,
+                    invisibility = undefined,
+                    containers_elements = Toolset.hooks.applyFilters('ddl-get_containers_elements');
 
-                if( self.compound + model.get('kind') + 'View' === 'ContainerRowView' )
+                if( _.values( containers_elements ).indexOf( self.compound + model.get('kind') ) !== -1 )
                 {
                     container = self.options.container;
                 }

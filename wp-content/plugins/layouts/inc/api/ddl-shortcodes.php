@@ -102,14 +102,13 @@ Class LayoutsShortcodes{
         // set check status
         $active = strtolower($active);
         $plugin_should_be_active = ($active === 'true' || $active === 'yes') ? true : false;
-        
-        $get_plugins = array();
+
         $get_plugins = explode(",",$plugins);
         $get_plugins = array_map('trim',$get_plugins);
         
         if($get_plugins){
             foreach($get_plugins as $one_plugin){
-                if(class_exists($registered_plugins[$one_plugin]) || function_exists($registered_plugins[$one_plugin])){
+                if( isset($registered_plugins[$one_plugin]) && ( class_exists( $registered_plugins[$one_plugin] ) || function_exists( $registered_plugins[$one_plugin] ) ) ){
                     $active_status = true;
                 } else {
                     $active_status = false;

@@ -20,6 +20,18 @@ class WPDDL_script extends Toolset_Script
 class WPDDL_scripts_manager extends Toolset_Assets_Manager
 {
 
+    protected function __construct() {
+        parent::__construct();
+        add_filter( 'style_loader_tag', array(&$this, 'add_property_layouts_css'), 10, 3 );
+    }
+    
+    public function add_property_layouts_css( $html, $handle, $href ){
+        if( 'wp_ddl_layout_fe_css' === $handle )
+            $html = str_replace( "<link", "<link property='stylesheet'", $html );
+
+        return $html;
+    }
+    
 	protected function __initialize_styles()
 	{
         #common backend
@@ -103,7 +115,7 @@ class WPDDL_scripts_manager extends Toolset_Assets_Manager
         $this->scripts['ddl-wpml-switcher'] = new WPDDL_script('ddl-wpml-switcher', WPDDL_RES_RELPATH . '/js/ddl-wpml-switcher.js', array('jquery', 'jquery-ui-core', 'jquery-ui-widget', 'jquery-ui-selectmenu'), WPDDL_VERSION, true);
 		$this->scripts['layouts-settings-admin-js'] = new WPDDL_script( 'layouts-settings-admin-js',  WPDDL_RES_RELPATH . '/js/ddl-settings.js', array( 'jquery', 'toolset-utils', 'select2' ), WPDDL_VERSION, true );
 		$this->scripts['ddl-css-editor-main'] = new WPDDL_script('ddl-css-editor-main', WPDDL_GUI_RELPATH . "CSS/js/main.js", array('headjs', 'jquery', 'toolset-utils', 'underscore', 'backbone'), WPDDL_VERSION, true);
-
+        $this->scripts['ddl-css-editor-main'] = new WPDDL_script('ddl-js-editor-main', WPDDL_GUI_RELPATH . "CSS/js/jsmain.js", array('headjs', 'jquery', 'toolset-utils', 'underscore', 'backbone','jquery-ui-tabs'), WPDDL_VERSION, true);
         #codemirror.js and related
 
         if( isset( $_GET['page'] ) && 'dd_layouts_edit' == $_GET['page'] )
@@ -196,6 +208,7 @@ class WPDDL_scripts_manager extends Toolset_Assets_Manager
                     'saved_layouts' => __("Saved Layouts", 'ddl-layouts'),
                     'deleted_layouts' => __("Deleted Layouts", 'ddl-layouts'),
                     'saved_css' => __("Saved CSS", 'ddl-layouts'),
+                    'saved_js' => __("Saved JS", 'ddl-layouts'),
                     'overwritten_layouts' => __("Overwritten Layouts", 'ddl-layouts'),
                     'server_timeout' => __("Server timeout, please try again later.", 'ddl-layouts'),
                     'import_finished' => __("Import finished", 'ddl-layouts'),

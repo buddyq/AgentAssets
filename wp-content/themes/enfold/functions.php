@@ -9,7 +9,7 @@ global $avia_config;
  *
  * example: global $avia_config; $avia_config['use_child_theme_functions_only'] = true;
  * The default functions.php file will then no longer be loaded. You need to make sure then
- * to include framework and functions that you want to use by yourself. 
+ * to include framework and functions that you want to use by yourself.
  *
  * This is only recommended for advanced users
  */
@@ -45,13 +45,13 @@ $avia_config['color_sets'] = array(
     'footer_color'      => 'Footer',
     'socket_color'      => 'Socket'
  );
- 
- 
+
+
 
 /*
  * add support for responsive mega menus
  */
- 
+
 add_theme_support('avia_mega_menu');
 
 
@@ -60,14 +60,14 @@ add_theme_support('avia_mega_menu');
 /*
  * deactivates the default mega menu and allows us to pass individual menu walkers when calling a menu
  */
- 
+
 add_filter('avia_mega_menu_walker', '__return_false');
 
 
 /*
  * adds support for the new avia sidebar manager
  */
- 
+
 add_theme_support('avia_sidebar_manager');
 
 /*
@@ -82,13 +82,13 @@ add_theme_support('avia_sidebar_manager');
 if(!function_exists('avia_lang_setup'))
 {
 	add_action('after_setup_theme', 'avia_lang_setup');
-	
+
 	function avia_lang_setup()
 	{
 		$lang = apply_filters('ava_theme_textdomain_path', get_template_directory()  . '/lang');
 		load_theme_textdomain('avia_framework', $lang);
 	}
-	
+
 	avia_lang_setup();
 }
 
@@ -138,7 +138,7 @@ $avia_config['selectableImgSize'] = array(
 	'entry_with_sidebar' 	=> __('Entry with Sidebar','avia_framework'),
 	'entry_without_sidebar'	=> __('Entry without Sidebar','avia_framework'),
 	'extra_large' 			=> __('Fullscreen Sections/Sliders','avia_framework'),
-	
+
 );
 
 
@@ -167,9 +167,9 @@ $avia_config['layout']['sidebar_right'] = array('content' => 'av-content-small a
  * These are some of the font icons used in the theme, defined by the entypo icon font. the font files are included by the new aviaBuilder
  * common icons are stored here for easy retrieval
  */
- 
+
  $avia_config['font_icons'] = apply_filters('avf_default_icons', array(
- 
+
     //post formats +  types
     'standard' 		=> array( 'font' =>'entypo-fontello', 'icon' => 'ue836'),
     'link'    		=> array( 'font' =>'entypo-fontello', 'icon' => 'ue822'),
@@ -180,8 +180,8 @@ $avia_config['layout']['sidebar_right'] = array('content' => 'av-content-small a
     'video'   		=> array( 'font' =>'entypo-fontello', 'icon' => 'ue80d'),
     'portfolio'   	=> array( 'font' =>'entypo-fontello', 'icon' => 'ue849'),
     'product'   	=> array( 'font' =>'entypo-fontello', 'icon' => 'ue859'),
-    				
-    //social		
+
+    //social
     'behance' 		=> array( 'font' =>'entypo-fontello', 'icon' => 'ue915'),
 	'dribbble' 		=> array( 'font' =>'entypo-fontello', 'icon' => 'ue8fe'),
 	'facebook' 		=> array( 'font' =>'entypo-fontello', 'icon' => 'ue8f3'),
@@ -194,22 +194,22 @@ $avia_config['layout']['sidebar_right'] = array('content' => 'av-content-small a
 	'tumblr' 		=> array( 'font' =>'entypo-fontello', 'icon' => 'ue8fa'),
 	'twitter' 		=> array( 'font' =>'entypo-fontello', 'icon' => 'ue8f1'),
 	'vimeo' 		=> array( 'font' =>'entypo-fontello', 'icon' => 'ue8ef'),
-	'rss' 			=> array( 'font' =>'entypo-fontello', 'icon' => 'ue853'),  
-	'youtube'		=> array( 'font' =>'entypo-fontello', 'icon' => 'ue921'),  
-	'xing'			=> array( 'font' =>'entypo-fontello', 'icon' => 'ue923'),  
-	'soundcloud'	=> array( 'font' =>'entypo-fontello', 'icon' => 'ue913'),  
-	'five_100_px'	=> array( 'font' =>'entypo-fontello', 'icon' => 'ue91d'),  
-	'vk'			=> array( 'font' =>'entypo-fontello', 'icon' => 'ue926'),  
-	'reddit'		=> array( 'font' =>'entypo-fontello', 'icon' => 'ue927'),  
-	'digg'			=> array( 'font' =>'entypo-fontello', 'icon' => 'ue928'),  
-	'delicious'		=> array( 'font' =>'entypo-fontello', 'icon' => 'ue929'),  
+	'rss' 			=> array( 'font' =>'entypo-fontello', 'icon' => 'ue853'),
+	'youtube'		=> array( 'font' =>'entypo-fontello', 'icon' => 'ue921'),
+	'xing'			=> array( 'font' =>'entypo-fontello', 'icon' => 'ue923'),
+	'soundcloud'	=> array( 'font' =>'entypo-fontello', 'icon' => 'ue913'),
+	'five_100_px'	=> array( 'font' =>'entypo-fontello', 'icon' => 'ue91d'),
+	'vk'			=> array( 'font' =>'entypo-fontello', 'icon' => 'ue926'),
+	'reddit'		=> array( 'font' =>'entypo-fontello', 'icon' => 'ue927'),
+	'digg'			=> array( 'font' =>'entypo-fontello', 'icon' => 'ue928'),
+	'delicious'		=> array( 'font' =>'entypo-fontello', 'icon' => 'ue929'),
 	'mail' 			=> array( 'font' =>'entypo-fontello', 'icon' => 'ue805'),
-					
-	//woocomemrce    
+
+	//woocomemrce
 	'cart' 			=> array( 'font' =>'entypo-fontello', 'icon' => 'ue859'),
 	'details'		=> array( 'font' =>'entypo-fontello', 'icon' => 'ue84b'),
 
-	//bbpress    
+	//bbpress
 	'supersticky'	=> array( 'font' =>'entypo-fontello', 'icon' => 'ue808'),
 	'sticky'		=> array( 'font' =>'entypo-fontello', 'icon' => 'ue809'),
 	'one_voice'		=> array( 'font' =>'entypo-fontello', 'icon' => 'ue83b'),
@@ -217,7 +217,7 @@ $avia_config['layout']['sidebar_right'] = array('content' => 'av-content-small a
 	'closed'		=> array( 'font' =>'entypo-fontello', 'icon' => 'ue824'),
 	'sticky_closed' => array( 'font' =>'entypo-fontello', 'icon' => 'ue808\ue824'),
 	'supersticky_closed' => array( 'font' =>'entypo-fontello', 'icon' => 'ue809\ue824'),
-					
+
 	//navigation, slider & controls
 	'play' 			=> array( 'font' =>'entypo-fontello', 'icon' => 'ue897'),
 	'pause'			=> array( 'font' =>'entypo-fontello', 'icon' => 'ue899'),
@@ -228,14 +228,14 @@ $avia_config['layout']['sidebar_right'] = array('content' => 'av-content-small a
 	'close'			=> array( 'font' =>'entypo-fontello', 'icon' => 'ue814'),
 	'reload'		=> array( 'font' =>'entypo-fontello', 'icon' => 'ue891'),
 	'mobile_menu'	=> array( 'font' =>'entypo-fontello', 'icon' => 'ue8a5'),
-					
-	//image hover overlays		
+
+	//image hover overlays
     'ov_external'	=> array( 'font' =>'entypo-fontello', 'icon' => 'ue832'),
     'ov_image'		=> array( 'font' =>'entypo-fontello', 'icon' => 'ue869'),
     'ov_video'		=> array( 'font' =>'entypo-fontello', 'icon' => 'ue897'),
-    
-					
-	//misc			
+
+
+	//misc
     'search'  		=> array( 'font' =>'entypo-fontello', 'icon' => 'ue803'),
     'info'    		=> array( 'font' =>'entypo-fontello', 'icon' => 'ue81e'),
 	'clipboard' 	=> array( 'font' =>'entypo-fontello', 'icon' => 'ue8d1'),
@@ -288,7 +288,7 @@ if(!function_exists('avia_register_frontend_scripts'))
 		//register styles
 		wp_register_style( 'avia-style' ,  $child_theme_url."/style.css", array(), 		'2', 'all' ); //register default style.css file. only include in childthemes. has no purpose in main theme
 		wp_register_style( 'avia-custom',  $template_url."/css/custom.css", array(), 	'2', 'all' );
-																						 
+
 		wp_enqueue_style( 'avia-grid' ,   $template_url."/css/grid.css", array(), 		'2', 'all' );
 		wp_enqueue_style( 'avia-base' ,   $template_url."/css/base.css", array(), 		'2', 'all' );
 		wp_enqueue_style( 'avia-layout',  $template_url."/css/layout.css", array(), 	'2', 'all' );
@@ -296,12 +296,12 @@ if(!function_exists('avia_register_frontend_scripts'))
 		wp_enqueue_style( 'avia-popup-css', $template_url."/js/aviapopup/magnific-popup.css", array(), '1', 'screen' );
 		wp_enqueue_style( 'avia-media'  , $template_url."/js/mediaelement/skin-1/mediaelementplayer.css", array(), '1', 'screen' );
 		wp_enqueue_style( 'avia-print' ,  $template_url."/css/print.css", array(), '1', 'print' );
-		
-		
+
+
 		if ( is_rtl() ) {
 			wp_enqueue_style(  'avia-rtl',  $template_url."/css/rtl.css", array(), '1', 'all' );
 		}
-		
+
 
         global $avia;
 		$safe_name = avia_backend_safe_string($avia->base_data['prefix']);
@@ -315,7 +315,7 @@ if(!function_exists('avia_register_frontend_scripts'))
             $avia_dyn_stylesheet_url = $avia_upload_dir['baseurl'] . '/dynamic_avia/'.$safe_name.'.css';
 			$version_number = get_option('avia_stylesheet_dynamic_version'.$safe_name);
 			if(empty($version_number)) $version_number = '1';
-            
+
             wp_enqueue_style( 'avia-dynamic', $avia_dyn_stylesheet_url, array(), $version_number, 'all' );
         }
 
@@ -359,7 +359,7 @@ if(!function_exists('avia_nav_menus'))
 		global $avia_config, $wp_customize;
 
 		add_theme_support('nav_menus');
-		
+
 		foreach($avia_config['nav_menus'] as $key => $value)
 		{
 			//wp-admin\customize.php does not support html code in the menu description - thus we need to strip it
@@ -468,7 +468,7 @@ if(!function_exists('avia_register_avia_widgets'))
 		register_widget( 'avia_google_maps' );
 		register_widget( 'avia_fb_likebox' );
 		register_widget( 'avia_instagram_widget' );
-		
+
 	}
 
 	avia_register_avia_widgets(); //call the function immediatly to activate
@@ -504,7 +504,7 @@ add_theme_support('force-post-thumbnails-in-widget');
 /*
  * display page titles via wordpress default output
  */
-function av_theme_slug_setup() 
+function av_theme_slug_setup()
 {
    add_theme_support( 'title-tag' );
 }
@@ -514,13 +514,13 @@ add_action( 'after_setup_theme', 'av_theme_slug_setup' );
 /*title fallback*/
 if ( ! function_exists( '_wp_render_title_tag' ) )
 {
-    function av_theme_slug_render_title() 
+    function av_theme_slug_render_title()
     {
 	    echo "<title>" . avia_set_title_tag() ."</title>";
 	}
 	add_action( 'wp_head', 'av_theme_slug_render_title' );
 }
-    
+
 
 
 
@@ -535,3 +535,12 @@ require_once( 'functions-enfold.php');
  * add option to edit elements via css class
  */
 // add_theme_support('avia_template_builder_custom_css');
+
+function gmaps_workaround(){
+?>
+<!--Google Maps JavaScript API -->
+<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBUlur0JBG8PZGK_SqAVLx_PKvi81z7Rek"
+ type="text/javascript"></script>
+<?php
+}
+add_action('wp_footer', 'gmaps_workaround');

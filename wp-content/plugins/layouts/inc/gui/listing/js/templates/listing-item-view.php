@@ -162,7 +162,7 @@
                         } else { #>
                         <li>{{{ ' '+v.label+' ' }}}<span class="js-alret-icon-hide-post"><a
                                     data-object="{{ JSON.stringify(v) }}"
-                                    class="apply-for-all js-apply-layout-for-all-posts-js js-alert-icon-hide-{{{ v.type }}} button button-small button-leveled icon-warning-sign fa fa-exclamation-triangle js-apply-for-all-posts js-alret-icon-hide-post"> <?php _e('Use this layout for ', 'ddl-layouts'); ?>
+                                    class="apply-for-all js-apply-layout-for-all-posts-js js-alert-icon-hide-{{{ v.type }}} button button-small button-leveled icon-warning-sign fa fa-exclamation-triangle js-apply-for-all-posts js-alret-icon-hide-post"> <span class="alert-text"><?php _e('Use this layout for ', 'ddl-layouts'); ?></span>
                                     {{{ v.missing }}} {{{ v.label }}} </a></span></li>
                         <#    }
                             }); #>

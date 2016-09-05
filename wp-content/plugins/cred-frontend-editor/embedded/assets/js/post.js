@@ -216,7 +216,7 @@
                     tip = settings.locale.select_form;
                 } else
                 {
-                    _vv = $('.cred-edit-post-select2', $parent).val();
+                    _vv = $('#cred-edit-post-select2', $parent).val();
                     if (
                             'edit-other-post' == $('.cred-post-edit-container-advanced2 input[name^="cred-edit-what-to-edit"]:checked', $parent).val()
                             &&
@@ -297,7 +297,7 @@
                     tip = settings.locale.select_form;
                 } else
                 {
-                    _vv = $('.cred-edit-user-select2', $parent).val();
+                    _vv = $('#cred-edit-user-select', $parent).val();
                     if (
                             'edit-other-user' == $('.cred-user-edit-container-advanced2 input[name^="cred-user-edit-what-to-edit"]:checked', $parent).val()
                             &&
@@ -308,28 +308,29 @@
                         tip = settings.locale.select_post;
                         //FIXME: this is useless and wrong, we have 2 other events
                     } else {
-                        
-                        if( Toolset.hooks.applyFilters( 'cred_cred_aux_reload_button_content_ajax', true ) ){
+
+                        if (Toolset.hooks.applyFilters('cred_cred_aux_reload_button_content_ajax', true)) {
 
                             var form_id = $('.cred_form-edit-shortcode-select2').val();
-                            var loader = $('.cred-form-addtional-loader2', $parent).show();
-                            $.ajax({
-                                url: self.route('/Posts/getUsers?form_id=' + form_id),
-                                timeout: 10000,
-                                type: 'GET',
-                                data: '',
-                                dataType: 'html',
-                                success: function (result)
-                                {
-                                    clearInterval(checkButtonTimer);
-                                    $('.cred-edit-user-select2', $parent).html(result);
-                                    loader.hide();
-                                },
-                                error: function ()
-                                {
-                                    loader.hide();
-                                }
-                            });
+                            //var loader = $('.cred-form-addtional-loader2', $parent).show();
+                            //TODO: remove this completely
+//                            $.ajax({
+//                                url: self.route('/Posts/getUsers?form_id=' + form_id),
+//                                timeout: 10000,
+//                                type: 'GET',
+//                                data: '',
+//                                dataType: 'html',
+//                                success: function (result)
+//                                {
+//                                    clearInterval(checkButtonTimer);
+//                                    $('.cred-edit-user-select2', $parent).html(result);
+//                                    loader.hide();
+//                                },
+//                                error: function ()
+//                                {
+//                                    loader.hide();
+//                                }
+//                            });
                         } else {
                             clearInterval(checkButtonTimer);
                         }
@@ -374,7 +375,7 @@
         },
         getUniqueUserFormName: function (form_name, form_id) {
             return form_id + '\' form_name=\'' + form_name;
-            
+
 //            var count = 0;
 //            $("option", $('#cred_user_form-new-shortcode-select')).each(function () {
 //                if ($(this).text() == form_name) {
@@ -395,7 +396,7 @@
         },
         getUniqueFormName: function (form_name, form_id) {
             return form_id + '\' form_name=\'' + form_name;
-                        
+
 //            var count = 0;
 //            $("option", $('#cred_form-new-shortcode-select')).each(function () {
 //                if ($(this).text() == form_name) {
@@ -421,7 +422,7 @@
 
             event.stopPropagation();
             event.preventDefault();
-            
+
             //post_id is user_id in this case
             var form_id, form_name, post_id, shortcode, form_page_id, parent_id;
 
@@ -737,7 +738,7 @@
                             post_id = null;
                             break;
                         case 'edit-other-post':
-                            post_id = $('.cred-edit-post-select2', $parent).val();
+                            post_id = $('#cred-edit-post-select2', $parent).val();
                             if (!post_id)
                             {
                                 error = 'No Post';
@@ -820,7 +821,7 @@
                             post_id = null;
                             break;
                         case 'edit-other-user':
-                            post_id = $('.cred-edit-user-select2', $parent).val();
+                            post_id = $('#cred-edit-user-select', $parent).val();
                             if (!post_id)
                             {
                                 error = 'No User';
@@ -953,6 +954,9 @@
                 _message = $('.cred-delete-html-message2', $parent).val();
                 _message_after = $('.cred-delete-html-message-after2').val();
                 _refresh = $('.cred-refresh-after-action', $parent).is(':checked');
+                _message_checkbox = $(event.target).closest(".cred-popup-box").find(".cred-delete-html-message-checkbox2");
+                _message_after_checkbox = $(event.target).closest(".cred-popup-box").find(".cred-delete-html-message-after-checkbox2");
+                
                 if (_refresh)
                     _class += ('' == _class) ? 'cred-refresh-after-delete' : ' cred-refresh-after-delete';
                 _action = $('.cred-post-delete-link-container-advanced2 input[name^="cred-delete-delete-action"]:checked', $parent).val();
@@ -964,11 +968,11 @@
                     _atts.push('text=\'' + _text + '\'');
                 if (_message != '')
                     _atts.push('message=\'' + _message + '\'');
-                if (_message_after != '')
+                if (_message_after != '' && $(_message_after_checkbox).is(":checked"))
                     _atts.push('message_after=\'' + _message_after + '\'');
                 if (_redirect != '')
                     _atts.push('redirect=\'' + _redirect + '\'');
-                _atts.push('message_show=\'' + ($('.cred-delete-html-message-after-checkbox2').is(':checked') ? 1 : 0) + '\'');
+                _atts.push('message_show=\'' + ($(_message_checkbox).is(':checked') ? 1 : 0) + '\'');
                 if (_action != '')
                     _atts.push('action=\'' + _action + '\'');
                 if (_atts.length > 0)
@@ -1002,8 +1006,8 @@
                     utils.doDelayed(function () {
                         clearInterval(checkButtonTimer);
                         cred_media_buttons.css('z-index', 1);
-                        cred_popup_boxes.hide('fast', function(){
-                            Toolset.hooks.doAction( 'cred_cred_short_code_dialog_close' );
+                        cred_popup_boxes.hide('fast', function () {
+                            Toolset.hooks.doAction('cred_cred_short_code_dialog_close');
                         });
                     });
                 } catch (e) {
@@ -1079,12 +1083,12 @@
                 if (adv_option.hasClass('cred-show'))
                 {
                     adv_option.removeClass('cred-show');
-                    adv_option.stop().slideFadeUp('slow', 'quintEaseIn');
+                    adv_option.stop().slideFadeUp('slow');
                     $(this).text(settings.locale.show_advanced_options);
                 } else
                 {
                     adv_option.addClass('cred-show');
-                    adv_option.stop().slideFadeDown('slow', 'quintEaseOut');
+                    adv_option.stop().slideFadeDown('slow');
                     $(this).text(settings.locale.hide_advanced_options);
                 }
             });
@@ -1093,39 +1097,41 @@
                 event.stopPropagation();
                 var form_id = $(this).val();
                 var form_name = $("option:selected", $(this)).text();
-                var loader = $('#cred-form-addtional-loader').show();
-                $.ajax({
-                    url: self.route('/Posts/getPosts?form_id=' + form_id),
-                    timeout: 10000,
-                    type: 'GET',
-                    data: '',
-                    dataType: 'html',
-                    success: function (result)
-                    {
-                        $('#cred-edit-post-select').html(result);
-                        loader.hide();
-                    },
-                    error: function ()
-                    {
-                        loader.hide();
-                    }
-                });
+                //var loader = $('#cred-form-addtional-loader').show();
+                //TODO:remove this completely
+//                $.ajax({
+//                    url: self.route('/Posts/getPosts?form_id=' + form_id),
+//                    timeout: 10000,
+//                    type: 'GET',
+//                    data: '',
+//                    dataType: 'html',
+//                    success: function (result)
+//                    {
+//                        $('#cred-edit-post-select').html(result);
+//                        loader.hide();
+//                    },
+//                    error: function ()
+//                    {
+//                        loader.hide();
+//                    }
+//                });
 
-                $.ajax({
-                    url: self.route('/Posts/getUsers?form_id=' + form_id),
-                    timeout: 10000,
-                    type: 'GET', data: '',
-                    dataType: 'html',
-                    success: function (result)
-                    {
-                        $('#cred-edit-user-select').html(result);
-                        loader.hide();
-                    },
-                    error: function ()
-                    {
-                        loader.hide();
-                    }
-                });
+                //TODO: remove completely
+//                $.ajax({
+//                    url: self.route('/Posts/getUsers?form_id=' + form_id),
+//                    timeout: 10000,
+//                    type: 'GET', data: '',
+//                    dataType: 'html',
+//                    success: function (result)
+//                    {
+//                        $('#cred-edit-user-select').html(result);
+//                        loader.hide();
+//                    },
+//                    error: function ()
+//                    {
+//                        loader.hide();
+//                    }
+//                });
             });
 
 //#cred_user_form-edit-shortcode-select
@@ -1133,23 +1139,24 @@
                 event.stopPropagation();
                 var form_id = $("#cred_user_form-edit-shortcode-select").val();
                 var form_name = $("option:selected", $(this)).text();
-                var loader = $('#cred-user-form-addtional-loader').show();
-                $.ajax({
-                    url: self.route('/Posts/getUsers?form_id=' + form_id),
-                    timeout: 10000,
-                    type: 'GET',
-                    data: '',
-                    dataType: 'html',
-                    success: function (result)
-                    {
-                        $('#cred-edit-user-select').html(result);
-                        loader.hide();
-                    },
-                    error: function ()
-                    {
-                        loader.hide();
-                    }
-                });
+                //var loader = $('#cred-user-form-addtional-loader').show();
+                //TODO: remove completely
+//                $.ajax({
+//                    url: self.route('/Posts/getUsers?form_id=' + form_id),
+//                    timeout: 10000,
+//                    type: 'GET',
+//                    data: '',
+//                    dataType: 'html',
+//                    success: function (result)
+//                    {
+//                        $('#cred-edit-user-select').html(result);
+//                        loader.hide();
+//                    },
+//                    error: function ()
+//                    {
+//                        loader.hide();
+//                    }
+//                });
             });
 
             $('.cred-form-shortcodes-box2').on('change', '.cred_user_form-edit-shortcode-select2', function (event) {
@@ -1157,40 +1164,42 @@
                 var $parent = $(this).closest('.cred-form-shortcodes-box2');
                 var form_id = $(this).val();
                 var form_name = $("option:selected", $(this)).text();
-                var loader = $('.cred-form-addtional-loader2', $parent).show();
-                $.ajax({
-                    url: self.route('/Posts/getPosts?form_id=' + form_id),
-                    timeout: 10000,
-                    type: 'GET',
-                    data: '',
-                    dataType: 'html',
-                    success: function (result)
-                    {
-                        $('.cred-edit-post-select2', $parent).html(result);
-                        loader.hide();
-                    },
-                    error: function ()
-                    {
-                        loader.hide();
-                    }
-                });
+                //var loader = $('.cred-form-addtional-loader2', $parent).show();
+                //TODO:remove this completely
+//                $.ajax({
+//                    url: self.route('/Posts/getPosts?form_id=' + form_id),
+//                    timeout: 10000,
+//                    type: 'GET',
+//                    data: '',
+//                    dataType: 'html',
+//                    success: function (result)
+//                    {
+//                        $('#cred-edit-post-select2', $parent).html(result);
+//                        loader.hide();
+//                    },
+//                    error: function ()
+//                    {
+//                        loader.hide();
+//                    }
+//                });
 
-                $.ajax({
-                    url: self.route('/Posts/getUsers?form_id=' + form_id),
-                    timeout: 10000,
-                    type: 'GET',
-                    data: '',
-                    dataType: 'html',
-                    success: function (result)
-                    {
-                        $('.cred-edit-user-select2', $parent).html(result);
-                        loader.hide();
-                    },
-                    error: function ()
-                    {
-                        loader.hide();
-                    }
-                });
+                //TODO:remove this completely
+//                $.ajax({
+//                    url: self.route('/Posts/getUsers?form_id=' + form_id),
+//                    timeout: 10000,
+//                    type: 'GET',
+//                    data: '',
+//                    dataType: 'html',
+//                    success: function (result)
+//                    {
+//                        $('.cred-edit-user-select2', $parent).html(result);
+//                        loader.hide();
+//                    },
+//                    error: function ()
+//                    {
+//                        loader.hide();
+//                    }
+//                });
             });
 
             $('.cred-shortcode-container-radio').bind('click', function (event) {
@@ -1199,40 +1208,42 @@
                 var form_id = $('.cred_form-edit-shortcode-select2').val();
                 var form_name = $("option:selected", $(this)).text();
 
-                var loader = $('.cred-form-addtional-loader2', $parent).show();
-                $.ajax({
-                    url: self.route('/Posts/getPosts?form_id=' + form_id),
-                    timeout: 10000,
-                    type: 'GET',
-                    data: '',
-                    dataType: 'html',
-                    success: function (result)
-                    {
-                        $('.cred-edit-post-select2', $parent).html(result);
-                        loader.hide();
-                    },
-                    error: function ()
-                    {
-                        loader.hide();
-                    }
-                });
+                //var loader = $('.cred-form-addtional-loader2', $parent).show();
+                //TODO:remove this completely
+//                $.ajax({
+//                    url: self.route('/Posts/getPosts?form_id=' + form_id),
+//                    timeout: 10000,
+//                    type: 'GET',
+//                    data: '',
+//                    dataType: 'html',
+//                    success: function (result)
+//                    {
+//                        $('#cred-edit-post-select2', $parent).html(result);
+//                        loader.hide();
+//                    },
+//                    error: function ()
+//                    {
+//                        loader.hide();
+//                    }
+//                });
 
-                $.ajax({
-                    url: self.route('/Posts/getUsers?form_id=' + form_id),
-                    timeout: 10000,
-                    type: 'GET',
-                    data: '',
-                    dataType: 'html',
-                    success: function (result)
-                    {
-                        $('.cred-edit-user-select2', $parent).html(result);
-                        loader.hide();
-                    },
-                    error: function ()
-                    {
-                        loader.hide();
-                    }
-                });
+                //TODO: remove this completely
+//                $.ajax({
+//                    url: self.route('/Posts/getUsers?form_id=' + form_id),
+//                    timeout: 10000,
+//                    type: 'GET',
+//                    data: '',
+//                    dataType: 'html',
+//                    success: function (result)
+//                    {
+//                        $('.cred-edit-user-select2', $parent).html(result);
+//                        loader.hide();
+//                    },
+//                    error: function ()
+//                    {
+//                        loader.hide();
+//                    }
+//                });
             });
 
             $('#cred-child-form-page, .cred-child-form-page2, #cred_post_child_parent_id, .cred_post_child_parent_id2')
@@ -1252,8 +1263,25 @@
                         }
                     });
 
-            $('#cred-delete-redirect-page')
+            $('#cred-delete-redirect-page, #cred-edit-post-select, #cred-edit-post-select2')
                     .cred_suggest(self.route('/Posts/suggestPostsByTitle'), {
+                        delay: 200,
+                        minchars: 3,
+                        multiple: false,
+                        multipleSep: '',
+                        resultsClass: 'ac_results',
+                        selectClass: 'ac_over',
+                        matchClass: 'ac_match',
+                        onStart: function () {
+                            $('#cred-form-suggest-child-form-loader').show();
+                        },
+                        onComplete: function () {
+                            $('#cred-form-suggest-child-form-loader').hide();
+                        }
+                    });
+
+            $('#cred-edit-user-select, #cred-edit-user-select2')
+                    .cred_suggest(self.route('/Posts/suggestUserByName'), {
                         delay: 200,
                         minchars: 3,
                         multiple: false,
@@ -1278,6 +1306,7 @@
                 new_select_options.eq(0).prop('selected', false);
                 new_select_options.eq(1).prop('selected', true);
             }
+
             if (edit_select_options.length >= 2)
             {
                 var rel = $('#cred-form-shortcode-types-select-container #cred-post-edit-container');
@@ -1355,7 +1384,7 @@
                 if (el.is(':checked'))
                 {
                     $('.cred-shortcodes-container').hide();
-                    $('#_' + el.attr('id')).stop().slideFadeDown('slow', 'quintEaseOut');
+                    $('#_' + el.attr('id')).stop().slideFadeDown('slow');
                 }
             });
 
@@ -1371,7 +1400,7 @@
                     var el_class = el.attr('class');
                     el_class = el_class.replace('cred-shortcode-container-radio', '').replace('cred-radio-10', '').replace(/\s+/g, '');
                     $('.cred-shortcodes-container').hide();
-                    $('._' + el_class).stop().slideFadeDown('slow', 'quintEaseOut');
+                    $('._' + el_class).stop().slideFadeDown('slow');
                 }
             });
             $('#cred-post-edit-container-advanced input[name="cred-edit-how-to-display"]').change(function () {
@@ -1428,7 +1457,7 @@
                     aux.checkButton();
                 }, 500);
 
-                Toolset.hooks.doAction('cred_cred_checkButtonTimer_inerval_set', checkButtonTimer, aux, this );
+                Toolset.hooks.doAction('cred_cred_checkButtonTimer_inerval_set', checkButtonTimer, aux, this);
             });
 
             $(document).on('click', '.cred-form-shortcode-button-button2,.js-code-editor-toolbar-button-cred-icon', function (event) {
@@ -1445,7 +1474,7 @@
                 checkButtonTimer = setInterval(function () {
                     aux.checkButton2($parent);
                 }, 1000);
-                Toolset.hooks.doAction('cred_cred_checkButtonTimer_inerval_set', checkButtonTimer, aux, this );
+                Toolset.hooks.doAction('cred_cred_checkButtonTimer_inerval_set', checkButtonTimer, aux, this);
             });
 
             $('#cred-form-shortcodes-box').on('click', '#cred-popup-cancel', function (event) {
@@ -1453,8 +1482,8 @@
                 utils.doDelayed(function () {
                     clearInterval(checkButtonTimer);
                     cred_media_buttons.css('z-index', 1);
-                    cred_popup_boxes.hide('fast', function(){
-                        Toolset.hooks.doAction( 'cred_cred_short_code_dialog_close' );
+                    cred_popup_boxes.hide('fast', function () {
+                        Toolset.hooks.doAction('cred_cred_short_code_dialog_close');
                     });
                 });
             });
@@ -1464,8 +1493,8 @@
                 utils.doDelayed(function () {
                     clearInterval(checkButtonTimer);
                     cred_media_buttons.css('z-index', 1);
-                    cred_popup_boxes.hide('fast', function(){
-                        Toolset.hooks.doAction( 'cred_cred_short_code_dialog_close' );
+                    cred_popup_boxes.hide('fast', function () {
+                        Toolset.hooks.doAction('cred_cred_short_code_dialog_close');
                     });
                 });
             });
@@ -1503,8 +1532,8 @@
                 utils.doDelayed(function () {
                     clearInterval(checkButtonTimer);
                     cred_media_buttons.css('z-index', 1);
-                    cred_popup_boxes.hide('fast', function(){
-                        Toolset.hooks.doAction( 'cred_cred_short_code_dialog_close' );
+                    cred_popup_boxes.hide('fast', function () {
+                        Toolset.hooks.doAction('cred_cred_short_code_dialog_close');
                     });
                 });
             });
@@ -1516,7 +1545,7 @@
     });
 
     // make public methods/properties available
-    window.cred_cred =  self;
+    window.cred_cred = self;
 
     return window.cred_cred;
 

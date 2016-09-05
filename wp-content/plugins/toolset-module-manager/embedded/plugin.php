@@ -2,7 +2,7 @@
 
 // current version
 if (!(defined('MODMAN_VERSION'))) {
-define('MODMAN_VERSION','1.6.5');
+define('MODMAN_VERSION','1.6.6');
 }
 
 if (!(defined('MODMAN_NAME'))) {

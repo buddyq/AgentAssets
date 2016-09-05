@@ -38,6 +38,10 @@ DDLayout_settings.DDL_JS.ns.js(
     , DDLayout_settings.DDL_JS.editor_lib_path + "models/cells/Row.js"
     , DDLayout_settings.DDL_JS.editor_lib_path + "models/collections/Rows.js"
     , DDLayout_settings.DDL_JS.editor_lib_path + "models/cells/Container.js"
+    , DDLayout_settings.DDL_JS.editor_lib_path + "models/cells/Tabs.js"
+    , DDLayout_settings.DDL_JS.editor_lib_path + "models/cells/Tab.js"
+    , DDLayout_settings.DDL_JS.editor_lib_path + "models/cells/Accordion.js"
+    , DDLayout_settings.DDL_JS.editor_lib_path + "models/cells/Panel.js"
     , DDLayout_settings.DDL_JS.editor_lib_path + "models/cells/Layout.js"
     , DDLayout_settings.DDL_JS.editor_lib_path + "models/cells/ThemeSectionRow.js"
     , DDLayout_settings.DDL_JS.editor_lib_path + "views/abstract/ElementView.js"
@@ -48,6 +52,10 @@ DDLayout_settings.DDL_JS.ns.js(
     , DDLayout_settings.DDL_JS.editor_lib_path + "views/CellView.js"
     , DDLayout_settings.DDL_JS.editor_lib_path + "views/ContainerRowView.js"
     , DDLayout_settings.DDL_JS.editor_lib_path + "views/ContainerView.js"
+    , DDLayout_settings.DDL_JS.editor_lib_path + "views/TabsTabView.js"
+    , DDLayout_settings.DDL_JS.editor_lib_path + "views/TabsView.js"
+    , DDLayout_settings.DDL_JS.editor_lib_path + "views/AccordionPanelView.js"
+    , DDLayout_settings.DDL_JS.editor_lib_path + "views/AccordionView.js"
     , DDLayout_settings.DDL_JS.editor_lib_path + "views/SpacerView.js"
     , DDLayout_settings.DDL_JS.editor_lib_path + 'parent-helper.js'
     , DDLayout_settings.DDL_JS.editor_lib_path + "views/LayoutView.js"
@@ -74,6 +82,8 @@ DDLayout_settings.DDL_JS.ns.js(
     , DDLayout_settings.DDL_JS.dialogs_lib_path + "dialog-repeating-fields.js"
     , DDLayout_settings.DDL_JS.dialogs_lib_path + "html-properties/HtmlAttributesHandler.js" // Remove
     , DDLayout_settings.DDL_JS.dialogs_lib_path +'theme-section-row-edit-dialog.js'
+    , DDLayout_settings.DDL_JS.dialogs_lib_path + 'tab-edit-dialog.js'
+    , DDLayout_settings.DDL_JS.dialogs_lib_path + 'panel-edit-dialog.js'
     , DDLayout_settings.DDL_JS.dialogs_lib_path +'child-layout-manager.js'
     , DDLayout_settings.DDL_JS.dialogs_lib_path +'toolset-in-iframe.js'
     , DDLayout_settings.DDL_JS.editor_lib_path + "views/ViewLayoutManager.js"
@@ -81,7 +91,9 @@ DDLayout_settings.DDL_JS.ns.js(
     , DDLayout_settings.DDL_JS.editor_lib_path + "ddl-post-types-options.js"
     , DDLayout_settings.DDL_JS.res_path + "/js/ddl-individual-assignment-manager.js"
     , DDLayout_settings.DDL_JS.res_path + '/js/dd-layouts-parents-watcher.js'
-
+    , DDLayout_settings.DDL_JS.editor_lib_path + 'ddl-duplicator.js'
+    , DDLayout_settings.DDL_JS.editor_lib_path + 'ddl-edit-tabs.js'
+    , DDLayout_settings.DDL_JS.editor_lib_path + 'ddl-edit-accordion.js'
     , function () {
         _.each(DDLayout.models.cells, function (item, key, list) {
             if (list.hasOwnProperty(key) ) {
@@ -132,6 +144,8 @@ DDLayout.AdminPage = function($)
 
     self.init = function()
     {
+        Toolset.hooks.addFilter('ddl-get_containers_elements', self.get_containers_elements, 10, 1 );
+
         DDLayout.unique_id_created = false;
 
         // get the layout from the json textarea.
@@ -152,6 +166,7 @@ DDLayout.AdminPage = function($)
         self._layout_settings_dialog = new DDLayout.LayoutSettingsDialog();
         self.htmlAttributesHandler = new DDLayout.HtmlAttributesHandler;
         self.wpml_handler = new DDLayout.WPMLBoxHandler();
+        self.duplicator = new DDLayout.Duplicator.DuplicateRow();
 
         self.post_types_options_manager = new DDLayout.PostTypes_Options(self);
 
@@ -173,12 +188,19 @@ DDLayout.AdminPage = function($)
 
         self._initialize_post_edit();
 
+        self.edit_tab_cell = new DDLayout.EditTabsCell();
+        self.edit_accordion_cell = new DDLayout.EditAccordionCell();
+
         self.instance_layout_view.listenTo(self.instance_layout_view.eventDispatcher, 'ddl-remove-cell', self.remove_cell_callback );
         self.instance_layout_view.listenTo(self.instance_layout_view.eventDispatcher, 'ddl-delete-cell', self.delete_cell_callback );
         self.instance_layout_view.listenTo(self.instance_layout_view.eventDispatcher, 'ddl-remove-row', self.remove_row_callback );
         self._save_state.eventDispatcher.listenTo(self._save_state.eventDispatcher, 'save_state_change', self.save_state_changed)
 
         _.defer( self.init_wpml_vars, layout );
+    };
+
+    self.get_containers_elements = function( elements ){
+        return DDLayout_settings.DDL_JS.container_elements
     };
 
     self.init_wpml_vars = function( layout ){
@@ -472,10 +494,43 @@ DDLayout.AdminPage = function($)
 
     self.show_row_dialog = function (mode, row_view) {
         if (!self._row_dialog) {
-            self._row_dialog = new DDLayout.RowDialog();
+            self._row_dialog = new DDLayout.RowDialog(jQuery, row_view);
         }
 
         self._row_dialog.show(mode, row_view);
+    };
+
+    self.show_tab_dialog = function (mode, row_view) {
+        if (!self._tab_dialog) {
+            self._tab_dialog = new DDLayout.TabDialog(jQuery, row_view);
+        }
+
+        self._tab_dialog.show( mode, row_view );
+    };
+
+    self.show_accordion_dialog = function (mode, row_view) {
+        if (!self._accordion_dialog) {
+            self._accordion_dialog = new DDLayout.AccordionDialog(jQuery, row_view);
+        }
+
+        self._accordion_dialog.show( mode, row_view );
+    };
+
+    self.show_panel_dialog = function( mode, row_view ){
+        if (!self._panel_dialog) {
+            self._panel_dialog = new DDLayout.PanelDialog(jQuery, row_view);
+        }
+
+        self._panel_dialog.show( mode, row_view );
+    }
+    
+    self.show_tabs_dialog = function( mode, tabs){
+        
+        if (!self._tabs_dialog) {
+            self._tabs_dialog = new DDLayout.TabsDialog(jQuery, tabs);
+        }
+
+        self._tabs_dialog.show( mode, tabs );
     };
 
     self.show_theme_section_row_dialog = function( mode, row_view, caller )
@@ -495,6 +550,7 @@ DDLayout.AdminPage = function($)
 
         self._container_dialog.show(mode, container_view);
     };
+    
     self.getLayoutType = function()
     {
         return self.instance_layout_view.getLayoutType();
@@ -632,7 +688,7 @@ DDLayout.AdminPage = function($)
                     ok_button_wrap:$ok_button_wrap
                 };
 
-            DDLayout.AdminPage.setCaretPosition( input[0], 0 );
+            DDLayout.AdminPage.setCaretPosition( input[0], old_title.length );
 
             edit_button.parent().hide();
             $ok_button_wrap.show();
@@ -808,6 +864,11 @@ DDLayout.AdminPage = function($)
     };
 
     self.update_wpml_state = function (layout_id, register_strings) {
+
+        if( DDLayout_settings.DDL_JS.wpml_is_active === false ){
+            return;
+        }
+
         self.wpml_handler.update_wpml_state(layout_id, register_strings);
     };
 
@@ -837,9 +898,7 @@ DDLayout.AdminPage = function($)
 
 //maybe to be moved in utils library
 DDLayout.AdminPage.setCaretPosition = function(elem, caretPos) {
-    return true;
     var el = elem;
-
 
     el.value = el.value;
     // ^ this is used to not only get "focus", but

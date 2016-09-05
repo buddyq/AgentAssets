@@ -470,7 +470,7 @@ class WPDD_layout_row extends WPDD_layout_element {
     function frontend_render($target) {
         do_action('ddl-row_start_callback', $this, $target);
 
-        $target->row_start_callback( $this->get_css_class_name(), $this->get_layout_type(), $this->get_css_id(), $this->get_additional_css_classes(), $this->get_tag(), $this->get_mode());
+        $target->row_start_callback( $this );
 
         // see if we should use a context for the row.
         $old_context = null;
@@ -489,7 +489,7 @@ class WPDD_layout_row extends WPDD_layout_element {
             $target->set_context($old_context);
         }
         
-        $target->row_end_callback($this->get_tag() );
+        $target->row_end_callback( $this );
 
         do_action('ddl-row_end_callback', $this, $target);
     }
@@ -771,7 +771,7 @@ class WPDD_layout_cell extends WPDD_layout_element {
 
         do_action( 'ddl_before_cell_start_callback', $this, $target );
 
-        $target->cell_start_callback($this->get_css_class_name(), $this->width, $this->get_css_id(), $this->get_tag(), $this );
+        $target->cell_start_callback( $this->get_css_class_name(), $this->width, $this->get_css_id(), $this->get_tag(), $this );
 
         do_action( 'ddl_before_frontend_render_cell', $this, $target );
 
@@ -779,7 +779,7 @@ class WPDD_layout_cell extends WPDD_layout_element {
 
         do_action( 'ddl_after_frontend_render_cell', $this, $target );
 
-        $target->cell_end_callback($this->get_tag());
+        $target->cell_end_callback( $this->get_tag(), $this );
 
         do_action( 'ddl_after_cell_end_callback', $this, $target );
     }
@@ -862,7 +862,7 @@ class WPDD_layout_cell extends WPDD_layout_element {
 
 class WPDD_layout_container extends WPDD_layout_cell {
 
-    private $layout;
+    protected $layout;
 
     function __construct($name, $width, $css_class_name = '', $editor_visual_template_id = '', $css_id = '', $tag = 'div', $cssframework = 'bootstrap' ) {
         parent::__construct($name, $width, $css_class_name, $editor_visual_template_id, null, $css_id, $tag);
@@ -896,7 +896,7 @@ class WPDD_layout_container extends WPDD_layout_cell {
     }
 
     function frontend_render_cell_content($target) {
-        $this->layout->frontend_render($target);
+        return apply_filters( 'ddl-frontend_render_cell_content', $this->layout->frontend_render($target), $this, $target );
     }
 
     function get_width_of_child_layout_cell() {
@@ -1004,7 +1004,7 @@ class WPDDL_CellLoader{
 
     function dd_layouts_register_container_factory($factories) {
         $factories['ddl-container'] = new WPDD_layout_container_factory;
-        return $factories;
+        return apply_filters( 'ddl-dd_layouts_register_container_factory', $factories );
     }
 
     function load_cells(){
@@ -1020,6 +1020,9 @@ class WPDDL_CellLoader{
         require_once WPDDL_CLASSES_ABSPATH . '/cell_types/wpddl.missing_cell_type.class.php';
 
         add_filter('dd_layouts_register_cell_factory', array(&$this, 'dd_layouts_register_container_factory') );
+        require_once WPDDL_CLASSES_ABSPATH . '/cell_types/wpddl.child_layout.class.php';
+        require_once WPDDL_CLASSES_ABSPATH . '/cell_types/wpddl.cell_tabs-cell.class.php';
+        require_once WPDDL_CLASSES_ABSPATH . '/cell_types/wpddl.cell_accordion-cell.class.php';
 
         //require_once WPDDL_CLASSES_ABSPATH . '/cell_types/wpddl.cell_post_content.class.php';
         require_once WPDDL_CLASSES_ABSPATH . '/cell_types/wpddl.cell_views_content_template.class.php';
@@ -1028,10 +1031,9 @@ class WPDDL_CellLoader{
 
         require_once WPDDL_CLASSES_ABSPATH . '/cell_types/wpddl.cell_menu.class.php';
         require_once WPDDL_CLASSES_ABSPATH . '/cell_types/wpddl.cell_widget.class.php';
-        //require_once WPDDL_CLASSES_ABSPATH . '/cell_types/wpddl.cell_widget_area.class.php';
+        require_once WPDDL_CLASSES_ABSPATH . '/cell_types/wpddl.cell_widget_area.class.php';
 
         require_once WPDDL_CLASSES_ABSPATH . '/cell_types/wpddl.cell_views-grid-cell.class.php';
-        require_once WPDDL_CLASSES_ABSPATH . '/cell_types/wpddl.child_layout.class.php';
 
         //require_once WPDDL_ABSPATH . '/reference-cell/reference-cell.php';
     }

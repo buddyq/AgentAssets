@@ -17,6 +17,9 @@ if (!class_exists('Layouts_cell_views_content_grid')) {
         
         function __construct() {
 
+            $this->views_not_available_message = apply_filters( 'toolset_is_views_available', false ) === false ?
+                                                __("Sorry, preview is not available. Please make sure that the Toolset Views plugin is active.", 'ddl-layouts') :
+                                                __("Sorry, preview is not available. This View may have been deleted.", 'ddl-layouts');
 
             // add actions
             add_action( 'init', array(&$this, 'register_views_content_grid_cell_init'), 12);
@@ -37,8 +40,8 @@ if (!class_exists('Layouts_cell_views_content_grid')) {
             if (function_exists('register_dd_layout_cell_type')) {
                 register_dd_layout_cell_type($this->cell_type, 
                     array(
-                        'name' => __('View (Content lists, parametric searches, custom sliders)', 'ddl-layouts'),
-                        'description' => __('Load content and display it with your styling. A View is used for any custom content display, including parametric searches, tables, grids, sliders and content lists.', 'ddl-layouts'),
+                        'name' => __('View (Content lists, custom searches, custom sliders)', 'ddl-layouts'),
+                        'description' => __('Load content and display it with your styling. A View is used for any custom content display, including custom searches, tables, grids, sliders and content lists.', 'ddl-layouts'),
                         'category' => __('Lists and loops', 'ddl-layouts'),
                         'button-text' => __('Assign View', 'ddl-layouts'),
                         'dialog-title-create' => __('Create a new View cell', 'ddl-layouts'),
@@ -120,13 +123,13 @@ if (!class_exists('Layouts_cell_views_content_grid')) {
                                                 <li>
                                                     <label class="radio">
                                                         <input type="radio" class="js-ddl-complete-search" value="complete" data-cell-name-text="<?php _e('%CELL_NAME% search results', 'ddl-layouts'); ?>" />
-                                                        <?php _e('Complete the parametric search setup by inserting a cell for the results', 'ddl-layouts');?>
+                                                        <?php _e('Complete the custom search setup by inserting a cell for the results', 'ddl-layouts');?>
                                                     </label>
                                                 </li>
                                                 <li>
                                                     <label class="radio">
                                                         <input type="radio" class="js-ddl-different-view" value="cancel" />
-                                                        <?php _e('Insert a different View, not related to the parametric search results', 'ddl-layouts');?>
+                                                        <?php _e('Insert a different View, not related to the custom search results', 'ddl-layouts');?>
                                                     </label>
                                                 </li>
                                             </ul>
@@ -331,7 +334,7 @@ if (!class_exists('Layouts_cell_views_content_grid')) {
                                         <li>
                                             <label class="radio">
                                                 <input type="radio" name="view_purpose" class="js-view-purpose" id="view_purpose_parametric" value="parametric" />
-                                                <?php _e('Display the results as a parametric search','ddl-layouts'); ?>
+                                                <?php _e('Display the results as a custom search','ddl-layouts'); ?>
                                             </label>
                                             <p class="desc cleared"><?php _e('Visitors will be able to search through your content using different search criteria.', 'ddl-layouts'); ?></p>
                                         </li>
@@ -354,7 +357,7 @@ if (!class_exists('Layouts_cell_views_content_grid')) {
                             <fieldset class="js-wpv-settings-views-layouts-parametric-extra" style="display:none">
                                 <div id="views-layouts-parametric-div"
                                      class="wpv-setting-container js-wpv-display-for-purpose js-wpv-display-for-purpose-parametric"
-                                     data-notice-1="<?php _e('Since you are only displaying the %NNN% in this cell, the %MMM% section is disabled. A parametric search should have the %NNN% and %MMM%. To display the %MMM% you need to:','ddl-layouts'); ?>"
+                                     data-notice-1="<?php _e('Since you are only displaying the %NNN% in this cell, the %MMM% section is disabled. A custom search should have the %NNN% and %MMM%. To display the %MMM% you need to:','ddl-layouts'); ?>"
                                      data-notice-2="<?php _e('Create a different Layout cell and display this View.','ddl-layouts'); ?>"
                                      data-notice-3="<?php _e('Choose to display the %MMM%','ddl-layouts'); ?>"
                                      data-notice-form="<?php _e('search form','ddl-layouts'); ?>"

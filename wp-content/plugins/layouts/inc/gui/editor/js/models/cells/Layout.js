@@ -180,14 +180,11 @@ DDLayout.models.cells.Layout = DDLayout.models.abstract.Element.extend({
         if( data )
         {
             tmpRows = new DDLayout.models.collections.Rows;
-
-
+			
             _.each(data, function(r, i, rows){
 
                 var tmp = undefined, row = r, row_model;
-
-
-
+				
                 if( row && row.Cells )
                 {
 
@@ -304,10 +301,8 @@ DDLayout.models.cells.Layout = DDLayout.models.abstract.Element.extend({
 	},
 	
 	has_cell_of_type : function ( cell_type ) {
-		
 		return this.find_cell_of_type( cell_type ) != false;
 	},
-	
 	find_cell_of_type : function ( cell_type ) {
 		
 		var rows = this.get('Rows');
@@ -496,6 +491,10 @@ DDLayout.models.cells.Layout.getContainers = function( check )
     var
         rows = check.get("Rows"),
         containers = [];
+
+	if( rows instanceof Backbone.Collection === false && _.isArray(rows) ){
+		rows = new DDLayout.models.collections.Rows( rows );
+	}
 
     rows.each(function(item){
 	    var cells = item.get("Cells");

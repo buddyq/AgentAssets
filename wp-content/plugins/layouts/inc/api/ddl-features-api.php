@@ -70,7 +70,9 @@ class WPDDL_features
 				'comments-cell',
 				'grid-cell',
 				'ddl_missing_cell_type',
-				'ddl-container'
+				'ddl-container',
+				'tabs-cell',
+				'accordion-cell'
 		) );
 	}
 

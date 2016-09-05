@@ -1,11 +1,11 @@
 <?php
 if (defined('WPDDL_VERSION')) return;
 
-define('WPDDL_VERSION', '1.7');
+define('WPDDL_VERSION', '1.8.3');
 
 define('LAYOUTS_PLUGIN_NAME', 'Toolset Layouts');
 
-define('WPDDL_NOTES_URL', 'https://wp-types.com/version/layouts-1-6/');
+define('WPDDL_NOTES_URL', 'https://wp-types.com/version/layouts-1-8/');
 
 define('WPDDL_RELPATH', plugins_url() . '/' . basename(dirname(__FILE__)));
 define('WPDDL_ABSPATH', dirname(__FILE__));
@@ -37,6 +37,8 @@ if (!defined('WPDDL_DEBUG')) define('WPDDL_DEBUG', false);
 define('WPDDL_GENERAL_OPTIONS', 'ddlayouts_options');
 define('WPDDL_CSS_OPTIONS', 'layout_css_settings');
 define('WPDDL_LAYOUTS_CSS', 'layout_css_styles');
+define('WPDDL_JS_OPTIONS', 'layout_js_settings');
+define('WPDDL_LAYOUTS_JS', 'layout_js_code');
 define('WPDDL_LAYOUTS_META_KEY', '_layouts_template');
 define('WPDDL_LAYOUTS_POST_TYPE', 'dd_layouts');
 define('WPDDL_LAYOUTS_SETTINGS', 'dd_layouts_settings');
@@ -98,6 +100,7 @@ if ( !function_exists('wpddl_plugin_setup') ){
         require_once WPDDL_CLASSES_ABSPATH . '/wpddl.editor.class.php';
         require_once WPDDL_CLASSES_ABSPATH . '/wpddl.file-manager.class.php';
         require_once WPDDL_CLASSES_ABSPATH . '/wpddl.cssmanager.class.php';
+        require_once WPDDL_CLASSES_ABSPATH . '/wpddl.jsmanager.class.php';
         require_once WPDDL_CLASSES_ABSPATH . '/wpddl.optionsmanager.class.php';
         require_once WPDDL_CLASSES_ABSPATH . '/wpddl.scripts.class.php';
         require_once WPDDL_CLASSES_ABSPATH . '/wpddl.help-video.class.php';

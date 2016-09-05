@@ -10,8 +10,9 @@ DDLayout.RowTooltip = function()
 		self.$button = null;
 		self.$icon = null;
 		self._row_view = null;
+        self._open = false;
 
-		jQuery(document).on('open_row_context_menu open_special_row_context_menu', '.js-show-add-row-menu, .js-show-add-special-row-menu', function(e, current_row) {
+		jQuery(document).on('open_row_context_menu open_special_row_context_menu open_tab_context_menu open_panel_context_menu', '.js-show-add-row-menu, .js-show-add-special-row-menu, .js-show-add-tab-menu, .js-show-add-panel-menu', function(e, current_row) {
 
 			e.stopImmediatePropagation();
 
@@ -20,6 +21,12 @@ DDLayout.RowTooltip = function()
 			}
 			else if ( e.type === 'open_special_row_context_menu' ) {
 				self.$menu = jQuery('.js-add-special-row-menu');
+			}
+			else if ( e.type === 'open_tab_context_menu' ) {
+				self.$menu = jQuery('.js-add-special-tab-menu');
+			}
+			else if ( e.type === 'open_panel_context_menu' ) {
+				self.$menu = jQuery('.js-add-special-panel-menu');
 			}
 
 			self._row_view = current_row;
@@ -35,6 +42,7 @@ DDLayout.RowTooltip = function()
 
 			if ( ! self.$menu.data('is-visible') && self._row_view !== null ) {
 				self.showMenu(e);
+                DDLayout.ddl_admin_page.duplicator.initElementsStatus();
 			}
 			else {
 				self.hideMenu(e);
@@ -45,7 +53,7 @@ DDLayout.RowTooltip = function()
 		//the context menu item deafult
 		jQuery( '.js-add-row' ).on('click', function(event){
 			event.stopImmediatePropagation();
-
+			
 			var cellWidth = jQuery(this).data('cell-width');
 			var rowType = jQuery(this).data('row-type');
 
@@ -56,7 +64,7 @@ DDLayout.RowTooltip = function()
 				}
 				else {
 					var count = self._row_view.model.collection.length + 1;
-					self._row_view.addRow( 'Row '+count, '', self._row_view.model.get('layout_type') );
+					self._row_view.addRow( self._row_view.model.get('kind')+' '+count, '', self._row_view.model.get('layout_type') );
 				}
 
 			}
@@ -64,6 +72,10 @@ DDLayout.RowTooltip = function()
 
 				DDLayout.ddl_admin_page.show_theme_section_row_dialog( 'add', self._row_view, this );
 			}
+            else if ( rowType === 'copy-row' || rowType === 'paste-row') {
+
+                DDLayout.ddl_admin_page.duplicator.handleAction( self._row_view, rowType, this);
+            }
 
 			self.hideMenu(event);
 		});
@@ -93,7 +105,7 @@ DDLayout.RowTooltip = function()
 			}
 		}
 
-		self._row_view.addRow( 'Row '+count, '', layout_type, row_divider );
+		self._row_view.addRow( self._row_view.model.get(kind)+' '+count, '', layout_type, row_divider );
 	};
 
 	self.showMenu = function(e) {
@@ -116,11 +128,6 @@ DDLayout.RowTooltip = function()
 		self.$menu
 			.fadeIn('fast')
 			.data('is-visible', true);
-
-		self.$icon
-			.removeClass('fa-caret-down')
-			.addClass('fa-caret-up');
-
 	};
 
 	self.hideMenu = function(e) {
@@ -130,11 +137,6 @@ DDLayout.RowTooltip = function()
 				.hide()
 				.data('is-visible', false);
 
-			if (self.$icon) {
-				self.$icon
-					.removeClass('fa-caret-up')
-					.addClass('fa-caret-down');
-			}
 		}
 	};
 

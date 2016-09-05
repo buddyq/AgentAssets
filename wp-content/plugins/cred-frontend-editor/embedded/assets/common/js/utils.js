@@ -62,7 +62,10 @@ if (window[thisExportName]) return;
     
     function isCodeMirror($textarea)
     {
-        var textareaNext = $textarea[0].nextSibling;
+        var textareaNext = null;
+        if($textarea[0] !== undefined){
+            textareaNext = $textarea[0].nextSibling;
+        }
         // if CodeMirror
         if (
             textareaNext && $textarea.is('textarea')&&

@@ -91,5 +91,196 @@ function notify_admin_newsite($msg){
 }
 add_action('newblog_notify_siteadmin', 'notify_admin_newsite', 10, 1 );
 
+function custom_broker_styles($styles = "")
+{
+
+  $styles["KW Luxury"] = array(
+  						'style'=>'background-color:#b40000;',
+  						'default_font' => 'Open Sans:400,600',
+  						'google_webfont' => 'Open Sans:400,600',
+  						'color_scheme'	=>'Keller Williams',
+
+  						// header
+  						'colorset-header_color-bg'				=>'#ffffff',
+  						'colorset-header_color-bg2'			 	=>'#f8f8f8',
+  						'colorset-header_color-primary'		 	=>'#b40000',
+  						'colorset-header_color-secondary'	 	=>'#870000', //Hovered link color
+  						'colorset-header_color-color'		 	=>'#333333',
+  						'colorset-header_color-border'		 	=>'#e1e1e1',
+  						'colorset-header_color-img'			 	=>'',
+  						'colorset-header_color-customimage'	 	=>'',
+  						'colorset-header_color-pos' 		 	=> 'center center',
+  						'colorset-header_color-repeat' 		 	=> 'repeat',
+  						'colorset-header_color-attach' 		 	=> 'scroll',
+  						'colorset-header_color-heading' 		=> '#000000',
+  						'colorset-header_color-meta' 			=> '#808080',
+
+  						// main
+  						'colorset-main_color-bg'			 	=>'#ffffff',
+  						'colorset-main_color-bg2'			 	=>'#e3e3e3', //Hilight box bg color
+  						'colorset-main_color-primary'	 	 	=>'#b40000', //Link color
+  						'colorset-main_color-secondary'	 	 	=>'#870000', //Hovered link color
+  						'colorset-main_color-color'		 	 	=>'#111111', //Main content font color
+  						'colorset-main_color-border'	 	 	=>'#919191', //Border colors
+  						'colorset-main_color-img'			 	=>'',
+  						'colorset-main_color-customimage'	 	=>'',
+  						'colorset-main_color-pos' 			 	=> 'center center',
+  						'colorset-main_color-repeat' 		 	=> 'repeat',
+  						'colorset-main_color-attach' 		 	=> 'scroll',
+  						'colorset-main_color-heading' 			=> '#000000',//Heading color
+  						'colorset-main_color-meta' 				=> '#919191', //Secondary font color
+
+  						// alternate
+  						'colorset-alternate_color-bg'		 	=>'#ebebeb',
+  						'colorset-alternate_color-bg2'		 	=>'#fadfdf', //Alt hilight box bg color
+  						'colorset-alternate_color-primary'	 	=>'#b40000',
+  						'colorset-alternate_color-secondary' 	=>'#f7bebe', // hovered link
+  						'colorset-alternate_color-color'	 	=>'#666666', // Alt Content font color
+  						'colorset-alternate_color-border'	 	=>'#b40000', //border colors
+  						'colorset-alternate_color-img'		 	=>'',
+  						'colorset-alternate_color-customimage'	=>'',
+  						'colorset-alternate_color-pos' 		 	=> 'center center',
+  						'colorset-alternate_color-repeat' 	 	=> 'repeat',
+  						'colorset-alternate_color-attach' 	 	=> 'scroll',
+  						'colorset-alternate_color-heading' 		=> '#b40000',
+  						'colorset-alternate_color-meta' 		=> '#333333', //
+
+
+  						// Footer
+  						'colorset-footer_color-bg'			 	=>'#222222',
+  						'colorset-footer_color-bg2'			 	=>'#111111',
+  						'colorset-footer_color-primary'		 	=>'#aaaaaa',
+  						'colorset-footer_color-secondary'	 	=>'#ffffff',
+  						'colorset-footer_color-color'		 	=>'#aaaaaa',
+  						'colorset-footer_color-border'		 	=>'#555555',
+  						'colorset-footer_color-img'			 	=>'',
+  						'colorset-footer_color-customimage'	 	=>'',
+  						'colorset-footer_color-pos' 		 	=> 'center center',
+  						'colorset-footer_color-repeat' 		 	=> 'repeat',
+  						'colorset-footer_color-attach' 		 	=> 'scroll',
+  						'colorset-footer_color-heading' 		=> '#888888',
+  						'colorset-footer_color-meta' 			=> '#888888',
+
+  						// Socket
+  						'colorset-socket_color-bg'			 	=>'#333333',
+  						'colorset-socket_color-bg2'			 	=>'#000000',
+  						'colorset-socket_color-primary'		 	=>'#ffffff',
+  						'colorset-socket_color-secondary'	 	=>'#eeeeee',
+  						'colorset-socket_color-color'		 	=>'#eeeeee',
+  						'colorset-socket_color-border'		 	=>'#333333',
+  						'colorset-socket_color-img'			 	=>'',
+  						'colorset-socket_color-customimage'	 	=>'',
+  						'colorset-socket_color-pos' 		 	=> 'center center',
+  						'colorset-socket_color-repeat' 		 	=> 'repeat',
+  						'colorset-socket_color-attach' 		 	=> 'scroll',
+  						'colorset-socket_color-heading' 		=> '#ffffff',
+  						'colorset-socket_color-meta' 			=> '#999999',
+
+  						//body bg
+  						'color-body_style'						=>'boxed',
+  						'color-body_color'						=>'#000000',
+  						'color-body_attach'						=>'scroll',
+  						'color-body_repeat'						=>'no-repeat',
+  						'color-body_pos'						=>'top center',
+  						"color-body_img"						=> AVIA_BASE_URL."images/background-images/fullsize-grunge.jpg",
+  						'color-body_customimage'				=>'',
+  						);
+
+
+  $styles["Moreland"] = array(
+              'style'=>'background-color:#8DC63F;',
+              'default_font' => 'Open Sans:400,600',
+              'google_webfont' => 'Montserrat',
+              'color_scheme'	=>'Moreland',
+
+              // header
+              'colorset-header_color-bg'				=>'#8DC63F',
+              'colorset-header_color-bg2'			 	=>'#f8f8f8',
+              'colorset-header_color-primary'		 	=>'#688a36',
+              'colorset-header_color-secondary'	 	=>'#e0e0e0', //Hovered link color
+              'colorset-header_color-color'		 	=>'#333333',
+              'colorset-header_color-border'		 	=>'#8DC63F',
+              'colorset-header_color-img'			 	=>'',
+              'colorset-header_color-customimage'	 	=>'',
+              'colorset-header_color-pos' 		 	=> 'center center',
+              'colorset-header_color-repeat' 		 	=> 'repeat',
+              'colorset-header_color-attach' 		 	=> 'scroll',
+              'colorset-header_color-heading' 		=> '#000000',
+              'colorset-header_color-meta' 			=> '#ffffff',
+
+              // main
+              'colorset-main_color-bg'			 	=>'#ffffff',
+              'colorset-main_color-bg2'			 	=>'#e3e3e3', //Hilight box bg color
+              'colorset-main_color-primary'	 	 	=>'#b40000', //Link color
+              'colorset-main_color-secondary'	 	 	=>'#870000', //Hovered link color
+              'colorset-main_color-color'		 	 	=>'#111111', //Main content font color
+              'colorset-main_color-border'	 	 	=>'#919191', //Border colors
+              'colorset-main_color-img'			 	=>'',
+              'colorset-main_color-customimage'	 	=>'',
+              'colorset-main_color-pos' 			 	=> 'center center',
+              'colorset-main_color-repeat' 		 	=> 'repeat',
+              'colorset-main_color-attach' 		 	=> 'scroll',
+              'colorset-main_color-heading' 			=> '#000000',//Heading color
+              'colorset-main_color-meta' 				=> '#919191', //Secondary font color
+
+              // alternate
+              'colorset-alternate_color-bg'		 	=>'#f0f0f0',
+              'colorset-alternate_color-bg2'		 	=>'#e7f0da', //Alt hilight box bg color
+              'colorset-alternate_color-primary'	 	=>'#8ec63f',
+              'colorset-alternate_color-secondary' 	=>'#8ec63f', // hovered link
+              'colorset-alternate_color-color'	 	=>'#333333', // Alt Content font color
+              'colorset-alternate_color-border'	 	=>'#8ec63f', //border colors
+              'colorset-alternate_color-img'		 	=>'',
+              'colorset-alternate_color-customimage'	=>'',
+              'colorset-alternate_color-pos' 		 	=> 'center center',
+              'colorset-alternate_color-repeat' 	 	=> 'repeat',
+              'colorset-alternate_color-attach' 	 	=> 'scroll',
+              'colorset-alternate_color-heading' 		=> '#8ec63f',
+              'colorset-alternate_color-meta' 		=> '#000000', //
+
+
+              // Footer
+              'colorset-footer_color-bg'			 	=>'#222222',
+              'colorset-footer_color-bg2'			 	=>'#111111',
+              'colorset-footer_color-primary'		 	=>'#aaaaaa',
+              'colorset-footer_color-secondary'	 	=>'#ffffff',
+              'colorset-footer_color-color'		 	=>'#aaaaaa',
+              'colorset-footer_color-border'		 	=>'#555555',
+              'colorset-footer_color-img'			 	=>'',
+              'colorset-footer_color-customimage'	 	=>'',
+              'colorset-footer_color-pos' 		 	=> 'center center',
+              'colorset-footer_color-repeat' 		 	=> 'repeat',
+              'colorset-footer_color-attach' 		 	=> 'scroll',
+              'colorset-footer_color-heading' 		=> '#888888',
+              'colorset-footer_color-meta' 			=> '#888888',
+
+              // Socket
+              'colorset-socket_color-bg'			 	=>'#333333',
+              'colorset-socket_color-bg2'			 	=>'#000000',
+              'colorset-socket_color-primary'		 	=>'#ffffff',
+              'colorset-socket_color-secondary'	 	=>'#eeeeee',
+              'colorset-socket_color-color'		 	=>'#eeeeee',
+              'colorset-socket_color-border'		 	=>'#333333',
+              'colorset-socket_color-img'			 	=>'',
+              'colorset-socket_color-customimage'	 	=>'',
+              'colorset-socket_color-pos' 		 	=> 'center center',
+              'colorset-socket_color-repeat' 		 	=> 'repeat',
+              'colorset-socket_color-attach' 		 	=> 'scroll',
+              'colorset-socket_color-heading' 		=> '#ffffff',
+              'colorset-socket_color-meta' 			=> '#999999',
+
+              //body bg
+              'color-body_style'						=>'boxed',
+              'color-body_color'						=>'#000000',
+              'color-body_attach'						=>'scroll',
+              'color-body_repeat'						=>'no-repeat',
+              'color-body_pos'						=>'top center',
+              "color-body_img"						=> AVIA_BASE_URL."images/background-images/fullsize-grunge.jpg",
+              'color-body_customimage'				=>'',
+              );
+return $styles;
+}
+
+add_filter('avf_skin_options', 'custom_broker_styles');
 
 ?>

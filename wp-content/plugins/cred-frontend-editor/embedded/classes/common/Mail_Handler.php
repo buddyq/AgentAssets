@@ -26,6 +26,7 @@ final class CRED_Mail_Handler {
     private $_formid = '';
     private $_postid = '';
     private $_notnum = 0;
+    private $_notname = "";
 
     public function __construct() {
         $this->reset();
@@ -140,7 +141,7 @@ final class CRED_Mail_Handler {
         $this->_contentType = ($this->_isHtml) ? "Content-Type: text/html" : "Content-Type: text/plain";
         $header = array_merge($header, $this->_headers);
         $header = array_merge($header, array($this->_contentType));
-        $header = apply_filters('cred_mail_header', $header, $this->_formid, $this->_postid, $this->_notnum);
+        $header = apply_filters('cred_mail_header', $header, $this->_formid, $this->_postid, $this->_notname, $this->_notnum);
 
         if (!empty($this->_cc)) {
             $header = array_merge($header, array("Cc: " . implode(',', $this->_cc)));
@@ -258,6 +259,11 @@ final class CRED_Mail_Handler {
     
     public function setNotificationNum($notnum = '') {
         $this->_notnum = $notnum;
+        // chainable
+        return $this;
+    }
+    public function setNotificationName($notname = '') {
+        $this->_notname = $notname;
         // chainable
         return $this;
     }

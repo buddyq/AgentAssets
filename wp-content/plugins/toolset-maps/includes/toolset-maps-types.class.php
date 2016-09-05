@@ -27,35 +27,62 @@ class WPToolset_Field_google_address extends FieldFactory {
         if ( ! empty($attributes['class'])) {
             $attributes['class'] .= ' ';
         }
-        $attributes['class'] .= 'toolset-google-map js-toolset-google-map';
-		
-		if ( ! isset( $attributes['data-coordinates'] ) ) {
-            $attributes['data-coordinates'] = '';
-        }
 		
 		$value = $this->getValue();
 		
-		if ( ! empty( $value ) ) {
-			$has_coordinates = Toolset_Addon_Maps_Common::get_coordinates( $value );
-			if ( is_array( $has_coordinates ) ) {
-				$attributes['data-coordinates'] = '{' . esc_attr( $has_coordinates['lat'] ) . ',' . esc_attr( $has_coordinates['lon'] ) . '}';
+		$wpml_action = $this->getWPMLAction();
+
+        $metaform = array();
+		
+		$maps_api_key = apply_filters( 'toolset_filter_toolset_maps_get_api_key', '' );
+		if ( empty( $maps_api_key ) ) {
+			if ( current_user_can( 'manage_options' ) ) {
+				$analytics_strings = array(
+					'utm_source'	=> 'toolsetmapsplugin',
+					'utm_campaign'	=> 'toolsetmaps',
+					'utm_medium'	=> 'views-integration-settings-for-api-key',
+					'utm_term'		=> 'our documentation'
+				);
+				$markup = sprintf(
+					__( '<p><small><strong>You need a Google Maps API key</strong> to use Toolset Maps address fields. Find more information in %1$sour documentation%2$s.</small></p>', 'toolset-maps' ),
+					'<a href="' . Toolset_Addon_Maps_Common::get_documentation_promotional_link( array( 'query' => $analytics_strings, 'anchor' => 'api-key' ), 'https://wp-types.com/documentation/user-guides/display-on-google-maps/' ) . '" target="_blank">',
+					'</a>'
+				);
+				$metaform[] = array(
+					'#type'		=> 'markup',
+					'#inline'	=> true,
+					'#markup'	=> $markup
+				);
+			}
+			$before = '';
+			$after = '';
+		} else {
+			$before = '<div class="toolset-google-map-container js-toolset-google-map-container">';
+			$before .= '<div class="toolset-google-map-inputs-container js-toolset-google-map-inputs-container">';
+			if ( $this->isRepetitive() ) {
+				$before .= '<span class="toolset-google-map-label">' . __('Address', 'toolset-maps') . '</span>';
+				$attributes['style'] = 'max-width:80%';
+			}
+			$after = '</div></div>';
+			
+			$attributes['class'] .= 'toolset-google-map js-toolset-google-map';
+			
+			if ( ! isset( $attributes['data-coordinates'] ) ) {
+				$attributes['data-coordinates'] = '';
+			}
+			
+			if ( ! empty( $value ) ) {
+				$has_coordinates = Toolset_Addon_Maps_Common::get_coordinates( $value );
+				if ( is_array( $has_coordinates ) ) {
+					$attributes['data-coordinates'] = '{' . esc_attr( $has_coordinates['lat'] ) . ',' . esc_attr( $has_coordinates['lon'] ) . '}';
+				}
 			}
 		}
 		
-		$wpml_action = $this->getWPMLAction();
-		
-		$before = '<div class="toolset-google-map-container js-toolset-google-map-container">';
-		$before .= '<div class="toolset-google-map-inputs-container js-toolset-google-map-inputs-container">';
-		if ( $this->isRepetitive() ) {
-			$before .= '<span class="toolset-google-map-label">' . __('Address', 'toolset-maps') . '</span>';
-			$attributes['style'] = 'max-width:80%';
-		}
-
-        $metaform = array();
         $metaform[] = array(
             '#type'			=> 'textfield',
 			'#before'		=> $before,
-			'#after'		=> '</div></div>',
+			'#after'		=> $after,
             '#description'	=> $this->getDescription(),
             '#name'			=> $this->getName(),
             '#value'		=> $value,

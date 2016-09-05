@@ -69,7 +69,7 @@ class WPDDL_Admin_Pages extends WPDDL_Admin
     public function create_layout_for_this_page()
     {
         global $post;
-        if( user_can_create_layouts() ):
+        if( user_can_create_layouts() && user_can_assign_layouts() ):
             ?>
             <a href="#" class="add-new-h2 js-create-layout-for-page create-layout-for-page"><?php printf(__('Create a new layout for this %s', 'ddl-layouts'), rtrim($post->post_type, 's') );?></a>
             <?php

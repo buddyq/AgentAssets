@@ -251,15 +251,15 @@ class Envira_Videos_Media_View {
         <script type="text/html" id="tmpl-envira-meta-editor-video">
             <label class="setting">
                 <span class="name"><?php _e( 'Is 16:9 Video?', 'envira-videos' ); ?></span>
-                <input type="checkbox" name="video_aspect_ratio" value="16:9"<# if ( data.video_aspect_ratio == '16:9' ) { #> checked <# } #> />
                 <span class="description">
+                    <input type="checkbox" name="video_aspect_ratio" value="16:9"<# if ( data.video_aspect_ratio == '16:9' ) { #> checked <# } #> />
                     <?php _e( 'If this video is in 16:9 aspect ratio, check this option to ensure the video displays without black bars in the Lightbox view.', 'envira-videos' ); ?>
                 </span>
             </label>
             <label class="setting">
                 <span class="name"><?php _e( 'Display Video in Gallery?', 'envira-videos' ); ?></span>
-                <input type="checkbox" name="video_in_gallery" value="1"<# if ( data.video_in_gallery == '1' ) { #> checked <# } #> />
                 <span class="description">
+                    <input type="checkbox" name="video_in_gallery" value="1"<# if ( data.video_in_gallery == '1' ) { #> checked <# } #> />
                     <?php _e( 'If this media item\'s URL is a self-hosted, Youtube, Vimeo or Wistia video, you can check this option to display the video in the gallery grid, instead of displaying the placeholder image.', 'envira-videos' ); ?>
                 </span>
             </label>

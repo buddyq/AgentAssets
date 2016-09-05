@@ -101,7 +101,7 @@ $options = array(
         'has_default_value' => true,
         'additional' => "<label class='cred-label'><input type='checkbox' class='cred-checkbox' value='1' name='field[additional_options][checked]' /><span style='vertical-align:bottom;margin-left:10px'>" . __('Checked by default', 'wp-cred') . "</span></label>",
         'default_selector' => '',
-        'value_label' => __('Set value:', 'wp-cred'),
+        'value_label' => __('Value to store when<br>checked:', 'wp-cred'),
         'value_field' => (isset($data['default'])) ? "<input type='text' name='field[default]' value='" . $data['default'] . "' />" : "<input type='text' name='field[default]' value='' />"
     ),
     'select' => array(
@@ -139,28 +139,28 @@ $options = array(
         'has_default_value' => true,
         'additional' => '',
         'default_selector' => '',
-        'value_label' => __('Default Skypename:', 'wp-cred'),
+        'value_label' => __('Default Skypename<br>(default field value):', 'wp-cred'),
         'value_field' => (isset($data['default'])) ? "<input type='text' name='field[default]' value='" . $data['default'] . "' />" : "<input type='text' name='field[default]' value='' />"
     ),
     'email' => array(
         'has_default_value' => true,
         'additional' => '',
         'default_selector' => '',
-        'value_label' => __('Default email:', 'wp-cred'),
+        'value_label' => __('Default email<br>(default field value):', 'wp-cred'),
         'value_field' => (isset($data['default'])) ? "<input type='text' name='field[default]' value='" . $data['default'] . "' />" : "<input type='text' name='field[default]' value='' />"
     ),
     'url' => array(
         'has_default_value' => true,
         'additional' => '',
         'default_selector' => '',
-        'value_label' => __('Default URL:', 'wp-cred'),
+        'value_label' => __('Default URL<br>(default field value):', 'wp-cred'),
         'value_field' => (isset($data['default'])) ? "<input type='text' name='field[default]' value='" . $data['default'] . "' />" : "<input type='text' name='field[default]' value='' />"
     ),
     'phone' => array(
         'has_default_value' => true,
         'additional' => '',
         'default_selector' => '',
-        'value_label' => __('Default phone:', 'wp-cred'),
+        'value_label' => __('Default phone<br>(default field value):', 'wp-cred'),
         'value_field' => (isset($data['default'])) ? "<input type='text' name='field[default]' value='" . $data['default'] . "' />" : "<input type='text' name='field[default]' value='' />"
     ),
     'textarea' => array(

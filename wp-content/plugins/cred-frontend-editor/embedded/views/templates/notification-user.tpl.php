@@ -60,8 +60,22 @@ if (!isset($notification['to']['type']))
     $notification['to']['type'] = array();
 if (!is_array($notification['to']['type']))
     $notification['to']['type'] = (array) $notification['to']['type'];
+$notification_name = (!isset($notification['name']) || empty($notification['name'])) ? "(notification-name)" : $notification['name'];
 ?>
-<div id="cred_notification_settings_panel-<?php echo $ii; ?>" class='cred_notification_settings_panel cred_validation_section'>
+
+<div rel="cred_notification_settings_panel-<?php echo $ii; ?>" id="cred_notification_settings_row-<?php echo $ii; ?>" class="cred-notification-settings-row clearfix">
+
+    <strong class="cred-notification-title"><?php echo $notification_name; ?></strong>
+
+    <?php if (isset($notification['disabled']) && $notification['disabled'] == 1) : ?>
+        <span class="cred-notification-status"> — <?php _e('Disabled', 'wp-cred'); ?></span>
+    <?php endif; ?>
+
+    <div class="cred-notification-actions">
+        <a class="cred-notification-action cred-notification-edit" onclick='jQuery("#cred_notification_settings_panel-<?php echo $ii; ?>").slideToggle();'><i class="fa fa-edit"></i> <?php _e('Edit', 'wp-cred'); ?></a>
+    </div>
+</div>
+<div id="cred_notification_settings_panel-<?php echo $ii; ?>" class='cred_notification_settings_panel cred_validation_section'  style="display:none;">
 
     <div  id="notification_validation_error-<?php echo $ii; ?>" class="cred-notification cred-error cred-section-validation-message" style="display:none">
         <p>
@@ -71,6 +85,36 @@ if (!is_array($notification['to']['type']))
     </div>
 
     <?php do_action('cred_admin_notification_fields_before', $form, $ii, $notification); ?>
+
+    <fieldset class="cred-fieldset cred-notification-event-fieldset">
+
+        <h4><i title="<?php echo esc_attr(__('Please select the notification trigger event', 'wp-cred')); ?>" id="notification_event_required-<?php echo $ii; ?>" class="icon-warning-sign" style="display:none;"></i>
+            <?php _e('Notification settings:', 'wp-cred'); ?>
+        </h4>
+
+        <p class="cred-label-holder">
+            <label class='cred-label'> <?php _e('Notification name', 'wp-cred'); ?> </label>
+            <i title="<?php echo esc_attr(__('Please enter the Notification Name', 'wp-cred')); ?>" id="crednotificationname_required-<?php echo $ii; ?>" class="icon-warning-sign" style="display:none;"></i>
+            <input data-cred-bind="{
+                   validate: {
+                   required: {
+                   actions: [
+                   {action: 'validationMessage', domRef: '#crednotificationname_required-<?php echo $ii; ?>' },
+                   {action: 'validateSection' }
+                   ]
+                   }
+                   }
+                   }" type="text" id="crednotificationname<?php echo $ii ?>" style="position:relative;width:95%;" name="_cred[notification][notifications][<?php echo $ii; ?>][name]" value="<?php echo $notification_name; ?>" />
+        </p>
+
+        <p>
+            <label class='cred-label'>
+                <input type='checkbox' class='cred-checkbox-10' name='_cred[notification][notifications][<?php echo $ii; ?>][disabled]' value='1' <?php if (isset($notification['disabled']) && $notification['disabled'] == 1) echo 'checked="checked"'; ?> />
+                <span><?php _e('Notification disabled', 'wp-cred'); ?></span>
+            </label>
+        </p>   
+
+    </fieldset>
 
     <fieldset class="cred-fieldset cred-notification-event-fieldset">
         <h4><i title="<?php echo esc_attr(__('Please select the notification trigger event', 'wp-cred')); ?>" id="notification_event_required-<?php echo $ii; ?>" class="icon-warning-sign" style="display:none;"></i>
@@ -163,7 +207,7 @@ if (!is_array($notification['to']['type']))
     </fieldset>
 
     <fieldset class="cred-fieldset cred-notification-recipient-fieldset">
-        <h4><i title="<?php echo esc_attr(__('Please select recipients', 'wp-cred')); ?>" id="notification_recipient_required-<?php echo $ii; ?>" class="icon-warning-sign" style="display:none;">&nbsp;</i>&nbsp;
+        <h4><i title="<?php echo esc_attr(__('Please select recipients', 'wp-cred')); ?>" id="notification_recipient_required-<?php echo $ii; ?>" class="icon-warning-sign" style="display:none;"></i>
             <?php _e('Where to send this notification:', 'wp-cred'); ?><span class="cred-tip-link" data-pointer-content="#recipients_tip"><i class="icon-question-sign"></i></span>
         </h4>
         <?php do_action('cred_admin_notification_recipient_options_before', $form, array($ii, "_cred[notification][notifications][$ii][to][type][]", $notification['to']['type']), $notification); ?>
@@ -178,14 +222,14 @@ if (!is_array($notification['to']['type']))
                        }
                        } }" type='checkbox' class='cred-checkbox-10' name='_cred[notification][notifications][<?php echo $ii; ?>][to][type][]' value='wp_user' <?php if (in_array('wp_user', $notification['to']['type'])) echo 'checked="checked"'; ?> />
                 <span><?php _e('Send notification to a WordPress user:', 'wp-cred'); ?></span>
-            </label><br />
+            </label>
             <span data-cred-bind="{ action: 'show', condition: '_cred[notification][notifications][<?php echo $ii; ?>][to][type] has wp_user' }">
                 <select name="_cred[notification][notifications][<?php echo $ii; ?>][to][wp_user][to_type]">
                     <option value="to" <?php if ('to' == $notification['to']['wp_user']['to_type']) echo 'selected="selected"'; ?>><?php _e('To:', 'wp-cred'); ?></option>
                     <option value="cc" <?php if ('cc' == $notification['to']['wp_user']['to_type']) echo 'selected="selected"'; ?>><?php _e('Cc:', 'wp-cred'); ?></option>
                     <option value="bcc" <?php if ('bcc' == $notification['to']['wp_user']['to_type']) echo 'selected="selected"'; ?>><?php _e('Bcc:', 'wp-cred'); ?></option>
                 </select>
-                <i title="<?php echo esc_attr(__('Please select a user', 'wp-cred')); ?>" id="notification_user_required-<?php echo $ii; ?>" class="icon-warning-sign" style="display:none;">&nbsp;</i>&nbsp;
+                <i title="<?php echo esc_attr(__('Please select a user', 'wp-cred')); ?>" id="notification_user_required-<?php echo $ii; ?>" class="icon-warning-sign" style="display:none;"></i>
                 <input data-cred-bind="{                                      
                        validate: {
                        required: {
@@ -210,7 +254,7 @@ if (!is_array($notification['to']['type']))
                        }
                        }"
                        type="text" class="cred_mail_to_user" style="width:200px" name="_cred[notification][notifications][<?php echo $ii; ?>][to][wp_user][user]" placeholder="<?php echo esc_attr(__('-- Choose user --', 'wp-cred')); ?>" value="<?php if (isset($notification['to']['wp_user']['user'])) echo $notification['to']['wp_user']['user']; ?>"/>
-                <span style="display:none" id="cred_notification_user_mail_suggest_loader_<?php echo $ii; ?>" class='cred_ajax_loader_small_1'>&nbsp;</span>
+                <span style="display:none" id="cred_notification_user_mail_suggest_loader_<?php echo $ii; ?>" class='cred_ajax_loader_small_1'></span>
             </span>
         </p>
 
@@ -225,14 +269,14 @@ if (!is_array($notification['to']['type']))
                        }
                        } }" type='checkbox' class='cred-checkbox-10' name='_cred[notification][notifications][<?php echo $ii; ?>][to][type][]' value='mail_field' <?php if (in_array('mail_field', $notification['to']['type'])) echo 'checked="checked"'; ?> />
                 <span><?php _e('Send notification to an email specified in a form field:', 'wp-cred'); ?></span>
-            </label><br />
+            </label>
             <span data-cred-bind="{ action: 'show', condition: '_cred[notification][notifications][<?php echo $ii; ?>][to][type] has mail_field' }">
                 <select name="_cred[notification][notifications][<?php echo $ii; ?>][to][mail_field][to_type]">
                     <option value="to" <?php if ('to' == $notification['to']['mail_field']['to_type']) echo 'selected="selected"'; ?>><?php _e('To:', 'wp-cred'); ?></option>
                     <option value="cc" <?php if ('cc' == $notification['to']['mail_field']['to_type']) echo 'selected="selected"'; ?>><?php _e('Cc:', 'wp-cred'); ?></option>
                     <option value="bcc" <?php if ('bcc' == $notification['to']['mail_field']['to_type']) echo 'selected="selected"'; ?>><?php _e('Bcc:', 'wp-cred'); ?></option>
                 </select>
-                <i title="<?php echo esc_attr(__('Please select an email field', 'wp-cred')); ?>" id="notification_mail_field_required-<?php echo $ii; ?>" class="icon-warning-sign" style="display:none;">&nbsp;</i>&nbsp;
+                <i title="<?php echo esc_attr(__('Please select an email field', 'wp-cred')); ?>" id="notification_mail_field_required-<?php echo $ii; ?>" class="icon-warning-sign" style="display:none;"></i>
                 <select data-cred-bind="{ validate: {
                         required: {
                         actions: [
@@ -271,8 +315,8 @@ if (!is_array($notification['to']['type']))
                         }
                         ?>
                     </optgroup>
-                </select>&nbsp;
-                <a href="javascript:;" data-cred-bind="{ event: 'click', action: 'refreshFormFields' }" class='icon-refresh cred-refresh-button' title="<?php echo esc_attr(__('Click to refresh (if settings changed)', 'wp-cred')); ?>">&nbsp;</a>
+                </select>
+                <a href="javascript:;" data-cred-bind="{ event: 'click', action: 'refreshFormFields' }" class='icon-refresh cred-refresh-button' title="<?php echo esc_attr(__('Click to refresh (if settings changed)', 'wp-cred')); ?>"></a>
             </span>
         </p>
 
@@ -287,14 +331,14 @@ if (!is_array($notification['to']['type']))
                        }
                        } }" type='checkbox' class='cred-checkbox-10' name='_cred[notification][notifications][<?php echo $ii; ?>][to][type][]' value='user_id_field' <?php if (in_array('user_id_field', $notification['to']['type'])) echo 'checked="checked"'; ?> />
                 <span><?php _e('Send notification to a WordPress user specified in a form field:', 'wp-cred'); ?></span>
-            </label><br />
+            </label>
             <span data-cred-bind="{ action: 'show', condition: '_cred[notification][notifications][<?php echo $ii; ?>][to][type] has user_id_field' }">
                 <select name="_cred[notification][notifications][<?php echo $ii; ?>][to][user_id_field][to_type]">
                     <option value="to" <?php if ('to' == $notification['to']['user_id_field']['to_type']) echo 'selected="selected"'; ?>><?php _e('To:', 'wp-cred'); ?></option>
                     <option value="cc" <?php if ('cc' == $notification['to']['user_id_field']['to_type']) echo 'selected="selected"'; ?>><?php _e('Cc:', 'wp-cred'); ?></option>
                     <option value="bcc" <?php if ('bcc' == $notification['to']['user_id_field']['to_type']) echo 'selected="selected"'; ?>><?php _e('Bcc:', 'wp-cred'); ?></option>
                 </select>
-                <i title="<?php echo esc_attr(__('Please select a user id field', 'wp-cred')); ?>" id="notification_user_id_required-<?php echo $ii; ?>" class="icon-warning-sign" style="display:none;">&nbsp;</i>&nbsp;
+                <i title="<?php echo esc_attr(__('Please select a user id field', 'wp-cred')); ?>" id="notification_user_id_required-<?php echo $ii; ?>" class="icon-warning-sign" style="display:none;"></i>
                 <select data-cred-bind="{ validate: {
                         required: {
                         actions: [
@@ -311,8 +355,8 @@ if (!is_array($notification['to']['type']))
                         }
                         ?>
                     </optgroup>
-                </select>&nbsp;
-                <a href="javascript:;" data-cred-bind="{ event: 'click', action: 'refreshFormFields' }" class='icon-refresh cred-refresh-button' title="<?php echo esc_attr(__('Click to refresh (if settings changed)', 'wp-cred')); ?>">&nbsp;</a>
+                </select>
+                <a href="javascript:;" data-cred-bind="{ event: 'click', action: 'refreshFormFields' }" class='icon-refresh cred-refresh-button' title="<?php echo esc_attr(__('Click to refresh (if settings changed)', 'wp-cred')); ?>"></a>
             </span>
         </p>
 
@@ -337,7 +381,7 @@ if (!is_array($notification['to']['type']))
                     <i class="icon-question-sign"></i>
                 </span>
             </p>
-            <i title="<?php echo esc_attr(__('Please enter an email address', 'wp-cred')); ?>" id="notification_mail_required-<?php echo $ii; ?>" class="icon-warning-sign" style="display:none;">&nbsp;</i>&nbsp;
+            <i title="<?php echo esc_attr(__('Please enter an email address', 'wp-cred')); ?>" id="notification_mail_required-<?php echo $ii; ?>" class="icon-warning-sign" style="display:none;"></i>
             <input data-cred-bind="{
                    validate: {
                    required: {
@@ -392,7 +436,7 @@ if (!is_array($notification['to']['type']))
                 <?php _e('Notification mail subject:', 'wp-cred'); ?>
             </label>
         </p>
-        <div id="cred_mail_subject_placeholders-<?php echo $ii; ?>" data-editor="credmailsubject<?php echo $ii; ?>" class="wp-media-buttons" style="display:inline-block;position:relative;margin:0;padding:0;vertical-align:middle;">
+        <div id="cred_mail_subject_placeholders-<?php echo $ii; ?>" data-editor="credmailsubject<?php echo $ii; ?>" class="wp-media-buttons">
             <?php
             echo CRED_Helper::getMediaButtons("credmailsubject{$ii}", array(
                 'no_media_button' => true,
@@ -407,7 +451,7 @@ if (!is_array($notification['to']['type']))
         </div>
 
         <p class="cred-label-holder">
-            <i title="<?php echo esc_attr(__('Please enter a title', 'wp-cred')); ?>" id="credmailsubject_required-<?php echo $ii; ?>" class="icon-warning-sign" style="display:none;">&nbsp;</i>&nbsp;
+            <i title="<?php echo esc_attr(__('Please enter a title', 'wp-cred')); ?>" id="credmailsubject_required-<?php echo $ii; ?>" class="icon-warning-sign" style="display:none;"></i>
             <input data-cred-bind="{
                    validate: {
                    required: {
@@ -417,7 +461,7 @@ if (!is_array($notification['to']['type']))
                    ]
                    }
                    }
-                   }" type="text" id="credmailsubject<?php echo $ii ?>" style="position:relative;width:95%;" name="_cred[notification][notifications][<?php echo $ii; ?>][mail][subject]" value="<?php echo $notification['mail']['subject']; ?>" />
+                   }" type="text" id="credmailsubject<?php echo $ii ?>"  name="_cred[notification][notifications][<?php echo $ii; ?>][mail][subject]" value="<?php echo $notification['mail']['subject']; ?>" />
         </p>
     </fieldset>
 
@@ -469,21 +513,22 @@ if (!is_array($notification['to']['type']))
                delay: 100,
                domRef: '#cred_notification_test_container_<?php echo $ii; ?>'
                }"><?php _e('Cancel', 'wp-cred'); ?></a>
-            <span style="display:none" id="send_test_notification_loader_<?php echo $ii; ?>" class='cred_ajax_loader_small_1'>&nbsp;</span>        
+            <span style="display:none" id="send_test_notification_loader_<?php echo $ii; ?>" class='cred_ajax_loader_small_1'></span>        
             <div id="send_test_notification_results_<?php echo $ii; ?>">
             </div>
         </div>
     <?php endif; ?>
 
-    <p class='cred-notification-remove-container'>
-        <a class='button cred-remove-notification cred-remove-button1' href='javascript:;' data-cred-bind="{
+    <footer class="cred-notification-settings-footer clearfix">
+        <a class='cred-notification-action cred-notification-delete' data-cred-bind="{
            event: 'click',
            action: 'removeItem',
            confirm: '<?php _e('Are you sure you want to remove this notification?', 'wp-cred'); ?>',
            domRef: '#cred_notification_settings_panel-<?php echo $ii; ?>',
+           domRow: '#cred_notification_settings_row-<?php echo $ii; ?>',
            modelRef: '_cred[notification][notifications][<?php echo $ii; ?>]'
            }">
-            <i class="icon-remove"></i> <?php _e('Remove this notification', 'wp-cred'); ?>
+            <i class="fa fa-trash"></i> <?php _e('Delete', 'wp-cred'); ?>
         </a>
-    </p>
+    </footer>
 </div>

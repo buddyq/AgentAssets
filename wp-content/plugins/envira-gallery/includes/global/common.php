@@ -114,6 +114,27 @@ class Envira_Gallery_Common {
     }
 
     /**
+     * Helper method for retrieving justified gallery themes.
+     *
+     * @since 1.1.1
+     *
+     * @return array Array of gallery theme data.
+     */
+    public function get_justified_gallery_themes() {
+
+        $themes = array(
+            array(
+                'value' => 'normal',
+                'name'  => __( 'Normal', 'envira-gallery' ),
+                'file'  => $this->base->file
+            )
+        );
+
+        return apply_filters( 'envira_gallery_justified_gallery_themes', $themes );
+
+    }
+
+    /**
      * Helper method for retrieving display description options.
      *
      * @since 1.3.7.3
@@ -558,7 +579,9 @@ class Envira_Gallery_Common {
             'type'                => 'default',
 
             // Config Tab
-            'columns'             => '3',
+            'columns'             => '0',
+            'justified_row_height' => 150, // automatic/justified layout
+            'justified_gallery_theme' => 'normal',
             'gallery_theme'       => 'base',
             'display_description' => 0,
             'description'		  => '',
@@ -763,6 +786,13 @@ class Envira_Gallery_Common {
         // Strip ?lang=fr from blog's URL - WPML adds this on
         // and means our next statement fails
         $site_url = preg_replace( '/\?.*/', '', get_bloginfo( 'url' ) );
+
+        // WPML check - if there is a /fr or any domain in the url, then remove that from the $site_url
+        if ( defined('ICL_LANGUAGE_CODE') ) {
+            if ( strpos( $site_url, '/'.ICL_LANGUAGE_CODE ) !== false ) {
+                $site_url = str_replace( '/'.ICL_LANGUAGE_CODE, '', $site_url );
+            }
+        }
 
         if ( strpos( $url, $site_url ) === false ) {
             return $url;

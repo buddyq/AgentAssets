@@ -28,7 +28,7 @@ class WPDD_json2layout {
         return $this->layout;
     }
    
-    private function add_rows($rows, $target) {
+    private function add_rows( $rows, $target, $args = null ) {
         if ($rows) {
             foreach($rows as $row) {
                 
@@ -38,7 +38,7 @@ class WPDD_json2layout {
     
                 if( method_exists ( $this , $row['kind'] ) )
                 {
-                    $row_object = $this->{$row['kind']}($row);
+                    $row_object = $this->{$row['kind']}($row, $target, $args);
                     $target->add_row($row_object);
                 }
             }
@@ -65,7 +65,15 @@ class WPDD_json2layout {
                 $container = new WPDD_layout_container( $cell['name'], $cell['width'], $cell['additionalCssClasses'], $cell['editorVisualTemplateID'], $cell['cssId'], $cell['tag'], $this->layout->get_css_framework() );
                 $this->add_rows($cell['Rows'], $container);
                 return $container;
-            
+            case 'Tabs':
+                $container = new WPDD_layout_tabs_cell( $cell['name'], $cell['width'], $cell['additionalCssClasses'], $cell['editorVisualTemplateID'], $cell['cssId'], $cell['tag'], $this->layout->get_css_framework(), $cell );
+                $this->add_rows($cell['Rows'], $container, $cell);
+                return $container;
+            case 'Accordion':
+                $container = new WPDD_layout_accordion_cell( $cell['name'], $cell['width'], $cell['additionalCssClasses'], $cell['editorVisualTemplateID'], $cell['cssId'], $cell['tag'], $this->layout->get_css_framework(), $cell );
+                $this->add_rows($cell['Rows'], $container, $cell);
+                return $container;
+
             case 'Cell':
 
                 $layout = $wpddlayout->create_cell(
@@ -104,7 +112,7 @@ class WPDD_json2layout {
                 }
                 else
                 {
-                    $layout = new WPDD_layout_cell( $cell['name'], $cell['width'], $cell['additionalCssClasses'], '',$cell['content'], $cell['cssId'], $cell['tag'] );
+                    $layout = new WPDD_layout_cell( $cell['name'], $cell['width'], $cell['additionalCssClasses'], '', isset($cell['content']) ? $cell['content'] : null, $cell['cssId'], $cell['tag'] );
                 }
                 return $layout;
         }
@@ -113,7 +121,7 @@ class WPDD_json2layout {
 
 	// the following methods take their names from the kind attribute of our Row models
 	// so to have js file name == js model class name == 'kind' == render method name
-	private function Row( $row )
+	private function Row( $row, $target = null, $args = null )
 	{
 		$row_object = new WPDD_layout_row(
 			$row['name'],
@@ -139,7 +147,7 @@ class WPDD_json2layout {
 		return $row_object;
 	}
 
-	private function ThemeSectionRow($row)
+	private function ThemeSectionRow($row, $target = null, $args = null)
 	{
 		global $wpddlayout;
 
@@ -151,4 +159,58 @@ class WPDD_json2layout {
 		);
 		return $row_object;
 	}
+
+    private function Tab( $row, $target = null, $args = null ){
+        $row_object = new WPDD_layout_tabs_pane(
+            $row['name'],
+            $row['cssClass'],
+            $row['editorVisualTemplateID'],
+            isset($row['layout_type']) ? $row['layout_type'] :'' ,
+            isset( $row['cssId'] ) ? $row['cssId'] : '',
+            isset($row['additionalCssClasses']) ? $row['additionalCssClasses'] : '',
+            isset( $row['tag'] ) ? $row['tag'] : '',
+            isset( $row['mode'] ) ? $row['mode'] : 'tab',
+            $row,
+            $args
+        );
+        if( isset( $row['Cells'] ) )
+        {
+            foreach($row['Cells'] as $cell) {
+                if (isset($cell['row_divider'])) {
+                    $cell['width'] *= $cell['row_divider'];
+                }
+
+                $row_object->add_cell($this->create_cell($cell));
+
+            }
+        }
+        return $row_object;
+    }
+
+    private function Panel( $row, $target = null, $args = null ){
+        $row_object = new WPDD_layout_accordion_panel(
+            $row['name'],
+            $row['cssClass'],
+            $row['editorVisualTemplateID'],
+            isset($row['layout_type']) ? $row['layout_type'] :'' ,
+            isset( $row['cssId'] ) ? $row['cssId'] : '',
+            isset($row['additionalCssClasses']) ? $row['additionalCssClasses'] : '',
+            isset( $row['tag'] ) ? $row['tag'] : '',
+            isset( $row['mode'] ) ? $row['mode'] : 'tab',
+            $row,
+            $args
+        );
+        if( isset( $row['Cells'] ) )
+        {
+            foreach($row['Cells'] as $cell) {
+                if (isset($cell['row_divider'])) {
+                    $cell['width'] *= $cell['row_divider'];
+                }
+
+                $row_object->add_cell($this->create_cell($cell));
+
+            }
+        }
+        return $row_object;
+    }
 }

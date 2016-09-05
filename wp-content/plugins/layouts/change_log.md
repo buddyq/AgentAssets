@@ -1,3 +1,39 @@
+Version 1.8.3
+
+  - Bug-fix: Removes all "row-fluid" class names in favour of ".row" class only
+
+Version 1.8.2
+
+  - Bug-fix: Changes "row-fluid" class back to row to ensure 15px margin left/right
+
+Version 1.8.1
+
+  - Bug-fix: Changes "row-fluid" class back to row to ensure 15px margin left/right
+
+
+Version 1.8
+
+  - Feature: Re-enabled Widget Area Cell with ability to add custom Widget Areas.
+  - Feature: Added Bootstrap Tabs cell: user can create tabbed structures as containers for other Layouts/Bootstrap structures
+  - Feature: Added Bootstrap Accordion cell: user can create accordions as containers for other Layouts/Bootstrap structures
+  - Feature: Added new buttons to tinyMCE and CodeMirror editors, to easily access Bootstrap CSS and Javascript components description and link
+  - Feature: Implemented global Javascript editor
+  - User-interface: Added copy/paste row functionality
+  - User-interface: Prevented parent layout to display in "Not assigned" section when all its children have been assigned
+  - User-interface: Added dialogs and proper functionality to let the user remove layout assignments when Child Layout cell is created
+  - Compatibility: improved compatibility with CRED
+  - Compatibility: Ensured compatibility with Wordpress 4.6
+  - Compatibility: Ensured compatibility with Bootstrap 4
+  - Compatibility: Ensured compatibility with W3C Html validators for when CSS is loaded in footer
+  - API: Created filter hook to check unobtrusively if Layouts is active
+  - Security: Made sure protocol is https when loading dynamically generated CSS file under SSL
+  - Bug-fix: Fixed posts and pages loosing layout assignment when user editing was not admin
+  - Bug-fix: Fixed some little bug with Menu cell
+  - Bug-fix: Fixed some little issues with template/layout selector in different themes
+  - Bug-fix: Fixed issue with img-responsive class in some critical rendering positions
+  - Bug-fix: Fixed issue with Vimeo embedded video rendering
+  - Bug-fix: Fixed issue with Layouts usage layer when "Show all templates" is clicked
+
 Version 1.7
 
   - Feature: Change default parent layout directly from Layout edit page, by clicking on "set parent layout" button

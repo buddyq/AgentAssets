@@ -5,7 +5,7 @@ Plugin URI: http://wp-types.com/
 Description: Design entire WordPress sites using a drag-and-drop interface.
 Author: OnTheGoSystems
 Author URI: http://www.onthegosystems.com
-Version: 1.7
+Version: 1.8.3
 */
 
 /**
@@ -84,5 +84,22 @@ if( !function_exists('layouts_plugin_add_wpml_switcher_init') ){
     function layouts_plugin_add_wpml_switcher_init( $pages ) {
         $pages[] = 'dd_layouts_edit';
         return $pages;
+    }
+}
+
+if( !function_exists('ddl_apply_mask_widget_area_post_type')){
+    function ddl_apply_mask_widget_area_post_type(){
+       add_filter("toolset_filter_exclude_own_post_types", function($post_types){
+               $post_types[] = "widget-area";
+               return $post_types;
+       }, 10, 1);
+    }
+}
+add_action("plugins_loaded", "ddl_apply_mask_widget_area_post_type", 10);
+
+add_filter( 'toolset_is_layouts_available', '__ddl_return_true' );
+if( !function_exists('__ddl_return_true') ){
+    function __ddl_return_true(){
+        return true;
     }
 }

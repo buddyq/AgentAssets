@@ -176,6 +176,8 @@ DDLayout.views.abstract.ElementView = Backbone.View.extend({
 				var caret = event.offsetX <= text_width ? Math.floor( event.offsetX / ( text_width / text_len ) ) : text_len;
 				self.mouse_caret = Math.floor( caret );
 			});
+
+            DDLayout.AdminPage.setCaretPosition( input[0], text_len);
 		});
 	},
     trigger_highlight:function(event){

@@ -30,7 +30,7 @@ if (!interface_exists('CRED_Friendable')) {
 // TODO use WP Cache object to cache queries(in base model) and templates(in loader DONE)
 /* removed */
 // current version
-define('CRED_FE_VERSION', '1.7.1');
+define('CRED_FE_VERSION', '1.8');
 // configuration constants
 define('CRED_NAME', 'CRED');
 define('CRED_CAPABILITY', 'manage_options');
@@ -541,6 +541,9 @@ if (defined('ABSPATH')) {
             'insert-generic-field-shortcode-button' => array(
                 'path' => CRED_TEMPLATES_PATH . '/insert-generic-field-shortcode-button.tpl.php'
             ),
+            'access-button' => array(
+                'path' => CRED_TEMPLATES_PATH . '/access-button.tpl.php'
+            ),
             'scaffold-button' => array(
                 'path' => CRED_TEMPLATES_PATH . '/scaffold-button.tpl.php'
             ),
@@ -573,6 +576,9 @@ if (defined('ABSPATH')) {
             ),
             'text-access-meta-box' => array(
                 'path' => CRED_TEMPLATES_PATH . '/text-access-meta-box.tpl.php'
+            ),
+            'save-form-meta-box' => array(
+                'path' => CRED_TEMPLATES_PATH . "/save-form-meta-box.tpl.php"
             ),
             'delete-post-link' => array(
                 'path' => CRED_TEMPLATES_PATH . '/delete-post-link.tpl.php'

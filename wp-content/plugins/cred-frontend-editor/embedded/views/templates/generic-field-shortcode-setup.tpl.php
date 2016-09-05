@@ -104,7 +104,7 @@ $options = array(
         'has_default_value' => true,
         'additional' => "<label class='cred-label'><input type='checkbox' class='cred-checkbox' value='1' name='additional_options[checked]' /></label> <span class='label'>" . __('Checked by default', 'wp-cred') . "</span>",
         'default_selector' => '',
-        'value_label' => __('Set value:', 'wp-cred'),
+        'value_label' => __('Value to store when<br>checked:', 'wp-cred'),
         'value_field' => "<input type='text' name='default' value='' />"
     ),
     'select' => array(
@@ -139,28 +139,28 @@ $options = array(
         'has_default_value' => true,
         'additional' => '',
         'default_selector' => '',
-        'value_label' => __('Default Skypename:', 'wp-cred'),
+        'value_label' => __('Default Skypename<br>(default field value):', 'wp-cred'),
         'value_field' => "<input type='text' name='default' value='' />"
     ),
     'email' => array(
         'has_default_value' => true,
         'additional' => '',
         'default_selector' => '',
-        'value_label' => __('Default email:', 'wp-cred'),
+        'value_label' => __('Default email<br>(default field value):', 'wp-cred'),
         'value_field' => "<input type='text' name='default' value='' />"
     ),
     'url' => array(
         'has_default_value' => true,
         'additional' => '',
         'default_selector' => '',
-        'value_label' => __('Default URL:', 'wp-cred'),
+        'value_label' => __('Default URL<br>(default field value):', 'wp-cred'),
         'value_field' => "<input type='text' name='default' value='' />"
     ),
     'phone' => array(
         'has_default_value' => true,
         'additional' => '',
         'default_selector' => '',
-        'value_label' => __('Default phone:', 'wp-cred'),
+        'value_label' => __('Default phone<br>(default field value):', 'wp-cred'),
         'value_field' => "<input type='text' name='default' value='' />"
     ),
     'textarea' => array(
@@ -363,7 +363,7 @@ wp_print_styles('onthego-admin-styles');
 <?php if ($options[$field['type']]['has_default_value']) { ?>
                 <tr class='row'>
                 <td class='cell'>
-                <span class='label'><?php echo $options[$field['type']]['value_label']; ?></span>
+                <span class='label '><?php echo $options[$field['type']]['value_label']; ?></span>
                 </td>
                 <td class='cell'>
                 <?php echo $options[$field['type']]['value_field']; ?><br />

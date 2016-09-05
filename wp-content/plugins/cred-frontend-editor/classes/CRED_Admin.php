@@ -57,6 +57,9 @@ final class CRED_Admin {
         if ('auto-draft' == $post['post_status'])
             return $post;
 
+        if (isset($post['post_title']))
+            $post['post_name'] = sanitize_title($post['post_title']);
+
         $post['post_status'] = 'private';
         return $post;
     }
@@ -159,22 +162,14 @@ final class CRED_Admin {
             unset($__allowed_tags);
 
             $allowed_protocols = array('http', 'https', 'mailto');
-
-            $extra_js = "";
-            $extra_css = "";
-            if (current_user_can('unfiltered_html')) {
-                $extra_js = isset($_POST['_cred']['extra']['js']) ? $_POST['_cred']['extra']['js'] : '';
-                $extra_css = isset($_POST['_cred']['extra']['css']) ? $_POST['_cred']['extra']['css'] : '';
-                if (!empty($extra_js)) {
-                    //Fix JS strips backslashes from code on Save
-                    $extra_js = addcslashes($extra_js, '\\');
-                    //$extra_js = wp_kses($extra_js, $allowed_tags, $allowed_protocols);
-                }
-                if (!empty($extra_css)) {
-                    //$extra_css = wp_kses_stripslashes($extra_css, $allowed_tags, $allowed_protocols);
-                    //$extra_css = wp_kses($extra_css, $allowed_tags, $allowed_protocols);
-                    $extra_css = stripslashes($extra_css);
-                }
+            
+            $extra_js = isset($_POST['_cred']['extra']['js']) ? $_POST['_cred']['extra']['js'] : '';
+            $extra_css = isset($_POST['_cred']['extra']['css']) ? $_POST['_cred']['extra']['css'] : '';
+            if (!empty($extra_js)) {
+                $extra_js = wp_slash($extra_js);
+            }
+            if (!empty($extra_css)) {
+                $extra_css = wp_slash($extra_css);
             }
 
             $messages = $model->getDefaultMessages();
@@ -254,39 +249,53 @@ final class CRED_Admin {
             $metaboxes = array(
                 // form type meta box
                 'credformtypediv' => array(
-                    'title' => __('Form Settings', 'wp-cred'),
+                    'title' => __('Settings', 'wp-cred'),
                     'callback' => array('CRED_Admin_Helper', 'addFormSettingsMetaBox'),
                     'post_type' => NULL,
                     'context' => 'normal',
                     'priority' => 'high',
                     'callback_args' => $form_fields),
                 // post type meta box
-                'credposttypediv' => array(
+                /*'credposttypediv' => array(
                     'title' => __('Post Type Settings', 'wp-cred'),
                     'callback' => array('CRED_Admin_Helper', 'addPostTypeMetaBox'),
                     'post_type' => NULL,
                     'context' => 'normal',
                     'priority' => 'high',
-                    'callback_args' => $form_fields),
+                    'callback_args' => $form_fields),*/
                 // content meta box to wrap rich editor, acts as placeholder
                 'credformcontentdiv' => array(
-                    'title' => __('Form Content', 'wp-cred'),
+                    'title' => __('Content', 'wp-cred'),
                     'callback' => array('CRED_Admin_Helper', 'addFormContentMetaBox'),
                     'post_type' => NULL,
                     'context' => 'normal',
                     'priority' => 'high',
                     'callback_args' => array()),
+                 /* 'credextradiv' => array(
+                  'title' => __('CSS and Javascript for this form', 'wp-cred'),
+                  'callback' => array('CRED_Admin_Helper', 'addExtraAssetsMetaBox'),
+                  'post_type' => NULL,
+                  'context' => 'normal',
+                  'priority' => 'high',
+                  'callback_args' => $form_fields), */
                 // extra meta box (css, js) (placed inside editor meta box)
-                'credextradiv' => array(
-                    'title' => __('CSS and Javascript for this form', 'wp-cred'),
-                    'callback' => array('CRED_Admin_Helper', 'addExtraAssetsMetaBox'),
+                'credextracssdiv' => array(
+                    'title' => '<i class="icon-pushpin fa fa-thumb-tack"></i>' . __('CSS editor', 'wp-cred'),
+                    'callback' => array('CRED_Admin_Helper', 'addExtraCSSMetaBox'),
+                    'post_type' => NULL,
+                    'context' => 'normal',
+                    'priority' => 'high',
+                    'callback_args' => $form_fields),
+                'credextrajsdiv' => array(
+                    'title' => '<i class="icon-pushpin fa fa-thumb-tack"></i>' . __('JS editor', 'wp-cred'),
+                    'callback' => array('CRED_Admin_Helper', 'addExtraJSMetaBox'),
                     'post_type' => NULL,
                     'context' => 'normal',
                     'priority' => 'high',
                     'callback_args' => $form_fields),
                 // email notification meta box
                 'crednotificationdiv' => array(
-                    'title' => __('Notification Settings', 'wp-cred'),
+                    'title' => __('E-mail Notifications', 'wp-cred'),
                     'callback' => array('CRED_Admin_Helper', 'addNotificationMetaBox'),
                     'post_type' => NULL,
                     'context' => 'normal',
@@ -294,7 +303,7 @@ final class CRED_Admin {
                     'callback_args' => $form_fields),
                 // messages meta box
                 'credmessagesdiv' => array(
-                    'title' => __('Form Texts', 'wp-cred'),
+                    'title' => __('Messages', 'wp-cred'),
                     'callback' => array('CRED_Admin_Helper', 'addMessagesMetaBox'),
                     'post_type' => NULL,
                     'context' => 'normal',
@@ -308,10 +317,14 @@ final class CRED_Admin {
                     'context' => 'normal',
                     'priority' => 'low',
                     'callback_args' => $form_fields),
+                'saveformdiv' => array(
+                    'title' => __('Save', 'wp-cred'),
+                    'callback' => array('CRED_Admin_Helper', 'addSaveMetaBox'),
+                    'post_type' => NULL,
+                    'context' => 'side',
+                    'priority' => 'high',
+                    'callback_args' => $form_fields),   
             );
-
-            if (!current_user_can('unfiltered_html'))
-                unset($metaboxes['credextradiv']);
 
             // CRED_PostExpiration
             $metaboxes = apply_filters('cred_ext_meta_boxes', $metaboxes, $form_fields);
@@ -355,7 +368,7 @@ final class CRED_Admin {
             $metaboxes = array(
                 // form type meta box
                 'credformtypediv' => array(
-                    'title' => __('Form Settings', 'wp-cred'),
+                    'title' => __('Settings', 'wp-cred'),
                     'callback' => array('CRED_Admin_Helper', 'addUserFormSettingsMetaBox'),
                     'post_type' => NULL,
                     'context' => 'normal',
@@ -371,23 +384,37 @@ final class CRED_Admin {
 //                    'callback_args' => $form_fields),
                 // content meta box to wrap rich editor, acts as placeholder
                 'credformcontentdiv' => array(
-                    'title' => __('Form Content', 'wp-cred'),
+                    'title' => __('Content', 'wp-cred'),
                     'callback' => array('CRED_Admin_Helper', 'addFormContentMetaBox'),
                     'post_type' => NULL,
                     'context' => 'normal',
                     'priority' => 'high',
                     'callback_args' => array()),
+                /* 'credextradiv' => array(
+                  'title' => __('CSS and Javascript for this form', 'wp-cred'),
+                  'callback' => array('CRED_Admin_Helper', 'addExtraAssetsMetaBox'),
+                  'post_type' => NULL,
+                  'context' => 'normal',
+                  'priority' => 'high',
+                  'callback_args' => $form_fields), */
                 // extra meta box (css, js) (placed inside editor meta box)
-                'credextradiv' => array(
-                    'title' => __('CSS and Javascript for this form', 'wp-cred'),
-                    'callback' => array('CRED_Admin_Helper', 'addExtraAssetsMetaBox'),
+                'credextracssdiv' => array(
+                    'title' => '<i class="icon-pushpin fa fa-thumb-tack"></i>' . __('CSS editor', 'wp-cred'),
+                    'callback' => array('CRED_Admin_Helper', 'addExtraCSSMetaBox'),
+                    'post_type' => NULL,
+                    'context' => 'normal',
+                    'priority' => 'high',
+                    'callback_args' => $form_fields),
+                'credextrajsdiv' => array(
+                    'title' => '<i class="icon-pushpin fa fa-thumb-tack"></i>' . __('JS editor', 'wp-cred'),
+                    'callback' => array('CRED_Admin_Helper', 'addExtraJSMetaBox'),
                     'post_type' => NULL,
                     'context' => 'normal',
                     'priority' => 'high',
                     'callback_args' => $form_fields),
                 // email notification meta box
                 'crednotificationdiv' => array(
-                    'title' => __('Notification Settings', 'wp-cred'),
+                    'title' => __('E-mail Notifications', 'wp-cred'),
                     'callback' => array('CRED_Admin_Helper', 'addNotificationMetaBox2'),
                     'post_type' => NULL,
                     'context' => 'normal',
@@ -395,7 +422,7 @@ final class CRED_Admin {
                     'callback_args' => $form_fields),
                 // messages meta box
                 'credmessagesdiv' => array(
-                    'title' => __('Form Texts', 'wp-cred'),
+                    'title' => __('Messages', 'wp-cred'),
                     'callback' => array('CRED_Admin_Helper', 'addMessagesMetaBox2'),
                     'post_type' => NULL,
                     'context' => 'normal',
@@ -409,11 +436,16 @@ final class CRED_Admin {
                     'context' => 'normal',
                     'priority' => 'low',
                     'callback_args' => $form_fields),
+                'saveformdiv' => array(
+                    'title' => __('Save', 'wp-cred'),
+                    'callback' => array('CRED_Admin_Helper', 'addSaveMetaBox'),
+                    'post_type' => NULL,
+                    'context' => 'side',
+                    'priority' => 'high',
+                    'callback_args' => $form_fields)    
             );
 
-            if (!current_user_can('unfiltered_html'))
-                unset($metaboxes['credextradiv']);
-
+        
             // CRED_PostExpiration
             $metaboxes = apply_filters('cred_ext_meta_boxes', $metaboxes, $form_fields);
             if (defined('MODMAN_PLUGIN_NAME'))

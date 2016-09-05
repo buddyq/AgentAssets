@@ -20,6 +20,10 @@ class WPDD_GUI_DIALOGS {
 		add_action('wpddl_after_render_editor', array($this,'render_dialog_video_player'));
 		add_action('wpddl_after_render_editor', array($this, 'render_registered_cell_dialogs'));
 		add_action('wpddl_after_render_editor', array($this, 'render_dialog_theme_section_row_edit'));
+        add_action('wpddl_after_render_editor', array($this, 'render_dialog_tabs_tab_edit'));
+        add_action('wpddl_after_render_editor', array($this, 'render_dialog_tabs_edit'));
+        add_action('wpddl_after_render_editor', array($this, 'render_dialog_accordion_edit'));
+        add_action('wpddl_after_render_editor', array($this, 'render_dialog_accordion_panel_edit'));
 		add_action('wpddl_render-row-modes-in-dialog', array($this, 'render_row_modes_gui') );
 	}
 
@@ -98,6 +102,15 @@ class WPDD_GUI_DIALOGS {
 	<?php
 	}
 
+    function render_dialog_tabs_edit(){
+        include_once 'dialog_tabs_edit.tpl.php';
+    }
+    function render_dialog_accordion_edit(){
+        include_once 'dialog_accordion_edit.tpl.php';
+    }
+	function render_dialog_accordion_panel_edit(){
+		include_once 'dialog_accordion_panel_edit.tpl.php';
+	}
 	# render elemnt box type dialog
 	function render_dialog_element_box_type() {
 		//include_once 'dialog_element_box_type.tpl.php';
@@ -138,6 +151,11 @@ class WPDD_GUI_DIALOGS {
 	function render_dialog_theme_section_row_edit()
 	{
 		include_once 'dialog_theme_section_row_edit.tpl.php';
+	}
+
+	function render_dialog_tabs_tab_edit()
+	{
+		include_once 'dialog_tabs_tab_edit.tpl.php';
 	}
 
 	function render_row_modes_gui(){

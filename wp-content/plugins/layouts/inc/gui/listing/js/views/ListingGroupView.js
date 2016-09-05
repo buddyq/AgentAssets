@@ -18,6 +18,9 @@ DDLayout.listing.views.ListingGroupView = Backbone.View.extend({
 		self.options = options;
 		self.$el.data( 'view', self );
 		self.$el.addClass('listing-page-table-list');
+        if(self.model.get('id') === 0){
+            self.$el.hide();
+        }
 
 		self.open = true;
 

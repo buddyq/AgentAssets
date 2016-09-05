@@ -28,6 +28,10 @@ DDLayout_settings.DDL_JS.ns.js(
     , DDLayout_settings.DDL_JS.editor_lib_path + "models/cells/Row.js"
     , DDLayout_settings.DDL_JS.editor_lib_path + "models/cells/ThemeSectionRow.js"
     , DDLayout_settings.DDL_JS.editor_lib_path + "models/cells/Container.js"
+    , DDLayout_settings.DDL_JS.editor_lib_path + "models/cells/Tabs.js"
+    , DDLayout_settings.DDL_JS.editor_lib_path + "models/cells/Tab.js"
+    , DDLayout_settings.DDL_JS.editor_lib_path + "models/cells/Accordion.js"
+    , DDLayout_settings.DDL_JS.editor_lib_path + "models/cells/Panel.js"
     , DDLayout_settings.DDL_JS.editor_lib_path + "models/cells/Layout.js"
 
 	, DDLayout_settings.DDL_JS.listing_lib_path + "models/ListingItem.js"

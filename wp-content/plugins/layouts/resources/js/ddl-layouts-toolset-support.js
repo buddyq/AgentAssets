@@ -15,6 +15,7 @@ DDLayout.LayoutsToolsetSupport.prototype.operate_extra_controls = function( $roo
     jQuery('.ddl-setting-for-layouts-container-in-iframe .js-select2').select2({
         width:'555px'
     });
+
     window.parent.DDLayout.Dialogs.Prototype.setUpAdditionalClassInput( jQuery('.ddl-setting-for-layouts-container-in-iframe .js-select2-tokenizer') );
 
     jQuery('#'+$root+' .js-ddl-tag-name').val(data.tag).trigger('change');

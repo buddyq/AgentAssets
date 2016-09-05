@@ -401,12 +401,13 @@ DDLayout.CredInIfame = function($)
 	}
 	
 	self.close_iframe = function (callback) {
-		jQuery("#ddl-layout-toolset-iframe").on('load', function() {
+
+		/*jQuery("#ddl-layout-toolset-iframe").on('load', function() {
 			// Wait for a reload.
 			jQuery("#ddl-layout-toolset-iframe").off('load');
 			self.remove_loading_overlay();
 			callback();
-		});
+		});*/
 
 		self.add_loading_overlay();
 		jQuery("#ddl-layout-toolset-iframe").hide();
@@ -432,9 +433,20 @@ DDLayout.CredInIfame = function($)
 		});
 		
 		cred_iframe.save_form();
-		
-		//callback();
-	}
+
+        /*_.defer(function(){
+            self.remove_loading_overlay();
+            if( typeof callback === 'function') {
+                callback.call( this );
+            }
+        });*/
+        _.delay(function(){
+			self.remove_loading_overlay();
+			if( typeof callback === 'function') {
+				callback.call( this );
+			}
+		}, 500);
+	};
 	
 	var _dismiss_distraction = function(context){
 		if( !context ) return;

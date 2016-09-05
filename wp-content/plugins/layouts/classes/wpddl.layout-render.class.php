@@ -110,7 +110,22 @@ class WPDD_layout_render {
         }
     }
 
-    function row_start_callback( $cssClass, $layout_type = 'fixed', $cssId = '', $additionalCssClasses = '', $tag = 'div', $mode = 'normal') {
+    function row_start_callback( $row = null ) {
+
+        if( !$row ) return;
+
+        $layout_type = $row->get_layout_type();
+        $cssId = $row->get_css_id();
+        $additionalCssClasses = $row->get_additional_css_classes();
+        $tag = $row->get_tag();
+        $mode = $row->get_mode();
+        
+        $layout_type = $layout_type ? $layout_type : 'fixed';
+        $cssId = $row->get_css_id() ? $cssId : '';
+        $additionalCssClasses = $additionalCssClasses ? $additionalCssClasses : '';
+        $tag = $tag ? $tag : 'div';
+        $mode = $mode ? $mode : 'normal';
+        
         $this->offset = 0; // reset offset at the beginning of the row
 
         // if this is not a top level row then we should force full width.
@@ -142,7 +157,7 @@ class WPDD_layout_render {
 
                 ?>
                 <div class="<?php printf('%s', $this->get_container_class($mode)); ?>">
-                <<?php echo $tag; ?> class="<?php echo $this->get_row_class($mode) . $type;
+                <<?php echo $tag; ?> class="<?php echo $this->get_row_class($mode);
                 if ($additionalCssClasses) {
                     echo ' ' . $additionalCssClasses;
                 } ?>"<?php if ($cssId) {
@@ -162,7 +177,7 @@ class WPDD_layout_render {
             } ?>>
 
                 <div class="<?php printf('%s', $this->get_container_class($mode)); ?>">
-                <div class="<?php echo $this->get_row_class($mode) . $type; ?>">
+                <div class="<?php echo $this->get_row_class($mode); ?>">
 
                 <?php
                 break;
@@ -171,7 +186,7 @@ class WPDD_layout_render {
 
                 ?>
                 <div class="<?php printf('%s', $this->get_container_fluid_class($mode)); ?>">
-                <<?php echo $tag; ?> class="ddl-full-width-row <?php echo $this->get_row_class($mode) . $type;
+                <<?php echo $tag; ?> class="ddl-full-width-row <?php echo $this->get_row_class($mode);
                 if ($additionalCssClasses) {
                     echo ' ' . $additionalCssClasses;
                 } ?>"<?php if ($cssId) {
@@ -182,7 +197,7 @@ class WPDD_layout_render {
 
             case 'sub-row':
                 ?>
-                <<?php echo $tag; ?> class="<?php echo $this->get_row_class($mode) . $type;
+                <<?php echo $tag; ?> class="<?php echo $this->get_row_class($mode);
                 if ($additionalCssClasses) {
                     echo ' ' . $additionalCssClasses;
                 } ?>"<?php if ($cssId) {
@@ -193,7 +208,7 @@ class WPDD_layout_render {
             default:
                 ?>
                 <div class="<?php printf('%s', $this->get_container_class($mode)); ?>">
-                <<?php echo $tag; ?> class="<?php echo $this->get_row_class($mode) . $type;
+                <<?php echo $tag; ?> class="<?php echo $this->get_row_class($mode);
                 if ($additionalCssClasses) {
                     echo ' ' . $additionalCssClasses;
                 } ?>"<?php if ($cssId) {
@@ -214,10 +229,14 @@ class WPDD_layout_render {
             'container_fluid_class' => $this->get_container_fluid_class($mode)
         );
 
-        $this->output .= apply_filters( 'ddl_render_row_start', ob_get_clean(), $args );
+        $this->output .= apply_filters( 'ddl_render_row_start', ob_get_clean(), $args, $row );
     }
 
-    function row_end_callback($tag = 'div') {
+    function row_end_callback( $row = null ) {
+        if( !$row ) return;
+
+        $tag = $row->get_tag();
+        $tag = $tag ? $tag : 'div';
         $mode = end( $this->current_row_mode );
         $output = '';
 
@@ -247,12 +266,12 @@ class WPDD_layout_render {
                 break;
         }
 
-        $this->output .= apply_filters('ddl_render_row_end', $output, $mode, $tag);
+        $this->output .= apply_filters('ddl_render_row_end', $output, $mode, $tag, $row);
 
         array_pop($this->current_row_mode);
     }
 
-    function cell_start_callback($cssClass, $width, $cssId = '', $tag = 'div', $cell = null) {
+    function cell_start_callback( $cssClass, $width, $cssId = '', $tag = 'div', $cell = null) {
 
         $this->output .= '<' . $tag . ' class="' . $this->get_class_name_for_width($width);
         if ($cssClass) {
@@ -271,14 +290,20 @@ class WPDD_layout_render {
         $this->output .= apply_filters('ddl-additional_cells_tag_attributes_render', '', $this, $cell);
 
         $this->output .= '>';
+
+        $this->output = apply_filters( 'ddl-cell_render_output_before_content', $this->output, $cell );
     }
 
     function get_class_name_for_width ($width) {
         return 'span' . (string)$width;
     }
 
-    function cell_end_callback($tag = 'div') {
+    function cell_end_callback($tag = 'div', $cell = null) {
+        
+        $this->output = apply_filters( 'ddl-cell_render_output_after_content', $this->output, $cell );
+        
         $this->output .= '</' . $tag . '>';
+        
         $this->offset = 0; //reset offset after the cell is rendered
     }
 
@@ -392,12 +417,27 @@ class WPDD_layout_preset_render extends WPDD_layout_render {
         return 'span-preset' . (string)$width;
     }
 
-    function row_start_callback( $cssClass, $layout_type = 'fixed', $cssId = '', $additionalCssClasses = '', $tag = 'div', $mode = 'normal') {
+    function row_start_callback( $row = null ) {
+
+        if( !$row ) return;
+
+        $layout_type = $row->get_layout_type();
+        $cssId = $row->get_css_id();
+        $additionalCssClasses = $row->get_additional_css_classes();
+        $tag = $row->get_tag();
+        $mode = $row->get_mode();
+
+        $layout_type = $layout_type ? $layout_type : 'fixed';
+        $cssId = $row->get_css_id() ? $cssId : '';
+        $additionalCssClasses = $additionalCssClasses ? $additionalCssClasses : '';
+        $tag = $tag ? $tag : 'div';
+        $mode = $mode ? $mode : 'normal';
+
         $row_count = $this->get_row_count();
         $additionalCssClasses .= ' row-count-' . $row_count;
         $this->offset = 0; // reset offset at the beginning of the row
 
-        $this->output .= '<' . $tag . ' class="row-fluid ' . $additionalCssClasses . '">';
+        $this->output .= '<' . $tag . ' class="row ' . $additionalCssClasses . '">';
 
     }
 
@@ -429,7 +469,21 @@ class WPDD_BootstrapTwo_render extends WPDD_layout_render
         return $offset_class;
     }
 
-    function row_start_callback( $cssClass, $layout_type = 'fixed', $cssId = '', $additionalCssClasses = '', $tag = 'div', $mode = 'normal') {
+    function row_start_callback( $row = null ) {
+        if( !$row ) return;
+
+        $layout_type = $row->get_layout_type();
+        $cssId = $row->get_css_id();
+        $additionalCssClasses = $row->get_additional_css_classes();
+        $tag = $row->get_tag();
+        $mode = $row->get_mode();
+
+        $layout_type = $layout_type ? $layout_type : 'fixed';
+        $cssId = $row->get_css_id() ? $cssId : '';
+        $additionalCssClasses = $additionalCssClasses ? $additionalCssClasses : '';
+        $tag = $tag ? $tag : 'div';
+        $mode = $mode ? $mode : 'normal';
+
         $this->offset = 0; // reset offset at the beginning of the row
 
         // if this is not a top level row then we should force full width.
@@ -507,8 +561,8 @@ class WPDD_BootstrapThree_render extends WPDD_layout_render
         $this->column_prefix = WPDDL_Framework::get_column_prefix();
     }
 
-    function row_start_callback( $cssClass, $layout_type = '', $cssId = '', $additionalCssClasses = '', $tag = 'div', $mode = 'normal') {
-        parent::row_start_callback($cssClass, '', $cssId, $additionalCssClasses, $tag, $mode);
+    function row_start_callback( $row = null ) {
+        parent::row_start_callback($row);
     }
 
     function get_class_name_for_width ($width) {

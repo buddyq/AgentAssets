@@ -11,19 +11,40 @@ final class Access_XML_Processor
     private static $add_CDATA=false;
     private static $root='access';
     private static $filename='';
-    
+
+	/*
+	 * @since 2.2
+	 * Get minimal role from array of roles
+	 * for compatibility with old versions
+	 */
+	private static function get_minimal_role( $roles ){
+		/*$map = wp_cache_get( 'wpcf_access_role_to_level_map_cache' );
+        if ( false === $map ) {
+            $map = Access_Helper::wpcf_access_role_to_level_map();
+            wp_cache_set( 'wpcf_access_role_to_level_map_cache', $map );
+        }*/
+        //str_replace('level_','',self::wpcf_access_role_to_level($settings_access[$post_type]['permissions'][$action]['role']))
+        $minimal_role = $minimal_level = '';
+        if ( isset($roles[0]) ){
+        	$minimal_role = $roles[0];
+        	$minimal_level = $level = str_replace( 'level_', '', Access_Helper::wpcf_access_role_to_level($roles[0]) );
+		}
+        for( $i=0; $i<count($roles); $i++ ){
+			$level = str_replace( 'level_', '', Access_Helper::wpcf_access_role_to_level($roles[$i]) );
+			if ( $level < $minimal_level ){
+				$minimal_level = $level;
+				$minimal_role = $roles[$i];
+			}
+		}
+		return $minimal_role;
+	}
+
     private static function arrayToXml($array, $depth, $parent)
     {
         global $wpdb;	
         $output = '';
-        
-        $child_key = false;
-		
-        if (isset($array['__key'])) {
-            $child_key = $array['__key'];
-            unset($array['__key']);
-        }
-		
+
+
         foreach ($array as $key => $value) 
         {
            	if ( $key == 'types' ){
@@ -79,7 +100,16 @@ final class Access_XML_Processor
 									$output .= str_repeat(' ', $depth * 12)."<permissions>\r\n";	
 									foreach ($types_value['permissions'] as $action => $role){
 										$output .= str_repeat(' ', $depth * 16)."<$action>\r\n";
-										$output .= str_repeat(' ', $depth * 20)."<role>". $role['role'] ."</role>\r\n";
+										//TODO
+										$output .= str_repeat(' ', $depth * 20)."<role>". self::get_minimal_role($role['roles']) ."</role>\r\n";
+										//Add roles
+										if ( isset( $role['roles'] ) ){
+											$output .= str_repeat(' ', $depth * 20)."<roles>\r\n";
+											foreach ($role['roles'] as $index => $value){
+												$output .= str_repeat(' ', $depth * 24)."<role>". $value ."</role>\r\n";
+											}
+											$output .= str_repeat(' ', $depth * 20)."</roles>\r\n";
+										}
 										if ( isset( $role['users'] ) ){
 											$output .= str_repeat(' ', $depth * 20)."<users>\r\n";
 											foreach ($role['users'] as $index => $value){
@@ -91,13 +121,7 @@ final class Access_XML_Processor
 									}
 									$output .= str_repeat(' ', $depth * 12)."</permissions>\r\n";	
 							}
-							if ( isset($types_value['__permissions']) && is_array($types_value['__permissions']) ){
-									$output .= str_repeat(' ', $depth * 12)."<default_permissions>\r\n";	
-									foreach ($types_value['__permissions'] as $action => $role){
-										$output .= str_repeat(' ', $depth * 16)."<$action>". $role['role'] ."</$action>\r\n";
-									}
-									$output .= str_repeat(' ', $depth * 12)."</default_permissions>\r\n";	
-							}
+
                             //Export custom groups
 							if ( strpos($types_key,'wpcf-custom-group-') === 0){
 								$posts = $wpdb->get_results( $wpdb->prepare( "SELECT posts.ID,posts.post_name from {$wpdb->posts} as posts,{$wpdb->postmeta} as postmeta WHERE postmeta.meta_key='_wpcf_access_group' AND postmeta.meta_value='%s' AND postmeta.post_id=posts.ID", $types_key ));
@@ -140,7 +164,14 @@ final class Access_XML_Processor
 									$output .= str_repeat(' ', $depth * 12)."<permissions>\r\n";	
 									foreach ($types_value['permissions'] as $action => $role){
 										$output .= str_repeat(' ', $depth * 16)."<$action>\r\n";
-										$output .= str_repeat(' ', $depth * 20)."<role>". $role['role'] ."</role>\r\n";
+										if ( isset( $role['roles'] ) ){
+											$output .= str_repeat(' ', $depth * 20)."<role>". self::get_minimal_role($role['roles']) ."</role>\r\n";
+											$output .= str_repeat(' ', $depth * 20)."<roles>\r\n";
+											foreach ($role['roles'] as $index => $value){
+												$output .= str_repeat(' ', $depth * 24)."<role>". $value ."</role>\r\n";
+											}
+											$output .= str_repeat(' ', $depth * 20)."</roles>\r\n";
+										}
 										if ( isset( $role['users'] ) ){
 											$output .= str_repeat(' ', $depth * 20)."<users>\r\n";
 											foreach ($role['users'] as $index => $value){
@@ -152,13 +183,7 @@ final class Access_XML_Processor
 									}
 									$output .= str_repeat(' ', $depth * 12)."</permissions>\r\n";	
 							}
-							if ( isset($types_value['__permissions']) && is_array($types_value['__permissions']) ){
-									$output .= str_repeat(' ', $depth * 12)."<default_permissions>\r\n";	
-									foreach ($types_value['__permissions'] as $action => $role){
-										$output .= str_repeat(' ', $depth * 16)."<$action>". $role['role'] ."</$action>\r\n";
-									}
-									$output .= str_repeat(' ', $depth * 12)."</default_permissions>\r\n";	
-							}
+
 							$output .= str_repeat(' ', $depth * 8)."</item>\r\n";	
 						}	
 				}
@@ -185,8 +210,16 @@ final class Access_XML_Processor
 											$cred_form = preg_replace("/create_posts_with_cred_|edit_other_posts_with_cred_|edit_own_posts_with_cred_/","",$action);
 											$output .= str_repeat(' ', $depth * 20)."<form_action>\r\n";
 											$output .= str_repeat(' ', $depth * 24)."<form_name>". $cred_form ."</form_name>\r\n";
-											$output .= str_repeat(' ', $depth * 24)."<form_role>". $role['role'] ."</form_role>\r\n";
 											$output .= str_repeat(' ', $depth * 24)."<form_value>". str_replace( $cred_form, '', $action) ."</form_value>\r\n";
+											//Add roles
+											if ( isset( $role['roles'] ) ){
+												$output .= str_repeat(' ', $depth * 24)."<form_role>". self::get_minimal_role($role['roles']) ."</form_role>\r\n";
+												$output .= str_repeat(' ', $depth * 24)."<form_roles>\r\n";
+												foreach ($role['roles'] as $index => $value){
+													$output .= str_repeat(' ', $depth * 28)."<role>". $value ."</role>\r\n";
+												}
+												$output .= str_repeat(' ', $depth * 24)."</form_roles>\r\n";
+											}
 											if ( isset( $role['users'] ) ){
 												$output .= str_repeat(' ', $depth * 24)."<form_users>\r\n";
 												foreach ($role['users'] as $index => $value){
@@ -198,7 +231,16 @@ final class Access_XML_Processor
 										}else{
 											$action = preg_replace("/".$group_name."/","",$action);
 											$output .= str_repeat(' ', $depth * 20)."<$action>\r\n";
-											$output .= str_repeat(' ', $depth * 24)."<role>". $role['role'] ."</role>\r\n";
+
+											//Add roles
+											if ( isset( $role['roles'] ) ){
+												$output .= str_repeat(' ', $depth * 24)."<role>". self::get_minimal_role($role['roles']) ."</role>\r\n";
+												$output .= str_repeat(' ', $depth * 24)."<roles>\r\n";
+												foreach ($role['roles'] as $index => $value){
+													$output .= str_repeat(' ', $depth * 28)."<role>". $value ."</role>\r\n";
+												}
+												$output .= str_repeat(' ', $depth * 24)."</roles>\r\n";
+											}
 											if ( isset( $role['users'] ) ){
 												$output .= str_repeat(' ', $depth * 24)."<form_users>\r\n";
 												foreach ($role['users'] as $index => $value){
@@ -211,23 +253,7 @@ final class Access_XML_Processor
 									}
 									$output .= str_repeat(' ', $depth * 16)."</permissions>\r\n";	
 							}
-							if ( isset($permissions['__permissions']) && is_array($permissions['__permissions']) ){
-									$output .= str_repeat(' ', $depth * 16)."<default_permissions>\r\n";	
-									foreach ($permissions['__permissions'] as $action => $role){
-										if ( strpos($action,'create_posts_with_cred_') === 0 || strpos($action,'edit_other_posts_with_cred_') === 0 || strpos($action,'edit_own_posts_with_cred_') === 0 ){
-											$cred_form = preg_replace("/create_posts_with_cred_/","",$action);
-											$output .= str_repeat(' ', $depth * 20)."<form_action>\r\n";
-											$output .= str_repeat(' ', $depth * 24)."<form_name>". $cred_form ."</form_name>\r\n";
-											$output .= str_repeat(' ', $depth * 24)."<form_role>". $role['role'] ."</form_role>\r\n";
-											$output .= str_repeat(' ', $depth * 24)."<form_value>". str_replace( $cred_form, '', $action) ."</form_value>\r\n";
-											$output .= str_repeat(' ', $depth * 20)."</form_action>\r\n";
-										}else{
-											$action = preg_replace("/".$group_name."/","",$action);
-											$output .= str_repeat(' ', $depth * 20)."<$action>". $role['role'] ."</$action>\r\n";
-										}
-									}
-									$output .= str_repeat(' ', $depth * 16)."</default_permissions>\r\n";	
-							}
+
 							$output .= str_repeat(' ', $depth * 12)."</item>\r\n";	
 						}	
 						$output .= str_repeat(' ', $depth * 8)."</$types_key>\r\n";	
@@ -253,26 +279,26 @@ final class Access_XML_Processor
 					if ( is_array($types_value) ){
 							$output .= str_repeat(' ', $depth * 8)."<item>\r\n";
 							$output .= str_repeat(' ', $depth * 12)."<item_name>". $types_key ."</item_name>\r\n";
-							$output .= str_repeat(' ', $depth * 12)."<item_title>". $types_value['name'] ."</item_title>\r\n";				
-							
+							$output .= str_repeat(' ', $depth * 12)."<item_title>". $types_value['name'] ."</item_title>\r\n";
+
 							if ( isset($types_value['capabilities']) && is_array($types_value['capabilities']) ){
-									$output .= str_repeat(' ', $depth * 12)."<capabilities>\r\n";	
+									$output .= str_repeat(' ', $depth * 12)."<capabilities>\r\n";
 									foreach ($types_value['capabilities'] as $cap => $val){
 										if ( !empty($cap) ){
                                             $output .= str_repeat(' ', $depth * 16)."<$cap>". $val ."</$cap>\r\n";
                                         }
 									}
-									$output .= str_repeat(' ', $depth * 12)."</capabilities>\r\n";	
+									$output .= str_repeat(' ', $depth * 12)."</capabilities>\r\n";
 							}
-							
-							$output .= str_repeat(' ', $depth * 8)."</item>\r\n";	
-						}	
+
+							$output .= str_repeat(' ', $depth * 8)."</item>\r\n";
+						}
 				}
-				$output .= str_repeat(' ', $depth * 4)."</access_custom_roles>\r\n";	
+				$output .= str_repeat(' ', $depth * 4)."</access_custom_roles>\r\n";
 			}//End Custom Roles
 			
         }
-       
+
         return $output;
     }
     
@@ -294,242 +320,8 @@ final class Access_XML_Processor
 		if ( !is_array($data) ){
 			return $data;	
 		}
+
 		foreach ($data as $data_key => $data_value){
-			//Types
-			if ( $data_key == 'types' && is_array($data_value['item']) && count($data_value['item']) > 0 ){
-				$new_settings['types'] = array();
-                if ( !isset($data_value['item'][0]) ){
-                    $temp = $data_value['item'];
-                    unset($data_value['item']);
-                    $data_value['item'][0] = $temp;
-                }
-				for ( $i=0, $lim = count($data_value['item']); $i<$lim; $i++){
-					$types_value = $data_value['item'][$i];
-					$key = $types_value['item_name'];
-					//Custom Errors
-					if ( $key == '_custom_read_errors' || $key == '_custom_read_errors_value' || 
-						$key == '_archive_custom_read_errors' || $key == '_archive_custom_read_errors_value' ){
-						$new_settings['types'][$key] = array();
-						if ( isset($types_value['post_types']['item']) && is_array($types_value['post_types']['item']) ){
-							for ( $j=0, $types_lim = count($types_value['post_types']['item']); $j<$types_lim; $j++){
-								if ( isset($types_value['post_types']['item'][$j]['item_name']) ){
-                                    $sup_key = $types_value['post_types']['item'][$j]['item_name'];
-                                    foreach ($types_value['post_types']['item'][$j] as $role => $action){
-                                        if ( $role != 'item_name' ){
-                                            $new_settings['types'][$key][$sup_key]['permissions']['read'][$role] = $action; 	
-                                        }	
-                                    }
-                                }
-							}
-						}	
-					}
-					//Post types and groups
-					else{
-						$new_settings['types'][$key] = array();
-						if ( isset( $types_value['item_mode'] ) ){
-							$new_settings['types'][$key]['mode'] =  $types_value['item_mode'];
-						}
-						if ( isset( $types_value['item_title'] ) ){
-							$new_settings['types'][$key]['title'] =  $types_value['item_title'];
-						}
-						if ( isset($types_value['permissions']) && is_array($types_value['permissions']) ){
-							$new_settings['types'][$key]['permissions'] = array();
-							foreach ($types_value['permissions'] as $action => $role){
-								$new_settings['types'][$key]['permissions'][$action]['role'] = $role['role'];
-								if ( isset($role['users']) ){
-									$new_settings['types'][$key]['permissions'][$action]['users'] = $role['users'];
-								}								
-							}	
-						}
-						if ( isset($types_value['default_permissions']) && is_array($types_value['default_permissions']) ){
-							$new_settings['types'][$key]['__permissions'] = array();
-							foreach ($types_value['default_permissions'] as $action => $role){
-								$new_settings['types'][$key]['__permissions'][$action]['role'] = $role;
-							}	
-						}
-						// Assign  custom groups to posts
-						if ( isset($types_value['group_posts']['item']) && is_array($types_value['group_posts']['item']) ){
-							for ( $j=0, $types_lim = count($types_value['group_posts']['item']); $j<$types_lim; $j++){
-								$post_id = $wpdb->get_var( $wpdb->prepare("SELECT ID FROM {$wpdb->posts} WHERE post_name = %s", $types_value['group_posts']['item'][$j]) );
-								if ( $post_id > 0 ){
-									update_post_meta($post_id, '_wpcf_access_group', $key);	
-								}
-							}
-						}
-                        
-                        if ( isset($types_value['group_post_type']) ){
-							$new_settings['types'][$key]['post_type'] = $types_value['group_post_type']['item'];
-                            //print_r($new_settings['types'][$key]);exit;
-						}
-                        
-                        if ( isset($types_value['group_languages']['item']) && is_array($types_value['group_languages']['item']) ){
-							for ( $j=0, $types_lim = count($types_value['group_languages']['item']); $j<$types_lim; $j++){
-								$new_settings['types'][$key]['languages'][$types_value['group_languages']['item'][$j]] = 1;
-							}
-						}                       
-                       
-					}//end post types		
-				}
-			}//end types
-			
-			//Taxonomies
-			if ( $data_key == 'taxonomies' && isset($data_value['item']) && is_array($data_value['item']) && count($data_value['item']) > 0 ){
-				$new_settings['taxonomies'] = array();
-				for ( $i=0, $lim = count($data_value['item']); $i<$lim; $i++){
-					if ( !isset($data_value['item'][$i]['item_name']) ){
-						continue;
-					}
-					$key = 	$data_value['item'][$i]['item_name'];
-					$new_settings['taxonomies'][$key] = array();
-					$new_settings['taxonomies'][$key]['mode'] = $data_value['item'][$i]['item_mode'];
-					if ( isset($data_value['item'][$i]['permissions']) && is_array($data_value['item'][$i]['permissions']) ){
-						$new_settings['taxonomies'][$key]['permissions'] = array();
-						foreach ($data_value['item'][$i]['permissions'] as $action => $role){
-							$new_settings['taxonomies'][$key]['permissions'][$action]['role'] = $role['role'];
-							if ( isset($role['users']) ){
-								$new_settings['taxonomies'][$key]['permissions'][$action]['users'] = $role['users'];
-							}								
-						}	
-					}
-					if ( isset($data_value['item'][$i]['default_permissions']) && is_array($data_value['item'][$i]['default_permissions']) ){
-						$new_settings['taxonomies'][$key]['__permissions'] = array();
-						foreach ($data_value['item'][$i]['default_permissions'] as $action => $role){
-							$new_settings['taxonomies'][$key]['__permissions'][$action]['role'] = $role;						
-						}	
-					}
-				}
-			}
-
-			//Fileds groups/cred forms
-			if ( $data_key == 'third_party' && is_array($data_value) ){
-				$new_settings['third_party'] = array();
-				foreach ($data_value as $group_type => $items){
-					//Usermeta groups	
-					if ( $group_type == '__USERMETA_FIELDS' && is_array($items) ){
-						if ( !isset($items['item'][0]) ){
-							$temp = $items['item'];
-							unset($items);
-							$items['item'][0] = $temp;
-						}
-						$new_settings['third_party'][$group_type] = array();
-						$items = $items['item'];
-						for ( $i=0, $lim = count($items); $i<$lim; $i++){
-							$key = $items[$i]['item_name'];
-							$group_name = '__USERMETA_FIELDS_GROUP_'.$items[$i]['item_name'];
-							$new_settings['third_party'][$group_type][$group_name] = array();
-							$new_settings['third_party'][$group_type][$group_name]['mode'] = $items[$i]['item_mode'];
-							if ( isset($items[$i]['permissions']) && is_array($items[$i]['permissions']) ){
-								$new_settings['third_party'][$group_type][$group_name]['permissions'] = array();
-								foreach ($items[$i]['permissions'] as $action => $role){
-									$new_settings['third_party'][$group_type][$group_name]['permissions'][$action.$key]['role'] = $role['role'];
-									if ( isset($role['form_users']) ){
-										$new_settings['third_party'][$group_type][$group_name]['permissions'][$action.$key]['users'] = $role['form_users']['users_item'];
-									}								
-								}	
-							}
-							if ( isset($items[$i]['default_permissions']) && is_array($items[$i]['default_permissions']) ){
-								$new_settings['third_party'][$group_type][$group_name]['__permissions'] = array();
-								foreach ($items[$i]['default_permissions'] as $action => $role){
-									$new_settings['third_party'][$group_type][$group_name]['__permissions'][$action.$key]['role'] = $role;																	
-								}	
-							}
-						}	
-					}
-					//Postmeta groups
-					if ( $group_type == '__FIELDS' && is_array($items) ){
-						if ( !isset($items['item'][0]) ){
-							$temp = $items['item'];
-							unset($items);
-							$items['item'][0] = $temp;
-						}
-						$new_settings['third_party'][$group_type] = array();
-						$items = $items['item'];
-						for ( $i=0, $lim = count($items); $i<$lim; $i++){
-							$key = $items[$i]['item_name'];
-							$group_name = '__FIELDS_GROUP_'.$items[$i]['item_name'];
-							$new_settings['third_party'][$group_type][$group_name] = array();
-							$new_settings['third_party'][$group_type][$group_name]['mode'] = $items[$i]['item_mode'];
-							if ( isset($items[$i]['permissions']) && is_array($items[$i]['permissions']) ){
-								$new_settings['third_party'][$group_type][$group_name]['permissions'] = array();
-								foreach ($items[$i]['permissions'] as $action => $role){
-									$new_settings['third_party'][$group_type][$group_name]['permissions'][$action.$key]['role'] = $role['role'];
-									if ( isset($role['form_users']) ){
-										$new_settings['third_party'][$group_type][$group_name]['permissions'][$action.$key]['users'] = $role['form_users']['users_item'];
-									}								
-								}	
-							}
-							if ( isset($items[$i]['default_permissions']) && is_array($items[$i]['default_permissions']) ){
-								$new_settings['third_party'][$group_type][$group_name]['__permissions'] = array();
-								foreach ($items[$i]['default_permissions'] as $action => $role){
-									$new_settings['third_party'][$group_type][$group_name]['__permissions'][$action.$key]['role'] = $role;																	
-								}	
-							}
-						}	
-					}
-					//Forms
-					if ( $group_type == '__CRED_CRED' && is_array($items) ){
-						
-						$key = $items['item']['item_name'];
-						
-						$new_settings['third_party'][$key] = array();
-						$new_settings['third_party']['__CRED_CRED'][$key] = array();
-						$new_settings['third_party'][$key]['mode'] = $items['item']['item_mode'];
-						$new_settings['third_party']['__CRED_CRED'][$key]['mode'] = $items['item']['item_mode'];
-						if ( isset($items['item']['permissions']) && is_array($items['item']['permissions']) ){
-							$new_settings['third_party'][$key]['permissions'] = array();
-							$new_settings['third_party']['__CRED_CRED'][$key]['permissions'] = array();
-							foreach ($items['item']['permissions'] as $action => $role){
-								if ( $action == 'form_action' ){
-									if ( !isset($role[0]) ){
-										$temp = $role;
-										unset($role);
-										$role[0] = $temp;
-									}
-									for ( $i=0, $lim = count($role); $i<$lim; $i++){
-										$new_settings['third_party'][$key]['permissions'][$role[$i]['form_value'].$role[$i]['form_name']]['role'] = $role[$i]['form_role'];
-										$new_settings['third_party']['__CRED_CRED'][$key]['permissions'][$role[$i]['form_value'].$role[$i]['form_name']]['role'] = $role[$i]['form_role'];
-										if ( isset($role[$i]['form_users']) ){
-											$new_settings['third_party'][$key]['permissions'][$role[$i]['form_value'].$role[$i]['form_name']]['users'] = $role[$i]['form_users']['users_item'];
-											$new_settings['third_party'][$key]['__CRED_CRED']['permissions'][$role[$i]['form_value'].$role[$i]['form_name']]['users'] = $role[$i]['form_users']['users_item'];
-										}		
-									}
-								}else{
-									$new_settings['third_party'][$key]['permissions'][$action]['role'] = $role['role'];
-									$new_settings['third_party']['__CRED_CRED'][$key]['permissions'][$action]['role'] = $role['role'];
-									if ( isset($role['form_users']) ){
-										$new_settings['third_party'][$key]['permissions'][$action]['users'] = $role['form_users']['users_item'];
-										$new_settings['third_party'][$key]['__CRED_CRED']['permissions'][$action]['users'] = $role['form_users']['users_item'];
-									}		
-								}	
-							}		
-						}
-						
-						if ( isset($items['item']['default_permissions']) && is_array($items['item']['default_permissions']) ){
-							$new_settings['third_party'][$key]['__permissions'] = array();
-							$new_settings['third_party']['__CRED_CRED'][$key]['__permissions'] = array();
-							foreach ($items['item']['default_permissions'] as $action => $role){
-								if ( $action == 'form_action' ){
-									if ( !isset($role[0]) ){
-										$temp = $role;
-										unset($role);
-										$role[0] = $temp;
-									}
-									for ( $i=0, $lim = count($role); $i<$lim; $i++){
-										$new_settings['third_party'][$key]['__permissions'][$role[$i]['form_value'].$role[$i]['form_name']]['role'] = $role[$i]['form_role'];										
-										$new_settings['third_party']['__CRED_CRED'][$key]['__permissions'][$role[$i]['form_value'].$role[$i]['form_name']]['role'] = $role[$i]['form_role'];
-									}
-								}else{
-									$new_settings['third_party'][$key]['__permissions'][$action]['role'] = $role;
-									$new_settings['third_party']['__CRED_CRED'][$key]['__permissions'][$action]['role'] = $role;		
-								}	
-							}		
-						}
-						
-						
-					}	
-				}	
-			}
-
 			//Custom roles
 			if ( $data_key == 'access_custom_roles' && isset($data_value['item']) && is_array($data_value['item']) && count($data_value['item']) > 0 ){
 				if ( !isset($data_value['item'][0]) ){
@@ -547,17 +339,354 @@ final class Access_XML_Processor
 						$new_settings['access_custom_roles'][$key]['capabilities'] = array();
 						foreach ($data_value['item'][$i]['capabilities'] as $action => $role){
 							$new_settings['access_custom_roles'][$key]['capabilities'][$action] = $role;
-						}	
+						}
 					}
 				}
 			}
-			
+		}
+
+
+		//Custom roles
+
+		if (isset($new_settings['access_custom_roles']) && !empty($new_settings['access_custom_roles']) )
+        {
+        	$model=TAccess_Loader::get('MODEL/Access');
+        	$data['access_custom_roles'] = $new_settings['access_custom_roles'];
+        	$access_roles = $model->getAccessRoles();
+			foreach ($data['access_custom_roles'] as $role => $role_info){
+				$role_name = '';
+				if ( isset($role_info['name']) ){
+					$role_name = $role_info['name'];
+				}
+				if ( isset($role_info['title'])){
+					$role_name = $role_info['title'];
+				}
+
+				if ( empty($role_name) ){
+					continue;
+				}
+				$capabilities = $role_info['capabilities'];
+				$success = add_role($role, $role_name, $capabilities);
+				if (!is_null($success))
+		        {
+		            $access_roles[$role]=array(
+		                'name'=> $role_name,
+		                'caps'=> $capabilities
+		            );
+		            $model->updateAccessRoles($access_roles);
+		        }
+			}
+			Access_Admin_Edit::toolset_access_order_wp_roles(true);
+		}
+
+		$new_settings = array();
+		foreach ($data as $data_key => $data_value){
+			//Types
+			if ( $data_key == 'types' && isset($data_value['item']) && is_array($data_value['item']) && count($data_value['item']) > 0 ){
+				$new_settings['types'] = array();
+                if ( !isset($data_value['item'][0]) ){
+                    $temp = $data_value['item'];
+                    unset($data_value['item']);
+                    $data_value['item'][0] = $temp;
+                }
+				for ( $i=0, $lim = count($data_value['item']); $i<$lim; $i++){
+					$types_value = $data_value['item'][$i];
+					$key = $types_value['item_name'];
+					//Custom Errors
+					if ( $key == '_custom_read_errors' || $key == '_custom_read_errors_value' ||
+						$key == '_archive_custom_read_errors' || $key == '_archive_custom_read_errors_value' ){
+						$new_settings['types'][$key] = array();
+						if ( isset($types_value['post_types']['item']) && is_array($types_value['post_types']['item']) ){
+							for ( $j=0, $types_lim = count($types_value['post_types']['item']); $j<$types_lim; $j++){
+								if ( isset($types_value['post_types']['item'][$j]['item_name']) ){
+                                    $sup_key = $types_value['post_types']['item'][$j]['item_name'];
+                                    foreach ($types_value['post_types']['item'][$j] as $role => $action){
+                                        if ( $role != 'item_name' ){
+                                            $new_settings['types'][$key][$sup_key]['permissions']['read'][$role] = $action;
+                                        }
+                                    }
+                                }
+							}
+						}
+					}
+					//Post types and groups
+					else{
+						$new_settings['types'][$key] = array();
+						if ( isset( $types_value['item_mode'] ) ){
+							$new_settings['types'][$key]['mode'] =  $types_value['item_mode'];
+						}
+						if ( isset( $types_value['item_title'] ) ){
+							$new_settings['types'][$key]['title'] =  $types_value['item_title'];
+						}
+						if ( isset($types_value['permissions']) && is_array($types_value['permissions']) ){
+							$new_settings['types'][$key]['permissions'] = array();
+							foreach ($types_value['permissions'] as $action => $role){
+								if ( isset($role['roles']['role']) ){
+									$new_settings['types'][$key]['permissions'][$action]['roles'] = $role['roles']['role'];
+									}else{
+									$new_settings['types'][$key]['permissions'][$action]['roles'] = Access_Helper::toolset_access_get_roles_by_minimal_role( $role['role'] );
+								}
+								if ( isset($role['users']) ){
+									$new_settings['types'][$key]['permissions'][$action]['users'] = $role['users'];
+								}
+							}
+						}
+
+						// Assign  custom groups to posts
+						if ( isset($types_value['group_posts']['item'])  ){
+							if ( !is_array($types_value['group_posts']['item']) ){
+								$types_value['group_posts']['item'] = array($types_value['group_posts']['item']);
+							}
+							if ( !isset($types_value['group_posts']['item'][0]) ){
+								$temp = $types_value['group_posts']['item'];
+								$types_value['group_posts']['item'] = '';
+								$types_value['group_posts']['item'][] = $temp;
+							}
+							for ( $j=0, $types_lim = count($types_value['group_posts']['item']); $j<$types_lim; $j++){
+								$post_id = $wpdb->get_var( $wpdb->prepare("SELECT ID FROM {$wpdb->posts} WHERE post_name = %s", $types_value['group_posts']['item'][$j]) );
+								if ( $post_id > 0 ){
+									update_post_meta($post_id, '_wpcf_access_group', $key);
+								}
+							}
+						}
+
+                        if ( isset($types_value['group_post_type']) ){
+							$new_settings['types'][$key]['post_type'] = $types_value['group_post_type']['item'];
+						}
+
+                        if ( isset($types_value['group_languages']['item'])  ){
+
+							if ( is_array($types_value['group_languages']['item']) ){
+								if ( !isset($types_value['group_languages']['item'][0]) ){
+									$temp = $types_value['group_languages']['item'];
+									$types_value['group_languages']['item'] = '';
+									$types_value['group_languages']['item'][] = $temp;
+								}
+								for ( $j=0, $types_lim = count($types_value['group_languages']['item']); $j<$types_lim; $j++){
+									$new_settings['types'][$key]['languages'][$types_value['group_languages']['item'][$j]] = 1;
+								}
+							}else{
+								$new_settings['types'][$key]['languages'][$types_value['group_languages']['item']] = 1;
+							}
+						}
+
+					}//end post types
+				}
+			}//end types
+
+			//Taxonomies
+			if ( $data_key == 'taxonomies' && isset($data_value['item']) && is_array($data_value['item']) && count($data_value['item']) > 0 ){
+				$new_settings['taxonomies'] = array();
+				if ( !isset($data_value['item'][0]) ){
+					$temp = $data_value['item'];
+					$data_value['item'] = '';
+					$data_value['item'][] = $temp;
+				}
+				for ( $i=0, $lim = count($data_value['item']); $i<$lim; $i++){
+					if ( !isset($data_value['item'][$i]['item_name']) ){
+						continue;
+					}
+					$key = 	$data_value['item'][$i]['item_name'];
+					$new_settings['taxonomies'][$key] = array();
+					$new_settings['taxonomies'][$key]['mode'] = $data_value['item'][$i]['item_mode'];
+					if ( isset($data_value['item'][$i]['permissions']) && is_array($data_value['item'][$i]['permissions']) ){
+						$new_settings['taxonomies'][$key]['permissions'] = array();
+						foreach ($data_value['item'][$i]['permissions'] as $action => $role){
+							if ( isset($role['roles']['role']) ){
+								$new_settings['taxonomies'][$key]['permissions'][$action]['roles'] = $role['roles']['role'];
+							}else{
+								$new_settings['taxonomies'][$key]['permissions'][$action]['roles'] = Access_Helper::toolset_access_get_roles_by_minimal_role( $role['role'] );
+							}
+							if ( isset($role['users']) ){
+								$new_settings['taxonomies'][$key]['permissions'][$action]['users'] = $role['users'];
+							}
+						}
+					}
+				}
+			}
+
+			//Fileds groups/cred forms
+			if ( $data_key == 'third_party' && is_array($data_value) ){
+				$new_settings['third_party'] = array();
+				foreach ($data_value as $group_type => $items){
+					//Usermeta groups
+					if ( $group_type == '__USERMETA_FIELDS' && is_array($items) ){
+						if ( !isset($items['item'][0]) ){
+							$temp = $items['item'];
+							unset($items);
+							$items['item'][0] = $temp;
+						}
+						$new_settings['third_party'][$group_type] = array();
+						$items = $items['item'];
+						for ( $i=0, $lim = count($items); $i<$lim; $i++){
+							$key = $items[$i]['item_name'];
+							$group_name = '__USERMETA_FIELDS_GROUP_'.$items[$i]['item_name'];
+							$new_settings['third_party'][$group_type][$group_name] = array();
+							$new_settings['third_party'][$group_type][$group_name]['mode'] = $items[$i]['item_mode'];
+							if ( isset($items[$i]['permissions']) && is_array($items[$i]['permissions']) ){
+								$new_settings['third_party'][$group_type][$group_name]['permissions'] = array();
+								foreach ($items[$i]['permissions'] as $action => $role){
+									if ( isset($role['roles']['role']) ){
+                                        $new_settings['third_party'][$group_type][$group_name]['permissions'][$action.$key]['roles'] = $role['roles']['role'];
+                                    }else{
+                                        $new_settings['third_party'][$group_type][$group_name]['permissions'][$action.$key]['roles'] =
+                                        Access_Helper::toolset_access_get_roles_by_minimal_role($role['role']);
+                                    }
+									if ( isset($role['form_users']) ){
+										$new_settings['third_party'][$group_type][$group_name]['permissions'][$action.$key]['users'] = $role['form_users']['users_item'];
+									}
+								}
+							}
+						}
+					}
+
+					//Postmeta groups
+					if ( $group_type == '__FIELDS' && is_array($items) ){
+						if ( !isset($items['item'][0]) ){
+							$temp = $items['item'];
+							unset($items);
+							$items['item'][0] = $temp;
+						}
+						$new_settings['third_party'][$group_type] = array();
+						$items = $items['item'];
+						for ( $i=0, $lim = count($items); $i<$lim; $i++){
+							$key = $items[$i]['item_name'];
+							$group_name = '__FIELDS_GROUP_'.$items[$i]['item_name'];
+							$new_settings['third_party'][$group_type][$group_name] = array();
+							$new_settings['third_party'][$group_type][$group_name]['mode'] = $items[$i]['item_mode'];
+							if ( isset($items[$i]['permissions']) && is_array($items[$i]['permissions']) ){
+								$new_settings['third_party'][$group_type][$group_name]['permissions'] = array();
+								foreach ($items[$i]['permissions'] as $action => $role){
+
+									if ( isset($role['roles']['role']) ){
+                                        $new_settings['third_party'][$group_type][$group_name]['permissions'][$action.$key]['roles'] = $role['roles']['role'];
+                                    }else{
+                                        $new_settings['third_party'][$group_type][$group_name]['permissions'][$action.$key]['roles'] =
+									    Access_Helper::toolset_access_get_roles_by_minimal_role($role['role']);
+                                    }
+									if ( isset($role['form_users']) ){
+										$new_settings['third_party'][$group_type][$group_name]['permissions'][$action.$key]['users'] = $role['form_users']['users_item'];
+									}
+								}
+							}
+						}
+					}
+
+					//Forms
+					if ( $group_type == '__CRED_CRED' && is_array($items) && isset($items['item']['item_name']) ){
+
+						$key = $items['item']['item_name'];
+
+						$new_settings['third_party']['__CRED_CRED'][$key] = array();
+						$new_settings['third_party']['__CRED_CRED'][$key]['mode'] = $items['item']['item_mode'];
+						if ( isset($items['item']['permissions']) && is_array($items['item']['permissions']) ){
+							$new_settings['third_party'][$key]['permissions'] = array();
+							$new_settings['third_party']['__CRED_CRED'][$key]['permissions'] = array();
+							foreach ($items['item']['permissions'] as $action => $role){
+								if ( $action == 'form_action' ){
+									if ( !isset($role[0]) ){
+										$temp = $role;
+										unset($role);
+										$role[0] = $temp;
+									}
+									for ( $i=0, $lim = count($role); $i<$lim; $i++){
+										if ( isset($role[$i]['form_roles']['roles']) ){
+                                            $new_settings['third_party']['__CRED_CRED'][$key]['permissions'][$role[$i]['form_value'].$role[$i]['form_name']]['roles'] = $role[$i]['form_roles']['role'];
+                                        }else{
+                                            $new_settings['third_party']['__CRED_CRED'][$key]['permissions'][$role[$i]['form_value'].$role[$i]['form_name']]['roles'] =
+                                            Access_Helper::toolset_access_get_roles_by_minimal_role( $role[$i]['form_role'] );
+                                        }
+										if ( isset($role[$i]['form_users']) ){
+											$new_settings['third_party'][$key]['permissions'][$role[$i]['form_value'].$role[$i]['form_name']]['users'] = $role[$i]['form_users']['users_item'];
+										}
+									}
+								}else{
+									if ( isset($role['roles']['role']) ){
+                                            $new_settings['third_party']['__CRED_CRED'][$key]['permissions'][$action]['roles'] = $role['roles']['role'];
+                                    }else{
+                                            $new_settings['third_party']['__CRED_CRED'][$key]['permissions'][$action]['roles'] =
+                                            Access_Helper::toolset_access_get_roles_by_minimal_role( $role['role'] );
+                                    }
+									if ( isset($role['form_users']) ){
+										$new_settings['third_party'][$key]['permissions'][$action]['users'] = $role['form_users']['users_item'];
+										$new_settings['third_party'][$key]['__CRED_CRED']['permissions'][$action]['users'] = $role['form_users']['users_item'];
+									}
+								}
+							}
+						}
+
+					}
+
+					if ( $group_type == '__CRED_CRED_USER' && is_array($items) ){
+
+						$key = $items['item']['item_name'];
+
+						$new_settings['third_party']['__CRED_CRED_USER'][$key] = array();
+						$new_settings['third_party']['__CRED_CRED_USER'][$key]['mode'] = $items['item']['item_mode'];
+						if ( isset($items['item']['permissions']) && is_array($items['item']['permissions']) ){
+							$new_settings['third_party']['__CRED_CRED_USER'][$key]['permissions'] = array();
+							foreach ($items['item']['permissions'] as $action => $role){
+								if ( $action == 'form_action' ){
+									if ( !isset($role[0]) ){
+										$temp = $role;
+										unset($role);
+										$role[0] = $temp;
+									}
+									for ( $i=0, $lim = count($role); $i<$lim; $i++){
+										if ( isset($role[$i]['form_roles']['roles']) ){
+                                            $new_settings['third_party']['__CRED_CRED_USER'][$key]['permissions'][$role[$i]['form_value'].$role[$i]['form_name']]['roles'] = $role[$i]['form_roles']['role'];
+                                        }else{
+                                            $new_settings['third_party']['__CRED_CRED_USER'][$key]['permissions'][$role[$i]['form_value'].$role[$i]['form_name']]['roles'] =
+                                            Access_Helper::toolset_access_get_roles_by_minimal_role( $role[$i]['form_role'] );
+                                        }
+										if ( isset($role[$i]['form_users']) ){
+											$new_settings['third_party'][$key]['__CRED_CRED_USER']['permissions'][$role[$i]['form_value'].$role[$i]['form_name']]['users'] = $role[$i]['form_users']['users_item'];
+										}
+									}
+								}else{
+									if ( isset($role['roles']['role']) ){
+                                            $new_settings['third_party']['__CRED_CRED_USER'][$key]['permissions'][$action]['roles'] = $role['roles']['role'];
+                                    }else{
+                                            $new_settings['third_party']['__CRED_CRED_USER'][$key]['permissions'][$action]['roles'] =
+                                            Access_Helper::toolset_access_get_roles_by_minimal_role( $role['role'] );
+                                    }
+									if ( isset($role['form_users']) ){
+										$new_settings['third_party'][$key]['__CRED_CRED_USER']['permissions'][$action]['users'] = $role['form_users']['users_item'];
+									}
+								}
+							}
+						}
+					}//End cred user form
+
+				}
+			}
+
+			if ( $data_key == 'access_custom_roles' && isset($data_value['item']) && is_array($data_value['item']) && count($data_value['item']) > 0 ){
+				if ( !isset($data_value['item'][0]) ){
+					$temp = $data_value['item'];
+					unset($data_value['item']);
+					$data_value['item'][0] = $temp;
+				}
+				$new_settings['access_custom_roles'] = array();
+				for ( $i=0, $lim = count($data_value['item']); $i<$lim; $i++){
+					$key = 	$data_value['item'][$i]['item_name'];
+					$new_settings['access_custom_roles'][$key] = array();
+					$new_settings['access_custom_roles'][$key]['name'] = $data_value['item'][$i]['item_name'];
+					$new_settings['access_custom_roles'][$key]['title'] = $data_value['item'][$i]['item_title'];
+					if ( isset($data_value['item'][$i]['capabilities']) && is_array($data_value['item'][$i]['capabilities']) ){
+						$new_settings['access_custom_roles'][$key]['capabilities'] = array();
+						foreach ($data_value['item'][$i]['capabilities'] as $action => $role){
+							$new_settings['access_custom_roles'][$key]['capabilities'][$action] = $role;
+						}
+					}
+				}
+			}
+
 			//Custom caps
 			if ( $data_key == 'access_custom_caps' && is_array($data_value) ){
 				$new_settings['access_custom_caps'] = $data_value;
 			}
 		}
-
         return $new_settings;
     }
 	
@@ -624,29 +753,9 @@ final class Access_XML_Processor
             {
                 case 'types':
                     $access_settings['types']=$model->getAccessTypes();
-                    /*if ($isTypesActive)
-                    {
-                        $types_settings = $model->getWpcfTypes();
-                        $access_settings['types_wpcf']=array();
-                        foreach ($types_settings as $typ=>$data)
-                        {
-                            if (isset($data['_wpcf_access_capabilities']))
-                                $access_settings['types_wpcf'][$typ]=$data['_wpcf_access_capabilities'];
-                        }
-                    }*/
                     break;
                 case 'taxonomies':
                     $access_settings['taxonomies']=$model->getAccessTaxonomies();
-                    /*if ($isTypesActive)
-                    {
-                        $taxonomies_settings = $model->getWpcfTaxonomies();
-                        $access_settings['taxonomies_wpcf']=array();
-                        foreach ($taxonomies_settings as $tax=>$data)
-                        {
-                            if (isset($data['_wpcf_access_capabilities']))
-                                $access_settings['taxonomies_wpcf'][$tax]=$data['_wpcf_access_capabilities'];
-                        }
-                    }*/
                     break;
                 case 'third_party':
                     $access_settings['third_party']=$model->getAccessThirdParty();
@@ -654,28 +763,11 @@ final class Access_XML_Processor
                 case 'all':
                     $access_settings['types']=$model->getAccessTypes();
                     $access_settings['taxonomies']=$model->getAccessTaxonomies();
-                    /*if ($isTypesActive)
-                    {
-                        $types_settings = $model->getWpcfTypes();
-                        $taxonomies_settings = $model->getWpcfTaxonomies();
-                        $access_settings['types_wpcf']=array();
-                        foreach ($types_settings as $typ=>$data)
-                        {
-                            if (isset($data['_wpcf_access_capabilities']))
-                                $access_settings['types_wpcf'][$typ]=$data['_wpcf_access_capabilities'];
-                        }
-                        $access_settings['taxonomies_wpcf']=array();
-                        foreach ($taxonomies_settings as $tax=>$data)
-                        {
-                            if (isset($data['_wpcf_access_capabilities']))
-                                $access_settings['taxonomies_wpcf'][$tax]=$data['_wpcf_access_capabilities'];
-                        }
-                    }*/
                     $access_settings['third_party']=$model->getAccessThirdParty();
                     break;
             }
         }
-        
+
         // apply some filters for 3rd-party custom capabilities
         if (isset($access_settings['third_party']) && !empty($access_settings['third_party']))
         {
@@ -818,7 +910,7 @@ final class Access_XML_Processor
                 fclose($fh);
             }
         }
-        
+
         if (!empty($data)) 
         {
 
@@ -837,13 +929,11 @@ final class Access_XML_Processor
             {
                 return new WP_Error('not_xml_file', sprintf(__('The XML file (%s) could not be read.','wpcf-access'), $file['name']));
             }
-			
+
             $import_data = self::toArray($xml);
-			
-			if ( isset($import_data['types']['item']) ){
-				//Import new files
-            	$import_data = self::ArraytoSettings($import_data);
-			}
+
+			$import_data = self::ArraytoSettings($import_data);
+
 			
             /*taccess_log($import_data);
             taccess_log(TAccess_loader::get('MODEL/Access')->getAccessTypes());
@@ -1070,7 +1160,7 @@ final class Access_XML_Processor
         }
         
         //taccess_log(array('Remove', $access_settings, $diff, $intersect));
-        
+
         // update settings
         $model->updateAccessTypes($access_settings['types']);
         $model->updateAccessTaxonomies($access_settings['taxonomies']);
@@ -1116,7 +1206,7 @@ final class Access_XML_Processor
         {
             return new WP_Error('xml_missing', __('The Simple XML library is missing.','wpcf-access'));
         }
-        
+
         $use_errors = libxml_use_internal_errors(true);
 		$xml = simplexml_load_string($xmlstring);
         libxml_clear_errors();

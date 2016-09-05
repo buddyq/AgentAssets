@@ -1,6 +1,6 @@
 <?php if (!defined('ABSPATH'))  die('Security check'); ?>
 <p class='cred-explain-text'>
-	<?php _e('These are texts that display for different form operations. If you are using WPML, you will be able to translate them via WPML->String Translation.', 'wp-cred'); ?>
+	<?php _e('These are texts that will be displayed for different form operations. If you are using WPML, you will be able to translate them via WPML->String Translation.', 'wp-cred'); ?>
 </p>
 <table class="cred-form-texts">
 <tbody>

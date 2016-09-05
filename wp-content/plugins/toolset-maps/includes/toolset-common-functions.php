@@ -9,8 +9,9 @@
 */
 
 class Toolset_Addon_Maps_Common {
-
-	const address_coordinates_option = 'toolset_maps_address_coordinates';
+	
+	const option_name					= 'wpv_addon_maps_options';
+	const address_coordinates_option	= 'toolset_maps_address_coordinates';
 	
 	static $used_map_ids		= array();
 	static $used_marker_ids		= array();
@@ -18,11 +19,32 @@ class Toolset_Addon_Maps_Common {
 	static $coordinates_set		= null;
 	static $coordinates_save	= false;
 	
+	static $stored_options		= array();
+	
 	static $maps_api_url_js			= null;
 	static $maps_api_url_geocode	= null;
 	
 	function __construct() {
-		add_action( 'init', array( $this, 'init' ), 5 );
+		
+		self::$stored_options = get_option( self::option_name, array() );
+		
+		add_action( 'init',				array( $this, 'init' ), 5 );
+		add_action( 'admin_init',		array( $this, 'admin_init' ) );
+		
+		add_filter( 'toolset_filter_toolset_maps_get_options',		array( $this, 'get_options' ) );
+		add_action( 'toolset_filter_toolset_maps_update_options',	array( $this, 'update_options' ) );
+		
+		add_filter( 'toolset_filter_toolset_maps_get_api_key',		array( $this, 'get_api_key' ) );
+		
+		/**
+		* toolset_is_maps_available
+		*
+		* Filter to check whether Toolset Maps is installed
+		*
+		* @since 1.2
+		*/
+
+		add_filter( 'toolset_is_maps_available', '__return_true' );
 		
 		if ( is_admin() ) {
 			$protocol = TOOLSET_ADDON_MAPS_PROTOCOL;
@@ -31,16 +53,58 @@ class Toolset_Addon_Maps_Common {
 		}
 		self::$maps_api_url_js	 	= $protocol . '://maps.googleapis.com/maps/api/js';
 		self::$maps_api_url_geocode = 'https://maps.googleapis.com/maps/api/geocode/json';
+		
+	}
+	
+	function get_options( $options = array() ) {
+		$stored_options = self::$stored_options;
+		self::$stored_options = wp_parse_args(
+			$stored_options,
+			array(
+				'marker_images'		=> array(),
+				'map_counter'		=> 0,
+				'marker_counter'	=> 0,
+				'api_key'			=> ''
+			)
+		);
+
+		return self::$stored_options;
+	}
+	
+	function set_options() {
+		update_option( self::option_name, self::$stored_options );
+	}
+	
+	function update_options( $options = array() ) {
+		$options = wp_parse_args(
+			$options,
+			array(
+				'marker_images'		=> array(),
+				'map_counter'		=> 0,
+				'marker_counter'	=> 0,
+				'api_key'			=> ''
+			)
+		);
+		self::$stored_options = $options;
+		$this->set_options();
+	}
+	
+	function get_api_key( $api_key = '' ) {
+		$saved_options = $this->get_options();
+		return $saved_options['api_key'];
 	}
 	
 	function init() {
 		
 		$this->register_assets();
-		add_action( 'wp_enqueue_scripts', array( $this, 'wp_enqueue_scripts' ), 20 );
+		add_action( 'wp_enqueue_scripts',		array( $this, 'wp_enqueue_scripts' ) );
+		add_action( 'toolset_enqueue_scripts',	array( $this, 'toolset_enqueue_scripts' ) );
+		add_action( 'admin_enqueue_scripts',	array( $this, 'admin_enqueue_scripts' ) );
 		
 		add_action( 'wp_footer', array( $this, 'css_fix' ) );
 		add_action( 'admin_footer', array( $this, 'css_fix' ) );
 		
+		add_filter( 'plugin_action_links', array( $this, 'plugin_action_links'), 10, 4 );
 		add_filter( 'plugin_row_meta', array( $this, 'plugin_row_meta' ), 10, 4 );
 		
 		add_action( 'wp_footer', array( $this, 'maybe_save_stored_coordinates_in_footer' ), 99 );
@@ -55,6 +119,129 @@ class Toolset_Addon_Maps_Common {
 		add_action( 'added_user_meta', array( $this, 'maybe_save_stored_coordinates_in_footer' ), 99 );
 		add_action( 'updated_user_meta', array( $this, 'maybe_save_stored_coordinates_in_footer' ), 99 );
 		//add_action( 'deleted_user_meta', array( $this, 'maybe_save_stored_coordinates_in_footer' ), 99 );
+		
+	}
+	
+	function admin_init() {
+		
+		// Admin notices
+		add_action( 'admin_notices',											array( $this, 'display_admin_notices' ) );
+		
+		// Register the Map section
+		add_filter( 'toolset_filter_toolset_register_settings_section',			array( $this, 'register_settings_maps_section' ), 60 );
+		
+		// Register the Google Maps API key section
+		add_filter( 'toolset_filter_toolset_register_settings_maps_section',	array( $this, 'toolset_maps_api_key_options' ) );
+		add_action( 'wp_ajax_wpv_addon_maps_update_api_key',					array( $this, 'toolset_maps_update_api_key' ) );
+		
+	}
+	
+	function display_admin_notices() {
+		global $pagenow;
+		if ( 
+			current_user_can( 'activate_plugins' ) 
+			&& $pagenow == 'plugins.php'
+		) {
+			$maps_api_key = $this->get_api_key();
+			if ( empty( $maps_api_key ) ) {
+				$analytics_strings = array(
+					'utm_source'	=> 'toolsetmapsplugin',
+					'utm_campaign'	=> 'toolsetmaps',
+					'utm_medium'	=> 'views-integration-settings-for-api-key',
+					'utm_term'		=> 'our documentation'
+				);
+				$toolset_maps_settings_link = Toolset_Addon_Maps_Common::get_settings_link();
+				?>
+				<div class="message notice notice-warning">
+				<p>
+					<i class="icon-toolset-map-logo ont-color-orange ont-icon-24" style="margin-right:5px;vertical-align:-2px;"></i>
+					<?php 
+					echo sprintf(
+						__( '<strong>You need a Google Maps API key</strong> to use Toolset Maps. Find more information in %1$sour documentation%2$s or visit the %3$sToolset Maps settings page%4$s.', 'toolset-maps' ),
+						'<a href="' . Toolset_Addon_Maps_Common::get_documentation_promotional_link( array( 'query' => $analytics_strings, 'anchor' => 'api-key' ), 'https://wp-types.com/documentation/user-guides/display-on-google-maps/' ) . '" target="_blank">',
+						'</a>',
+						'<a href="' . $toolset_maps_settings_link . '">',
+						'</a>'
+					);
+					?>
+				</p>
+				</div>
+				<?php
+			}
+		}
+	}
+	
+	function register_settings_maps_section( $sections ) {
+		if ( isset( $sections['maps'] ) ) {
+			return $sections;
+		}
+		$sections['maps'] = array(
+			'slug'	=> 'maps',
+			'title'	=> __( 'Maps', 'wpv-views' )
+		);
+		return $sections;
+	}
+	
+	function toolset_maps_api_key_options( $sections ) {
+		$saved_options = $this->get_options();
+		ob_start();
+		$this->wpv_addon_maps_render_api_key_options( $saved_options );
+		$section_content = ob_get_clean();
+			
+		$sections['maps-api-key'] = array(
+			'slug'		=> 'maps-api-key',
+			'title'		=> __( 'Google Map API key', 'toolset-maps' ),
+			'content'	=> $section_content
+		);
+		return $sections;
+	}
+	
+	function wpv_addon_maps_render_api_key_options( $saved_options ) {
+		?>
+		<p>
+			<?php _e( "Set your Google Maps API key.", 'toolset-maps' ); ?>
+		</p>
+		<div class="js-wpv-map-plugin-form">
+			<p>
+				<input id="js-wpv-map-api-key" type="text" name="wpv-map-api-key" class="regular-text js-wpv-map-api-key" value="<?php echo esc_attr( $saved_options['api_key'] ); ?>" autocomplete="off" placeholder="<?php echo esc_attr( __( 'Google Maps API key', 'toolset-maps' ) ); ?>" />
+			</p>
+			<p>
+				<?php
+				echo sprintf( 
+					__( 'A Google Maps API key is <strong>required</strong> to use Toolset Maps. You will need to create a <a href="%1$s" target="_blank">project in the Developers console</a>, then create an API key and enable it for some specific API services.', 'toolset-maps' ),
+					'https://console.developers.google.com'
+				);
+				?>
+			</p>
+			<p>
+				<?php 
+				$analytics_strings = array(
+					'utm_source'	=> 'toolsetmapsplugin',
+					'utm_campaign'	=> 'toolsetmaps',
+					'utm_medium'	=> 'views-integration-settings-for-api-key',
+					'utm_term'		=> 'our documentation'
+				);
+				echo sprintf(
+					__( 'You can find more information in %1$sour documentation%2$s.', 'toolset-maps' ),
+					'<a href="' . Toolset_Addon_Maps_Common::get_documentation_promotional_link( array( 'query' => $analytics_strings, 'anchor' => 'api-key' ), 'https://wp-types.com/documentation/user-guides/display-on-google-maps/' ) . '" target="_blank">',
+					'</a>'
+				);
+				?>
+			</p>
+		</div>
+		<?php
+	}
+	
+	function toolset_maps_update_api_key() {
+		wpv_ajax_authenticate( 'toolset_views_addon_maps_global', array( 'parameter_source' => 'post', 'type_of_death' => 'data' ) );
+		if ( ! isset( $_POST['api_key'] ) ) {
+			$_POST['api_key'] = '';
+		}
+		$saved_options = $this->get_options();
+		$saved_options['api_key'] = sanitize_text_field( $_POST['api_key'] );
+		self::$stored_options = $saved_options;
+		$this->set_options();
+		wp_send_json_success();
 	}
 	
 	/**
@@ -221,6 +408,15 @@ class Toolset_Addon_Maps_Common {
 		<?php
 	}
 	
+	function plugin_action_links( $actions, $plugin_file, $plugin_data, $context ) {
+		$this_plugin = basename( TOOLSET_ADDON_MAPS_PATH ) . '/toolset-maps-loader.php';
+		if ( $plugin_file == $this_plugin ) {
+			$toolset_maps_settings_link = Toolset_Addon_Maps_Common::get_settings_link();
+			$actions['settings'] = '<a href="' . $toolset_maps_settings_link . '">' . __( 'Settings', 'toolset-maps' ) . '</a>';
+		}
+		return $actions;
+	}
+	
 	function plugin_row_meta( $plugin_meta, $plugin_file, $plugin_data, $status ) {
 		$this_plugin = basename( TOOLSET_ADDON_MAPS_PATH ) . '/toolset-maps-loader.php';
 		if ( $plugin_file == $this_plugin ) {
@@ -229,14 +425,14 @@ class Toolset_Addon_Maps_Common {
 					'utm_source'	=> 'mapsplugin',
 					'utm_campaign'	=> 'maps',
 					'utm_medium'	=> 'release-notes-plugin-row',
-					'utm_term'		=> 'Toolset Maps 1.1.1 release notes'
+					'utm_term'		=> 'Toolset Maps 1.2 release notes'
 				)
 			);
-			$plugin_link = self::get_documentation_promotional_link( $promo_args, 'https://wp-types.com/version/maps-1-1-1/' );
+			$plugin_link = self::get_documentation_promotional_link( $promo_args, 'https://wp-types.com/version/maps-1-2/' );
 			$plugin_meta[] = sprintf(
 					'<a href="%1$s" target="_blank">%2$s</a>',
 					$plugin_link,
-					__( 'Toolset Maps 1.1.1 release notes', 'wpv-views' ) 
+					__( 'Toolset Maps 1.2 release notes', 'toolset-maps' ) 
 				);
 		}
 		return $plugin_meta;
@@ -258,9 +454,9 @@ class Toolset_Addon_Maps_Common {
             'libraries'	=> 'places',
 		);
 		
-		$api_key = apply_filters( 'toolset_filter_toolset_maps_get_api_key', '' );
-		if ( ! empty( $api_key ) ) {
-			$args['key'] = esc_attr( $api_key );
+		$maps_api_key = $this->get_api_key();
+		if ( ! empty( $maps_api_key ) ) {
+			$args['key'] = esc_attr( $maps_api_key );
 		}
 		
 		$maps_api_js_url = add_query_arg( $args, $maps_api_js_url );
@@ -321,9 +517,29 @@ class Toolset_Addon_Maps_Common {
             )
         );
 		
+		wp_register_script( 'views-addon-maps-settings-script', TOOLSET_ADDON_MAPS_URL . '/resources/js/wpv_addon_maps_settings.js', array( 'jquery', 'underscore', 'quicktags', 'icl_media-manager-js' ), TOOLSET_ADDON_MAPS_VERSION, true );
+		$wpv_addon_maps_settings_localization = array(
+			'nonce'					=> wp_create_nonce( 'toolset_views_addon_maps_settings' ),
+			'global_nonce'			=> wp_create_nonce( 'toolset_views_addon_maps_global' ),
+			'setting_saved'			=> __( 'Settings saved', 'toolset-maps' )
+		);
+		wp_localize_script( 'views-addon-maps-settings-script', 'wpv_addon_maps_settings_local', $wpv_addon_maps_settings_localization );
+		
 	}
 	
 	function wp_enqueue_scripts() {
+		
+	}
+	
+	function toolset_enqueue_scripts( $page ) {
+		if ( $page == 'toolset-settings' ) {
+			wp_enqueue_style( 'wp-color-picker' );
+			wp_enqueue_media();
+			wp_enqueue_script( 'views-addon-maps-settings-script' );
+		}
+	}
+	
+	function admin_enqueue_scripts( $hook ) {
 		
 	}
 	
@@ -391,9 +607,9 @@ class Toolset_Addon_Maps_Common {
 
 				$args = array( 'address' => urlencode( $address ), 'sensor' => 'false' );
 				
-				$api_key = apply_filters( 'toolset_filter_toolset_maps_get_api_key', '' );
-				if ( ! empty( $api_key ) ) {
-					$args['key'] = esc_attr( $api_key );
+				$maps_api_key = apply_filters( 'toolset_filter_toolset_maps_get_api_key', '' );
+				if ( ! empty( $maps_api_key ) ) {
+					$args['key'] = esc_attr( $maps_api_key );
 				}
 				
 				$maps_api_url_geocode = self::$maps_api_url_geocode;
@@ -509,6 +725,10 @@ class Toolset_Addon_Maps_Common {
 			'draggable'					=> 'on',
 			'scrollwheel'				=> 'on',
 			'double_click_zoom'			=> 'on',
+			'map_type_control'			=> 'on',
+			'full_screen_control'		=> 'off',
+			'zoom_control'				=> 'on',
+			'street_view_control'		=> 'on',
 			'background_color'			=> '',
 			'cluster'					=> 'off',
 			'cluster_grid_size'			=> 60,
@@ -547,6 +767,10 @@ class Toolset_Addon_Maps_Common {
 		$return .= ' data-draggable="' . esc_attr( $map_data['draggable'] ) . '"';
 		$return .= ' data-scrollwheel="' . esc_attr( $map_data['scrollwheel'] ) . '"';
 		$return .= ' data-doubleclickzoom="' . esc_attr( $map_data['double_click_zoom'] ) . '"';
+		$return .= ' data-maptypecontrol="' . esc_attr( $map_data['map_type_control'] ) . '"';
+		$return .= ' data-fullscreencontrol="' . esc_attr( $map_data['full_screen_control'] ) . '"';
+		$return .= ' data-zoomcontrol="' . esc_attr( $map_data['zoom_control'] ) . '"';
+		$return .= ' data-streetviewcontrol="' . esc_attr( $map_data['street_view_control'] ) . '"';
 		$return .= ' data-backgroundcolor="' . esc_attr( $map_data['background_color'] ) . '"';
 		$return .= ' data-cluster="' . esc_attr( $map_data['cluster'] ) . '"';
 		$return .= ' data-clustergridsize="' . esc_attr( $map_data['cluster_grid_size'] ) . '"';
@@ -644,6 +868,12 @@ class Toolset_Addon_Maps_Common {
 			$url .= '#' . esc_attr( $args['anchor'] );
 		}
 		return $url;
+	}
+	
+	static function get_settings_link() {
+		$toolset_maps_settings_link = admin_url( 'admin.php?page=toolset-settings&tab=maps' );
+		$toolset_maps_settings_link = apply_filters( 'toolset_filter_toolset_maps_settings_link', $toolset_maps_settings_link );
+		return $toolset_maps_settings_link;
 	}
 	
 	/**

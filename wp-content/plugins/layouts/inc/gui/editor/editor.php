@@ -119,9 +119,7 @@ class WPDD_GUI_EDITOR{
 
     function load_dialog_boxes(){
         $dialogs = array();
-        $dialogs[] = new WPDDL_EditorDialog( array( 'toolset_page_dd_layouts_edit' ) );
-        $dialogs[] = new WPDDL_DeleteAlertDialog( array( 'toolset_page_dd_layouts_edit' ) );
-        //$dialogs->init_screen_render();
+        $dialogs[] = new WPDDL_EditorDialogs( array( 'toolset_page_dd_layouts_edit' ) );
         foreach( $dialogs as &$dialog ){
             add_action('current_screen', array(&$dialog, 'init_screen_render') );
         }
@@ -237,9 +235,9 @@ class WPDD_GUI_EDITOR{
 		$associations = $this->get_where_used_lists( $layout_id );
 
 		$loops = is_object($associations) && property_exists($associations, 'loops') ? $associations->loops : false;
-		$types = is_object($associations) && property_exists($associations, 'types') ? $associations->post_types : false;
+		$types = is_object($associations) && property_exists($associations, 'post_types') ? $associations->post_types : false;
 		$posts = is_object($associations) && property_exists($associations, 'posts') ? $associations->posts : false;
-
+        
 		if( $loops && count($loops) > 0 )
 		{
 			$loops_manager = $wpddlayout->layout_post_loop_cell_manager;
@@ -255,7 +253,6 @@ class WPDD_GUI_EDITOR{
 
 		if( ( $posts && count($posts) > 0 ) || ( $types && count($types) > 0 ) )
 		{
-
 			$wpddlayout->post_types_manager->purge_layout_post_type_data( $layout_id );
 		}
 
@@ -714,7 +711,7 @@ class WPDD_GUI_EDITOR{
 				'only_img_allowed_here' => __( "You can only use an image file here", 'ddl-layouts' )
 			)
 		);
-
+        
 		$wpddlayout->localize_script('ddl-editor-main', 'DDLayout_settings', array(
 				'DDL_JS' => array(
 					'available_cell_types' => $wpddlayout->get_cell_types(),
@@ -759,7 +756,9 @@ class WPDD_GUI_EDITOR{
 					, 'layout_trash_nonce' => wp_create_nonce('layout-select-trash-nonce')
                     , 'trash_redirect' => isset($_GET['ref']) && $_GET['ref'] === 'dashboard' ? admin_url( 'admin.php?page=toolset-dashboard' ) : admin_url( 'admin.php?page=dd_layouts' )
 				    , 'is_layout_assigned' => apply_filters( 'ddl-is_layout_assigned', false, $this->layout_id )
-                ),
+                    , 'container_elements' => apply_filters('ddl-containers_elements', array())
+					, 'wpml_is_active' => defined( 'WPML_TM_VERSION' )
+				),
                 'DDL_OPN' => WPDD_LayoutsListing::change_layout_dialog_options_name()
 			)
 		);
@@ -936,7 +935,7 @@ class WPDD_GUI_EDITOR{
 			'no_more_posts_in_db' => __("No post items found.", 'ddl-layouts'),
 			'new_ct_message_title' => __("Content Template", 'ddl-layouts'),
 			'new_ct_message' => __("Insert fields to display parts of the content and add HTML around them for styling.", 'ddl-layouts'),
-			'views_plugin_missing' => __("Sorry, preview is not available. Please make sure that the Toolset Views plugin is active.", 'ddl-layouts'),
+			'views_plugin_missing' => apply_filters( 'toolset_is_views_available', false ) === false ? __("Sorry, preview is not available. Please make sure that the Toolset Views plugin is active.", 'ddl-layouts') : __("Sorry, preview is not available. This View may have been deleted.", 'ddl-layouts'),
 			'this_is_a_parent_layout' => __('This layout has children. You should assign one of its children to content and not this parent layout.', 'ddl-layouts'),
             'switch_editor_warning_message' => __('You are about to switch editing modes. Please note that this may change the content of the cell. Are you sure?', 'ddl-layouts'),
 		    'content_template_should_have_name' => __('A Content Template should have a name please provide one.', 'ddl-layouts'),
@@ -957,6 +956,14 @@ class WPDD_GUI_EDITOR{
 			, 'layout_assigned' => __(' is an assigned layout!', 'ddl-layouts')
             , 'layout_assigned_text' => __(' is assigned to render Wordpress resources in front-end and cannot be deleted. To delete it remove assignments first and try again.', 'ddl-layouts')
             , 'close' => __('Close', 'ddl-layouts')
+            , 'forbidden_paste' => __('Sorry, but you cannot paste this row here', 'ddl-layouts')
+            , 'contains_child' => __('Now, create a child layout', 'ddl-layouts')
+            , 'skip' => __('Skip (Choose later)', 'ddl-layouts')
+            , 'create_child' => __('Edit the cell and create a child layout ', 'ddl-layouts'),
+            'dismiss_button' => __('Cancel', 'ddl-layouts'),
+            'unassign_layout_and_create_child_button' => __('Proceed and remove assignments', 'ddl-layouts'),
+            'remove_assignments' => __('Parent layout assignments', 'ddl-layouts'),
+            'remove_assignments_button' => __('Remove all assignments', 'ddl-layouts'),
         );
 	}
 
@@ -1384,11 +1391,11 @@ class WPDD_GUI_EDITOR{
 	}
 }
 
-class WPDDL_EditorDialog extends Toolset_DialogBoxes{
+class WPDDL_EditorDialogs extends Toolset_DialogBoxes{
 
     public function template(){
         ob_start();?>
-
+        <!-- PREVIEW -->
         <script type="text/html" id="ddl-generic-dialog-tpl">
             <div id="js-dialog-dialog-container">
                 <div class="ddl-dialog-content" id="js-dialog-content-dialog">
@@ -1397,7 +1404,7 @@ class WPDDL_EditorDialog extends Toolset_DialogBoxes{
                         '<p>',
                         '<br><a href="https://wp-types.com/documentation/user-guides/enable-pop-ups-browser/?utm_source=layoutsplugin&utm_campaign=layouts&utm_medium=enable-pop-ups-browser&utm_term=help-link" title="enable popups" target="_blank">',
                         '</a></p>'
-                        );
+                    );
                     ?>
                     <p>
                         <label for="disable-popup-message"><input type="checkbox" name="<?php echo WPDD_GUI_EDITOR::POPUP_MESSAGE_OPTION; ?>" value="true" id="disable-popup-message"> <?php _e('Don\'t show this message again', 'ddl-layouts'); ?></label>
@@ -1405,26 +1412,73 @@ class WPDDL_EditorDialog extends Toolset_DialogBoxes{
                 </div>
             </div>
         </script>
-        <?php
-        echo ob_get_clean();
-    }
-}
 
-class WPDDL_DeleteAlertDialog extends Toolset_DialogBoxes{
+        <!-- CHILD LAYOUT -->
+        <script type="text/html" id="ddl-paste-child-layout-dialog-tpl">
+            <div id="js-dialog-dialog-container">
+                <div class="ddl-dialog-content" id="js-dialog-content-dialog">
+                    <span class="dialog-alert"><i class="fa fa-exclamation-triangle" aria-hidden="true"></i></span>
+                    <span class="dialog-content"><?php printf(
+                            __('You just added a child layout cell to %s%s%s layout. Now, you need to create the layout that will appear inside this cell.
+.', 'ddl-layouts'), '<strong>', '{{{layout_name}}}', '</strong>');
+                        ?></span>
+                </div>
+            </div>
+        </script>
 
-    public function template(){
-        ob_start();?>
+        <!-- PASTE FAILS NOT COMPATIBLE -->
+        <script type="text/html" id="ddl-paste-special-dialog-tpl">
+            <# if( kind === 'Panel'){kind = 'Accordion';}#>
+                <div id="js-dialog-dialog-container">
+                    <div class="ddl-dialog-content" id="js-dialog-content-dialog">
+                        <span class="dialog-alert"><i class="fa fa-exclamation-triangle" aria-hidden="true"></i></span>
+                        <span class="dialog-content"><?php printf(
+                                __('The element you want to paste has to be copied in a %s%s%s structure, it is not compatible here.', 'ddl-layouts'), '<strong>', '{{{kind}}}', '</strong>');
+                            ?></span>
+                    </div>
+                </div>
+        </script>
 
+        <!-- PASTE FAILS MULTIPLE NOT ALLOWED  -->
+        <script type="text/html" id="ddl-paste-cell-forbidden-dialog-tpl">
+            <div id="js-dialog-dialog-container">
+                <div class="ddl-dialog-content" id="js-dialog-content-dialog">
+                    <span class="dialog-alert"><i class="fa fa-exclamation-triangle" aria-hidden="true"></i></span>
+                    <span class="dialog-content"><?php printf(
+                            __('Do you really need another %s%s%s cell in %s%s%s layout? This cell can appear only once in each layout, so you cannot paste the selected row into this layout. If you select a different row, that doesn’t include this kind of cell, you will be able to paste it.', 'ddl-layouts'), '<strong>', '{{{forbidden_type}}}', '</strong>', '<strong>', '{{{layout_name}}}', '</strong>');
+                        ?></span>
+                </div>
+            </div>
+        </script>
+
+        <!-- ASSIGN  -->
         <script type="text/html" id="ddl-delete-layout-dialog-tpl">
             <div id="js-dialog-dialog-container">
                 <div class="ddl-dialog-content" id="js-dialog-content-dialog">
-                    <?php printf(
-                        __('%s is assigned to render Wordpress resources in front-end and cannot be deleted. To delete it remove assignments first and try again.', 'ddl-layouts'), '{{{layout_name}}}');
+                    <span class="dialog-alert"><i class="fa fa-exclamation-triangle" aria-hidden="true"></i></span>
+                    <span class="dialog-content"><?php printf(
+                            __('%s is assigned to render Wordpress resources in front-end and cannot be deleted. To delete it remove assignments first and try again.', 'ddl-layouts'), '{{{layout_name}}}');
+                        ?></span>
+                </div>
+            </div>
+        </script>
+
+
+        <script type="text/html" id="ddl-remove-assigments-dialog-tpl">
+            <div id="js-dialog-dialog-container">
+                <div class="ddl-dialog-content" id="js-dialog-content-dialog">
+                    <span class="dialog-alert-child-cell"><i class="fa fa-exclamation-triangle" aria-hidden="true"></i></span>
+                    <span class="dialog-content">
+                        <?php printf(
+                        __('Putting Child Layout cell will make this Layout a parent layout. %s Parent layouts cannot be assigned to any content. %s %s Do you want to remove content assignment of this layout?%s', 'ddl-layouts'),'<br>','<br><br>','<strong>','</strong>');
                     ?>
+                    </span>
+                    
                 </div>
             </div>
         </script>
         <?php
+        wp_nonce_field('ddl_remove_all_layout_association_nonce', 'ddl_remove_all_layout_association_nonce');
         echo ob_get_clean();
     }
 }

@@ -64,7 +64,10 @@ DDLayout.layouts_cred_support = function($)
 	};
 
     self.save_form = function () {
-        $('#cred-submit').click();
+        //$('#cred-submit').click();
+       // var $button = $('#publishing-action').find('input[type="submit"]')
+        //$button.click();
+        $('form[name="post"]').submit();
     }
 	
 	self.get_css_settings = function () {

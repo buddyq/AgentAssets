@@ -129,11 +129,14 @@
                                         <span><?php _e('Edit another user', 'wp-cred'); ?></span></label>
                                     <div id='cred-edit-other-user-more' style='display:inline-block'>
                                         <div style='display:inline-block' class='cred_ajax_loader_small' id='cred-form-addtional-loader'></div>
-                                        <select id="cred-edit-user-select" name="cred-edit-user-select">
-                                            <optgroup label="<?php echo esc_attr(__('Select user', 'wp-cred')); ?>">
-                                                <option value='' disabled selected style='display:none;'><?php _e('Select user', 'wp-cred'); ?></option>
-                                            </optgroup>
-                                        </select>
+                                        <?php if (false) : ?>
+                                            <select id="cred-edit-user-select" name="cred-edit-user-select">
+                                                <optgroup label="<?php echo esc_attr(__('Select user', 'wp-cred')); ?>">
+                                                    <option value='' disabled selected style='display:none;'><?php _e('Select user', 'wp-cred'); ?></option>
+                                                </optgroup>
+                                            </select>
+                                        <?php endif; ?>
+                                        <input  type='text' id='cred-edit-user-select' name='cred-edit-user-select' value='' placeholder="<?php echo esc_attr(__('Type some characters..', 'wp-cred')); ?>" />
                                     </div>
                                 </td>
                             </tr>
@@ -444,6 +447,7 @@
                     <tr>
                         <td>
                             <label for="cred_form-edit-shortcode-select"><?php _e('Select post form', 'wp-cred'); ?></label>
+
                             <select style='position:relative;' id="cred_form-edit-shortcode-select" name="cred_form-edit-shortcode-select">
                                 <optgroup label="<?php echo esc_attr(__('Select post form', 'wp-cred')); ?>">
                                     <option value='' disabled selected style='display:none;'><?php _e('Select post form', 'wp-cred'); ?></option>
@@ -457,6 +461,8 @@
                                     ?>
                                 </optgroup>
                             </select>
+
+
                             <a class='cred-help-link' href='<?php echo $help['content_edit_shortcode_settings']['link']; ?>' target='<?php echo $help_target; ?>' title="<?php echo esc_attr($help['content_edit_shortcode_settings']['text']); ?>">
                                 <i class="icon-question-sign"></i>
                                 <span><?php echo $help['content_edit_shortcode_settings']['text']; ?></span>
@@ -482,11 +488,15 @@
                                         <span><?php _e('Edit another post', 'wp-cred'); ?></span></label>
                                     <div id='cred-edit-other-post-more' style='display:inline-block'>
                                         <div style='display:inline-block' class='cred_ajax_loader_small' id='cred-user-form-addtional-loader'></div>
-                                        <select id="cred-edit-post-select" name="cred-edit-post-select">
-                                            <optgroup label="<?php echo esc_attr(__('Select post', 'wp-cred')); ?>">
-                                                <option value='' disabled selected style='display:none;'><?php _e('Select post', 'wp-cred'); ?></option>
-                                            </optgroup>
-                                        </select>
+                                        <?php if (false) : ?>
+                                            <select id="cred-edit-post-select" name="cred-edit-post-select">
+                                                <optgroup label="<?php echo esc_attr(__('Select post', 'wp-cred')); ?>">
+                                                    <option value='' disabled selected style='display:none;'><?php _e('Select post', 'wp-cred'); ?></option>
+                                                </optgroup>
+                                            </select>
+                                        <?php endif; ?>
+                                        <input  type='text' id='cred-edit-post-select' name='cred-edit-post-select' value='' placeholder="<?php echo esc_attr(__('Type some characters..', 'wp-cred')); ?>" />
+
                                     </div>
                                 </td>
                             </tr>

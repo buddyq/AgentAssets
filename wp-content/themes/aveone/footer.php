@@ -94,7 +94,7 @@
                     </div>
                     <div class="agent-contact col-sm-8">
 						<!--$firstName = get_user_meta($user_id, 'first_name', true);-->
-                        <h3><?php echo get_user_meta($user_id,'first_name',true);?></h3>
+                        <h3><?php echo $agentInformation->agent_name;?></h3>
                         <p class="designation"><span class="label"><?php echo $agentInformation->designations; ?></span></p>
                         <p class="phone"><span class="label">o: </span><?php echo $agentInformation->business_phone; ?></p>
                         <p class="phone"><span class="label">c: </span><?php echo $agentInformation->mobile_phone; ?></p>

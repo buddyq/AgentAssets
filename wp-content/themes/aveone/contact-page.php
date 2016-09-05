@@ -10,7 +10,7 @@
  $aveone_recaptcha_public = aveone_get_option('evl_recaptcha_public','');
  $aveone_recaptcha_private = aveone_get_option('evl_recaptcha_private','');
  $aveone_email_address = aveone_get_option('evl_email_address','');
- $aveone_sent_email_header = aveone_get_option('evl_sent_email_header',get_bloginfo('name')); 
+ $aveone_sent_email_header = aveone_get_option('evl_sent_email_header',get_bloginfo('name'));
 ?>  
 
 <?php 

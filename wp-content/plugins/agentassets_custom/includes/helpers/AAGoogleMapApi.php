@@ -180,7 +180,7 @@ class AAGoogleMapApi
         $result = false;
         
         $cache = get_option('google_map_address');
-        if (!empty($cache) && md5($cache) == get_option('google_map_info_hash')) {
+        if (!empty($cache) && md5(serialize($cache)) == get_option('google_map_info_hash')) {
             $result = array(
                 'lat' => $cache->results[0]->geometry->location->lat,
                 'lng' => $cache->results[0]->geometry->location->lng,
@@ -199,6 +199,7 @@ class AAGoogleMapApi
         if ($status == 200) {
             $response = json_decode($response);
             update_option('google_map_address', $response);
+            update_option('google_map_info_hash', md5(serialize($response)));
             $result = array(
                 'lat' => $response->results[0]->geometry->location->lat,
                 'lng' => $response->results[0]->geometry->location->lng,

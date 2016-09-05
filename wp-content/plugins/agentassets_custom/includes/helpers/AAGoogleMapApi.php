@@ -9,6 +9,7 @@ class AAGoogleMapApi
     private $api_key;
     private $open_window;
     private $marker;
+    private $error;
     
     public function __construct($atts) {
 
@@ -26,11 +27,10 @@ class AAGoogleMapApi
             if ($geocode) {
                 $this->options = array_merge($this->options, $geocode);
                 $this->options['center'] = $this->position = $geocode;
-            } else {
-                return false;
             }
-        } else {
-            return false;
+        }
+        if (empty($this->options['lat']) || empty($this->options['lng'])) {
+            $this->error = 'Sorry Google Maps aren\'t configured yet.';
         }
 
         $this->options['scrollwheel'] = $atts['scrollwheel'];
@@ -80,7 +80,10 @@ class AAGoogleMapApi
     }
     
     public function showMap() {
-        $test = '';
+        if ($this->error) {
+            echo $this->error;
+            return false;
+        }
         $content = "
             <script src=\"https://maps.googleapis.com/maps/api/js?{$this->api_key}&sensor=false\" type=\"text/javascript\"></script>
             <div id=\"google_map\" style=\"height: " . $this->map_height . "; width: " . $this->map_width . ";\"></div>

@@ -45,7 +45,8 @@ class SiteSettingsModel {
         }
     }
 
-    public function setAttributes($values) {
+    public function setAttributes($values, $stripslashes = true) {
+        if ($stripslashes) $values = array_map('stripslashes', $values);
         $metadata = $this->attributesMetadata();
         foreach ($values as $vKey => $vValue) {
             if (isset($metadata[$vKey])) {

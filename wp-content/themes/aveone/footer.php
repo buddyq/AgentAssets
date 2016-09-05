@@ -5,14 +5,8 @@
  * @package Aveone
  * @subpackage Template
  */
- $blog_id = get_current_blog_id();
- switch_to_blog($blog_id);
- $user_email = get_option('admin_email',true);
-
- $user = get_user_by('email',$user_email);
- $user_id = $user->ID;
- restore_current_blog();
-
+ $user_id = OrderMap::getBlogOwner(get_current_blog_id());
+ $agentInformation = AgentInformationModel::model();
 ?>
 		<!--END #content-->
 		</div>
@@ -34,7 +28,7 @@
                 <div class="agent-info col-sm-12">
                     <div class="col-sm-4 agent-img-container">
                         <?php
-                        switch_to_blog($blog_id);
+                        /*switch_to_blog($blog_id);
 
                         $current_blog_id = get_current_blog_id();
 
@@ -51,10 +45,17 @@
                             $user_details = get_user_by('email',$admin_email);
                             $user_id = $user_details->ID;
                             switch_to_blog($blog_id);
-                        }
+                        }*/
                         $user_details = get_user_meta($user_id,'',true);
                         // echo "<pre>"; print_r ($user_details); die("</pre>");
-                        $attachment_id = get_user_meta($user_id,'profile_picture',true);
+
+                        echo aa_media_image_shortcode(array(
+                            'size' => 'aveone-agent-img',
+                            'default' => plugins_url('agentassets-site-manager') . '/images/dummy_agent_pic.png',
+                        ), $agentInformation->profile_picture);
+
+
+                        /*$attachment_id = get_user_meta($user_id,'profile_picture',true);
                         // if ( is_numeric($attachment_id) && $attachment_id>0 )
                         //                         {
                         //                           switch_to_blog(1);
@@ -88,15 +89,15 @@
                       ?>
                         <img style="height:100px; width:auto;" src="<?php echo plugins_url('medma-site-manager'); ?>/images/dummy_agent_pic.png" alt="Profile Picture"/>
                       <?php
-                      }
+                      }*/
                       ?>
                     </div>
                     <div class="agent-contact col-sm-8">
 						<!--$firstName = get_user_meta($user_id, 'first_name', true);-->
                         <h3><?php echo get_user_meta($user_id,'first_name',true);?></h3>
-                        <p class="designation"><span class="label"><?php echo get_user_meta($user_id,'designation',true)?></span></p>
-                        <p class="phone"><span class="label">o: </span><?php if(get_user_meta($user_id,'business_phone',true)){ echo get_user_meta($user_id,'business_phone',true); } else { echo aveone_get_option('evl_agent_phone1'); }?></p>
-                        <p class="phone"><span class="label">c: </span><?php if(get_user_meta($user_id,'mobile_phone',true)){ echo get_user_meta($user_id,'mobile_phone',true); }else { echo aveone_get_option('evl_agent_phone2'); }?></p>
+                        <p class="designation"><span class="label"><?php echo $agentInformation->designations; ?></span></p>
+                        <p class="phone"><span class="label">o: </span><?php echo $agentInformation->business_phone; ?></p>
+                        <p class="phone"><span class="label">c: </span><?php echo $agentInformation->mobile_phone; ?></p>
                         <p class="email"><span class="label">e: </span><a href="mailto:<?php echo $user_email;//echo aveone_get_option('evl_agent_email');?>"><?php echo $user_email;//echo aveone_get_option('evl_agent_email');?></a></p>
                             <?php get_template_part('social-buttons', 'header'); ?>
                     </div>
@@ -105,7 +106,13 @@
             <div class="col-sm-6">
                 <div class="logos-container row">
                     <div class="logo col-sm-8">
-                        <?php
+                        <a href="http://www.austinportfoliorealestate.com/" title="Click here to go to Austin Portfolio Real Estate website" target="_blank">
+                        <?php echo aa_media_image_shortcode(array(
+                            'size' => 'full',
+                            'style' => 'width:auto; height:136px;',
+                        ), $agentInformation->broker_logo); ?>
+                        </a>
+                        <?php /*
                         $blog_id = get_current_blog_id();
                         switch_to_blog($blog_id);
                         //$agent_broker_logo = get_user_meta($user_id,'broker_logo',true);
@@ -118,7 +125,7 @@
                         <a href="http://www.austinportfoliorealestate.com/" title="Click here to go to Austin Portfolio Real Estate website" target="_blank">
                         <img src="<?php echo $agent_broker_logo;//echo aveone_get_option('evl_agent_company_logo');?>" height="60" alt="Austin Portfolio Real Estate">
                         </a>
-                        <?php  ?>
+                        <?php  */ ?>
                     </div>
                     <div class="logo col-sm-4">
                         <?php if(aveone_get_option('evl_header_logo')){ ?>

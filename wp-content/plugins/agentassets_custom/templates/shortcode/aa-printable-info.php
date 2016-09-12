@@ -15,7 +15,7 @@
                     <?php
                     // The Query
                     $the_query = new WP_Query( array(
-                        'post_type' => 'printable_info',   /* edit this line */
+                        'post_type' => 'property-attachment',   /* edit this line */
                         'posts_per_page' => 1 ) );
 
                     // The Loop

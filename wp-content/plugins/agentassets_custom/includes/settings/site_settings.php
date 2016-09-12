@@ -122,7 +122,7 @@ function mi_sub_printable_info() {
         <tr>
 
             <td><h3>Note:</h3></td>
-            <td><a href="<?php echo admin_url('edit.php?post_type=property_attachment'); ?>">Click Here</a> to add
+            <td><a href="<?php echo admin_url('edit.php?post_type=property-attachment'); ?>">Click Here</a> to add
                 attachments to Printable Info
             </td>
         </tr>

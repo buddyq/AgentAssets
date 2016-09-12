@@ -31,6 +31,7 @@ if (USE_EXPERIMENTAL) {
     require_once(dirname(__FILE__) . '/includes/models/PropertyDetailsModel.php');
     require_once(dirname(__FILE__) . '/includes/models/PrintableInfoModel.php');
     require_once(dirname(__FILE__) . '/includes/models/ContactInfoModel.php');
+    require_once(dirname(__FILE__) . '/includes/models/ThemeSettingsModel.php');
 
     require_once(dirname(__FILE__) . '/includes/helpers/AAAdminFormItems.php');
     require_once(dirname(__FILE__) . '/includes/helpers/AAAdminFormHelper.php');
@@ -46,6 +47,8 @@ if (USE_EXPERIMENTAL) {
     include 'includes/shortcodes/aa-property-details.php';
     include 'includes/shortcodes/aa-printable-info.php';
     include 'includes/shortcodes/aa-contact-page.php';
+
+    include 'includes/settings/theme_customize.php';
 } else {
     include 'includes/shortcodes/agentinformation.php';
     include 'includes/shortcodes/theme_settings.php';

@@ -11,8 +11,10 @@ function custom_theme_options_menu()
     // add_menu_page('Agent Information', 'Customize Microsite', 'manage_options', 'mi-top-level-handle', 'mi_sub_agent_information');
     add_menu_page('Agent Information', 'Agent Information', 'manage_options', 'mi-sub-agent-information', 'mi_sub_agent_information','dashicons-businessman');
 
-    remove_menu_page( 'themes.php' );
-    add_menu_page('Customize','Customize','customize','customize.php?return=%2Fwp-admin%2Fthemes.php', '', 'dashicons-admin-appearance');
+    if (get_current_blog_id() != 1) {
+        remove_menu_page('themes.php');
+        add_menu_page('Customize', 'Customize', 'customize', 'customize.php?return=%2Fwp-admin%2Fthemes.php', '', 'dashicons-admin-appearance');
+    }
 
     add_menu_page('Property Details', 'Property Details', 'manage_options', 'mi-sub-property-details', 'mi_sub_property_details','dashicons-admin-home');
     add_menu_page('Printable Info', 'Printable Info', 'manage_options', 'mi-sub-printable-info', 'mi_sub_printable_info', 'dashicons-media-document');

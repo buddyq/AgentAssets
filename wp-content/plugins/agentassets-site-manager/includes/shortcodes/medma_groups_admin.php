@@ -222,7 +222,7 @@ function medma_groups_admin_shortcode_view($data) {
                     <?php } ?>
                     <?php else: ?>
                         <tr>
-                            <td>You've got no user group yet.</td>
+                            <td>You've got no members in your group yet.</td>
                         </tr>
                     <?php endif; ?>
                     </tbody>

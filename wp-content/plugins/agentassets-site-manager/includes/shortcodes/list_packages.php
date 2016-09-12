@@ -317,69 +317,89 @@ function cu_add_package_manually(){
     {
         $user_id = $_POST['add_package_username'];
         $package_id = $_POST['add_packagename'];
-        
-        $package_price = get_post_meta($package_id,'wpcf-price',true);
-        
-        $package_details = get_post($package_id);
-        
-        $package_settings = get_option('mism_package_settings');
-        $tax_manually_percent = $package_settings['tax'];
-        $discount_manually = 0;
-        $tax_amount = (($package_price * $tax_manually_percent)/100);
-        $taxed_price = $tax_amount + $package_price;
 
-        $purchased_date = date('Y-m-d H:i:s')."<br/>";  #Current Date
-        $months = get_post_meta($package_id, 'wpcf-duration', true)."<br/>";
-        $months = '+'.(int)$months.'months';
-        $expiry_date = date('Y-m-d H:i:s', strtotime($months));
-        
-        $status = 1; # payment paid status
-        
-        //Designed to get number of consumed sites in users current package to apply to new package so they don't get FREE sites.
-        //If they have a package for 50 sites and have used 40 but want to move to a larger package, we need to apply that 40.
-        
-        $numUsedSites = $wpdb->get_row( "SELECT * FROM " . $wpdb->base_prefix . "orders WHERE user_id = " . $user_id . " AND status = 1" );
-        $package_counter_id = $numUsedSites->id;
-        
-        //Query package counter to get actual number of consumed sites
-        $total_consumed = $wpdb->get_row( "SELECT `site_consumed` FROM " . $wpdb->base_prefix . "package_counter WHERE order_id = " . $package_counter_id );
-        $sites_consumed = $total_consumed->site_consumed;
-        // if (!$total_consumed->site_consumed) {
-        //           $total_consumed->site_consumed = '0';
-        //         }
-        //         
-        //Enter function here to detect and disable any CURRENT package so that new package shows on their Create New Site page with new package!!
-        // Added by Buddy Quaid - bq
-        $data = array( 'status' => 2);
-        $where = array( 'user_id' => $user_id, 'status' => 1 );
-        $where_format = array( '%d', '%d' );
-        $wpdb->update
-        ( 
-          $wpdb->base_prefix . "orders",
-          $data,
-          $where,
-          '',
-          $where_format
-        );
-        //End function to disable existing plan before assigning new plan.
-        $sql = "INSERT INTO `" . $wpdb->base_prefix . "orders`(package_id, user_id, package_name, package_price, discount, tax, total_price, purchased_date, expiry_date, status) VALUES('" . $package_id . "','" . $user_id . "','" . $package_details->post_title . "','" . $package_price. "', '" . $discount_manually . "','" . $tax_amount . "','" . $taxed_price . "','" . $purchased_date . "','" . $expiry_date . "','" . $status . "')";
-        $wpdb->query($wpdb->prepare($sql));
-        
-        $order_id = $wpdb->insert_id;
-        $sites_allowed = get_post_meta($package_id,'wpcf-sites-allowed',true);
-        
-        $sql = "INSERT INTO `".$wpdb->base_prefix."package_counter`(order_id, site_allowed, site_consumed) VALUES('".$order_id."','".$sites_allowed."','".$sites_consumed."')";
-        $result = $wpdb->query($wpdb->prepare($sql));
-        
-        if($result){
-            $html .= "<div class='updated'><p>";
-            $html .= "Your package has been assigned successfully.";
-            $html .= '<a title="View Orders" href='. get_admin_url() .'edit.php?post_type=package&page=package-orders>Click here</a>&nbsp;to see your order.';
-            $html .= "</p></div>";
-        }else{
-            $html .= "<div class='error'><p>";
-            $html .= "Unable to assign package. Please try again.";
-            $html .= "</p></div>";
+        if ($package_id == 'reset') {
+            /*$numUsedSites = $wpdb->get_row("SELECT * FROM " . $wpdb->base_prefix . "orders WHERE user_id = " . $user_id . " AND status = 1");
+            $package_counter_id = $numUsedSites->id;
+            $total_consumed = $wpdb->get_row("SELECT `site_consumed` FROM " . $wpdb->base_prefix . "package_counter WHERE order_id = " . $package_counter_id);
+            $sites_consumed = $total_consumed->site_consumed;
+            */
+            $data = array('status' => 2);
+            $where = array('user_id' => $user_id, 'status' => 1);
+            $where_format = array('%d', '%d');
+            $wpdb->update
+            (
+                $wpdb->base_prefix . "orders",
+                $data,
+                $where,
+                '',
+                $where_format
+            );
+
+        } else {
+            $package_price = get_post_meta($package_id, 'wpcf-price', true);
+
+            $package_details = get_post($package_id);
+
+            $package_settings = get_option('mism_package_settings');
+            $tax_manually_percent = $package_settings['tax'];
+            $discount_manually = 0;
+            $tax_amount = (($package_price * $tax_manually_percent) / 100);
+            $taxed_price = $tax_amount + $package_price;
+
+            $purchased_date = date('Y-m-d H:i:s') . "<br/>";  #Current Date
+            $months = get_post_meta($package_id, 'wpcf-duration', true) . "<br/>";
+            $months = '+' . (int)$months . 'months';
+            $expiry_date = date('Y-m-d H:i:s', strtotime($months));
+
+            $status = 1; # payment paid status
+
+            //Designed to get number of consumed sites in users current package to apply to new package so they don't get FREE sites.
+            //If they have a package for 50 sites and have used 40 but want to move to a larger package, we need to apply that 40.
+
+            $numUsedSites = $wpdb->get_row("SELECT * FROM " . $wpdb->base_prefix . "orders WHERE user_id = " . $user_id . " AND status = 1");
+            $package_counter_id = $numUsedSites->id;
+
+            //Query package counter to get actual number of consumed sites
+            $total_consumed = $wpdb->get_row("SELECT `site_consumed` FROM " . $wpdb->base_prefix . "package_counter WHERE order_id = " . $package_counter_id);
+            $sites_consumed = $total_consumed->site_consumed;
+            // if (!$total_consumed->site_consumed) {
+            //           $total_consumed->site_consumed = '0';
+            //         }
+            //
+            //Enter function here to detect and disable any CURRENT package so that new package shows on their Create New Site page with new package!!
+            // Added by Buddy Quaid - bq
+            $data = array('status' => 2);
+            $where = array('user_id' => $user_id, 'status' => 1);
+            $where_format = array('%d', '%d');
+            $wpdb->update
+            (
+                $wpdb->base_prefix . "orders",
+                $data,
+                $where,
+                '',
+                $where_format
+            );
+            //End function to disable existing plan before assigning new plan.
+            $sql = "INSERT INTO `" . $wpdb->base_prefix . "orders`(package_id, user_id, package_name, package_price, discount, tax, total_price, purchased_date, expiry_date, status) VALUES('" . $package_id . "','" . $user_id . "','" . $package_details->post_title . "','" . $package_price . "', '" . $discount_manually . "','" . $tax_amount . "','" . $taxed_price . "','" . $purchased_date . "','" . $expiry_date . "','" . $status . "')";
+            $wpdb->query($wpdb->prepare($sql));
+
+            $order_id = $wpdb->insert_id;
+            $sites_allowed = get_post_meta($package_id, 'wpcf-sites-allowed', true);
+
+            $sql = "INSERT INTO `" . $wpdb->base_prefix . "package_counter`(order_id, site_allowed, site_consumed) VALUES('" . $order_id . "','" . $sites_allowed . "','" . $sites_consumed . "')";
+            $result = $wpdb->query($wpdb->prepare($sql));
+
+            if ($result) {
+                $html .= "<div class='updated'><p>";
+                $html .= "Your package has been assigned successfully.";
+                $html .= '<a title="View Orders" href=' . get_admin_url() . 'edit.php?post_type=package&page=package-orders>Click here</a>&nbsp;to see your order.';
+                $html .= "</p></div>";
+            } else {
+                $html .= "<div class='error'><p>";
+                $html .= "Unable to assign package. Please try again.";
+                $html .= "</p></div>";
+            }
         }
         //echo $html;
     }
@@ -412,7 +432,7 @@ function cu_add_package_manually(){
         'post_type' => 'package',
         'post_status' => 'publish',
         'meta_key' => 'wpcf-status',
-        'meta_value' => '1',
+        'meta_value' => array('1', '2'),
         'posts_per_page' => '-1',
         'orderby' => 'ID',
         'order' => 'ASC'
@@ -424,6 +444,7 @@ function cu_add_package_manually(){
     $html .= '<td><select id="add_packagename" name="add_packagename">';
     
     $html .= '<option>Select Package</option>';
+    $html .= '<option value="reset">No Package</option>';
     foreach($packages as $packagename => $packagevalue)
     {
       // echo "<pre>"; print_r (get_post_meta($packagevalue->ID)); die("</pre>");

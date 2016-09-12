@@ -662,7 +662,7 @@ return $options;
  *
  * WordPress 3.4 Required
  */
-add_action( 'customize_register', 'aveone_customizer_register' );
+//add_action( 'customize_register', 'aveone_customizer_register' );
         
 function aveone_customizer_register( $wp_customize ) {
     /**

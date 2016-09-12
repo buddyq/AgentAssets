@@ -45,15 +45,8 @@ if ( !class_exists( 'avia_sc_gmaps' ) )
 					$load_google_map_api = apply_filters('avf_load_google_map_api', true, 'av_google_map');
 					            
 					if($load_google_map_api) wp_enqueue_script(  'avia-google-maps-api' );
-					
-					$args = array(
-		                'toomanyrequests'	=> __("Too many requests at once, please wait a few seconds before requesting coordinates again",'avia_framework'),
-		                'notfound'			=> __("Address couldn't be found by Google, please add it manually",'avia_framework'),
-		                'insertaddress' 	=> __("Please insert a valid address in the fields above",'avia_framework')
-		            );
-	
-		            if($load_google_map_api) wp_localize_script( 'avia-google-maps-api', 'avia_gmaps_L10n', $args );
 				}
+
 			}
 			
 

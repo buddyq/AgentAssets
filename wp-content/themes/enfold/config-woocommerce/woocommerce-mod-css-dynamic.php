@@ -42,7 +42,7 @@ if(!function_exists('avia_woo_dynamic_css'))
 			color: $meta;
 			}
 			
-			$key div.product .woocommerce-tabs ul.tabs li.active a, $key .cart_dropdown .dropdown_widget .widget_shopping_cart_content,  $key .cart_dropdown_link, $key .inner_product_header, $key .avia-arrow, #top $key .variations select, #top $key .variations input, #top $key #reviews input[type='text'], $key #reviews .comment-text, $key #reviews #comment, $key .single-product-main-image .images a, #top $key .shop_table.cart .input-text, #top $key form.login .input-text, #top $key form.register .input-text, $key .chosen-container-single .chosen-search, $key .products .product-category h3:before, #top $key .quantity input.qty{
+			$key div.product .woocommerce-tabs ul.tabs li.active a, $key .cart_dropdown .dropdown_widget .widget_shopping_cart_content,  $key .cart_dropdown_link, $key .inner_product_header, $key .avia-arrow, #top $key .variations select, #top $key .variations input, #top $key #reviews input[type='text'], #top $key #reviews input[type='email'], $key #reviews .comment-text, $key #reviews #comment, $key .single-product-main-image .images a, #top $key .shop_table.cart .input-text, #top $key form.login .input-text, #top $key form.register .input-text, $key .chosen-container-single .chosen-search, $key .products .product-category h3:before, #top $key .quantity input.qty{
 			background-color: $bg;
 			}
 			

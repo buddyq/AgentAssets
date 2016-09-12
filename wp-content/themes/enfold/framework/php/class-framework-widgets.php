@@ -1372,9 +1372,18 @@ if(!function_exists('avia_printmap'))
 			$avia_config['g_maps_widget_active'] = 0;
 		}
 
+
 		if(apply_filters('avia_google_maps_widget_load_api', true, $avia_config['g_maps_widget_active']))
         {
-            wp_register_script( 'avia-google-maps-api', $prefix.'://maps.googleapis.com/maps/api/js?v=3.24', array('jquery'), '1', false);
+	        $prefix  = is_ssl() ? "https" : "http";
+            $api_key = avia_get_option('gmap_api');
+            $api_url = $prefix.'://maps.google.com/maps/api/js?v=3.24';
+            
+            if($api_key != ""){
+	           $api_url .= "&key=" .$api_key;
+            }
+	  
+            wp_register_script( 'avia-google-maps-api', $api_url, array('jquery'), NULL, true);
             wp_enqueue_script( 'avia-google-maps-api' );
         }
 

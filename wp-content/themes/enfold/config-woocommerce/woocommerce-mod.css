@@ -1726,6 +1726,10 @@ padding:0;
 margin:0 0 10px 0;
 }
 
+#top #commentform p{
+	padding:2px;
+}
+
 #top  .woocommerce-tabs div .star-rating span {
 background: url(images/star.png) repeat-x left -32px transparent;
 }
@@ -1815,9 +1819,7 @@ border: 0;
 }
 
 #top #review_form #respond .comment-form-rating{
-position: absolute;
-right: 15px;
-top: 30px;
+
 }
 
 #top.logged-in #review_form #respond .comment-form-rating{

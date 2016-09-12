@@ -549,8 +549,8 @@ if(defined('ICL_SITEPRESS_VERSION') && defined('ICL_LANGUAGE_CODE'))
 	if(!function_exists('avia_append_lang_flags'))
 	{
 		//first append search item to main menu
-		add_filter( 'wp_nav_menu_items', 'avia_append_lang_flags', 20, 2 );
-		add_filter( 'avf_fallback_menu_items', 'avia_append_lang_flags', 20, 2 );
+		add_filter( 'wp_nav_menu_items', 'avia_append_lang_flags', 9998, 2 );
+		add_filter( 'avf_fallback_menu_items', 'avia_append_lang_flags', 9998, 2 );
 		
 		function avia_append_lang_flags( $items, $args )
 		{

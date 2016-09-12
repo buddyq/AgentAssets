@@ -854,7 +854,7 @@ class Envira_Gallery_Metaboxes {
                 </table>
             </div>
             <div id="envira-config-description-settings-box">
-                <table class="form-table">
+                <table class="form-table" style="margin-bottom: 0;">
                     <tbody>
                         <?php
                         if ( class_exists( 'Envira_Gallery' ) ) {
@@ -899,6 +899,27 @@ class Envira_Gallery_Metaboxes {
                                     <p class="description"><?php _e( 'The description to display for this gallery.', 'envira-gallery' ); ?></p>
                                 </td>
                             </tr>
+
+                            <?php
+                            if ( class_exists( 'Envira_Gallery' ) ) {
+                                ?>
+
+                                <tr id="envira-config-css-animations-box">
+                                    <th scope="row">
+                                        <label for="envira-config-css-animations"><?php _e( 'Enable CSS Animations?', 'envira-gallery' ); ?></label>
+                                    </th>
+                                    <td>
+                                        <input id="envira-config-css-animations" type="checkbox" name="_envira_gallery[css_animations]" value="<?php echo $this->get_config( 'css_animations', $this->get_config_default( 'css_animations' ) ); ?>" <?php checked( $this->get_config( 'css_animations', $this->get_config_default( 'css_animations' ) ), 1 ); ?> data-envira-conditional="envira-config-css-opacity-box" />
+                                        <span class="description"><?php _e( 'Enables CSS animations when loading the main gallery images.', 'envira-gallery' ); ?></span>
+                                    </td>
+                                </tr>
+
+                                <?php do_action( 'envira_gallery_include_justified_config_box', $post ); ?>
+
+                                <?php
+                            }
+                            ?>
+
                             <?php
                         }
                         ?>
@@ -981,6 +1002,7 @@ class Envira_Gallery_Metaboxes {
                                 </td>
                             </tr>
                             <?php
+
                         }
                         ?>
 
@@ -1071,16 +1093,6 @@ class Envira_Gallery_Metaboxes {
                                 <td>
                                     <input id="envira-config-isotope" type="checkbox" name="_envira_gallery[isotope]" value="<?php echo $this->get_config( 'isotope', $this->get_config_default( 'isotope' ) ); ?>" <?php checked( $this->get_config( 'isotope', $this->get_config_default( 'isotope' ) ), 1 ); ?> />
                                     <span class="description"><?php _e( 'Enables or disables isotope/masonry layout support for the main gallery images.', 'envira-gallery' ); ?></span>
-                                </td>
-                            </tr>
-
-                            <tr id="envira-config-css-animations-box">
-                                <th scope="row">
-                                    <label for="envira-config-css-animations"><?php _e( 'Enable CSS Animations?', 'envira-gallery' ); ?></label>
-                                </th>
-                                <td>
-                                    <input id="envira-config-css-animations" type="checkbox" name="_envira_gallery[css_animations]" value="<?php echo $this->get_config( 'css_animations', $this->get_config_default( 'css_animations' ) ); ?>" <?php checked( $this->get_config( 'css_animations', $this->get_config_default( 'css_animations' ) ), 1 ); ?> data-envira-conditional="envira-config-css-opacity-box" />
-                                    <span class="description"><?php _e( 'Enables CSS animations when loading the main gallery images.', 'envira-gallery' ); ?></span>
                                 </td>
                             </tr>
 
@@ -1984,6 +1996,14 @@ class Envira_Gallery_Metaboxes {
             }
         }
 
+        // We need to add metadata if the config slug doesn't match
+        if ( $settings['config']['slug'] != $post->post_name ) {
+            update_post_meta( $post_id, 'envira_gallery_slug', $settings['config']['slug'] );
+        } else {
+            // this metadata SHOULD no longer be needed, so let's delete it if it exists
+            delete_post_meta( $post_id, 'envira_gallery_slug' );
+        }
+
         // Provide a filter to override settings.
         $settings = apply_filters( 'envira_gallery_save_settings', $settings, $post_id, $post );
 
@@ -2169,9 +2189,6 @@ class Envira_Gallery_Metaboxes {
 
                 // Generate the cropped image.
                 $cropped_image = $common->resize_image( $image[0], $args['width'], $args['height'], true, $args['position'], $args['quality'], $args['retina'], null, $force_overwrite );
-
-                // print_r ($image);
-                // echo "!!!!!"; print_r ($cropped_image); exit;
 
                 // If there is an error, possibly output error message, otherwise woot!
                 if ( is_wp_error( $cropped_image ) ) {

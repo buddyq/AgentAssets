@@ -1537,7 +1537,7 @@ class Envira_Gallery_Shortcode {
 
                 // Title
                 if ( $this->get_config( 'toolbar_title', $data ) ) {
-                    $template .= '<li id="envirabox-buttons-title"><span>' . $this->get_config( 'title', $data ) . '</span></li>';
+                    $template .= '<li id="envirabox-buttons-title"><span>' . htmlentities( $this->get_config( 'title', $data ), ENT_QUOTES ) . '</span></li>';
                     $template  = apply_filters( 'envira_gallery_toolbar_after_title', $template, $data );
                 }
 

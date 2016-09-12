@@ -5,7 +5,7 @@
  * Description: Envira Gallery is best responsive WordPress gallery plugin.
  * Author:      Envira Gallery Team
  * Author URI:  http://enviragallery.com
- * Version:     1.5.3
+ * Version:     1.5.4
  * Text Domain: envira-gallery
  * Domain Path: languages
  *
@@ -56,7 +56,7 @@ class Envira_Gallery {
 	 *
 	 * @var string
 	 */
-	public $version = '1.5.3';
+	public $version = '1.5.4';
 
 	/**
 	 * The name of the plugin.
@@ -410,6 +410,19 @@ class Envira_Gallery {
 		if ( $galleries->posts ) {
 			return get_post_meta( $galleries->posts[0], '_eg_gallery_data', true );
 		}
+
+		// Get Envira CPT by meta-data field (yeah this is an edge case dealing with slugs in shortcode and modified slug in the misc tab of the gallery).
+		$galleries = new WP_Query( array(
+			'post_type' 	=> 'envira',
+			'meta_key' 		=> 'envira_gallery_slug',
+			'meta_value' 	=> $slug,
+			'fields'        => 'ids',
+			'posts_per_page' => 1,
+		) );
+		if ( $galleries->posts ) {
+			return get_post_meta( $galleries->posts[0], '_eg_gallery_data', true );
+		}
+
 
 		// If nothing found, get Envira CPT by _eg_gallery_old_slug.
 		// This covers Galleries migrated from Pages/Posts --> Envira CPTs.

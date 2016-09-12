@@ -994,6 +994,12 @@ form#post.envira-gallery {
                             background-size: 16px 16px;
                         }
                     }
+                    &.envira-standalone {
+                        a {
+                            background-image: url(images/icons/standalone.svg);
+                            background-size: 16px 16px;
+                        }
+                    }
                     &.envira-slideshow {
                         a {
                             background-image: url(images/icons/slideshow.svg);

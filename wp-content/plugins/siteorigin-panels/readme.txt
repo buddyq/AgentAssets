@@ -2,8 +2,8 @@
 Tags: page builder, responsive, widget, widgets, builder, page, admin, gallery, content, cms, pages, post, css, layout, grid
 Requires at least: 4.0
 Tested up to: 4.6
-Stable tag: 2.4.14
-Build time: 2016-09-01T08:00:29+02:00
+Stable tag: 2.4.15
+Build time: 2016-09-06T08:35:33+02:00
 License: GPLv3
 License URI: http://www.gnu.org/licenses/gpl.html
 Donate link: http://siteorigin.com/page-builder/#donate
@@ -96,7 +96,10 @@ We've tried to ensure that Page Builder is compatible with most plugin widgets. 
 
 == Changelog ==
 
-= 2.4.14 - 18 August 2016 =
+= 2.4.15 - 6 September 2016 =
+* Fixed legacy widgets check.
+
+= 2.4.14 - 1 September 2016 =
 * Fixes to sidebar emulator to prevent early rewrite rule building.
 * Added option to completely disable sidebar emulator.
 

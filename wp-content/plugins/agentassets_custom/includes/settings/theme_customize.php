@@ -10,9 +10,10 @@ add_action('customize_preview_init', 'agentassets_customize_remove_system_sectio
  */
 
 function agentassets_customize_remove_system_sections($wp_c) {
+    $model = ThemeSettingsModel::model();
     $blogOwner = OrderMap::getBlogOwner(get_current_blog_id());
 
-    if ($blogOwner != 1 && $blogOwner != null) {
+    if (!$model->currentThemeIsPrivate() && $blogOwner != 1 && $blogOwner != null) {
         //$wp_c->remove_section('nav');
         $wp_c->remove_section('static_front_page');
 

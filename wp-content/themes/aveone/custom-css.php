@@ -1,31 +1,34 @@
 <?php 
   $aveone_css_data = '';
-  $template_url = get_template_directory_uri(); 
+  $template_url = get_template_directory_uri();
+
+  $model = ThemeSettingsModel::model();
+
   $aveone_pagination_type = aveone_get_option('evl_pagination_type','pagination');
   $aveone_layout = aveone_get_option('evl_layout','2cl');
   $aveone_width_layout = aveone_get_option('evl_width_layout','fixed');
-  $aveone_content_back = aveone_get_option('evl_content_back','light');
-  $aveone_menu_back_color = aveone_get_option('evl_menu_back_color','');
-  $aveone_menu_back = aveone_get_option('evl_menu_back','light');
-  $aveone_custom_main_color = aveone_get_option('evl_header_footer_back_color','');
-  $aveone_main_pattern = aveone_get_option('evl_pattern','pattern_8.png');
+  $aveone_content_back = $model->content_color; //aveone_get_option('evl_content_back','light');
+  $aveone_menu_back_color = $model->custom_menu_color; //aveone_get_option('evl_menu_back_color','');
+  $aveone_menu_back = $model->menu_color; //aveone_get_option('evl_menu_back','light');
+  $aveone_custom_main_color = $model->header_footer_color; //aveone_get_option('evl_header_footer_back_color','');
+  $aveone_main_pattern = aveone_get_option('evl_pattern','pattern_8.png'); //todo
   $aveone_scheme_widgets = aveone_get_option('evl_scheme_widgets','#595959');
   $aveone_post_layout = aveone_get_option('evl_post_layout','two');
   $aveone_pos_logo = aveone_get_option('evl_pos_logo','left');
   $aveone_pos_button = aveone_get_option('evl_pos_button','right');
-  $aveone_custom_background = aveone_get_option('evl_custom_background','1');
+  $aveone_custom_background = /*$model->page_background_image; */ aveone_get_option('evl_custom_background','1');
   $aveone_tagline_pos = aveone_get_option('evl_tagline_pos','next');    
   $aveone_widget_background = aveone_get_option('evl_widget_background','0');
   $aveone_widget_background_image = aveone_get_option('evl_widget_background_image','0');
-  $aveone_menu_background = aveone_get_option('evl_disable_menu_back','0');
+  $aveone_menu_background = $model->disable_menu_background; //aveone_get_option('evl_disable_menu_back','0');
   $aveone_social_color = aveone_get_option('evl_social_color_scheme','#999999');
   $aveone_social_icons_size = aveone_get_option('evl_social_icons_size','normal');
-  $aveone_button_color_1 = aveone_get_option('evl_button_1','');
-  $aveone_button_color_2 = aveone_get_option('evl_button_2','');
-  $aveone_scheme_background = aveone_get_option('evl_scheme_background', '');
+  $aveone_button_color_1 = $model->buttons_1_color; //aveone_get_option('evl_button_1','');
+  $aveone_button_color_2 = $model->buttons_2_color; //aveone_get_option('evl_button_2','');
+  $aveone_scheme_background = $model->page_background_image; //aveone_get_option('evl_scheme_background', '');
   $aveone_scheme_background_color = aveone_get_option('evl_scheme_background_color', '');
-  $aveone_scheme_background_100 = aveone_get_option('evl_scheme_background_100', '0');
-  $aveone_scheme_background_repeat = aveone_get_option('evl_scheme_background_repeat', 'repeat');
+  $aveone_scheme_background_100 = $model->page_100_background_image; //aveone_get_option('evl_scheme_background_100', '0');
+  $aveone_scheme_background_repeat = $model->page_background_repeat; //aveone_get_option('evl_scheme_background_repeat', 'repeat');
   $aveone_general_link = aveone_get_option('evl_general_link', '#7a9cad');
   $aveone_animatecss = aveone_get_option('evl_animatecss', '1');  
   $aveone_gmap_address = aveone_get_option('evl_gmap_address', '');
@@ -582,7 +585,12 @@ $aveone_css_data .= '/**
 
 } 
 
-$blog_title = aveone_get_option('evl_title_font');
+$blog_title = array(
+    'style' => $model->big_title_font_style,
+    'size' => $model->big_title_font_size . 'px',
+    'face' => $model->big_title_font_face,
+    'color' => $model->big_title_font_color,
+); //aveone_get_option('evl_title_font');
 
 if (!is_array($blog_title)){
   $blog_title= get_object_vars(json_decode($blog_title));
@@ -613,7 +621,12 @@ if ($blog_tagline) {
      }
     
 
-$content_font = aveone_get_option('evl_content_font');
+$content_font = array(
+    'style' => $model->content_font_style,
+    'size' => $model->content_font_size . 'px',
+    'face' => $model->content_font_face,
+    'color' => $model->content_font_color,
+); //aveone_get_option('evl_content_font');
 if (!is_array($content_font)){
   $content_font= get_object_vars(json_decode($content_font));
   //aveone_get_option('evl_title_font')=$blog_title;
@@ -624,7 +637,12 @@ if ($content_font) {
  
  }   
  
-$heading_font = aveone_get_option('evl_heading_font');
+$heading_font = array(
+    'style' => $model->headings_font_style,
+    'size' => $model->headings_font_size . 'px',
+    'face' => $model->headings_font_face,
+    'color' => $model->headings_font_color,
+); //aveone_get_option('evl_heading_font');
 if (!is_array($heading_font)){
   $heading_font= get_object_vars(json_decode($heading_font));
   //aveone_get_option('evl_title_font')=$blog_title;
@@ -634,7 +652,12 @@ if ($heading_font) {
  #content h1, #content h2, #content h3, #content h4, #content h5, #content h6 { color:'.$heading_font['color'].'!important;}';
  }   
  
- $post_title = aveone_get_option('evl_post_font');
+ $post_title = array(
+     'style' => $model->post_title_font_style,
+     'size' => $model->post_title_font_size . 'px',
+     'face' => $model->post_title_font_face,
+     'color' => $model->post_title_font_color,
+ ); //aveone_get_option('evl_post_font');
 if (!is_array($post_title)){
   $post_title= get_object_vars(json_decode($post_title));
   //aveone_get_option('evl_title_font')=$blog_title;
@@ -643,7 +666,12 @@ if ($post_title) {
  $aveone_css_data .= '.entry-title, .entry-title a, .page-title {font:' . $post_title['style'] . ' '.$post_title['size'] . ' ' . $post_title['face']. '; color:'.$post_title['color'].';}';
 }     
  
-$menu_font = aveone_get_option('evl_menu_font');
+$menu_font = array(
+    'style' => $model->main_menu_font_style,
+    'size' => $model->main_menu_font_size . 'px',
+    'face' => $model->main_menu_font_face,
+    'color' => $model->main_menu_font_color,
+); //aveone_get_option('evl_menu_font');
 if (!is_array($menu_font)){
   $menu_font= get_object_vars(json_decode($menu_font));
   //aveone_get_option('evl_title_font')=$blog_title;

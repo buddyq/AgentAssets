@@ -2,6 +2,49 @@
 
 require_once "SiteSettingsModel.php";
 
+/**
+ * Class ThemeSettingsModel
+ *
+ * @property $header_logo
+ * @property $big_title_font_size
+ * @property $big_title_font_face
+ * @property $big_title_font_style
+ * @property $big_title_font_color
+ * @property $blog_tagline_font_size
+ * @property $blog_tagline_font_face
+ * @property $blog_tagline_font_style
+ * @property $blog_tagline_font_color
+ * @property $main_menu_font_size
+ * @property $main_menu_font_face
+ * @property $main_menu_font_style
+ * @property $main_menu_font_color
+ * @property $post_title_font_size
+ * @property $post_title_font_face
+ * @property $post_title_font_style
+ * @property $post_title_font_color
+ * @property $content_font_size
+ * @property $content_font_face
+ * @property $content_font_style
+ * @property $content_font_color
+ * @property $headings_font_size
+ * @property $headings_font_face
+ * @property $headings_font_style
+ * @property $headings_font_color
+ * @property $content_color
+ * @property $menu_color
+ * @property $custom_menu_color
+ * @property $disable_menu_background
+ * @property $header_footer_color
+ * @property $header_footer_pattern
+ * @property $page_background_image
+ * @property $page_100_background_image
+ * @property $page_background_repeat
+ * @property $general_Link_color
+ * @property $buttons_1_color
+ * @property $buttons_2_color
+ * @property $enable_widget_title_black_background
+ * @property $disable_widget_background
+ */
 
 class ThemeSettingsModel extends SiteSettingsModel {
     const OPTION_PREFIX = 'agentassets_themesettings_';
@@ -13,6 +56,15 @@ class ThemeSettingsModel extends SiteSettingsModel {
     public static function model($className = __CLASS__)
     {
         return parent::model($className);
+    }
+
+    public function load() {
+        $theme = MedmaThemeManager::findOne();
+
+        $metadata = $this->attributesMetadata();
+        foreach($metadata as $attribute => $info) {
+            $this->{$attribute} = get_option($this::OPTION_PREFIX . $attribute, isset($info['default']) ? $info['default'] : $this->{$attribute});
+        }
     }
 
     public function attributesMetadata()
@@ -249,6 +301,7 @@ class ThemeSettingsModel extends SiteSettingsModel {
                     'dark' => 'Dark',
                     'light' => 'Light',
                 ),
+                'default' => 'light',
                 'rules' => array(),
                 'section' => 'styling',
                 'formIndex' => 26,
@@ -292,21 +345,22 @@ class ThemeSettingsModel extends SiteSettingsModel {
                 'section' => 'styling',
                 'formIndex' => 30,
             ),
-            'background_image' => array(
+            'page_background_image' => array(
                 'label' => 'Background Image',
                 'type' => 'WP_Customize_Image_Control',
                 'rules' => array(),
                 'section' => 'styling',
                 'formIndex' => 31,
             ),
-            '100_background_image' => array(
+            'page_100_background_image' => array(
                 'label' => '100% Background Image',
                 'type' => 'checkbox',
+                'default' => 0,
                 'rules' => array(),
                 'section' => 'styling',
                 'formIndex' => 32,
             ),
-            'background_repeat' => array(
+            'page_background_repeat' => array(
                 'label' => 'Background Repeat',
                 'type' => 'select',
                 'options' => array(
@@ -315,27 +369,28 @@ class ThemeSettingsModel extends SiteSettingsModel {
                     'repeat-y' => 'repeat-y',
                     'no-repeat' => 'no-repeat',
                 ),
+                'default' => 'repeat',
                 'rules' => array(),
                 'section' => 'styling',
                 'formIndex' => 33,
             ),
             'general_Link_color' => array(
                 'label' => 'General Link Color',
-                'type' => 'WP_Customize_Image_Control',
+                'type' => 'WP_Customize_Color_Control',
                 'rules' => array(),
                 'section' => 'styling',
                 'formIndex' => 34,
             ),
             'buttons_1_color' => array(
                 'label' => 'Buttons 1 Color',
-                'type' => 'WP_Customize_Image_Control',
+                'type' => 'WP_Customize_Color_Control',
                 'rules' => array(),
                 'section' => 'styling',
                 'formIndex' => 35,
             ),
             'buttons_2_color' => array(
                 'label' => 'Buttons 2 Color',
-                'type' => 'WP_Customize_Image_Control',
+                'type' => 'WP_Customize_Color_Control',
                 'rules' => array(),
                 'section' => 'styling',
                 'formIndex' => 36,

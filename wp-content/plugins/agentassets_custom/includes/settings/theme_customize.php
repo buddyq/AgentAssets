@@ -36,12 +36,16 @@ function agentassets_theme_customize($wp_c) {
     if ( !$model->currentThemeIsPrivate()  || ($blogOwner == 1 || $blogOwner == null)) {
         $wp_c->add_section('header', array('title' => 'Header'));
         $wp_c->add_section('typography', array('title' => 'Typography'));
-        $wp_c->add_section('styling', array('title' => 'Styling'));
+        //$wp_c->add_section('styling', array('title' => 'Styling'));
     }
 
     /*if ($blogOwner == 1 || $blogOwner == null) {
         $wp_c->add_section('styling', array('title' => 'Styling'));
     }*/
+
+    if (!$model->currentThemeIsPrivate()) {
+        $wp_c->add_section('styling', array('title' => 'Styling'));
+    }
 
     foreach($model->attributesMetadata() as $id => $attributeData) {
         $config = array(

@@ -49,21 +49,47 @@ require_once "SiteSettingsModel.php";
 class ThemeSettingsModel extends SiteSettingsModel {
     const OPTION_PREFIX = 'agentassets_themesettings_';
 
+    protected $_theme_is_private = null;
+    protected $_parent_site_id = null;
+
     /**
      * @param string $className
      * @return ThemeSettingsModel
      */
     public static function model($className = __CLASS__)
     {
-        return parent::model($className);
+        $m = parent::model($className);
+        $m->init_theme_info();
+        return $m;
+    }
+
+    protected function init_theme_info() {
+        $theme_system_id = get_option('stylesheet');
+        $theme = MedmaThemeManager::findOne('theme_system_id = %s', array($theme_system_id));
+        if ($theme) {
+            $this->_theme_is_private = ($theme->status == MedmaThemeManager::STATUS_AUTHORIZED);
+        }
+        if ($this->_theme_is_private) {
+            $template_sites = get_blogs_of_user('1');
+            foreach($template_sites as $template_site) {
+                if ($theme_system_id == get_blog_option($template_site->site_id, 'stylesheet')) {
+                    $this->_parent_site_id = $template_site->site_id;
+                    break;
+                }
+            }
+        }
+    }
+
+    public function currentThemeIsPrivate() {
+        return $this->_theme_is_private;
     }
 
     public function load() {
-        $theme = MedmaThemeManager::findOne();
-
         $metadata = $this->attributesMetadata();
         foreach($metadata as $attribute => $info) {
-            $this->{$attribute} = get_option($this::OPTION_PREFIX . $attribute, isset($info['default']) ? $info['default'] : $this->{$attribute});
+            $this->{$attribute} = ($this->_theme_is_private) ?
+                get_blog_option($this->_parent_site_id, $this::OPTION_PREFIX . $attribute, isset($info['default']) ? $info['default'] : $this->{$attribute})
+                : get_option($this::OPTION_PREFIX . $attribute, isset($info['default']) ? $info['default'] : $this->{$attribute});
         }
     }
 

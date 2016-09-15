@@ -49,8 +49,10 @@ function agentassets_theme_customize($wp_c) {
     }
 
     foreach($model->attributesMetadata() as $id => $attributeData) {
+        $id = $model::OPTION_PREFIX . $id;
         $config = array(
             'transport' => 'refresh',
+            'type' => 'option',
         );
 
         if (isset($attributeData['default'])) {

@@ -69,6 +69,7 @@ class ThemeSettingsModel extends SiteSettingsModel {
         if ($theme) {
             $this->_theme_is_private = ($theme->status == MedmaThemeManager::STATUS_AUTHORIZED);
         }
+
         if ($this->_theme_is_private) {
             $template_sites = get_blogs_of_user('1');
             foreach($template_sites as $template_site) {
@@ -85,11 +86,18 @@ class ThemeSettingsModel extends SiteSettingsModel {
     }
 
     public function load() {
+        $live_customized = (isset($_POST['customized']) ? json_decode(stripslashes_deep($_POST['customized']), true) : array());
+
         $metadata = $this->attributesMetadata();
         foreach($metadata as $attribute => $info) {
-            $this->{$attribute} = ($this->_theme_is_private) ?
-                get_blog_option($this->_parent_site_id, $this::OPTION_PREFIX . $attribute, isset($info['default']) ? $info['default'] : $this->{$attribute})
-                : get_option($this::OPTION_PREFIX . $attribute, isset($info['default']) ? $info['default'] : $this->{$attribute});
+            $this->{$attribute} =
+                isset($live_customized[$this::OPTION_PREFIX . $attribute]) ?
+                    $live_customized[$this::OPTION_PREFIX . $attribute]
+                    : (
+                        ($this->_theme_is_private) ?
+                            get_blog_option($this->_parent_site_id, $this::OPTION_PREFIX . $attribute, isset($info['default']) ? $info['default'] : $this->{$attribute})
+                            : get_option($this::OPTION_PREFIX . $attribute, isset($info['default']) ? $info['default'] : $this->{$attribute})
+                    );
         }
     }
 

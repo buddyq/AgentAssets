@@ -1935,3 +1935,64 @@ add_filter( 'wp_mail_content_type', 'set_content_type' );
 function set_content_type( $content_type ) {
 	return 'text/html';
 }
+
+add_action( 'wp_head', 'render_dynamic_css', 99);
+
+function render_dynamic_css() {
+    $model = ThemeSettingsModel::model();
+    echo '<style>';
+
+    echo generate_font_css(
+        '.navbar-default .navbar-nav > li > a',
+        $model->main_menu_font_size,
+        $model->main_menu_font_face,
+        $model->main_menu_font_style,
+        $model->main_menu_font_color
+        );
+
+    echo generate_font_css(
+        '.site-title a',
+        $model->big_title_font_size,
+        $model->big_title_font_face,
+        $model->big_title_font_style,
+        $model->big_title_font_color
+    );
+
+    echo generate_font_css(
+        '.post-title, .page-title, .content h1',
+        $model->post_title_font_size,
+        $model->post_title_font_face,
+        $model->post_title_font_style,
+        $model->post_title_font_color
+    );
+
+    echo generate_font_css(
+        '.heading',
+        $model->headings_font_size,
+        $model->headings_font_face,
+        $model->headings_font_style,
+        $model->headings_font_color
+    );
+
+    echo generate_font_css(
+        '.main-content .container .content',
+        $model->content_font_size,
+        $model->content_font_face,
+        $model->content_font_style,
+        $model->content_font_color
+    );
+
+    echo '</style>';
+}
+
+function generate_font_css($selector, $size, $face, $style, $color) {
+    $weight = (strpos($style, 'bold') !== false) ? 'bold' : 'normal';
+    $fontStyle = (strpos($style, 'italic') !== false) ? 'italic' : 'normal';
+    return $selector . ' { '
+        . (empty($size) ? '' : ('font-size: '.$size.'px !important; '))
+        . (empty($face) ? '' : ('font-family: '.$face.' !important; '))
+        . (empty($color) ? '' : ('color: '.$color. ' !important; '))
+        . 'font-weight: '.$weight.' !important; '.' font-style: '.$fontStyle.' !important; }'."\n";
+}
+
+

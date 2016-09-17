@@ -16,10 +16,12 @@
                     // The Query
                     $the_query = new WP_Query( array(
                         'post_type' => 'property-attachment',   /* edit this line */
-                        'posts_per_page' => 1 ) );
+                        'posts_per_page' => 5) );
 
                     // The Loop
                     if ( $the_query->have_posts() ) {
+
+                       // var_dump($the_query);
 
                         while ( $the_query->have_posts() ) {
                             $the_query->the_post();

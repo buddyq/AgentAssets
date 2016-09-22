@@ -2007,7 +2007,7 @@ $model->registerDynamicCss(array(
         ),
     ),
     'main_navigation_background_hover_color' => array(
-        'selector' => '.navbar-default .navbar-nav > li:hover',
+        'selector' => '.navbar-default .navbar-nav > li > a:hover',
         'css' => array(
             'background-color' => '{value}',
         ),

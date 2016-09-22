@@ -1130,12 +1130,20 @@ class ThemeSettingsModel extends SiteSettingsModel {
             $customize = stripslashes_deep($_POST['customize']);
         }
 
-        add_action('wp_ajax_aa_dynamic_css', array($this, 'ajaxDynamicCss'));
-        wp_enqueue_style('aa-dynamic-css', admin_url('admin-ajax.php') . '?action=aa_dynamic_css&customize='.urlencode($customize), $deps);
+
+        //add_action('wp_ajax_aa_dynamic_css', array($this, 'ajaxDynamicCss'));
+        //wp_enqueue_style('aa-dynamic-css', admin_url('admin-ajax.php') . '?action=aa_dynamic_css&customize='.urlencode($customize), $deps);
+        add_action('wp_head', array($this, 'renderHeadDynamicCss'), 99);
     }
 
     public function loadGoogleFonts() {
         //todo
+    }
+
+    public function renderHeadDynamicCss() {
+        echo '<style>';
+        echo $this->renderDynamicCss();
+        echo '</style>';
     }
 
     public function ajaxDynamicCss() {
@@ -1188,7 +1196,7 @@ class ThemeSettingsModel extends SiteSettingsModel {
             if (!is_null($value)) {
                 $property = str_replace('{value}', $value, $property);
             }
-            $css_rule .= $key . ': ' . $property . ";\n";
+            $css_rule .= $key . ': ' . $property . " !important;\n";
         }
         $css_rule .= "}\n";
         return $css_rule;

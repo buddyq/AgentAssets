@@ -36,7 +36,10 @@ function agentassets_theme_customize($wp_c) {
     $blogOwner = OrderMap::getBlogOwner(get_current_blog_id());
     if ( !$model->currentThemeIsPrivate()  || ($blogOwner == 1 || $blogOwner == null)) {
         $wp_c->add_section('header', array('title' => 'Header'));
-        $wp_c->add_section('typography', array('title' => 'Typography'));
+        //$wp_c->add_section('typography', array('title' => 'Typography'));
+        $wp_c->add_section('menu', array('title' => 'Menu'));
+        $wp_c->add_section('body', array('title' => 'Body'));
+        $wp_c->add_section('footer', array('title' => 'Footer'));
         //$wp_c->add_section('styling', array('title' => 'Styling'));
     }
 

@@ -9,19 +9,23 @@ add_action('customize_preview_init', 'agentassets_customize_remove_system_sectio
  * @param $wp_c WP_Customize_Manager
  */
 
-function agentassets_customize_remove_system_sections($wp_c) {
+function agentassets_customize_remove_system_sections($wp_c)
+{
     $model = ThemeSettingsModel::model();
     $blogOwner = OrderMap::getBlogOwner(get_current_blog_id());
 
     if ($model->currentThemeIsPrivate() && $blogOwner != 1 && $blogOwner != null) {
         //$wp_c->remove_section('nav');
-        $wp_c->remove_section('static_front_page');
 
-        $wp_c->remove_panel('nav_menus');
         $wp_c->remove_panel('widgets');
         //$wp_c->remove_section('themes');
         //$wp_c->remove_section('title_tagline');
     }
+    if ($blogOwner == 1 || $blogOwner == null) {
+        $wp_c->remove_section('static_front_page');
+        $wp_c->remove_panel('nav_menus');
+    }
+
 }
 
 /**

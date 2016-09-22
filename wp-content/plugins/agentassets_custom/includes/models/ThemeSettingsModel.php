@@ -109,22 +109,22 @@ class ThemeSettingsModel extends SiteSettingsModel {
     public function attributesMetadata()
     {
         return array(
-            'header_logo' => array(
+            /*'header_logo' => array(
                 'label' => 'Custom logo',
                 'type' => 'WP_Customize_Image_Control',
                 'rules' => array(),
                 'section' => 'header',
                 'formIndex' => 1,
-            ),
+            ),*/
             'site_title_size' => array(
-                'label' => 'Blog Title font',
+                'label' => 'Site Title font Size',
                 'type' => 'number',
                 'rules' => array(),
                 'section' => 'header',
                 'formIndex' => 2,
             ),
             'site_title_face' => array(
-                'label' => '',
+                'label' => 'Site Title Font',
                 'type' => 'select',
                 'options' => self::fontList(),
                 'rules' => array(),

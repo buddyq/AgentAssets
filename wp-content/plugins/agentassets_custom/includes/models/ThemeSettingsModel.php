@@ -150,33 +150,58 @@ class ThemeSettingsModel extends SiteSettingsModel {
                 'section' => 'typography',
                 'formIndex' => 5,
             ),
+            'top_page_background_opacity' => array(
+                'label' => 'Top of Page Background Opacity',
+                'type' => 'select',
+                'default' => '0.1',
+                'options' => array(
+                    '0.1' => '10%',
+                    '0.2' => '20%',
+                    '0.3' => '30%',
+                    '0.4' => '40%',
+                    '0.5' => '50%',
+                    '0.55' => '55%',
+                    '0.6' => '60%',
+                    '0.65' => '65%',
+                    '0.7' => '70%',
+                    '0.75' => '75%',
+                    '0.8' => '80%',
+                    '0.85' => '85%',
+                    '0.9' => '90%',
+                    '0.95' => '95%',
+                    '1' => '100%',
+                ),
+                'rules' => array(),
+                'section' => 'typography',
+                'formIndex' => 6,
+            ),
             'site_title_color' => array(
                 'label' => 'Site Title Color',
                 'type' => 'WP_Customize_Color_Control',
                 'rules' => array(),
                 'section' => 'typography',
-                'formIndex' => 6,
+                'formIndex' => 7,
             ),
             'content_title_color' => array(
                 'label' => 'Content Title Color',
                 'type' => 'WP_Customize_Color_Control',
                 'rules' => array(),
                 'section' => 'typography',
-                'formIndex' => 7,
+                'formIndex' => 8,
             ),
             'navigation_text_color' => array(
                 'label' => 'Navigation Text Color',
                 'type' => 'WP_Customize_Color_Control',
                 'rules' => array(),
                 'section' => 'typography',
-                'formIndex' => 8,
+                'formIndex' => 9,
             ),
             'navigation_hilight_text_color' => array(
                 'label' => 'Navigation Hilight Text Color',
                 'type' => 'WP_Customize_Color_Control',
                 'rules' => array(),
                 'section' => 'typography',
-                'formIndex' => 9,
+                'formIndex' => 10,
             ),
             'site_rest_font_face' => array(
                 'label' => 'Select a font for the rest of your site',
@@ -184,49 +209,49 @@ class ThemeSettingsModel extends SiteSettingsModel {
                 'options' => self::fontList(),
                 'rules' => array(),
                 'section' => 'typography',
-                'formIndex' => 10,
+                'formIndex' => 11,
             ),
             'main_navigation_background_color' => array(
                 'label' => 'Main Navigation background color',
                 'type' => 'WP_Customize_Color_Control',
                 'rules' => array(),
                 'section' => 'typography',
-                'formIndex' => 11,
+                'formIndex' => 12,
             ),
             'main_navigation_background_hover_color' => array(
                 'label' => 'Main Navigation background hover color',
                 'type' => 'WP_Customize_Color_Control',
                 'rules' => array(),
                 'section' => 'typography',
-                'formIndex' => 12,
+                'formIndex' => 13,
             ),
             'highlighted_accent_color' => array(
                 'label' => 'Highlighted accent color',
                 'type' => 'WP_Customize_Color_Control',
                 'rules' => array(),
                 'section' => 'typography',
-                'formIndex' => 13,
+                'formIndex' => 14,
             ),
             'main_text_color' => array(
                 'label' => 'Main Text Color',
                 'type' => 'WP_Customize_Color_Control',
                 'rules' => array(),
                 'section' => 'typography',
-                'formIndex' => 14,
+                'formIndex' => 15,
             ),
             'footer_text_color' => array(
                 'label' => 'Footer Text Color',
                 'type' => 'WP_Customize_Color_Control',
                 'rules' => array(),
                 'section' => 'typography',
-                'formIndex' => 15,
+                'formIndex' => 16,
             ),
             'footer_link_color' => array(
                 'label' => 'Footer Link Color',
                 'type' => 'WP_Customize_Color_Control',
                 'rules' => array(),
                 'section' => 'typography',
-                'formIndex' => 16,
+                'formIndex' => 17,
             ),
             'always_show_footer' => array(
                 'label' => 'Always show footer?',
@@ -238,7 +263,7 @@ class ThemeSettingsModel extends SiteSettingsModel {
                 'default' => 1,
                 'rules' => array(),
                 'section' => 'typography',
-                'formIndex' => 17,
+                'formIndex' => 18,
             ),
 
             /*
@@ -1168,13 +1193,14 @@ class ThemeSettingsModel extends SiteSettingsModel {
         $fieldsConfig = self::attributesMetadata();
 
         foreach($this->_render_config as $property => $item) {
-            //var_export($item);
             if (!isset($fieldsConfig[$property])) continue;
+
+            $params = (isset($item['params']) && is_array($item['params'])) ? $item['params'] : array();
             if (isset($item['options'])) {
                 if (isset($item['options'][$this->{$property}]) && !empty($item['options'][$this->{$property}])) {
-                    $dynamicCss .= $this->generate_css_rule($item['selector'], $item['options'][$this->{$property}]);                }
+                    $dynamicCss .= $this->generate_css_rule($item['selector'], $item['options'][$this->{$property}], $params);                }
             } else {
-                $dynamicCss .= $this->generate_css_rule($item['selector'], $item['css'], $this->{$property});
+                $dynamicCss .= $this->generate_css_rule($item['selector'], $item['css'], $this->{$property}, $params);
             }
         }
         return $dynamicCss;
@@ -1190,16 +1216,62 @@ class ThemeSettingsModel extends SiteSettingsModel {
         . 'font-weight: '.$weight.' !important; '.' font-style: '.$fontStyle.' !important; }'."\n";
     }
 
-    function generate_css_rule($selector, $properties, $value = null) {
+    function generate_css_rule($selector, $properties, $value = null, $params) {
         $css_rule = $selector . " {\n";
         foreach($properties as $key => $property) {
             if (!is_null($value)) {
-                $property = str_replace('{value}', $value, $property);
+                if (strpos($property, '{rgba}') !== false) {
+                    $alpha = '0.7'; // default
+                    if (isset($params['alpha']) && isset($this->{$params['alpha']})) {
+                        $alpha = $this->{$params['alpha']};
+                    }
+                    $value = self::hex2rgba($value, $alpha);
+                    $property = str_replace('{rgba}', $value, $property);
+                } else {
+                    $property = str_replace('{value}', $value, $property);
+                }
             }
             $css_rule .= $key . ': ' . $property . " !important;\n";
         }
         $css_rule .= "}\n";
         return $css_rule;
+    }
+
+    protected static function hex2rgba($color, $opacity = false) {
+        $default = 'rgb(0,0,0)';
+
+        //Return default if no color provided
+        if(empty($color))
+            return $default;
+
+        //Sanitize $color if "#" is provided
+        if ($color[0] == '#' ) {
+            $color = substr( $color, 1 );
+        }
+
+        //Check if color has 6 or 3 characters and get values
+        if (strlen($color) == 6) {
+            $hex = array( $color[0] . $color[1], $color[2] . $color[3], $color[4] . $color[5] );
+        } elseif ( strlen( $color ) == 3 ) {
+            $hex = array( $color[0] . $color[0], $color[1] . $color[1], $color[2] . $color[2] );
+        } else {
+            return $default;
+        }
+
+        //Convert hexadec to rgb
+        $rgb =  array_map('hexdec', $hex);
+
+        //Check if opacity is set(rgba or rgb)
+        if($opacity){
+            if(abs($opacity) > 1)
+                $opacity = 1.0;
+            $output = 'rgba('.implode(",",$rgb).','.$opacity.')';
+        } else {
+            $output = 'rgb('.implode(",",$rgb).')';
+        }
+
+        //Return rgb(a) color string
+        return $output;
     }
 
 }

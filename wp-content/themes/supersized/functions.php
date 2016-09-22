@@ -1966,8 +1966,11 @@ $model->registerDynamicCss(array(
     ),
     'top_page_background_color' => array(
         'selector' => 'header',
+        'params' => array(
+            'alpha' => 'top_page_background_opacity',
+        ),
         'css' => array(
-            'background-color' => '{value}',
+            'background-color' => '{rgba}',
         ),
     ),
     'site_title_color' => array(

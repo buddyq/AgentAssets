@@ -52,6 +52,8 @@ class ThemeSettingsModel extends SiteSettingsModel {
     protected $_theme_is_private = null;
     protected $_parent_site_id = null;
 
+    protected $_render_config = null;
+
     /**
      * @param string $className
      * @return ThemeSettingsModel
@@ -86,8 +88,11 @@ class ThemeSettingsModel extends SiteSettingsModel {
     }
 
     public function load() {
-        $live_customized = (isset($_POST['customized']) ? json_decode(stripslashes_deep($_POST['customized']), true) : array());
-
+        $live_option = isset($_GET['customize']) ? json_decode(stripslashes_deep($_GET['customize'])) : array();
+        $live_customized = is_array($live_option) ? $live_option : array();
+        if (isset($_POST['customized'])) {
+            $live_customized = json_decode(stripslashes_deep($_POST['customized']), true);
+        }
         $metadata = $this->attributesMetadata();
         foreach($metadata as $attribute => $info) {
             $this->{$attribute} =
@@ -111,7 +116,132 @@ class ThemeSettingsModel extends SiteSettingsModel {
                 'section' => 'header',
                 'formIndex' => 1,
             ),
+            'site_title_size' => array(
+                'label' => 'Blog Title font',
+                'type' => 'number',
+                'rules' => array(),
+                'section' => 'typography',
+                'formIndex' => 2,
+            ),
+            'site_title_face' => array(
+                'label' => '',
+                'type' => 'select',
+                'options' => self::fontList(),
+                'rules' => array(),
+                'section' => 'typography',
+                'formIndex' => 3,
+            ),
+            'site_title_shadow' => array(
+                'label' => 'Site Title Shadow',
+                'type' => 'select',
+                'default' => 1,
+                'options' => array(
+                    'yes' => 'Yes',
+                    'no' => 'No',
+                ),
+                'rules' => array(),
+                'section' => 'typography',
+                'formIndex' => 4,
+            ),
+            'top_page_background_color' => array(
+                'label' => 'Top of Page Background Color',
+                'type' => 'WP_Customize_Color_Control',
+                'rules' => array(),
+                'section' => 'typography',
+                'formIndex' => 5,
+            ),
+            'site_title_color' => array(
+                'label' => 'Site Title Color',
+                'type' => 'WP_Customize_Color_Control',
+                'rules' => array(),
+                'section' => 'typography',
+                'formIndex' => 6,
+            ),
+            'content_title_color' => array(
+                'label' => 'Content Title Color',
+                'type' => 'WP_Customize_Color_Control',
+                'rules' => array(),
+                'section' => 'typography',
+                'formIndex' => 7,
+            ),
+            'navigation_text_color' => array(
+                'label' => 'Navigation Text Color',
+                'type' => 'WP_Customize_Color_Control',
+                'rules' => array(),
+                'section' => 'typography',
+                'formIndex' => 8,
+            ),
+            'navigation_hilight_text_color' => array(
+                'label' => 'Navigation Hilight Text Color',
+                'type' => 'WP_Customize_Color_Control',
+                'rules' => array(),
+                'section' => 'typography',
+                'formIndex' => 9,
+            ),
+            'site_rest_font_face' => array(
+                'label' => 'Select a font for the rest of your site',
+                'type' => 'select',
+                'options' => self::fontList(),
+                'rules' => array(),
+                'section' => 'typography',
+                'formIndex' => 10,
+            ),
+            'main_navigation_background_color' => array(
+                'label' => 'Main Navigation background color',
+                'type' => 'WP_Customize_Color_Control',
+                'rules' => array(),
+                'section' => 'typography',
+                'formIndex' => 11,
+            ),
+            'main_navigation_background_hover_color' => array(
+                'label' => 'Main Navigation background hover color',
+                'type' => 'WP_Customize_Color_Control',
+                'rules' => array(),
+                'section' => 'typography',
+                'formIndex' => 12,
+            ),
+            'highlighted_accent_color' => array(
+                'label' => 'Highlighted accent color',
+                'type' => 'WP_Customize_Color_Control',
+                'rules' => array(),
+                'section' => 'typography',
+                'formIndex' => 13,
+            ),
+            'main_text_color' => array(
+                'label' => 'Main Text Color',
+                'type' => 'WP_Customize_Color_Control',
+                'rules' => array(),
+                'section' => 'typography',
+                'formIndex' => 14,
+            ),
+            'footer_text_color' => array(
+                'label' => 'Footer Text Color',
+                'type' => 'WP_Customize_Color_Control',
+                'rules' => array(),
+                'section' => 'typography',
+                'formIndex' => 15,
+            ),
+            'footer_link_color' => array(
+                'label' => 'Footer Link Color',
+                'type' => 'WP_Customize_Color_Control',
+                'rules' => array(),
+                'section' => 'typography',
+                'formIndex' => 16,
+            ),
+            'always_show_footer' => array(
+                'label' => 'Always show footer?',
+                'type' => 'select',
+                'options' => array(
+                    'yes' => 'Yes',
+                    'no' => 'No',
+                ),
+                'default' => 1,
+                'rules' => array(),
+                'section' => 'typography',
+                'formIndex' => 17,
+            ),
 
+            /*
             'big_title_font_size' => array(
                 'label' => 'Blog Title font',
                 'type' => 'number',
@@ -443,6 +573,7 @@ class ThemeSettingsModel extends SiteSettingsModel {
                 'section' => 'styling',
                 'formIndex' => 38,
             ),
+            */
         );
     }
 
@@ -986,6 +1117,81 @@ class ThemeSettingsModel extends SiteSettingsModel {
             "Yesteryear" => "Yesteryear",
             "Zeyada" => "Zeyada",
         );
+    }
+
+    public function registerDynamicCss($config, $deps=array()) {
+        if (!is_array($config)) {
+            throw new Exception('invalid $config type');
+        }
+        $this->_render_config = $config;
+
+        $customize = '';
+        if (isset($_POST['customize'])) {
+            $customize = stripslashes_deep($_POST['customize']);
+        }
+
+        add_action('wp_ajax_aa_dynamic_css', array($this, 'ajaxDynamicCss'));
+        wp_enqueue_style('aa-dynamic-css', admin_url('admin-ajax.php') . '?action=aa_dynamic_css&customize='.urlencode($customize), $deps);
+    }
+
+    public function loadGoogleFonts() {
+        //todo
+    }
+
+    public function ajaxDynamicCss() {
+        global $wp_customize;
+        if (method_exists($wp_customize, 'is_preview') and !is_admin()) {
+
+        } else {
+            header('Content-type: text/css');
+        }
+        echo $this->renderDynamicCss();
+        exit;
+    }
+
+    public function renderDynamicCss($config = null) {
+        if (!is_null($config) && !is_array($config)) {
+            throw new Exception('invalid $config type');
+        }
+        if (is_array($config)) {
+            $this->_render_config = $config;
+        }
+        $dynamicCss = '';
+        $fieldsConfig = self::attributesMetadata();
+
+        foreach($this->_render_config as $property => $item) {
+            //var_export($item);
+            if (!isset($fieldsConfig[$property])) continue;
+            if (isset($item['options'])) {
+                if (isset($item['options'][$this->{$property}]) && !empty($item['options'][$this->{$property}])) {
+                    $dynamicCss .= $this->generate_css_rule($item['selector'], $item['options'][$this->{$property}]);                }
+            } else {
+                $dynamicCss .= $this->generate_css_rule($item['selector'], $item['css'], $this->{$property});
+            }
+        }
+        return $dynamicCss;
+    }
+
+    function generate_font_css($selector, $size, $face, $style, $color) {
+        $weight = (strpos($style, 'bold') !== false) ? 'bold' : 'normal';
+        $fontStyle = (strpos($style, 'italic') !== false) ? 'italic' : 'normal';
+        return $selector . ' { '
+        . (empty($size) ? '' : ('font-size: '.$size.'px !important; '))
+        . (empty($face) ? '' : ('font-family: '.$face.' !important; '))
+        . (empty($color) ? '' : ('color: '.$color. ' !important; '))
+        . 'font-weight: '.$weight.' !important; '.' font-style: '.$fontStyle.' !important; }'."\n";
+    }
+
+    function generate_css_rule($selector, $properties, $value = null) {
+        $css_rule = $selector . " {\n";
+        foreach($properties as $key => $property) {
+            if (!is_null($value)) {
+                $property = str_replace('{value}', $value, $property);
+            }
+            $css_rule .= $key . ': ' . $property . ";\n";
+        }
+        $css_rule .= "}\n";
+        return $css_rule;
     }
 
 }

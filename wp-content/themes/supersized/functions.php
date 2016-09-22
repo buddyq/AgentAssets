@@ -1936,12 +1936,120 @@ function set_content_type( $content_type ) {
 	return 'text/html';
 }
 
-add_action( 'wp_head', 'render_dynamic_css', 99);
+//add_action( 'wp', 'render_dynamic_css', 99);
 
+$model = ThemeSettingsModel::model();
+
+$model->registerDynamicCss(array(
+    'site_title_size' => array(
+        'selector' => '.site-title a',
+        'css' => array(
+            'font-size' => '{value}px',
+        ),
+    ),
+    'site_title_face' => array(
+        'selector' => '.site-title a',
+        'css' => array(
+            'font-family' => '{value}',
+        ),
+    ),
+    'site_title_shadow' => array(
+        'selector' => '.site-title a',
+        'options' => array(
+            'yes' => array(
+                'text-shadow' => '1px 1px 0 #000000',
+            ),
+            'no' => array(
+                'text-shadow' => 'none',
+            ),
+        )
+    ),
+    'top_page_background_color' => array(
+        'selector' => 'header',
+        'css' => array(
+            'background-color' => '{value}',
+        ),
+    ),
+    'site_title_color' => array(
+        'selector' => '.site-title a',
+        'css' => array(
+            'color' => '{value}',
+        ),
+    ),
+    'content_title_color' => array(
+        'selector' => '.main-content .container .content',
+        'css' => array(
+            'color' => '{value}',
+        ),
+    ),
+    'navigation_text_color' => array(
+        'selector' => '.navbar-default .navbar-nav > li > a',
+        'css' => array(
+            'color' => '{value}',
+        ),
+    ),
+    'navigation_hilight_text_color' => array(
+        'selector' => '.navbar-default .navbar-nav > li > a:hover',
+        'css' => array(
+            'color' => '{value}',
+        ),
+    ),
+    'site_rest_font_face' => array(
+        'selector' => '.navbar-default .navbar-nav > li > a',
+        'css' => array(
+            'font-family' => '{value}',
+        ),
+    ),
+    'main_navigation_background_color' => array(
+        'selector' => '.navbar-default .navbar-nav > li',
+        'css' => array(
+            'background-color' => '{value}',
+        ),
+    ),
+    'main_navigation_background_hover_color' => array(
+        'selector' => '.navbar-default .navbar-nav > li:hover',
+        'css' => array(
+            'background-color' => '{value}',
+        ),
+    ),
+    'highlighted_accent_color' => array(
+        'selector' => '.none',
+        'css' => array(
+            'color' => '{value}',
+        ),
+    ),
+    'main_text_color' => array(
+        'selector' => 'html,body',
+        'css' => array(
+            'color' => '{value}',
+        ),
+    ),
+    'footer_text_color' => array(
+        'selector' => 'footer',
+        'css' => array(
+            'color' => '{value}',
+        ),
+    ),
+    'footer_link_color' => array(
+        'selector' => 'footer a',
+        'css' => array(
+            'color' => '{value}',
+        ),
+    ),
+    'always_show_footer' => array(
+        'selector' => '.none',
+        'options' => array(
+            'yes' => array(
+                'text-shadow' => '1px 1px 0 #000000',
+            ),
+            'no' => array(
+                'text-shadow' => 'none',
+            ),
+        )
+    ),
+), array('supersized-style'));
+/*
 function render_dynamic_css() {
-    $model = ThemeSettingsModel::model();
-    echo '<style>';
-
     echo generate_font_css(
         '.navbar-default .navbar-nav > li > a',
         $model->main_menu_font_size,
@@ -1981,18 +2089,9 @@ function render_dynamic_css() {
         $model->content_font_style,
         $model->content_font_color
     );
-
-    echo '</style>';
 }
+*/
 
-function generate_font_css($selector, $size, $face, $style, $color) {
-    $weight = (strpos($style, 'bold') !== false) ? 'bold' : 'normal';
-    $fontStyle = (strpos($style, 'italic') !== false) ? 'italic' : 'normal';
-    return $selector . ' { '
-        . (empty($size) ? '' : ('font-size: '.$size.'px !important; '))
-        . (empty($face) ? '' : ('font-family: '.$face.' !important; '))
-        . (empty($color) ? '' : ('color: '.$color. ' !important; '))
-        . 'font-weight: '.$weight.' !important; '.' font-style: '.$fontStyle.' !important; }'."\n";
-}
+
 
 

@@ -1977,7 +1977,7 @@ $model->registerDynamicCss(array(
         ),
     ),
     'content_title_color' => array(
-        'selector' => '.main-content .container .content',
+        'selector' => '.main-content .container .content h1',
         'css' => array(
             'color' => '{value}',
         ),
@@ -1994,12 +1994,6 @@ $model->registerDynamicCss(array(
             'color' => '{value}',
         ),
     ),
-    'site_rest_font_face' => array(
-        'selector' => '.navbar-default .navbar-nav > li > a',
-        'css' => array(
-            'font-family' => '{value}',
-        ),
-    ),
     'main_navigation_background_color' => array(
         'selector' => '.navbar-default .navbar-nav > li',
         'css' => array(
@@ -2012,8 +2006,15 @@ $model->registerDynamicCss(array(
             'background-color' => '{value}',
         ),
     ),
+    'site_rest_font_face' => array(
+        'selector' => '.main-content .container .content',
+        'css' => array(
+            'font-family' => '{value}',
+        ),
+    ),
+
     'highlighted_accent_color' => array(
-        'selector' => '.none',
+        'selector' => '.main-content .container .content em, .main-content .container .content strong, .main-content .container .content cite',
         'css' => array(
             'color' => '{value}',
         ),
@@ -2025,7 +2026,7 @@ $model->registerDynamicCss(array(
         ),
     ),
     'footer_text_color' => array(
-        'selector' => 'footer',
+        'selector' => 'footer, footer .agent-info h2, footer ul li, footer .broker-wrapper p.tiny',
         'css' => array(
             'color' => '{value}',
         ),

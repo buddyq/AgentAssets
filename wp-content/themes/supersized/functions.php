@@ -1940,7 +1940,7 @@ function set_content_type( $content_type ) {
 
 $model = ThemeSettingsModel::model();
 
-$model->registerDynamicCss(array(
+$model->registerCustomizeResources(array(
     'site_title_size' => array(
         'selector' => '.site-title a',
         'css' => array(
@@ -2041,13 +2041,16 @@ $model->registerDynamicCss(array(
         ),
     ),
     'always_show_footer' => array(
-        'selector' => '.none',
+        'selector' => 'footer.hide-footer',
+        'params' => array(
+            'button_container_selector' => 'footer',
+        ),
         'options' => array(
             'yes' => array(
-                'text-shadow' => '1px 1px 0 #000000',
+                'height' => 'auto',
             ),
             'no' => array(
-                'text-shadow' => 'none',
+                'height' => '0',
             ),
         )
     ),

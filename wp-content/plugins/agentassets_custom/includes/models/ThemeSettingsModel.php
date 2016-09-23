@@ -116,17 +116,17 @@ class ThemeSettingsModel extends SiteSettingsModel {
                 'section' => 'header',
                 'formIndex' => 1,
             ),*/
-            'site_title_size' => array(
-                'label' => 'Site Title font Size',
-                'type' => 'number',
-                'rules' => array(),
-                'section' => 'header',
-                'formIndex' => 2,
-            ),
             'site_title_face' => array(
                 'label' => 'Site Title Font',
                 'type' => 'select',
                 'options' => self::fontList(),
+                'rules' => array(),
+                'section' => 'header',
+                'formIndex' => 2,
+            ),
+            'site_title_size' => array(
+                'label' => 'Site Title font Size',
+                'type' => 'number',
                 'rules' => array(),
                 'section' => 'header',
                 'formIndex' => 3,
@@ -810,12 +810,12 @@ class ThemeSettingsModel extends SiteSettingsModel {
         );
     }
 
-    public function registerDynamicCss($config, $deps=array()) {
+    public function registerCustomizeResources($config, $deps=array()) {
         if (!is_array($config)) {
             throw new Exception('invalid $config type');
         }
-        $this->_render_config = $config;
 
+        $this->_render_config = $config;
         $customize = '';
         if (isset($_POST['customize'])) {
             $customize = stripslashes_deep($_POST['customize']);
@@ -825,6 +825,28 @@ class ThemeSettingsModel extends SiteSettingsModel {
         //add_action('wp_ajax_aa_dynamic_css', array($this, 'ajaxDynamicCss'));
         //wp_enqueue_style('aa-dynamic-css', admin_url('admin-ajax.php') . '?action=aa_dynamic_css&customize='.urlencode($customize), $deps);
         add_action('wp_head', array($this, 'renderHeadDynamicCss'), 99);
+        add_action('wp_head', array($this, 'renderFooterScripts'), 99);
+    }
+
+    public function renderFooterScripts() {
+        $always_show_footer = isset($this->_render_config['always_show_footer']) ? $this->_render_config['always_show_footer'] : array();
+        if ($this->always_show_footer !== 'yes' && isset($always_show_footer['params']) && isset($always_show_footer['params']['button_container_selector'])) {
+            ?>
+            <script>
+                jQuery(document).ready(function() {
+                    jQuery('<?php echo $always_show_footer['params']['button_container_selector'];?>').prepend(
+                        jQuery('<button class="toggle-footer-button">Hide Agent Info</button>').click(function () {
+                            jQuery('<?php echo $always_show_footer['params']['button_container_selector'];?>').toggleClass('hide-footer');
+
+                            var text = jQuery('.toggle-footer-button').text();
+                            jQuery('.toggle-footer-button').text(
+                                text == "Hide Agent Info" ? "Show Agent Info" : "Hide Agent Info");
+                        })
+                    )
+                });
+            </script>
+            <?php
+        }
     }
 
     public function loadGoogleFonts() {

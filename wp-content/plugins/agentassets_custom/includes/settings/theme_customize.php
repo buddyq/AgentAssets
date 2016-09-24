@@ -21,7 +21,7 @@ function agentassets_customize_remove_system_sections($wp_c)
         //$wp_c->remove_section('themes');
         //$wp_c->remove_section('title_tagline');
     }
-    if ($blogOwner == 1 || $blogOwner == null) {
+    if (get_current_blog_id() !== 1) {
         $wp_c->remove_section('static_front_page');
         $wp_c->remove_panel('nav_menus');
     }

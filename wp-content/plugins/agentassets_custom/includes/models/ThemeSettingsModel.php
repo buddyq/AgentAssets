@@ -914,6 +914,7 @@ class ThemeSettingsModel extends SiteSettingsModel {
 
         foreach($this->_render_config as $property => $item) {
             if (!isset($fieldsConfig[$property])) continue;
+            if (empty($this->{$property})) continue;
 
             $params = (isset($item['params']) && is_array($item['params'])) ? $item['params'] : array();
             if (isset($item['options'])) {

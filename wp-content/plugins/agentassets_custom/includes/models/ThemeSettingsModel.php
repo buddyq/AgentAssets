@@ -119,6 +119,7 @@ class ThemeSettingsModel extends SiteSettingsModel {
             'site_title_face' => array(
                 'label' => 'Site Title Font',
                 'type' => 'select',
+                'google_font_loader' => true,
                 'options' => self::fontList(),
                 'rules' => array(),
                 'section' => 'header',
@@ -206,6 +207,7 @@ class ThemeSettingsModel extends SiteSettingsModel {
             'site_rest_font_face' => array(
                 'label' => 'Select a font for the rest of your site',
                 'type' => 'select',
+                'google_font_loader' => true,
                 'options' => self::fontList(),
                 'rules' => array(),
                 'section' => 'body',
@@ -826,6 +828,17 @@ class ThemeSettingsModel extends SiteSettingsModel {
         //wp_enqueue_style('aa-dynamic-css', admin_url('admin-ajax.php') . '?action=aa_dynamic_css&customize='.urlencode($customize), $deps);
         add_action('wp_head', array($this, 'renderHeadDynamicCss'), 99);
         add_action('wp_head', array($this, 'renderFooterScripts'), 99);
+
+        $google_fonts = array();
+        foreach ($this->attributesMetadata() as $name => $metadata) {
+            if (isset($metadata['google_font_loader']) && $metadata['google_font_loader']) {
+                $google_fonts[] = $this->{$name};
+            }
+        }
+
+        foreach($google_fonts as $fontName) {
+            wp_enqueue_style('googlefont', "//fonts.googleapis.com/css?family=" . $fontName);
+        }
     }
 
     public function renderFooterScripts() {

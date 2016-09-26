@@ -270,6 +270,22 @@ class ThemeSettingsModel extends SiteSettingsModel {
         );
     }
 
+    public static function isOsFont($fontName) {
+        return in_array($fontName, array(
+            'Arial, Helvetica, sans-serif',
+            'Calibri, Candara, Arial, sans-serif',
+            'Georgia, serif',
+            'Impact, Charcoal, sans-serif',
+            'Lucida Sans Unicode, Lucida Grande, sans-serif',
+            'Myriad Pro, Myriad, "Liberation Sans", "Nimbus Sans L", "Helvetica Neue", Helvetica, Arial, sans-serif',
+            'Palatino Linotype, Book Antiqua, Palatino, serif',
+            'Tahoma, Geneva, sans-serif',
+            'Times New Roman, Times, serif',
+            'Trebuchet MS, Helvetica, sans-serif',
+            'Verdana, Geneva, sans-serif',
+        ));
+    }
+
     public static function fontList() {
         return array(
             // OS fonts
@@ -832,7 +848,10 @@ class ThemeSettingsModel extends SiteSettingsModel {
         $google_fonts = array();
         foreach ($this->attributesMetadata() as $name => $metadata) {
             if (isset($metadata['google_font_loader']) && $metadata['google_font_loader']) {
-                $google_fonts[] = $this->{$name};
+                $fontName = $this->{$name};
+                if (!self::isOsFont($fontName)) {
+                    $google_fonts[] = $fontName;
+                }
             }
         }
 

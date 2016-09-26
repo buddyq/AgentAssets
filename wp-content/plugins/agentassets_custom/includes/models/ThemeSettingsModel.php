@@ -937,7 +937,7 @@ class ThemeSettingsModel extends SiteSettingsModel {
         . 'font-weight: '.$weight.' !important; '.' font-style: '.$fontStyle.' !important; }'."\n";
     }
 
-    function generate_css_rule($selector, $properties, $value = null, $params) {
+    function generate_css_rule($selector, $properties, $value = null, $params = array()) {
         $css_rule = $selector . " {\n";
         foreach($properties as $key => $property) {
             if (!is_null($value)) {

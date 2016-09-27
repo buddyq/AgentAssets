@@ -1,3 +1,4 @@
+/*
 Theme Name: Supersized
 Author: AgentAssets.com
 Author URI: http://AgentAssets.com/
@@ -56,9 +57,12 @@ footer h2 { text-align: right; }
   font-size: x-small;
 }
 
+/*
 .footer-wrapper a, .footer-wrapper p.siteby {
      color: rgb(145,145,145) !important;
 }
+*/
+
 .broker-wrapper p { margin: 0 0 5px 0;}
 #brokerLogo {
   padding: 6px 0;
@@ -355,7 +359,7 @@ input#start {
 }
 
 .contact-us-trigger:hover{
-    left -2px;
+    left: -2px;
 }
 
 .contact-us-trigger a {

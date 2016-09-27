@@ -2061,7 +2061,7 @@ $model->registerCustomizeResources(array(
         ),
     ),
     'footer_link_color' => array(
-        'selector' => '.footer-wrapper a, .footer-wrapper p.siteby a, .footer-wrapper a:visited, .footer-wrapper p.siteby a: visited',
+        'selector' => 'footer .broker-wrapper p.tiny a, footer .broker-wrapper p.tiny a:visited',
         'css' => array(
             'color' => '{value}',
         ),

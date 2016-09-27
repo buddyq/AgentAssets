@@ -526,24 +526,74 @@ input#contact-us-submit {
 
 .toggle-footer-button {
     padding: 0 5px;
-    height: 36px;
+    font-size: 12px;
+    height: 26px;
     width: 140px;
-    margin-top: -40px;
+    margin-top: -31px;
     position: absolute;
     margin-left: 50%;
-    left: -70px;
-    background-color: rgba(255,255,255,0.75);
-    border: 1px solid rgba(64,64,64,0.75);
-    text-shadow: 1px 1px 1px #fff;
-}
-
-footer  {
+    left: -420px;
+    background-color: rgba(20,20,20,0.85);
+    border: 1px solid rgba(0,0,0,0.85);
+    text-shadow: 1px 1px 1px #000;
+    color: #fff;
+    border-radius: 5px 5px 0 0;
     transition-duration: 1s;
 }
 
+footer.hide-footer .toggle-footer-button {
+    margin-top: -26px;
+}
+
+footer.footer-wrapper  {
+    transition-duration: 1s;
+    position: relative;
+    margin-top: -150px;
+    height: 150px;
+}
+
+footer.hide-footer {
+    height: 0;
+    margin-top: 0;
+    transition-duration: 1s;
+    padding: 0;
+}
+
+footer .container {
+    opacity: 1;
+    overflow: hidden;
+    transition-duration: 1s;
+    height: 145px;
+}
+
+footer.hide-footer .container{
+    transition-duration: 1s;
+    opacity: 0;
+    height: 0;
+}
+
+body, html {
+    height: 100%;
+    min-height: 100%;
+    overflow: auto;
+}
+
+body > div#wrapper {
+    height: 100%;
+    overflow: auto;
+}
+
+body > div#wrapper > div.main-content {
+    min-height: 100%;
+    padding-bottom: 170px;
+    overflow: hidden;
+    position: relative;
+}
+/*
 footer.hide-footer > * {
     display: none;
 }
+*/
 
 footer.hide-footer > .toggle-footer-button {
     display: block;

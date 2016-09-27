@@ -2018,7 +2018,7 @@ $model->registerCustomizeResources(array(
         ),
     ),
     'navigation_hilight_text_color' => array(
-        'selector' => '.navbar-default .navbar-nav > li > a:hover',
+        'selector' => '.navbar-default .navbar-nav > li > a:hover, .navbar-default .navbar-nav > li.current-menu-item a',
         'css' => array(
             'color' => '{value}',
         ),
@@ -2030,7 +2030,7 @@ $model->registerCustomizeResources(array(
         ),
     ),
     'main_navigation_background_hover_color' => array(
-        'selector' => '.navbar-default .navbar-nav > li > a:hover',
+        'selector' => '.navbar-default .navbar-nav > li > a:hover, header nav.navbar-default .current-menu-item',
         'css' => array(
             'background-color' => '{value}',
         ),
@@ -2043,7 +2043,7 @@ $model->registerCustomizeResources(array(
     ),
 
     'highlighted_accent_color' => array(
-        'selector' => '.main-content .container .content em, .main-content .container .content strong, .main-content .container .content cite',
+        'selector' => '.main-content .container .content em, .main-content .container .content strong, .main-content .container .content cite, .main-content .container ul.details',
         'css' => array(
             'color' => '{value}',
         ),

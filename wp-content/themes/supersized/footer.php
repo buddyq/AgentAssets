@@ -96,11 +96,11 @@
                 </footer>
 
         </div>
-        <div class="contact-us-trigger">
+        <!-- <div class="contact-us-trigger">
           <a data-toggle="modal" data-target="#contact-us-modal">
             <img src="<?php echo get_template_directory_uri();?>/images/contact_us.png" alt="Contact Us"/>
           </a>
-        </div>
+        </div> -->
         <div class="modal fade" id="contact-us-modal" tabindex="-1" role="dialog" aria-labelledby="Contact Us">
             <div class="modal-dialog">
                 <div class="modal-content">

@@ -2024,13 +2024,13 @@ $model->registerCustomizeResources(array(
         ),
     ),
     'main_navigation_background_color' => array(
-        'selector' => '.navbar-default .navbar-nav > li',
+        'selector' => 'header nav.navbar-default',
         'css' => array(
             'background-color' => '{value}',
         ),
     ),
     'main_navigation_background_hover_color' => array(
-        'selector' => '.navbar-default .navbar-nav > li > a:hover',
+        'selector' => 'nav.navbar-default',
         'css' => array(
             'background-color' => '{value}',
         ),

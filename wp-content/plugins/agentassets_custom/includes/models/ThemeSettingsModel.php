@@ -5,45 +5,6 @@ require_once "SiteSettingsModel.php";
 /**
  * Class ThemeSettingsModel
  *
- * @property $header_logo
- * @property $big_title_font_size
- * @property $big_title_font_face
- * @property $big_title_font_style
- * @property $big_title_font_color
- * @property $blog_tagline_font_size
- * @property $blog_tagline_font_face
- * @property $blog_tagline_font_style
- * @property $blog_tagline_font_color
- * @property $main_menu_font_size
- * @property $main_menu_font_face
- * @property $main_menu_font_style
- * @property $main_menu_font_color
- * @property $post_title_font_size
- * @property $post_title_font_face
- * @property $post_title_font_style
- * @property $post_title_font_color
- * @property $content_font_size
- * @property $content_font_face
- * @property $content_font_style
- * @property $content_font_color
- * @property $headings_font_size
- * @property $headings_font_face
- * @property $headings_font_style
- * @property $headings_font_color
- * @property $content_color
- * @property $menu_color
- * @property $custom_menu_color
- * @property $disable_menu_background
- * @property $header_footer_color
- * @property $header_footer_pattern
- * @property $page_background_image
- * @property $page_100_background_image
- * @property $page_background_repeat
- * @property $general_Link_color
- * @property $buttons_1_color
- * @property $buttons_2_color
- * @property $enable_widget_title_black_background
- * @property $disable_widget_background
  */
 
 class ThemeSettingsModel extends SiteSettingsModel {
@@ -126,7 +87,7 @@ class ThemeSettingsModel extends SiteSettingsModel {
                 'formIndex' => 2,
             ),
             'site_title_size' => array(
-                'label' => 'Site Title font Size',
+                'label' => 'Site Title Font Size',
                 'type' => 'number',
                 'rules' => array(),
                 'section' => 'header',

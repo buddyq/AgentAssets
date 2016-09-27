@@ -1,4 +1,3 @@
-/*
 Theme Name: Supersized
 Author: AgentAssets.com
 Author URI: http://AgentAssets.com/
@@ -238,6 +237,7 @@ div#supersized-navbar-collapse {
     border: 2px solid rgba(127,135,173,1);
     background-color: rgba(0,0,0,0.5);
     padding: 3px 5px;
+    margin-bottom: 10px;
 }
 
 .itemAttachments > li {

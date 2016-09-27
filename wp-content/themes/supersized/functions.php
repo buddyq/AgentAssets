@@ -2006,7 +2006,7 @@ $model->registerCustomizeResources(array(
         ),
     ),
     'content_title_color' => array(
-        'selector' => '.main-content .container .content h1',
+        'selector' => '.main-content .container .content h1, .printable-information.row .title h3',
         'css' => array(
             'color' => '{value}',
         ),
@@ -2036,7 +2036,7 @@ $model->registerCustomizeResources(array(
         ),
     ),
     'site_rest_font_face' => array(
-        'selector' => '.main-content .container .content',
+        'selector' => '.main-content .container .content, .property-details label, .property-details span, .property-details .col-sm-8 p',
         'css' => array(
             'font-family' => '{value}',
         ),

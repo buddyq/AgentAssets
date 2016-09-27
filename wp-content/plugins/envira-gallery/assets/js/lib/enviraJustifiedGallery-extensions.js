@@ -12,6 +12,8 @@
     var obj = justifiedGallery.apply(this, arguments);
     EnviraJustifiedGallery = obj.data('jg.controller');
 
+    if (EnviraJustifiedGallery !== undefined) {
+
     EnviraJustifiedGallery.displayEntryCaption = function ($entry) {
 
         var $image = this.imgFromEntry($entry);
@@ -41,6 +43,8 @@
     };
 
     return EnviraJustifiedGallery;
+
+    }
 
   };
 })(jQuery);

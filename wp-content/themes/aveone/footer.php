@@ -107,12 +107,12 @@
                 <div class="logos-container row">
                     <div class="logo col-sm-8">
                         <a href="http://www.austinportfoliorealestate.com/" title="Click here to go to Austin Portfolio Real Estate website" target="_blank">
-                        <?php echo aa_media_image_shortcode(array(
+                        <!-- <?php echo aa_media_image_shortcode(array(
                             'size' => 'full',
                             'style' => 'width:auto; height:136px;',
-                        ), $agentInformation->broker_logo); ?>
+                        ), $agentInformation->broker_logo); ?> -->
                         </a>
-                        <?php /*
+                        <?php
                         $blog_id = get_current_blog_id();
                         switch_to_blog($blog_id);
                         //$agent_broker_logo = get_user_meta($user_id,'broker_logo',true);
@@ -125,7 +125,7 @@
                         <a href="http://www.austinportfoliorealestate.com/" title="Click here to go to Austin Portfolio Real Estate website" target="_blank">
                         <img src="<?php echo $agent_broker_logo;//echo aveone_get_option('evl_agent_company_logo');?>" height="60" alt="Austin Portfolio Real Estate">
                         </a>
-                        <?php  */ ?>
+                        <?php   ?>
                     </div>
                     <div class="logo col-sm-4">
                         <?php if(aveone_get_option('evl_header_logo')){ ?>

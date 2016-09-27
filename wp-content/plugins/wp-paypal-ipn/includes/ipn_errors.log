@@ -5,3 +5,4 @@ Paypal Verification | Invalid
 Paypal Verification | Invalid
 Paypal Verification | Invalid
 cURL error: [35] error:14094410:SSL routines:ssl3_read_bytes:sslv3 alert handshake failure
+Invalid HTTP request method.

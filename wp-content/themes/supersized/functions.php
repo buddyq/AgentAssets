@@ -2,7 +2,6 @@
 
 function setup() {
 
-
 	/*
 	 * Let WordPress manage the document title.
 	 * By adding theme support, we declare that this theme does not use a
@@ -31,6 +30,33 @@ function setup() {
 
 add_action( 'after_setup_theme', 'setup' );
 
+add_filter( 'gettext', 'tgm_envira_whitelabel', 10, 3 );
+function tgm_envira_whitelabel( $translated_text, $source_text, $domain ) {
+
+    // If not in the admin, return the default string.
+    if ( ! is_admin() ) {
+        return $translated_text;
+    }
+
+    if ( strpos( $source_text, 'an Envira' ) !== false ) {
+        return str_replace( 'an Envira', '', $translated_text );
+    }
+
+    if ( strpos( $source_text, 'Envira' ) !== false ) {
+        return str_replace( 'Envira', 'Photo', $translated_text );
+    }
+
+    return $translated_text;
+
+}
+
+add_action( 'admin_init', 'tgm_envira_remove_header' );
+function tgm_envira_remove_header() {
+
+    // Remove the Envira banner
+    remove_action( 'in_admin_header', array( Envira_Gallery_Posttype_Admin::get_instance(), 'admin_header' ), 100 );
+
+}
 
 function rebranding_wordpress_logo(){
     global $wp_admin_bar;
@@ -2098,7 +2124,3 @@ function render_dynamic_css() {
     );
 }
 */
-
-
-
-

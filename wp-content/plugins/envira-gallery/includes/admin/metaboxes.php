@@ -913,10 +913,61 @@ class Envira_Gallery_Metaboxes {
                                         <span class="description"><?php _e( 'Enables CSS animations when loading the main gallery images.', 'envira-gallery' ); ?></span>
                                     </td>
                                 </tr>
+                                <tr id="envira-config-css-opacity-box">
+                                    <th scope="row">
+                                        <label for="envira-config-css-opacity"><?php _e( 'Image Opacity', 'envira-gallery' ); ?></label>
+                                    </th>
+                                    <td>
+                                        <input id="envira-config-css-opacity" type="number" name="_envira_gallery[css_opacity]" min="0" max="100" step="1" value="<?php echo $this->get_config( 'css_opacity', $this->get_config_default( 'css_opacity' ) ); ?>" /><span class="envira-unit">%</span>
+                                        <p class="description"><?php _e( 'The opacity to display images at when loading the main gallery images using CSS animations (between 1 and 100%).', 'envira-gallery' ); ?></p>
+                                    </td>
+                                </tr>
 
                                 <?php do_action( 'envira_gallery_include_justified_config_box', $post ); ?>
 
                                 <?php
+                            }
+                            ?>
+
+                            <?php
+                            if ( class_exists( 'Envira_Gallery' ) ) {
+                                ?>
+                                <!-- Sorting -->
+                                <tr id="envira-config-sorting-box">
+                                    <th scope="row">
+                                        <label for="envira-config-sorting"><?php _e( 'Sorting', 'envira-gallery' ); ?></label>
+                                    </th>
+                                    <td>
+                                        <select id="envira-config-sorting" name="_envira_gallery[random]" data-envira-conditional="envira-config-sorting-direction-box">
+                                            <?php
+                                            foreach ( (array) $this->get_sorting_options() as $i => $data ) {
+                                                ?>
+                                                <option value="<?php echo $data['value']; ?>"<?php selected( $data['value'], $this->get_config( 'random', $this->get_config_default( 'random' ) ) ); ?>><?php echo $data['name']; ?></option>
+                                                <?php
+                                            }
+                                            ?>
+                                        </select>
+                                        <p class="description"><?php _e( 'Choose to sort the images in a different order than displayed on the Images tab.', 'envira-gallery' ); ?></p>
+                                    </td>
+                                </tr>
+                                <tr id="envira-config-sorting-direction-box">
+                                    <th scope="row">
+                                        <label for="envira-config-sorting-direction"><?php _e( 'Direction', 'envira-gallery' ); ?></label>
+                                    </th>
+                                    <td>
+                                        <select id="envira-config-sorting-direction" name="_envira_gallery[sorting_direction]">
+                                            <?php
+                                            foreach ( (array) $this->get_sorting_directions() as $i => $data ) {
+                                                ?>
+                                                <option value="<?php echo $data['value']; ?>"<?php selected( $data['value'], $this->get_config( 'sorting_direction', $this->get_config_default( 'sorting_direction' ) ) ); ?>><?php echo $data['name']; ?></option>
+                                                <?php
+                                            }
+                                            ?>
+                                        </select>
+                                    </td>
+                                </tr>
+                                <?php
+
                             }
                             ?>
 
@@ -963,48 +1014,6 @@ class Envira_Gallery_Metaboxes {
                                 <p class="description"><?php _e( 'Sets the space below each item in the gallery.', 'envira-gallery' ); ?></p>
                             </td>
                         </tr>
-
-                        <?php
-                        if ( class_exists( 'Envira_Gallery' ) ) {
-                            ?>
-                            <!-- Sorting -->
-                            <tr id="envira-config-sorting-box">
-                                <th scope="row">
-                                    <label for="envira-config-sorting"><?php _e( 'Sorting', 'envira-gallery' ); ?></label>
-                                </th>
-                                <td>
-                                    <select id="envira-config-sorting" name="_envira_gallery[random]" data-envira-conditional="envira-config-sorting-direction-box">
-                                        <?php
-                                        foreach ( (array) $this->get_sorting_options() as $i => $data ) {
-                                            ?>
-                                            <option value="<?php echo $data['value']; ?>"<?php selected( $data['value'], $this->get_config( 'random', $this->get_config_default( 'random' ) ) ); ?>><?php echo $data['name']; ?></option>
-                                            <?php
-                                        }
-                                        ?>
-                                    </select>
-                                    <p class="description"><?php _e( 'Choose to sort the images in a different order than displayed on the Images tab.', 'envira-gallery' ); ?></p>
-                                </td>
-                            </tr>
-                            <tr id="envira-config-sorting-direction-box">
-                                <th scope="row">
-                                    <label for="envira-config-sorting-direction"><?php _e( 'Direction', 'envira-gallery' ); ?></label>
-                                </th>
-                                <td>
-                                    <select id="envira-config-sorting-direction" name="_envira_gallery[sorting_direction]">
-                                        <?php
-                                        foreach ( (array) $this->get_sorting_directions() as $i => $data ) {
-                                            ?>
-                                            <option value="<?php echo $data['value']; ?>"<?php selected( $data['value'], $this->get_config( 'sorting_direction', $this->get_config_default( 'sorting_direction' ) ) ); ?>><?php echo $data['name']; ?></option>
-                                            <?php
-                                        }
-                                        ?>
-                                    </select>
-                                </td>
-                            </tr>
-                            <?php
-
-                        }
-                        ?>
 
                         <!-- Dimensions -->
                         <tr id="envira-config-image-size-box">
@@ -1096,15 +1105,7 @@ class Envira_Gallery_Metaboxes {
                                 </td>
                             </tr>
 
-                            <tr id="envira-config-css-opacity-box">
-                                <th scope="row">
-                                    <label for="envira-config-css-opacity"><?php _e( 'Image Opacity', 'envira-gallery' ); ?></label>
-                                </th>
-                                <td>
-                                    <input id="envira-config-css-opacity" type="number" name="_envira_gallery[css_opacity]" min="0" max="100" step="1" value="<?php echo $this->get_config( 'css_opacity', $this->get_config_default( 'css_opacity' ) ); ?>" /><span class="envira-unit">%</span>
-                                    <p class="description"><?php _e( 'The opacity to display images at when loading the main gallery images using CSS animations (between 1 and 100%).', 'envira-gallery' ); ?></p>
-                                </td>
-                            </tr>
+
                             <?php
                         }
                         ?>

@@ -252,14 +252,23 @@ class Envira_Gallery_Common_Admin {
         // Get current screen.
         $screen = get_current_screen();
         
-        // Bail if we're not on the Envira Post Type screen.
+        // If we're not on the Envira Post Type screen, only load the modal css then bail
         if ( 'envira' !== $screen->post_type && 'envira_album' !== $screen->post_type ) {
+        
+            // Load necessary admin styles.
+            wp_register_style( $this->base->plugin_slug . '-admin-modal-style', plugins_url( 'assets/css/admin-modal.css', $this->base->file ), array(), $this->base->version );
+            wp_enqueue_style( $this->base->plugin_slug . '-admin-modal-style' );
             return;
-        }
+        
+        } else {
 
-        // Load necessary admin styles.
+        // Proceed loading remaining admin CSS necessary admin styles.
         wp_register_style( $this->base->plugin_slug . '-admin-style', plugins_url( 'assets/css/admin.css', $this->base->file ), array(), $this->base->version );
         wp_enqueue_style( $this->base->plugin_slug . '-admin-style' );
+        wp_register_style( $this->base->plugin_slug . '-admin-modal-style', plugins_url( 'assets/css/admin-modal.css', $this->base->file ), array(), $this->base->version );
+        wp_enqueue_style( $this->base->plugin_slug . '-admin-modal-style' );
+        
+        }
 
         // Fire a hook to load in custom admin styles.
         do_action( 'envira_gallery_admin_styles' );

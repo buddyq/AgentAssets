@@ -5,7 +5,7 @@
  * Description: Enables a custom "supersize" lightbox view for Envira galleries.
  * Author:      Envira Gallery Team
  * Author URI:  http://enviragallery.com
- * Version:     1.1.3
+ * Version:     1.1.4
  * Text Domain: envira-supersize
  * Domain Path: languages
  *
@@ -30,7 +30,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 // Define necessary addon constants.
 define( 'ENVIRA_SUPERSIZE_PLUGIN_NAME', 'Envira Gallery - Supersize Addon' );
-define( 'ENVIRA_SUPERSIZE_PLUGIN_VERSION', '1.1.3' );
+define( 'ENVIRA_SUPERSIZE_PLUGIN_VERSION', '1.1.4' );
 define( 'ENVIRA_SUPERSIZE_PLUGIN_SLUG', 'envira-supersize' );
 
 add_action( 'plugins_loaded', 'envira_supersize_plugins_loaded' );
@@ -301,7 +301,11 @@ function envira_supersize_init( $data ) {
  * @return string Empty string disables the theme.
  */
 function envira_supersize_disable_theme( $theme, $data ) {
-    return '';
+    if ( ! Envira_Gallery_Shortcode::get_instance()->get_config( 'supersize', $data ) ) {
+        return $theme;
+    } else {
+        return '';
+    }
 }
 
 /**

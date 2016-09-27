@@ -209,12 +209,16 @@ class Envira_Gallery_Shortcode {
             $justified_gallery_theme = false;
             if ( $this->get_config( 'columns', $data ) > 0 ) {
                 $extra_css = false;
+                // add isotope if the user has it enabled
+                $isotope = $this->get_config( 'isotope', $data ) ? ' enviratope' : false;
             } else {
                 $row_height = $this->get_config( 'justified_row_height', $data );
                 $justified_gallery_theme = $this->get_config( 'justified_gallery_theme', $data );
+                // this is a justified layout, no isotope even if it's selected in the DB
+                $isotope = false;
             }
 
-            $gallery .= '<div' .  $opacity_insert . ' data-row-height="'.$row_height.'" data-gallery-theme="'.$justified_gallery_theme.'" id="envira-gallery-' . sanitize_html_class( $data['id'] ) . '" class="envira-gallery-public '.$extra_css.' envira-gallery-' . sanitize_html_class( $this->get_config( 'columns', $data ) ) . '-columns envira-clear' . ( $this->get_config( 'isotope', $data ) ? ' enviratope' : '' ) . ( $this->get_config( 'css_animations', $data ) ? ' envira-gallery-css-animations' : '' ) . '" data-envira-columns="' . $this->get_config( 'columns', $data ) . '">';
+            $gallery .= '<div' .  $opacity_insert . ' data-row-height="'.$row_height.'" data-gallery-theme="'.$justified_gallery_theme.'" id="envira-gallery-' . sanitize_html_class( $data['id'] ) . '" class="envira-gallery-public '.$extra_css.' envira-gallery-' . sanitize_html_class( $this->get_config( 'columns', $data ) ) . '-columns envira-clear' . $isotope . ( $this->get_config( 'css_animations', $data ) ? ' envira-gallery-css-animations' : '' ) . '" data-envira-columns="' . $this->get_config( 'columns', $data ) . '">';
 
                 // Start image loop
                 foreach ( $data['gallery'] as $id => $item ) {
@@ -1448,9 +1452,9 @@ class Envira_Gallery_Shortcode {
             );
         }
 
-        // If the image size is a WordPress size and we're not requesting a retina image
+        // If the current layout is justified/automatic OR if the image size is a WordPress size and we're not requesting a retina image
         // we don't need to resize or crop anything.
-        if ( $image_size != 'default' && ! $retina ) {
+        if ( $this->get_config( 'columns', $data ) == 0 || ( $image_size != 'default' && ! $retina ) ) {
             // Return the image
             return apply_filters( 'envira_gallery_image_src', $image, $id, $item, $data );
         }

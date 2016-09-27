@@ -5,7 +5,7 @@
  * Description: Envira Gallery is best responsive WordPress gallery plugin.
  * Author:      Envira Gallery Team
  * Author URI:  http://enviragallery.com
- * Version:     1.5.4
+ * Version:     1.5.6
  * Text Domain: envira-gallery
  * Domain Path: languages
  *
@@ -56,7 +56,7 @@ class Envira_Gallery {
 	 *
 	 * @var string
 	 */
-	public $version = '1.5.4';
+	public $version = '1.5.6';
 
 	/**
 	 * The name of the plugin.

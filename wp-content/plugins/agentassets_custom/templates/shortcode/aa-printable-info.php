@@ -21,7 +21,7 @@
                     // The Loop
                     if ( $the_query->have_posts() ) {
 
-                       // var_dump($the_query);
+                        //var_dump($the_query);
 
                         while ( $the_query->have_posts() ) {
                             $the_query->the_post();
@@ -33,17 +33,26 @@
                                 <h5><?php echo get_the_content(); ?></h5>
 
                                 <div style="border:none" class="button medium white download">
-                                    <?php $Printable_info_pdf = get_post_meta(get_the_ID(), 'wpcf-select-file-here', true );
-                                    //echo "<prE>";print_r($Printable_info_pdf);echo "</pre>";
+                                    <?php $printable_file_info = get_post_meta(get_the_ID(), 'wpcf-select-file', true );
+                                    //echo "<pre>";print_r($Printable_info_pdf);echo "</pre>";
                                     //$pdf_file = $Printable_info_pdf['file'];
-                                    if(!empty($Printable_info_pdf)) { ?>
-                                        <a class="btn btn-primary" target="_new" href="<?php echo $Printable_info_pdf; ?>">Download</a>
+                                    if(!empty($printable_file_info)) { ?>
+                                        <a class="btn btn-primary" target="_new" href="<?php echo $printable_file_info; ?>">Download</a>
                                     <?php }
 
 
                                     ?>
                                     <div class="pdf-size-details">
-                                        <!--                                            <span class="pdf-dowmload-size">Size: 0.37 MB </span><br>-->
+                                      <?php
+                                      $replaced = str_replace("http://".$_SERVER['HTTP_HOST'],$_SERVER["DOCUMENT_ROOT"],$printable_file_info);
+                                      $daFile = filesize($replaced);
+                                      $size = size_format($daFile);
+                                      // echo $replaced . "<br>";
+                                      // echo $_SERVER['HTTP_HOST'] . "<br>"; //sub.domain.name
+                                      // echo $_SERVER["DOCUMENT_ROOT"]; // /home/austin43/public_html
+                                      echo $size;
+                                      ?>
+                                        <!--<span class="attachment-size">Size: 0.37 MB </span><br>-->
                                     </div>
                                 </div>
                             </li>

@@ -2030,7 +2030,7 @@ $model->registerCustomizeResources(array(
         ),
     ),
     'main_navigation_background_hover_color' => array(
-        'selector' => 'nav.navbar-default',
+        'selector' => '.navbar-default .navbar-nav > li:hover',
         'css' => array(
             'background-color' => '{value}',
         ),
@@ -2061,7 +2061,7 @@ $model->registerCustomizeResources(array(
         ),
     ),
     'footer_link_color' => array(
-        'selector' => 'footer a',
+        'selector' => '.footer-wrapper a, .footer-wrapper p.siteby a, .footer-wrapper a:visited, .footer-wrapper p.siteby a: visited',
         'css' => array(
             'color' => '{value}',
         ),

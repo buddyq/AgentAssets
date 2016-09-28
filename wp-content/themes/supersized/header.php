@@ -16,8 +16,7 @@
 	<link href="https://fonts.googleapis.com/css?family=<?php echo $alloptions['evl_title_font']['face']; ?>" rel='stylesheet' type='text/css'>
 
 	<?php wp_head(); ?>
-	<?php
-	// echo "<pre>";print_r($alloptions);"</pre>"; ?>
+	<?php $model = ThemeSettingsModel::model(); ?>
 	<style media="screen">
 		h1{ font-size: <?php echo $alloptions['evl_title_font']['size'] ?>}
 		.site-title a{
@@ -26,7 +25,7 @@
 			font-style: <?php echo $alloptions['evl_title_font']['style']; ?>
 		}
 		.navbar-default .navbar-nav>li>a{
-			color: <?php echo $alloptions['evl_menu_font']['color'] ?>;
+			/*color: <?php echo $alloptions['evl_menu_font']['color'] ?>;*/
 			font-size: <?php echo $alloptions['evl_menu_font']['size'] ?>;
 			font-family: <?php echo $alloptions['evl_menu_font']['face'] ?>
 		}
@@ -40,6 +39,9 @@
 			/*width: 100%;*/
 			text-align: center;
 		}
+		<?php
+		echo ".itemAttachments li, ul.details{ background-color: ".$model->highlighted_accent_color ."}";
+		?>
 	</style>
 </head>
 <body>

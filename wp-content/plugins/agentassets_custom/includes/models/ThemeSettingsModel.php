@@ -151,8 +151,8 @@ class ThemeSettingsModel extends SiteSettingsModel {
                 'section' => 'body',
                 'formIndex' => 8,
             ),
-            'body_face' => array(
-                'label' => 'Site Font',
+            'menu_font' => array(
+                'label' => 'Menu Font',
                 'type' => 'select',
                 'google_font_loader' => true,
                 'options' => self::fontList(),
@@ -826,7 +826,8 @@ class ThemeSettingsModel extends SiteSettingsModel {
         }
 
         foreach($google_fonts as $fontName) {
-            wp_enqueue_style('googlefont', "//fonts.googleapis.com/css?family=" . $fontName);
+          $fonts = implode("|",$google_fonts);
+          wp_enqueue_style('googlefont', "//fonts.googleapis.com/css?family=" . $fonts);
         }
     }
 

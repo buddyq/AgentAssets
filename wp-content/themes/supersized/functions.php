@@ -2035,17 +2035,23 @@ $model->registerCustomizeResources(array(
             'background-color' => '{value}',
         ),
     ),
+		'accent_text_color' => array(
+        'selector' => 'ul.details, .itemAttachments li, .property-details span, .btn-primary',
+        'css' => array(
+            'color' => '{value}',
+        ),
+    ),
     'site_rest_font_face' => array(
-        'selector' => '.main-content .container .content',
+        'selector' => '.main-content .container .content, #footer',
         'css' => array(
             'font-family' => '{value}',
         ),
     ),
 
     'highlighted_accent_color' => array(
-        'selector' => '.main-content .container .content em, .main-content .container .content strong, .main-content .container .content cite, .main-content .container ul.details',
+        'selector' => 'a.btn, .btn-primary, .btn, a.btn:hover, ul.details',
         'css' => array(
-            'color' => '{value}',
+            'background-color' => '{value}',
         ),
     ),
     'main_text_color' => array(

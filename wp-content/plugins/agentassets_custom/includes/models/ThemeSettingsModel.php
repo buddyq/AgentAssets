@@ -204,6 +204,13 @@ class ThemeSettingsModel extends SiteSettingsModel {
                 'section' => 'body',
                 'formIndex' => 15,
             ),
+            'accent_text_color' => array(
+                'label' => 'Accent Text Color',
+                'type' => 'WP_Customize_Color_Control',
+                'rules' => array(),
+                'section' => 'body',
+                'formIndex' => 16,
+            ),
             'main_text_color' => array(
                 'label' => 'Main Text Color',
                 'type' => 'WP_Customize_Color_Control',

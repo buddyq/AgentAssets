@@ -95,10 +95,20 @@
                     <div class="agent-contact col-sm-8">
 						<!--$firstName = get_user_meta($user_id, 'first_name', true);-->
                         <h3><?php echo $agentInformation->agent_name;?></h3>
+                        <?php if (!empty($agentInformation->designations)) { ?>
                         <p class="designation"><span class="label"><?php echo $agentInformation->designations; ?></span></p>
+                        <?php } ?>
+                        <?php if (!empty($agentInformation->business_phone)) { ?>
                         <p class="phone"><span class="label">o: </span><?php echo $agentInformation->business_phone; ?></p>
+                        <?php } ?>
+                        <?php if (!empty($agentInformation->mobile_phone)) { ?>
                         <p class="phone"><span class="label">c: </span><?php echo $agentInformation->mobile_phone; ?></p>
-                        <p class="email"><span class="label">e: </span><a href="mailto:<?php echo $user_email;//echo aveone_get_option('evl_agent_email');?>"><?php echo $user_email;//echo aveone_get_option('evl_agent_email');?></a></p>
+                        <?php } ?>
+                        <?php
+                        $email = empty($agentInformation->agent_email) ? $blogOwner->user_email : $agentInformation->agent_email;
+                        if (!empty($email)) { ?>
+                        <p class="email"><span class="label">e: </span><a href="mailto:<?php echo $email;?>"><?php echo $email;?></a></p>
+                        <?php } ?>
                             <?php get_template_part('social-buttons', 'header'); ?>
                     </div>
                 </div>

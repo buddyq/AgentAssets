@@ -51,20 +51,29 @@
                                             <?php
                                         }
 
-                                        ?>
+                                        $email = empty($agentInformation->agent_email) ? $blogOwner->user_email : $agentInformation->agent_email;
 
+                                        if (!empty($email)) {
+                                        ?>
                                         <li>
-                                            e: <a  class="cu-agent-mail" href="mailto:<?php echo empty($agentInformation->agent_email) ? $blogOwner->user_email : $agentInformation->agent_email;?>"><?php echo empty($agentInformation->agent_email) ? $blogOwner->user_email : $agentInformation->agent_email;?></a>
+                                            e: <a  class="cu-agent-mail" href="mailto:<?php echo $email;?>"><?php echo $email;?></a>
                                         </li>
+                                        <?php } ?>
                                         <!-- if twitter / facebook / or google plus is entered -->
                                         <li class="social">
                                             <?php
 
                                     // $attachment_id = get_user_meta($users['0']->data->ID,'profile_picture',true);
                                             ?>
-                                            <a target="_blank" class="twitter" title="Follow me on Twitter!" href="http://twitter.com/<?php echo $agentInformation->twitter; ?>"><span><img src="<?php echo get_template_directory_uri();?>/images/Twitter.png"></span></a>
+                                            <?php if (!empty($agentInformation->twitter)) { ?>
+                                            <a target="_blank" class="twitter" title="Follow me on Twitter!" href="http://twitter.com/<?php echo $agentInformation->twitter; ?>"><span><img src="<?php echo get_template_directory_uri();?>/images/Twitter.png"></span></a>\
+                                            <?php } ?>
+                                            <?php if (!empty($agentInformation->facebook)) { ?>
                                             <a target="_blank" class="facebook" title="Friend me on Facebook!" href="http://facebook.com/<?php echo $agentInformation->facebook; ?>"><span><img src="<?php echo get_template_directory_uri();?>/images/Facebook.png"></span></a>
+                                            <?php } ?>
+                                            <?php if (!empty($agentInformation->google_plus)) { ?>
                                             <a target="_blank" class="googleplus" title="Add me to your circles on Google+" href="http://plus.google.com/<?php echo $agentInformation->google_plus;?>"><span><img src="<?php echo get_template_directory_uri();?>/images/Google.png"></span></a>
+                                            <?php } ?>
                                         </li>
                                     </ul>
                                 </div><!-- End agent info -->

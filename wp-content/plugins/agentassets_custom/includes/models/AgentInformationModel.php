@@ -28,6 +28,16 @@ class AgentInformationModel extends SiteSettingsModel {
         return parent::model($className);
     }
 
+    public function load() {
+        $metadata = $this->attributesMetadata();
+        foreach($metadata as $attribute => $info) {
+            $this->{$attribute} = get_option($this::OPTION_PREFIX . $attribute);
+            if (empty($this->{$attribute}) && isset($info['default'])) {
+                $this->{$attribute} = $info['default'];
+            }
+        }
+    }
+
     public function attributesMetadata() {
         $blogOwner = OrderMap::getBlogOwner(get_current_blog_id());
         $user_meta = array();
@@ -36,6 +46,7 @@ class AgentInformationModel extends SiteSettingsModel {
             $user_meta = get_user_meta($blogOwner);
             $user_data = WP_User::get_data_by('id', $blogOwner );
         }
+        //var_dump($user_meta);
         $agent_name = (isset($user_meta['first_name']) ? $user_meta['first_name'][0] : '')
             . (isset($user_meta['last_name']) ? ' ' . $user_meta['last_name'][0] : '');
         return array(

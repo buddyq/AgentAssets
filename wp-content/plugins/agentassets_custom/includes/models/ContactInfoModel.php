@@ -40,6 +40,7 @@ class ContactInfoModel extends SiteSettingsModel {
                 'type' => 'string',
                 'rules' => array(),
                 'formIndex' => 2,
+                'adminOption' => true,
             ),
             'google_map_address' => array(
                 'label' => 'Map Pin Location<span class="desc">This is the actual pin position on the earth.</span>',

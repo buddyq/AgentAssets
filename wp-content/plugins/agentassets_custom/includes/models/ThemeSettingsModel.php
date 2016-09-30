@@ -836,12 +836,26 @@ class ThemeSettingsModel extends SiteSettingsModel {
         if ($this->always_show_footer !== 'yes' && isset($always_show_footer['params']) && isset($always_show_footer['params']['button_container_selector'])) {
             ?>
             <script>
+                var tsm = {
+                    setCookie: function (key, value) {
+                        var expires = new Date();
+                        expires.setTime(expires.getTime() + (1 * 24 * 60 * 60 * 1000));
+                        document.cookie = key + '=' + value + ';expires=' + expires.toUTCString()  + '; path=/';
+                    },
+                    getCookie: function (key) {
+                        var keyValue = document.cookie.match('(^|;) ?' + key + '=([^;]*)(;|$)');
+                        return keyValue ? keyValue[2] : null;
+                    }
+                }
+
                 jQuery(document).ready(function() {
                     jQuery('<?php echo $always_show_footer['params']['button_container_selector'];?>').prepend(
                         jQuery('<button class="toggle-footer-button">Hide Agent Info</button>').click(function () {
                             jQuery('<?php echo $always_show_footer['params']['button_container_selector'];?>').toggleClass('hide-footer');
 
                             var text = jQuery('.toggle-footer-button').text();
+                            tsm.setCookie('toggle-footer-button-state', text == "Hide Agent Info" ? 0 : 1);
+
                             jQuery('.toggle-footer-button').text(
                                 text == "Hide Agent Info" ? "Show Agent Info" : "Hide Agent Info");
                         })

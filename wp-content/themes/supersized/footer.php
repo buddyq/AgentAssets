@@ -3,7 +3,7 @@
 
                   <?php $agentInformation = AgentInformationModel::model(); ?>
 
-                <footer id="footer" class="footer-wrapper">
+                <footer id="footer" class="footer-wrapper <?php echo (isset($_COOKIE['toggle-footer-button-state']) && $_COOKIE['toggle-footer-button-state'] == '1') ? 'hide-footer' : '' ?>">
                     <div class="container">
                         <div class="col-sm-6">
                             <div class="broker-wrapper">

@@ -5,6 +5,7 @@ abstract class AAAdminFormItem {
     public $id = null;
     public $error = null;
     public $htmlOptions = array();
+    public $adminOption = false;
 
     abstract public function render();
 

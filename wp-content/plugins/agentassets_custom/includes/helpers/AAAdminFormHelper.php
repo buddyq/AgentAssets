@@ -78,6 +78,7 @@ class AAAdminFormConfig {
             throw new Exception('Unknown form field type '.$config['type']);
         }
 
+        /** @var AAAdminFormItem $item */
         $item = new $typesMap[$config['type']];
         $item->id = self::getFieldId($config['name']);
         $item->label = $config['label'];
@@ -92,6 +93,9 @@ class AAAdminFormConfig {
         $item->htmlOptions['value'] = isset($config['value']) ? $config['value'] : '';
         if (!empty($config['error'])) {
             $item->error = $config['error'];
+        }
+        if (!empty($config['adminOption'])) {
+            $item->adminOption = boolval($config['adminOption']);
         }
 
         switch ($config['type']) {
@@ -149,8 +153,13 @@ class AAAdminFormHelper {
     }
 
     public static function renderFields($fieldsConfig) {
+        $themeSettings = ThemeSettingsModel::model();
+        $blogOwner = OrderMap::getBlogOwner(get_current_blog_id());
         /** @var AAAdminFormItem $item */
         foreach($fieldsConfig->getItems() as $item) {
+            if ($blogOwner != 1 && $blogOwner != null && $item->adminOption) {
+                continue;
+            }
             $item->render();
         }
     }

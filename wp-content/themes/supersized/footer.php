@@ -39,32 +39,22 @@
                                         if(!empty($agentInformation->business_phone))
                                         {
                                             ?>
-                                            <li>c: <?php echo $agentInformation->business_phone;?></li>
+                                            <li>o: <?php echo $agentInformation->business_phone;?></li>
                                             <?php
                                         }
-                                        else
-                                        {
-                                            ?>
-                                            <li>c: 512-555-1234</li>
-                                            <?php
-                                        }
+
 
                                         if(!empty($agentInformation->mobile_phone))
                                         {
                                             ?>
-                                            <li>o: <?php echo $agentInformation->mobile_phone;?></li>
+                                            <li>c: <?php echo $agentInformation->mobile_phone;?></li>
                                             <?php
                                         }
-                                        else
-                                        {
-                                            ?>
-                                            <li>o: 512-555-1234</li>
-                                            <?php
-                                        }
+
                                         ?>
 
                                         <li>
-                                            <a  class="cu-agent-mail" href="mailto:<?php echo $blogOwner->user_email;?>"><?php echo $blogOwner->user_email;?></a>
+                                            e: <a  class="cu-agent-mail" href="mailto:<?php echo empty($agentInformation->agent_email) ? $blogOwner->user_email : $agentInformation->agent_email;?>"><?php echo empty($agentInformation->agent_email) ? $blogOwner->user_email : $agentInformation->agent_email;?></a>
                                         </li>
                                         <!-- if twitter / facebook / or google plus is entered -->
                                         <li class="social">

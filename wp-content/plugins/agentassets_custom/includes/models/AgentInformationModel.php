@@ -37,6 +37,14 @@ class AgentInformationModel extends SiteSettingsModel {
                     array('require'),
                     array('length', 'min' => 6),
                 ),
+                'formIndex'  => 0,
+            ),
+            'agent_email' => array(
+                'label'      => 'Agent Email',
+                'type'       => 'string',
+                'rules' => array(
+                    //array('validate_email'),
+                ),
                 'formIndex'  => 1,
             ),
             'designations' => array(

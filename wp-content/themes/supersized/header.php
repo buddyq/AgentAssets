@@ -40,7 +40,8 @@
 			text-align: center;
 		}
 		<?php
-		echo ".itemAttachments li, ul.details{ background-color: ".$model->highlighted_accent_color ."}";
+		// echo ".itemAttachments li, ul.details, .btn-primary{ background-color: lighten(".$model->highlighted_accent_color .", 80%)};";
+		echo ".btn-primary{ border-color: ".$model->highlighted_accent_color . "};";
 		?>
 	</style>
 </head>

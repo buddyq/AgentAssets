@@ -26,7 +26,7 @@ class AACRender {
                 array_splice($this->_template_paths, $priority, 0, array($path));
             }
         } else {
-            throw new Exception('Invalid template path: '.$path);
+            //throw new Exception('Invalid template path: '.$path);
         }
     }
 

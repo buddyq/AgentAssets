@@ -16,6 +16,7 @@ include 'includes/AACRender.php';
 
 $render = AACRender::instance(AA_CUSTOM_RENDER_INSTANCE);
 $render->addTemplatePath(dirname(__FILE__). '/templates');
+$render->addTemplatePath(get_template_directory() . '/templates');
 
 include 'includes/shortcodes/register-form.php';
 include 'includes/shortcodes/profile-form.php';

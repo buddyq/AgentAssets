@@ -56,15 +56,25 @@
 									<?php _e('Learn about how rows can be displayed in different ways', 'ddl-layouts'); ?> &raquo;
 								</a>
 							</p>
+                            
+                            <p class="desc">
+                                <label for="js-ddl-container-padding" class='default_container_padding_label'>
+                                    <input type="checkbox" id="js-ddl-container-padding" name="ddl_container_padding" value="yes"> 
+                                    <?php _e('Use default 15px container padding', 'ddl-layouts'); ?> 
+                                </label>
+                            </p>
 
 						</li>
 					</ul>
 
 
 
+
 				</div> <!-- .ddl-popup-tab -->
+
+                
 				<?php do_action('ddl-before_row_markup_controls'); ?>
-				<div class="ddl-popup-tab ddl-markup-controls"" id="js-row-design-<?php echo $unique_id; ?>">
+				<div class="ddl-popup-tab ddl-markup-controls" id="js-row-design-<?php echo $unique_id; ?>">
 					<?php
 						$dialog_type = 'row';
 						do_action('ddl-before_row_default_edit_fields');

@@ -1241,9 +1241,9 @@ function wpv_forgot_password_form( $args = array() ) {
 		'redirect_fail'		=> ( is_ssl() ? 'https://' : 'http://' ) . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'],
 		'reset_password'	=> '',
 		'form_id'			=> 'forgotpasswordform',
-		'label_username'	=> __( 'Username or Email' ),
+		'label_username'	=> __( 'Username or Email', 'wpv-views' ),
 		'id_username'		=> 'user_login',
-		'label_submit'		=> 'Get New Password',
+		'label_submit'		=> __( 'Get New Password', 'wpv-views' ),
 		'id_submit'			=> 'wp-submit',
 		'value_username'	=> isset( $_REQUEST['username'] ) ? $_REQUEST['username'] : '',
 	);
@@ -1295,7 +1295,7 @@ function wpv_forgot_password_form( $args = array() ) {
 	}
 
 	$form = '
-		<form name="' . $args['form_id'] . '" id="' . $args['form_id'] . '" action="' . wp_lostpassword_url() . '" method="post">
+		<form name="' . esc_attr( $args['form_id'] ) . '" id="' . esc_attr( $args['form_id'] ) . '" action="' . wp_lostpassword_url() . '" method="post">
 			' . $form_top . '
 			<p class="login-username">
 				<label for="' . esc_attr( $args['id_username'] ) . '">' . esc_html( $args['label_username'] ) . '</label>
@@ -1335,9 +1335,9 @@ function wpv_shortcodes_get_wpv_forgot_password_form_data()  {
 		'name' => __( 'Forgot Password Form', 'wpv-views' ),
 		'label' => __( 'Forgot Password Form', 'wpv-views' ),
 		'attributes' => array(
-			'display-options' => array(
-				'label' => __('Display options', 'wpv-views'),
-				'header' => __('Display options', 'wpv-views'),
+			'redirect-options' => array(
+				'label' => __('Redirect options', 'wpv-views'),
+				'header' => __('Redirect options', 'wpv-views'),
 				'fields' => array(
 					'redirect_url' => array(
 						'label' => __( 'Redirect to this URL on success', 'wpv-views'),
@@ -1590,7 +1590,7 @@ function wpv_reset_password_form( $args = array() ) {
 	}
 
 	$form = '
-		<form name="' . $args['form_id'] . '" id="' . $args['form_id'] . '" action="' . site_url( 'wp-login.php?action=resetpass' ) . '" method="post">
+		<form name="' . esc_attr( $args['form_id'] ) . '" id="' . esc_attr( $args['form_id'] ) . '" action="' . site_url( 'wp-login.php?action=resetpass' ) . '" method="post">
 			' . $form_top . '
 			<p class="reset-pass">
 				<label for="' . esc_attr( $args['id_pass1'] ) . '">' . esc_html( $args['label_pass1'] ) . '</label>
@@ -1731,9 +1731,9 @@ function wpv_shortcodes_get_wpv_reset_password_form_data()  {
 		'name' => __( 'Reset Password Form', 'wpv-views' ),
 		'label' => __( 'Reset Password Form', 'wpv-views' ),
 		'attributes' => array(
-			'display-options' => array(
-				'label' => __('Display options', 'wpv-views'),
-				'header' => __('Display options', 'wpv-views'),
+			'redirect-options' => array(
+				'label' => __('Redirect options', 'wpv-views'),
+				'header' => __('Redirect options', 'wpv-views'),
 				'fields' => array(
 					'redirect_url' => array(
 						'label' => __( 'Redirect to this URL on success', 'wpv-views'),
@@ -1920,8 +1920,8 @@ function wpv_shortcodes_get_wpv_forgot_password_link_data()  {
 		'label' => __( 'Forgot Password Link', 'wpv-views' ),
 		'attributes' => array(
 			'display-options' => array(
-				'label' => __( 'Display options', 'wpv-views' ),
-				'header' => __( 'Display options', 'wpv-views' ),
+				'label' => __( 'Options', 'wpv-views' ),
+				'header' => __( 'Options', 'wpv-views' ),
 				'fields' => array(
 					'redirect_url' => array(
 						'label' => __( 'Redirect URL', 'wpv-views' ),

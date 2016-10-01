@@ -159,3 +159,9 @@
     color: #3cbefe;
 }
 /*///////////////// NOT ASSIGNED END ///////////////////////*/
+
+/*//////////// Remove container padding/////////////////////*/
+.container.ddl-remove-bs-padding{
+    padding-right: 0px !important;
+    padding-left: 0px !important;
+}

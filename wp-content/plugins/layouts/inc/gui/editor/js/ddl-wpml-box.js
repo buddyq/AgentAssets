@@ -46,7 +46,7 @@ DDLayout.WPMLBoxHandler = function()
 						}
 					} else {
 						jQuery('#wpml-package-admin-bar-popup').html(data);
-						WPML_Core.simple_language_selector.initialize_select2();
+						WPML_Core.simple_language_selector.initialize_toolset_select2();
 						if ( typeof WPML_Package_Translation.admin_language_switcher === "undefined" ) {
 							WPML_Package_Translation.admin_language_switcher = new WPML_Package_Translation.AdminLanguageSwitcher();
 						}

@@ -804,7 +804,17 @@ function wpvdemo_import_wpml($baseurl, $settings) {
 				//Setting set, unset
 				unset( $data['st']['WPML_ST_Upgrade_Db_Cache_Command_has_run'] );
 			}
-			
+			/**
+			 * WPML 3.5.3+ compatibility
+			 */
+			if ( isset( $data['st']['WPML_ST_Upgrade_Db_Cache_Command_3_has_run'] ) ) {
+				//Setting set, unset
+				unset( $data['st']['WPML_ST_Upgrade_Db_Cache_Command_3_has_run'] );
+			}
+			if ( isset( $data['st']['WPML_ST_Upgrade_Db_Cache_Command_2.4.2_1_has_run'] ) ) {
+				//Setting set, unset
+				unset( $data['st']['WPML_ST_Upgrade_Db_Cache_Command_2.4.2_1_has_run'] );
+			}			
 			update_option ( 'icl_sitepress_settings', $data );
 			update_option ( 'icl_sitepress_backup_settings', $data);
 			update_option ( 'wpvdemo_sitepress_settings_set', 'yes');				

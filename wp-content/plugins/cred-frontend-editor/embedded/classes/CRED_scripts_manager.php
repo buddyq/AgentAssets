@@ -23,14 +23,14 @@ if( !class_exists('CRED_scripts_manager') ){
         protected function __initialize_styles()
         {
 
-            return parent::__initialize_styles();
+            return;
         }
 
 
         protected function __initialize_scripts()
         {
 
-            return parent::__initialize_scripts();
+            return;
         }
     }
     add_action( 'init', array('CRED_scripts_manager', 'getInstance') );

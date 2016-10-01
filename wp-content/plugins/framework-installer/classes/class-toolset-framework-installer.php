@@ -3342,12 +3342,7 @@ class Toolset_Framework_Installer {
     	if (('yes' == $check_import_is_done_connected ) && ( wpvdemo_wpml_is_active() ) ) {
     		/** Import is done and WPML is setup*/
     		//Check if migration is done
-    		$migration_done				= false;
-    		if (( isset( $sitepress_settings['st']['WPML_ST_Upgrade_Migrate_Originals_has_run'] ) ) &&
-    				( isset( $sitepress_settings['st']['WPML_ST_Upgrade_Db_Cache_Command_has_run'] ) ) )  {
-    			//Setting set, unset
-    			$migration_done			= true;
-    		}
+    		$migration_done = wpvdemo_wpml_st_if_migration_completed( $sitepress_settings );
     		if ( true === $migration_done ) {
     			//dB migration is done, safe to add these filters back
 			    add_filter( 'gettext', 'icl_sw_filters_gettext', 9, 3 );

@@ -379,7 +379,7 @@ class WPDD_Layouts {
 		));
 
 		$this->enqueue_scripts(array(
-			'select2',
+			'toolset_select2',
 			'wp-layouts-colorbox-script',
 			'wp-layouts-dialogs-script',
 			'wp-mediaelement',
@@ -413,7 +413,7 @@ class WPDD_Layouts {
 	function cred_in_iframe_scripts () {
 		
 		$this->enqueue_scripts(array(
-            'select2',
+            'toolset_select2',
 			'ddl-layouts-cred-support'
 		));
 		
@@ -438,7 +438,7 @@ class WPDD_Layouts {
     function cred_user_in_iframe_scripts () {
 
         $this->enqueue_scripts(array(
-            'select2',
+            'toolset_select2',
             'ddl-layouts-cred-user-support'
         ));
 
@@ -474,7 +474,7 @@ class WPDD_Layouts {
 	function preload_scripts(){
 
 		$this->enqueue_scripts( array (
-									   'select2',
+									   'toolset_select2',
 									   'wp-layouts-colorbox-script',
 									   'toolset-utils',
 										'ddl_common_scripts',

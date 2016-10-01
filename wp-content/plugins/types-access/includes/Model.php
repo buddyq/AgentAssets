@@ -107,6 +107,7 @@ final class Access_Model implements TAccess_Singleton
         global $wpcf_access;
         $settings = $wpcf_access->settings;
         $settings->types = $update_settings;
+        $settings = self::fix_settings_array($settings);
         return update_option('toolset-access-options', $settings);
     }   
 
@@ -131,6 +132,7 @@ final class Access_Model implements TAccess_Singleton
         global $wpcf_access;
         $settings = $wpcf_access->settings;
         $settings->tax = $update_settings;
+        $settings = self::fix_settings_array($settings);
         return update_option('toolset-access-options', $settings);
     }
     
@@ -154,7 +156,25 @@ final class Access_Model implements TAccess_Singleton
         global $wpcf_access;
         $settings = $wpcf_access->settings;
         $settings->third_party = $update_settings;
+        $settings = self::fix_settings_array($settings);
         return update_option('toolset-access-options', $settings);
+    }
+
+    public function fix_settings_array( $settings ){
+
+        if ( !isset($settings->third_party) ){
+            $settings->third_party = array();
+        }
+
+        if ( !isset($settings->types) ){
+            $settings->types = array();
+        }
+
+        if ( !isset($settings->tax) ){
+            $settings->tax = array();
+        }
+        return $settings;
+
     }
     
     public function getWpcfTypes()

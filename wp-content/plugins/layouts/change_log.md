@@ -1,3 +1,15 @@
+Version 1.8.5
+
+  - Bug-fix: Fixes Type error when user creates new row with given columns in Grid cell
+
+    
+Version 1.8.4
+
+  - Feature: Added control to add / remove 15px left and right padding from containers elements
+  - Feature: Added control to Menu cell to control menu floating, left or right, when rendering in front end
+  - Compatibility: Upgraded select2 library to 4.0.3 version
+  - Bug-fix: Fixes issue with CRED preview not rendering with some themes
+
 Version 1.8.3
 
   - Bug-fix: Removes all "row-fluid" class names in favour of ".row" class only

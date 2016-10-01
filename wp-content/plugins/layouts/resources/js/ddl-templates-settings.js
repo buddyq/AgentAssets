@@ -19,7 +19,7 @@ DDLayout.TemplatesSettings = function($){
         self.option_value = default_value;
 
         self.init = function(){
-            $default_layout.select2({'width' : '300px'});
+            $default_layout.toolset_select2({'width' : '300px'});
             self.handle_change();
             $button.on('click', self.do_ajax);
         };

@@ -33,8 +33,61 @@ class WPV_Meta_Frontend_Filter {
 		add_filter( 'wpv_filter_taxonomy_query',							array( 'WPV_Meta_Frontend_Filter', 'filter_taxonomy_meta' ), 40, 3 );
 		
 		add_filter( 'wpv_filter_user_query',								array( 'WPV_Meta_Frontend_Filter', 'filter_user_meta' ), 70, 3 );
+
+		// Apply frontend filter to adjust type casting.
+		add_filter( 'wpv_filter_custom_field_filter_type', 					array( 'WPV_Meta_Frontend_Filter', 'filter_meta_field_filter_type' ), 10, 4 );
+		add_filter( 'wpv_filter_termmeta_field_filter_type', 				array( 'WPV_Meta_Frontend_Filter', 'filter_meta_field_filter_type' ), 10, 4 );
+		add_filter( 'wpv_filter_usermeta_field_filter_type', 				array( 'WPV_Meta_Frontend_Filter', 'filter_meta_field_filter_type' ), 10, 4 );
     }
-	
+
+	/**
+	 * filter_meta_field_filter_type
+	 *
+	 * Applies meta fields filter.
+	 *
+	 * @param @param $type the type coming from the View settings filter: <CHAR>, <NUMERIC>, <BINARY>, <DATE>, <DATETIME>, <DECIMAL>, <SIGNED>, <TIME>, <UNSIGNED>
+	 * @param $meta_name the key of the custom field being used to filter by
+	 * @param $view_id the ID of the View being displayed
+	 * @param $view_settings View's settings object
+	 *
+	 * @return mixed
+	 *
+	 * @since 2.3
+	 */
+    static function filter_meta_field_filter_type( $type, $meta_name, $view_id, $view_settings ) {
+		if( isset( $view_settings['view-query-mode'] ) && 'normal' == $view_settings['view-query-mode'] ) {
+			$query_type = isset( $view_settings['query_type'][0] ) ? $view_settings['query_type'][0] : 'posts';
+		} else {
+			$query_type = 'posts';
+		}
+
+		if( 'DECIMAL' == strtoupper( $type ) ) {
+			$meta_type = '';
+
+			switch( $query_type ) {
+				case 'posts':
+					$meta_type = 'custom';
+					break;
+
+				case 'taxonomy':
+					$meta_type = 'termmeta';
+					break;
+
+				case 'users':
+					$meta_type = 'usermeta';
+					break;
+			}
+
+			$decimals = $meta_type . '-field-' . $meta_name . '_decimals';
+
+			if( isset( $view_settings[$decimals] ) ) {
+				$type = 'DECIMAL(10, ' . $view_settings[$decimals] . ')';
+			}
+		}
+
+    	return $type;
+	}
+
 	/**
 	* filter_post_meta
 	*
@@ -123,8 +176,8 @@ class WPV_Meta_Frontend_Filter {
 				* @since 1.6
 				*/
 				
-				$type = apply_filters( 'wpv_filter_custom_field_filter_type', $type, $meta_name, $view_id );
-				
+				$type = apply_filters( 'wpv_filter_custom_field_filter_type', $type, $meta_name, $view_id, $view_settings );
+
 				$has_meta_query = WPV_Meta_Frontend_Filter::resolve_meta_query( $meta_name, $value, $type, $compare );
 				if ( $has_meta_query ) {
 					$meta_queries[] = $has_meta_query;
@@ -216,7 +269,7 @@ class WPV_Meta_Frontend_Filter {
 				* @since 1.6
 				*/
 				
-				$type = apply_filters( 'wpv_filter_custom_field_filter_type', $type, $field, $archive_id );
+				$type = apply_filters( 'wpv_filter_custom_field_filter_type', $type, $field, $archive_id, $archive_settings );
 				
 				$has_meta_query = WPV_Meta_Frontend_Filter::resolve_meta_query( $field, $value, $type, $compare );
 				if ( $has_meta_query ) {
@@ -228,6 +281,7 @@ class WPV_Meta_Frontend_Filter {
 		//Set field relation
 		if ( count( $meta_queries ) ) {
 			$meta_queries['relation'] = isset( $archive_settings['custom_fields_relationship'] ) ? $archive_settings['custom_fields_relationship'] : 'AND';
+			$meta_queries = apply_filters( 'wpv_filter_wpv_before_set_meta_query', $meta_queries );
 			$query->set( 'meta_query', $meta_queries );
 		}
 	}
@@ -356,7 +410,7 @@ class WPV_Meta_Frontend_Filter {
 				* @since 1.12
 				*/
 				
-				$type = apply_filters( 'wpv_filter_termmeta_field_filter_type', $type, $field, $view_id );
+				$type = apply_filters( 'wpv_filter_termmeta_field_filter_type', $type, $field, $view_id, $view_settings );
 				
 				$has_meta_query = WPV_Meta_Frontend_Filter::resolve_meta_query( $field, $value, $type, $compare );
 				if ( $has_meta_query ) {
@@ -452,7 +506,7 @@ class WPV_Meta_Frontend_Filter {
 				* @since 1.8
 				*/
 				
-				$type = apply_filters( 'wpv_filter_usermeta_field_filter_type', $type, $field, $view_id );
+				$type = apply_filters( 'wpv_filter_usermeta_field_filter_type', $type, $field, $view_id, $view_settings );
 				
 				$has_meta_query = WPV_Meta_Frontend_Filter::resolve_meta_query( $field, $value, $type, $compare );
 				if ( $has_meta_query ) {

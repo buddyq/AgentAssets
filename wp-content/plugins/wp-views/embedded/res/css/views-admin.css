@@ -14,7 +14,7 @@
 	left: 0;
 	bottom: 0;
 	right: 0;
-    z-index: 100;
+    z-index: 10000;
 	border: solid 1px #fbeed5;
 	border-radius: 4px;
 	overflow:hidden;

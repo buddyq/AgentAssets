@@ -90,7 +90,6 @@
                             {
                                 wizardNextB.attr('disabled', 'disabled');
                                 checkClassButton(wizardNextB);
-                                wizardProgressbarInner.css('width', '20%');
                                 // keep checking
                                 var _tim = setInterval(function () {
                                     if (!self.steps[self.step - 1].completed)
@@ -133,29 +132,37 @@
                             {
                                 wizardNextB.attr('disabled', 'disabled');
                                 checkClassButton(wizardNextB);
-                                wizardProgressbarInner.css('width', '40%');
                                 // keep checking
                                 var _tim = setInterval(function () {
                                     if (!self.steps[self.step - 1].completed)
                                     {
+                                        var val = '', val2 = '', val3 = '', val4 = '';
                                         //var $el = $('select[name="_cred[form][type]"]'), val = $.trim($el.val());
-                                        var $el = $('input[name="_cred[form][type]"]'), val = $.trim($el.val());
+                                        var $el = $('input[name="_cred[form][type]"]:checked'), val = $.trim($el.val());
                                         var is_user_form = $('#cred_form_user_role').length;
+                                        var $el2;
 
                                         if (is_user_form) {
-                                            var $el2 = $('select[name="_cred[form][user_role][]"]'), val2 = $.trim($el2.val());
+                                            if (val == 'edit') {
+                                                $('input[name="_cred[form][user_role][]"]:checked').each(function () {
+                                                    val2 += $(this).val() + ",";
+                                                });
+                                                val2 = val2.replace(/,(\s+)?$/, '');
+                                            } else {
+                                                $el2 = $('select[name="_cred[form][user_role][]"]'), val2 = $.trim($el2.val());
+                                            }
                                             var $el3 = $('select[name="_cred[form][action]"]'), val3 = $.trim($el3.val());
                                         } else {
-                                            var $el2 = $('select[name="_cred[post][post_type]"]'), val2 = $.trim($el2.val());
-                                            var $el3 = $('select[name="_cred[post][post_status]"]'), val3 = $.trim($el3.val());                                            
+                                            $el2 = $('select[name="_cred[post][post_type]"]'), val2 = $.trim($el2.val());
+                                            var $el3 = $('select[name="_cred[post][post_status]"]'), val3 = $.trim($el3.val());
                                             var $el4 = $('select[name="_cred[form][action]"]'), val4 = $.trim($el4.val());
                                         }
 
                                         if (
-                                            !is_user_form && '' != val && '' != val2 && '' != val3 && '' != val4 ||
-                                            (is_user_form && '' != val && '' != val2 && '' != val3 || 
-                                            ('' == val2 && val == 'edit'))
-                                            )
+                                                (!is_user_form && '' != val && '' != val2 && '' != val3 && '' != val4)
+                                                ||
+                                                (is_user_form && '' != val && '' != val2 && '' != val3)
+                                                )
                                         {
                                             clearInterval(_tim);
                                             self.steps[self.step - 1].completed = true;
@@ -233,7 +240,6 @@
                             {
                                 wizardNextB.attr('disabled', 'disabled');
                                 checkClassButton(wizardNextB);
-                                wizardProgressbarInner.css('width', '80%');
                                 // keep checking
                                 var _tim = setInterval(function () {
                                     if (!self.steps[self.step - 1].completed)
@@ -388,7 +394,15 @@
                     wizardQuitB = $('#cred_wizard_quit_button');
                     wizardProgressbar = $('#cred-progress-bar');
                     wizardProgressbarInner = $('#cred-progress-bar-inner');
-
+                    
+                    $(wizardPrevB).click(function(){
+                        wizardProgressbarInner.css('width', (100 * (self.step - 1) / self.steps.length) + '%');
+                    });
+                    
+                    $(wizardNextB).click(function(){
+                        wizardProgressbarInner.css('width', (100 * (self.step + 1) / self.steps.length) + '%');
+                    });
+                    
                     for (var i = 0, l = self.steps.length; i < l; i++)
                     {
                         var progress_step = $('<span class="cred-progress-step">' + self.steps[i].title + '</span>');
@@ -448,7 +462,7 @@
                             self.steps[i - 1].completed = true;
                     }
                     self.completed_step = self.step;
-                    wizardProgressbarInner.css('width', (100 * self.step / self.steps.length) + '%');
+                    wizardProgressbarInner.css('width', (100 * ((self.step + 1) / self.steps.length)) + '%');
                     if (self.step < self.steps.length)
                         self.goToStep(self.step + 1);
                 },

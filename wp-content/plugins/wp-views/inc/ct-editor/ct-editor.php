@@ -59,9 +59,11 @@ function wpv_ct_editor_init() {
     $page = wpv_getget( 'page' );
 
     // Force add the Types groups for fields and usermeta fields to the Fields and Views popup.
+	// Force the Fields and Views dialog, as some CT integrations do not render the Template editor.
     if( 'admin.php' == $pagenow && WPV_CT_EDITOR_PAGE_NAME == $page ) {
 
-        add_filter( 'wpcf_filter_force_include_types_fields_on_views_dialog', '__return_true' );
+        add_filter( 'wpcf_filter_force_include_types_fields_on_views_dialog',			'__return_true' );
+        add_filter( 'toolset_filter_force_fields_and_views_dialog_shortcode_generator',	'__return_true' );
 
         // Register main CT editor script
         wp_register_script(

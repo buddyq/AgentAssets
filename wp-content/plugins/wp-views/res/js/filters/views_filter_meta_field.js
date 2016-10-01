@@ -323,7 +323,17 @@ WPViews.MetaFieldFilterGUI = function( $, meta ) {
 	$( document ).on( 'change', '.js-wpv-' + self.meta + '-field-compare-mode', function() {
 		self.meta_field_adjust_value_controls( this )
 	});
-	
+
+	$( document ).on( 'change', '.js-wpv-' + self.meta + '-field-type-select', function() {
+		var val = $( this ).val();
+
+		if( 'DECIMAL' == val ) {
+			$( this).parent().find( '.js-wpv-' + self.meta + '-field-decimals-span' ).show();
+		} else {
+			$( this).parent().find( '.js-wpv-' + self.meta + '-field-decimals-span' ).hide();
+		}
+	});
+
 	// Add another value
 
 	$( document ).on( 'click', '.js-wpv-' + self.meta + '-field-add-value', function() {

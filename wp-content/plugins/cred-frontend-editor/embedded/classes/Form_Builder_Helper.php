@@ -444,18 +444,18 @@ class CRED_Form_Builder_Helper implements CRED_Friendly, CRED_FriendlyStatic {
         $fields = $formData->getFields();
         $messages = $fields['extra']->messages;
         $messages['cred_message_no_recaptcha_keys'] = "no recaptcha keys found";
-        
+
         //Commented due to wrong $formData passed when more than one CRED form is present.
         //Commented by Ahmed Hussein
         /*
-        if (null == $formData) {
-            $formData = $this->friendGet($this->_formBuilder, '_formData');
-            $fields = $formData->getFields();
-            $messages = $fields['extra']->messages;
-            $messages['cred_message_no_recaptcha_keys'] = "no recaptcha keys found";
-        }
-        */
-        
+          if (null == $formData) {
+          $formData = $this->friendGet($this->_formBuilder, '_formData');
+          $fields = $formData->getFields();
+          $messages = $fields['extra']->messages;
+          $messages['cred_message_no_recaptcha_keys'] = "no recaptcha keys found";
+          }
+         */
+
         $id = 'cred_message_' . $id;
         if (!isset($messages[$id]))
             return '';
@@ -606,9 +606,6 @@ class CRED_Form_Builder_Helper implements CRED_Friendly, CRED_FriendlyStatic {
         $fields = $out_['fields'];
         $form_fields = $fields['form_fields'];
 
-        // author
-//        if ('new' == $form_type)
-//            $post->post_author = $user_ID;
         // extract main post fields
         $user = array();
         $user['ID'] = $user_id;
@@ -619,90 +616,49 @@ class CRED_Form_Builder_Helper implements CRED_Friendly, CRED_FriendlyStatic {
             }
         }
 
-        //###################################################################
-        //# AUTOGENERATION EMAIL MESSAGE
-        //###################################################################
+        if ($form_type == 'new' && isset($_POST['user_pass'])) {
+            StaticClass::$_password_generated = $_POST['user_pass'];
+        }
+
         if ($form_type == 'new' &&
                 isset($user['user_email']) &&
-                ($autogenerate_user ||
-                $autogenerate_nick ||
-                $autogenerate_pass)) {
+                (
+                ($autogenerate_user || !isset($_POST['user_login'])) ||
+                ($autogenerate_nick || !isset($_POST['nickname'])) ||
+                ($autogenerate_pass || !isset($_POST['user_pass'])))
+        ) {
 
             $settings_model = CRED_Loader::get('MODEL/Settings');
             $settings = $settings_model->getSettings();
 
-            //by default use notification for autogeneration email
-            $use_notification_for_autogeneration = defined('CRED_NOTIFICATION_4_AUTOGENERATION') ? CRED_NOTIFICATION_4_AUTOGENERATION : true;
-
-            $subject = "";
-            $body = "";
-            if (!$use_notification_for_autogeneration) {
-                $subject = apply_filters('cuf_autogeneration_email_subject', $settings['autogeneration_email']['subject']);
-                $body = apply_filters('cuf_autogeneration_email_body', $settings['autogeneration_email']['body']);
-            }
-
-            if ($autogenerate_pass && !isset($_POST['user_pass'])) {
+            if ($autogenerate_pass || !isset($_POST['user_pass'])) {
                 $password_generated = wp_generate_password(10, false);
                 StaticClass::$_password_generated = $password_generated;
                 $user["user_pass"] = $password_generated;
-                //$message[] .= "Your password is: $password_generated";
-                if (!$use_notification_for_autogeneration)
-                    $body = str_replace("%cuf_password%", $password_generated, $body);
             }
 
             $username_generated = StaticClass::generateUsername($user['user_email']);
 
-            if ($autogenerate_nick && !isset($_POST['nickname'])) {
-                $nick_generated = $username_generated;
-                StaticClass::$_nickname_generated = $nick_generated;
-                $user["nickname"] = $nick_generated;
-                //$message[] .= "Your password is: $password_generated";
-                if (!$use_notification_for_autogeneration)
-                    $body = str_replace("%cuf_nickname%", $nick_generated, $body);
+            if (!isset($_POST['nickname'])) {
+                if ($autogenerate_nick) {
+                    $nick_generated = $username_generated;
+                    StaticClass::$_nickname_generated = $nick_generated;
+                    $user["nickname"] = $nick_generated;
+                } else {
+                    $user["nickname"] = $user['user_email'];
+                }
             }
 
-            if ($autogenerate_user && !isset($_POST['user_login'])) {
-                $username_generated = $username_generated;
-                StaticClass::$_username_generated = $username_generated;
-                $user["user_login"] = $username_generated;
-                //$message[] .= "Your username is: $username_generated";
-                if (!$use_notification_for_autogeneration)
-                    $body = str_replace("%cuf_username%", $username_generated, $body);
-            }
-
-            if ($autogenerate_pass && $autogenerate_user && $autogenerate_nick) {
-                //nothing to do
-            } else if ($autogenerate_pass && !$autogenerate_user && !$autogenerate_nick) {
-                //Removing username not needed
-                if (!$use_notification_for_autogeneration)
-                    $body = preg_replace('#\[username(.*)\].*?\[/username(.*)\]#', '', $body);
-            } else if (!$autogenerate_pass && $autogenerate_user && !$autogenerate_nick) {
-                //Removing password not needed
-                if (!$use_notification_for_autogeneration)
-                    $body = preg_replace('#\[password(.*)\].*?\[/password(.*)\]#', '', $body);
-            } else if (!$autogenerate_pass && !$autogenerate_user && $autogenerate_nick) {
-                if (!$use_notification_for_autogeneration)
-                    $body = preg_replace('#\[nickname(.*)\].*?\[/nickname(.*)\]#', '', $body);
-            }
-
-            if (!$use_notification_for_autogeneration) {
-                $body = str_replace(array("[username]", "[/username]", "[password]", "[/password]", "[nickname]", "[/nickname]"), "", $body);
-
-                $mailer = CRED_Loader::get('CLASS/Mail_Handler');
-                $mailer->reset();
-                $mailer->setHTML(true, false);
-                $recipients = $user['user_email'];
-                $mailer->addRecipients($recipients);
-                $mailer->setSubject($subject);
-                $mailer->setBody($body);
-                $mailer->setFrom("noreply@wordpress.com");
-
-                $_send_result = $mailer->send();
+            //user_login is mandatory
+            if (!isset($_POST['user_login'])) {
+                if ($autogenerate_user) {
+                    StaticClass::$_username_generated = $username_generated;
+                    $user["user_login"] = $username_generated;
+                } else {
+                    $user["user_login"] = $user['user_email'];
+                }
             }
         }
-        //###################################################################
-        //# AUTOGENERATION EMAIL MESSAGE
-        //###################################################################
 
         if ($track) {
             // track the data, eg for notifications
@@ -1373,18 +1329,6 @@ class CRED_Form_Builder_Helper implements CRED_Friendly, CRED_FriendlyStatic {
                     );
                     // track form data for notification mail
                     if ($track) {
-
-                        function cred__parent_sort(array $fields, array &$result = array(), $parent = 0, $depth = 0) {
-                            foreach ($fields as $key => $field) {
-                                if ($field['parent'] == $parent) {
-                                    $field['depth'] = $depth;
-                                    array_push($result, $field);
-                                    unset($fields[$key]);
-                                    cred__parent_sort($fields, $result, $field['term_id'], $depth + 1);
-                                }
-                            }
-                            return $result;
-                        }
 
                         $result = array();
                         $result = cred__parent_sort($field['all'], $result, 0, 0);
@@ -2963,7 +2907,7 @@ class CRED_Form_Builder_Helper implements CRED_Friendly, CRED_FriendlyStatic {
         $value = '';
 
         $name_orig = $name;
-        $field["name"] = cred_translate($field["name"], $field["name"], $form->getForm()->post_type . "-". $form->getForm()->post_title ."-" . $form->getForm()->ID);
+        $field["name"] = cred_translate($field["name"], $field["name"], $form->getForm()->post_type . "-" . $form->getForm()->post_title . "-" . $form->getForm()->ID);
 
         if (!$is_tax) {
             // if not taxonomy field
@@ -3458,27 +3402,28 @@ class CRED_Form_Builder_Helper implements CRED_Friendly, CRED_FriendlyStatic {
                     $attributes = array_merge($attributes, $additional_options);
                     break;
 
-                case 'skype':
-                    $type = 'skype';
+                                    $type = 'skype';
                     //if for some reason i receive data_value as array but it is not repetitive i need to get as not array of array
                     //if (isset($field['data']['repetitive']) && $field['data']['repetitive'] == 1)
                     if (isset($field['data']['repetitive']) && $field['data']['repetitive'] == 0 && isset($data_value[0]))
                         $data_value = $data_value[0];
-                    
+
                     if (isset($field['data']['repetitive']) && $field['data']['repetitive'] == 1 && !isset($data_value[0]))
                         $data_value = array($data_value);
 
                     if (isset($data_value)) {
-                        if (is_string($data_value))
-                            $data_value = array('skypename' => $data_value, 'style' => '');
-                        $value = $data_value;
-                    } else {
                         if (isset($field['data']['repetitive']) && $field['data']['repetitive'] == 0)
                             $value = $data_value;
-                        else
-                            $value = array('skypename' => '', 'style' => '');
+                        else {
+                            if (is_string($data_value))
+                                $data_value = array('skypename' => $data_value, 'style' => '');
+                            $value = $data_value;
+                        }
+                    } else {
+                        $value = array('skypename' => '', 'style' => '');
+                        $data_value = $value;
                     }
-
+                    
                     $attributes = array(
                         'ajax_url' => admin_url('admin-ajax.php'),
                         'edit_skype_text' => $this->getLocalisedMessage('edit_skype_button'),

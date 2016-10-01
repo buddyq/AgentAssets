@@ -10,7 +10,7 @@
 
 	<p>
 		<label class="label-tag" for="ddl_tag_name"><?php _e('HTML Tag:', 'ddl-layouts'); ?></label>
-		<select class="js-select2 js-ddl-tag-name" id="ddl_tag_name" name="ddl_tag_name">
+		<select class="js-toolset_select2 js-ddl-tag-name" id="ddl_tag_name" name="ddl_tag_name">
             <option value="article">&lt;article&gt;</option>
 			<option value="aside">&lt;aside&gt;</option>
 			<option value="blockquote">&lt;blockquote&gt;</option>
@@ -37,7 +37,7 @@
 	</p>
 	<p>
 		<label class="label-tag-classes" for="ddl-<?php echo $dialog_type; ?>-edit-class-name"><?php _e('Tag classes', 'ddl-layouts'); ?> <span class="opt">(<?php _e('optional', 'ddl-layouts'); ?>):</span></label>
-		<input type="text" name="ddl-<?php echo $dialog_type; ?>-edit-class-name" id="ddl-<?php echo $dialog_type; ?>-edit-class-name" class="js-select2-tokenizer js-edit-css-class">
+		<input type="text" name="ddl-<?php echo $dialog_type; ?>-edit-class-name" id="ddl-<?php echo $dialog_type; ?>-edit-class-name" class="js-toolset_select2-tokenizer js-edit-css-class">
 		<span class="desc" style="display:none"><?php _e('Separated class names by a single space.','ddl-layouts') ?></span>
 	</p>
 
@@ -60,7 +60,7 @@
 	<div class="ddl-form js-css-styling-controls css-styling-controls">
 		<p>
 			<label for="ddl_tag_name"><?php _e('HTML Tag:', 'ddl-layouts'); ?></label>
-			<select class="js-select2 js-ddl-tag-name" id="ddl_tag_name" name="ddl_tag_name">
+			<select class="js-toolset_select2 js-ddl-tag-name" id="ddl_tag_name" name="ddl_tag_name">
 				<option value="article">&lt;article&gt;</option>
 				<option value="aside">&lt;aside&gt;</option>
 				<option value="blockquote">&lt;blockquote&gt;</option>
@@ -86,7 +86,7 @@
 		</p>
 		<p>
 			<label for="ddl-default-edit-class-name"><?php _e('Tag classes:', 'ddl-layouts'); ?> <span class="opt">(<?php _e('optional', 'ddl-layouts'); ?>)</span></label>
-			<input type="text" name="ddl-default-edit-class-name" id="ddl-default-edit-class-name" class="js-select2-tokenizer js-edit-css-class" value="{{{css}}}">
+			<input type="text" name="ddl-default-edit-class-name" id="ddl-default-edit-class-name" class="js-toolset_select2-tokenizer js-edit-css-class" value="{{{css}}}">
 			<span class="desc" style="display:none"><?php _e('Separated class names by a single space.','ddl-layouts') ?></span>
 		</p>
 

@@ -2174,12 +2174,7 @@ function wpvdemo_remove_auto_register_types() {
 	$sitepress_settings				= get_option ( 'icl_sitepress_settings' );
 	
 	//Check if migration is done
-	$migration_done				= false;
-	if (( isset( $sitepress_settings['st']['WPML_ST_Upgrade_Migrate_Originals_has_run'] ) ) &&
-			( isset( $sitepress_settings['st']['WPML_ST_Upgrade_Db_Cache_Command_has_run'] ) ) )  {
-				//Setting set, unset
-				$migration_done			= true;
-	}
+	$migration_done		=	wpvdemo_wpml_st_if_migration_completed( $sitepress_settings );	
 			
 	if ( ( 'yes' != $check_import_is_done_connected ) || ( false === $migration_done ) ) {
 		//Import is not yet done OR migration is not yet done, remove these filters to avoid errors		
@@ -2296,18 +2291,24 @@ function wpvdemo_disable_gettext_hooks_if_notsetup() {
 	$sitepress_settings				= get_option ( 'icl_sitepress_settings' );
 	if (('yes' == $check_import_is_done_connected ) && ( wpvdemo_wpml_is_active() ) ) {
 		/** Import is done and WPML is setup*/
-		//Check if migration is done
-		$migration_done				= false;
-		if (( isset( $sitepress_settings['st']['WPML_ST_Upgrade_Migrate_Originals_has_run'] ) ) &&
-				( isset( $sitepress_settings['st']['WPML_ST_Upgrade_Db_Cache_Command_has_run'] ) ) )  {
-					//Setting set, unset
-					$migration_done			= true;
-				}
-				if ( false === $migration_done ) {
-					//dB migration is not yet removed these filters to prevent missing tables error.
-					remove_filter( 'gettext', 'icl_sw_filters_gettext', 9, 3 );
-					remove_filter( 'ngettext', 'icl_sw_filters_ngettext', 9, 5 );
-					remove_filter( 'gettext_with_context', 'icl_sw_filters_gettext_with_context', 1, 4 );
-				}
+		//Check if migration is done		
+		$migration_done		=	wpvdemo_wpml_st_if_migration_completed( $sitepress_settings );
+		if ( false === $migration_done ) {
+			//dB migration is not yet removed these filters to prevent missing tables error.
+			remove_filter( 'gettext', 'icl_sw_filters_gettext', 9, 3 );
+			remove_filter( 'ngettext', 'icl_sw_filters_ngettext', 9, 5 );
+			remove_filter( 'gettext_with_context', 'icl_sw_filters_gettext_with_context', 1, 4 );
+		}
 	}
+}
+function wpvdemo_wpml_st_if_migration_completed( $sitepress_settings ) {
+	
+	$migration_done				= false;
+	if (( isset( $sitepress_settings['st']['WPML_ST_Upgrade_Migrate_Originals_has_run'] ) )  &&
+		( isset( $sitepress_settings['st']['WPML_ST_Upgrade_Db_Cache_Command_2.4.2_1_has_run'] ) ) ) {
+				//Setting set, unset
+				$migration_done			= true;
+	}	
+	
+	return $migration_done;
 }

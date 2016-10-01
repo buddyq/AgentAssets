@@ -293,16 +293,16 @@ DDLayout.SwitchLayoutManager = function($, $button ){
             top: false,
             width:"400px",
             onComplete: function() {
-                self.init_select2_box();
+                self.init_toolset_select2_box();
                 self.update_layout();
             },
             onCleanup: function() {
-                $select.select2('close');
+                $select.toolset_select2('close');
             }
         });
     };
 
-    self.init_select2_box = function(){
+    self.init_toolset_select2_box = function(){
         $select = $('.js-ddl-switch-layout');
 
         function format(state) {
@@ -320,7 +320,7 @@ DDLayout.SwitchLayoutManager = function($, $button ){
 
         }
 
-        $select.select2({
+        $select.toolset_select2({
             formatResult: format,
             formatSelection: format,
             width: '100%',

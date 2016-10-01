@@ -8,10 +8,11 @@
     ?>
 
 	<div class="dd-layouts-header">
-		<div id="icon-edit fa fa-pencil-square-o" class="icon32 icon32-posts-dd_layouts"><br></div>
-        <h2>
+		<div id="icon-edit fa fa-pencil-square-o" class="icon32 icon32-posts-dd_layouts"></div>
+        <h1>
+		<i class="icon-layouts-logo ont-icon-24 ont-color-orange css-layouts-logo"></i>
         <?php  _e('Edit layout',  'ddl-layouts'); ?>
-        </h2>
+        </h1>
 			<!--<span class="js-layout-title dd-layout-title"></span>-->
         <div id="titlediv" class="js-title-div">
             <div id="titlewrap">

@@ -1033,7 +1033,7 @@ DDLayout.AdminPage.manageDeselectElementName = function( event, args )
 };
 
 /**
- * Loads CRED Object and fixes issues with CRED dialog bugs with select2 in $.colorbox
+ * Loads CRED Object and fixes issues with CRED dialog bugs with toolset_select2 in $.colorbox
  * @type {{show: DDLayout.AdminPage.handleCredIssuesEventually.show, hide: DDLayout.AdminPage.handleCredIssuesEventually.hide, init: DDLayout.AdminPage.handleCredIssuesEventually.init}}
  */
 DDLayout.AdminPage.handleCredIssuesEventually = {
@@ -1096,7 +1096,7 @@ DDLayout.AdminPage.handleCredIssuesEventually = {
             success: function (result)
             {
                 jQuery('.cred-edit-other-user-more2').show();
-                jQuery('.cred-edit-user-select2').html(result);
+                jQuery('.cred-edit-user-toolset_select2').html(result);
                 loader.hide();
             },
             error: function ()
@@ -1120,7 +1120,7 @@ DDLayout.AdminPage.handleCredIssuesEventually = {
             success: function (result)
             {
                 jQuery('.cred-edit-other-post-more2').show();
-                jQuery('.cred-edit-post-select2').html(result);
+                jQuery('.cred-edit-post-toolset_select2').html(result);
                 loader.hide();
             },
             error: function ()

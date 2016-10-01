@@ -347,6 +347,7 @@ final class Access_Helper
      * Add custom capabilities to custom post types and taxonomies
      */
     public static function register_post_types_and_taxonomies() {
+
         add_action('registered_post_type',	array(__CLASS__,  'wpcf_access_registered_post_type_hook'), 10, 2);
         add_action('registered_taxonomy',	array(__CLASS__,  'wpcf_access_registered_taxonomy_hook'), 10, 3);
     }
@@ -474,9 +475,9 @@ final class Access_Helper
         do_action('wpcf_access_plugins_loaded');
 	}
 
-	/*
-	 *
-	 */
+    /**
+     *
+     */
 	public static function wpcf_access_early_init() {
         // Force roles initialization
         // WP is lazy and it does not initialize $wp_roles if user is not logged in.
@@ -498,10 +499,389 @@ final class Access_Helper
                 $wpcf_access->wpml_installed = false;
             }
         }
+
+        /**
+         * Filter to check permission for post types
+         * @param $has_permission | required
+         * @param $post_type(slug)(string) | required
+         * @param $option_name (publish, edit_own, edit_any, delete_own, delete_any, read) | optional | default: read
+         * @param $user | optional, default: $current_user
+         * @param $language (code)| optional, default: default language, example: en
+         * @return (boolean)true|false
+         */
+        add_filter( 'toolset_access_api_get_post_type_permissions', array(__CLASS__, 'toolset_access_api_get_post_type_permissions_process'), 10, 5 );
+
+        /**
+         * Filter to check permission for taxonomies
+         * @param $has_permission | required
+         * @param $taxonomy(slug) | required
+         * @param $option_name (assign_terms, delete_terms, edit_terms, manage_terms) | optional | default: manage_terms
+         * @param $user(object) | optional, default: $current_user
+         * @return (boolean)true|false
+         */
+        add_filter( 'toolset_access_api_get_taxonomy_permissions', array(__CLASS__, 'toolset_access_api_get_taxonomy_permissions_process'), 10, 4 );
+
+        /**
+         * Filter to check permission for specific post
+         * @param $has_permission | required
+         * @param $post_id(string) | $post(object) | required
+         * @param $option_name (read, edit) | optional | default: read
+         * @param $user | optional, default: $current_user
+         * @param $language (code)| optional, default: default language, example: en
+         * @return (boolean)true|false
+         */
+        add_filter( 'toolset_access_api_get_post_permissions', array(__CLASS__, 'toolset_access_api_get_post_permissions_process'), 10, 5 );
+
 		
 		// Setup roles
         self::$roles = self::wpcf_get_editable_roles();
     }
+
+    /**
+     * @param boolean  $has_permission
+     * @param string $post
+     * @param string $option_name
+     * @param string $user
+     * @param string $language
+     * @return bool
+     */
+    public static function toolset_access_api_get_post_permissions_process( $has_permission = false, $post = '', $option_name = 'read', $user = '', $language = '' ){
+        if ( empty($post) ){
+            return $has_permission;
+        }
+
+        if ( !is_object($post) ){
+            $post = get_post($post);
+        }
+
+        if ( !isset($post->ID) ){
+            return $has_permission;
+        }
+
+        if ( in_array($option_name, array('edit', 'read')) === FALSE ){
+            return $has_permission;
+        }
+
+
+
+        $converted_caps = array( 'edit_own' => 'edit_posts', 'edit_any' => 'edit_others_posts', 'read' => 'read' );
+
+        if ( empty($user) ){
+            global $current_user;
+            $user = $current_user;
+        }
+
+        if ( !is_object($user) ){
+            $user = get_user_by( 'ID', $user );
+        }
+
+        if ( !is_object($user) ){
+            return $has_permission;
+        }
+        if ( $option_name == 'edit' ){
+            if ( $post->post_author == $user->ID ){
+                $option_name = 'edit_own';
+            }else{
+                $option_name = 'edit_any';
+            }
+        }
+
+        $role = self::wpcf_get_current_logged_user_role( $user );
+        $post_type = $post->post_type;
+        if ( $role == 'administrator' ){
+            return true;
+        }
+
+        global $wpcf_access, $wp_roles;
+
+        //If Access settings not set yet use capabilities from role
+        if( !isset($wpcf_access->settings->types) ){
+            if ( $role == 'guest'  ){
+                if ( $option_name == 'read' ){
+                    return true;
+                }else{
+                    return false;
+                }
+            }
+            $role_caps = $wp_roles->roles;
+            if ( isset( $role_caps[$role]['capabilities'][$converted_caps[$option_name]] ) ){
+                return true;
+            }else{
+                return false;
+            }
+        }
+
+        $is_wpml_installed = apply_filters( 'wpml_active_languages', '', array('skip_missing' => 0) );
+
+        if ( $is_wpml_installed ){
+            $language_settings = $wpcf_access->language_permissions;
+            if ( empty($language) ){
+                $language = apply_filters( 'wpml_setting', '', 'default_language' );
+            }
+
+            if ( isset($language_settings[$post_type][$language][$option_name]) ){
+                if ( in_array($role, $language_settings[$post_type][$language][$option_name]['roles']) !== FALSE ){
+                    return true;
+                }else{
+                    return false;
+                }
+            }
+        }
+
+        $types_settings = $wpcf_access->settings->types;
+
+        if ( $option_name == 'read' ){
+            $group = get_post_meta($post->ID, '_wpcf_access_group', true);
+            if ( !empty($group) ){
+                if ( isset($types_settings[$group]) ){
+                    if ( in_array($role, $types_settings[$group]['permissions'][$option_name]['roles']) !== FALSE ){
+                        return true;
+                    }else{
+                        return false;
+                    }
+                }
+            }
+        }
+        //If settings set and post type managed by Access
+        if ( isset($types_settings[$post_type]) && $types_settings[$post_type]['mode'] == 'permissions' && isset($types_settings[$post_type]['permissions'][$option_name]['roles']) ){
+            if ( in_array($role, $types_settings[$post_type]['permissions'][$option_name]['roles']) !== FALSE ){
+                return true;
+            }else{
+                return false;
+            }
+        }
+        //If settings set and post not type managed by Access
+        elseif ( (isset($types_settings[$post_type]) && $types_settings[$post_type]['mode'] != 'permissions' && isset($types_settings['post']) && $types_settings[$post_type]['mode'] == 'permissions') ||
+            ( !isset($types_settings[$post_type]) && isset($types_settings['post']) && $types_settings[$post_type]['mode'] == 'permissions' )  ){
+            if ( isset($types_settings['post']['permissions'][$option_name]['roles']) && in_array($role, $types_settings['post']['permissions'][$option_name]['roles']) !== FALSE ){
+                return true;
+            }else{
+                return false;
+            }
+        }
+        //Use role capabilities
+        else{
+            if ( $role == 'guest'  ){
+                if ( $option_name == 'read' ){
+                    return true;
+                }else{
+                    return false;
+                }
+            }
+            $role_caps = $wp_roles->roles;
+            if ( isset( $role_caps[$role]['capabilities'][$converted_caps[$option_name]] ) ){
+                return true;
+            }else{
+                return false;
+            }
+        }
+    }
+
+    /**
+     * @param boolean  $has_permission
+     * @param string $taxonomy
+     * @param string $option_name
+     * @param string $user
+     * @return bool
+     */
+    public static function toolset_access_api_get_taxonomy_permissions_process( $has_permission = false, $taxonomy = '', $option_name = 'manage_terms', $user = '' ){
+
+        if ( empty($taxonomy) ){
+            return $has_permission;
+        }
+
+        if ( in_array($option_name, array('assign_terms', 'delete_terms', 'edit_terms', 'manage_terms')) === FALSE ){
+            return $has_permission;
+        }
+
+        if ( empty($user) ){
+            global $current_user;
+            $user = $current_user;
+        }
+
+        if ( !is_object($user) ){
+            $user = get_user_by( 'ID', $user );
+        }
+
+        if ( !is_object($user) ){
+            return $has_permission;
+        }
+
+        $converted_caps = array('assign_terms' => 'edit_posts', 'delete_terms' => 'manage_categories', 'edit_terms' => 'manage_categories', 'manage_terms' => 'manage_categories' );
+        $role = self::wpcf_get_current_logged_user_role( $user );
+
+        if ( $role == 'administrator' ){
+            return true;
+        }
+
+        global $wpcf_access, $wp_roles;
+        $tax_settings = $wpcf_access->settings->tax;
+
+        if( !isset($wpcf_access->settings->tax) ){
+            if ( $role == 'guest'  ){
+                return false;
+            }
+            $role_caps = $wp_roles->roles;
+            if ( isset( $role_caps[$role]['capabilities'][$converted_caps[$option_name]] ) ){
+                return true;
+            }else{
+                return false;
+            }
+        }
+
+        if ( isset($tax_settings[$taxonomy]) && $tax_settings[$taxonomy]['mode'] == 'permissions' ){
+            if ( in_array($role, $tax_settings[$taxonomy]['permissions'][$option_name]['roles']) !== FALSE ){
+                return true;
+            }else{
+                return false;
+            }
+        }
+        //If settings set and tax not type managed by Access
+        elseif ( (isset($tax_settings[$taxonomy]) && $tax_settings[$taxonomy]['mode'] != 'permissions' && isset($tax_settings['category']) && $tax_settings[$taxonomy]['mode'] == 'permissions') ||
+            ( !isset($tax_settings[$taxonomy]) && isset($tax_settings['category']) && $tax_settings[$taxonomy]['mode'] == 'permissions' )  ){
+            if ( in_array($role, $tax_settings['category']['permissions'][$option_name]['roles']) !== FALSE ){
+                return true;
+            }else{
+                return false;
+            }
+        }
+
+        //Use role capabilities
+        else{
+            if ( $role == 'guest'  ){
+                return false;
+            }
+            global $wp_roles;
+            $role_caps = $wp_roles->roles;
+            if ( isset( $role_caps[$role]['capabilities'][$converted_caps[$option_name]] ) ){
+                return true;
+            }else{
+                return false;
+            }
+        }
+
+
+
+    }
+
+    /**
+     * @param boolean $has_permission
+     * @param string $post_type
+     * @param string $option_name
+     * @param string $user
+     * @param string $language
+     * @return bool
+     */
+    public static function toolset_access_api_get_post_type_permissions_process( $has_permission = false, $post_type = '', $option_name = 'read', $user = '', $language = '' ){
+
+        if ( empty($post_type) ){
+            return $has_permission;
+        }
+        $model = TAccess_Loader::get('MODEL/Access');
+        $_post_types = $model->getPostTypes();
+
+        if ( !isset($_post_types[$post_type]) || $_post_types[$post_type]->public != 1 ){
+            return $has_permission;
+        }
+        if ( in_array($option_name, array('publish', 'edit_own', 'edit_any', 'delete_own', 'delete_any', 'read')) === FALSE ){
+            return $has_permission;
+        }
+
+        $converted_caps = array('publish' => 'publish_posts', 'edit_own' => 'edit_posts', 'edit_any' => 'edit_others_posts',
+            'delete_own' => 'delete_posts', 'delete_any' => 'delete_others_posts', 'read' => 'read' );
+
+        if ( empty($user) ){
+            global $current_user;
+            $user = $current_user;
+        }
+
+        if ( !is_object($user) ){
+            $user = get_user_by( 'ID', $user );
+        }
+
+        if ( !is_object($user) ){
+            return $has_permission;
+        }
+
+        $role = self::wpcf_get_current_logged_user_role( $user );
+
+        if ( $role == 'administrator' ){
+            return true;
+        }
+
+        global $wpcf_access, $wp_roles;
+
+        //If Access settings not set yet use capabilities from role
+        if( !isset($wpcf_access->settings->types) ){
+            if ( $role == 'guest'  ){
+                if ( $option_name == 'read' ){
+                    return true;
+                }else{
+                    return false;
+                }
+            }
+            $role_caps = $wp_roles->roles;
+            if ( isset( $role_caps[$role]['capabilities'][$converted_caps[$option_name]] ) ){
+                return true;
+            }else{
+                return false;
+            }
+        }
+
+        $is_wpml_installed = apply_filters( 'wpml_active_languages', '', array('skip_missing' => 0) );
+
+        if ( $is_wpml_installed ){
+            $language_settings = $wpcf_access->language_permissions;
+            if ( empty($language) ){
+                $language = apply_filters( 'wpml_setting', '', 'default_language' );
+            }
+
+            if ( isset($language_settings[$post_type][$language][$option_name]) ){
+                if ( in_array($role, $language_settings[$post_type][$language][$option_name]['roles']) !== FALSE ){
+                    return true;
+                }else{
+                    return false;
+                }
+            }
+        }
+
+
+        $types_settings = $wpcf_access->settings->types;
+        //If settings set and post type managed by Access
+        if ( isset($types_settings[$post_type]) && $types_settings[$post_type]['mode'] == 'permissions' && isset($types_settings[$post_type]['permissions'][$option_name]['roles']) ){
+            if ( in_array($role, $types_settings[$post_type]['permissions'][$option_name]['roles']) !== FALSE ){
+                return true;
+            }else{
+                return false;
+            }
+        }
+        //If settings set and post not type managed by Access
+        elseif ( (isset($types_settings[$post_type]) && $types_settings[$post_type]['mode'] != 'permissions' && isset($types_settings['post']) && $types_settings[$post_type]['mode'] == 'permissions') ||
+            ( !isset($types_settings[$post_type]) && isset($types_settings['post']) && $types_settings[$post_type]['mode'] == 'permissions' )  ){
+            if ( isset($types_settings['post']['permissions'][$option_name]['roles']) && in_array($role, $types_settings['post']['permissions'][$option_name]['roles']) !== FALSE ){
+                return true;
+            }else{
+                return false;
+            }
+        }
+        //Use role capabilities
+        if ( $role == 'guest'  ){
+            if ( $option_name == 'read' ){
+                return true;
+            }else{
+                return false;
+            }
+        }
+        $role_caps = $wp_roles->roles;
+        if ( isset( $role_caps[$role]['capabilities'][$converted_caps[$option_name]] ) ){
+            return true;
+        }else{
+            return false;
+        }
+
+    }
+
+
 	
 	/**
 	* ----------------------------
@@ -1467,6 +1847,29 @@ final class Access_Helper
 		print $out;
 	}
 
+	public static function wpcf_access_check_if_user_can( $role, $level, $user = '' ){
+    	global $wp_roles;
+		$cur_level = 0;
+
+		$ordered_roles = Access_Helper::wpcf_access_order_roles_by_level($wp_roles->roles);
+		foreach ($ordered_roles as $levels => $roles_data){
+            if (empty($roles_data))
+                continue;
+
+			foreach ($roles_data as $role_slug => $role_options)
+        	{
+        		if($role_slug == $role){
+					$cur_level = $levels;
+				}
+        	}
+        }
+        if ( $level>=$cur_level){
+            return true;
+        }else{
+            return false;
+        }
+	}
+
     /**
      * Init function. 
      */
@@ -1511,6 +1914,7 @@ final class Access_Helper
             self::wpcf_load_wpml_languages_permissions();        
         }
         do_action('wpcf_access_late_init');
+
     }
     
     /**
@@ -2474,6 +2878,9 @@ final class Access_Helper
 
         $model = TAccess_Loader::get('MODEL/Access');
 
+        //List of AJAX actions where Access will apply read permissions
+        $toolset_access_allowed_ajax_actions = array( 'wpv_get_archive_query_results' );
+        $toolset_access_allowed_ajax_actions = apply_filters( 'toolset_access_allowed_ajax_actions', $toolset_access_allowed_ajax_actions );
         $settings_access = $model->getAccessTypes();
         if (isset($wp_post_types[$post_type]))
         {
@@ -2606,7 +3013,9 @@ final class Access_Helper
                     $wpcf_access->rules->types['create_page'] = $wpcf_access->rules->types['edit_page'];
                 }*/
                 // Check frontend read
-                if ( $data['mode'] != 'not_managed' && !is_admin()) {
+                 if ( $data['mode'] != 'not_managed' && ( !is_admin() ||
+                /*Apply read permissions for selected AJAX requests*/
+                (defined( 'DOING_AJAX' ) && DOING_AJAX && isset( $_REQUEST['action'] ) && in_array($_REQUEST['action'], $toolset_access_allowed_ajax_actions ) ) )  ) {
                     // Check read
                     if ( $data['mode'] != 'not_managed' ) {
                         // Set min reading role
@@ -2616,7 +3025,7 @@ final class Access_Helper
                                 $post_type
                             );
 
-                           add_action( 'init', array( __CLASS__,'set_frontend_read_permissions_action' ), 999999 );
+                           add_action( 'init', array( __CLASS__,'set_frontend_read_permissions_action' ), 999 );
                         } else {
                             // Missed setting? Debug that!
                             $wpcf_access->errors['missing_settings']['read'][] = array(
@@ -2636,12 +3045,12 @@ final class Access_Helper
     public static function set_frontend_read_permissions_action(  ){
         global $wpcf_access;
         if ( !isset($wpcf_access->read_permissions_set) ){
-            for ( $i=0; $i<count($wpcf_access->custom_read); $i++ ){
+            for ( $i=0; $i<count($wpcf_access->custom_read); $i++ ){//print $wpcf_access->custom_read[$i][1];print_r($wpcf_access->custom_read[$i][0]);
                 self::set_frontend_read_permissions( $wpcf_access->custom_read[$i][0],
                                             $wpcf_access->custom_read[$i][1] );
             }
             $wpcf_access->read_permissions_set = true;
-        }
+        }//exit;
     }
 
     /**
@@ -4000,16 +4409,16 @@ final class Access_Helper
 			$do = 'unhide';
 			$return = 1;
 			$disable_comments = true;
-			add_filter('wpv_filter_force_template', array('Access_Helper', 'wpv_access_error_content_template'), 20, 3);
+			add_filter('wpv_filter_force_template', array(__CLASS__, 'wpv_access_error_content_template'), 20, 3);
 		}
 		if ( isset($template[0]) && isset($template[1]) && $template[0] == 'error_php' && !$template[2] ){
 			$do = 'unhide';
 			$return = 1;
-			add_action( 'template_redirect', array('Access_Helper', 'wpv_access_error_php_template'), $template[1] );
+			add_action( 'template_redirect', array(__CLASS__, 'wpv_access_error_php_template'), $template[1] );
 		}
 		if ( isset($template[0]) && isset($template[1]) && $template[0] == 'error_404' && !$template[2] ){
 			$do = 'hide';
-			add_action( 'pre_get_posts', array('Access_Helper', 'wpcf_exclude_selected_post_from_single'), 0 );
+			add_action( 'pre_get_posts', array(__CLASS__, 'wpcf_exclude_selected_post_from_single'), 0 );
 			$return = 1;
 		}
 		if ( $template[2] ){
@@ -4027,16 +4436,14 @@ final class Access_Helper
 	 * Exclude current post from list of queries
 	 */
 	public static function wpcf_exclude_selected_post_from_single( $query ){
-		global $post;
         if ( !is_admin() && $query->is_main_query() ) {
-
-        $post_id = self::wpcf_access_get_current_page();
-        if ( !isset($post_id) || empty($post_id)){
-            return;
-        }
-        $not_in =  $query->get('post__not_in');
-        $not_in[] = $post_id;
-        $query->set('post__not_in', $not_in);
+            $post_id = self::wpcf_access_get_current_page();
+            if ( !isset($post_id) || empty($post_id)){
+                return;
+            }
+            $not_in =  $query->get('post__not_in');
+            $not_in[] = $post_id;
+            $query->set('post__not_in', $not_in);
         }
 	}
 	

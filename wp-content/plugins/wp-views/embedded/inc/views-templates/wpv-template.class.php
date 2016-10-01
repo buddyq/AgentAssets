@@ -452,8 +452,18 @@ class WPV_template{
 		$function_candidate = array();
 
 		// From php7 debug_backtrace() has changed, and the target function might be at index 2 instead of 3 as in php < 7
+		// Also, from WP 4.7 the new way to manage hooks adds some intermediary items so let's cover our backs reaching to 5
 		// Also, the_excerpt_for_archives is supposed to be at index 1
 		// Note: we might want to add a pluk and filter here, maybe...
+		
+		if ( isset( $db[5]['function'] ) ) {
+			$function_candidate[] = $db[5]['function'];
+		}
+		
+		if ( isset( $db[4]['function'] ) ) {
+			$function_candidate[] = $db[4]['function'];
+		}
+		
 		if ( isset( $db[3]['function'] ) ) {
 			$function_candidate[] = $db[3]['function'];
 		}

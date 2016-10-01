@@ -681,7 +681,7 @@ class WPDD_PostEditPageManager
         global $wpddlayout;
         if( $wpddlayout->theme_has_page_templates() ){
             $wpddlayout->enqueue_scripts( array (
-                    'select2',
+                    'toolset_select2',
                     'ddl_post_edit_page',
                 )
             );

@@ -96,6 +96,7 @@ OTGAccess.AccessSettings = function( $ ) {
 								thiz.addClass( 'nav-tab-active' );
 								$( '.js-otg-access-content .js-otg-access-settings-section-loading' ).fadeOut( 'fast', function() {
 									jQuery( '.js-otg-access-content' ).append( response.data.output );
+									toolset_access_fix_cred_permission_tables();
 									jQuery( document ).trigger( 'js_event_types_access_permission_table_loaded', [ data_for_events ] );
 								});
 							}
@@ -108,6 +109,21 @@ OTGAccess.AccessSettings = function( $ ) {
 			}
 		}
 	});
+
+	/**
+	 * Fix cells with for Cred permissions table
+	 */
+	function toolset_access_fix_cred_permission_tables(){
+		$.each( $('.wpcf-access-mode'), function( index, value ) {
+			if ( $(this).find('.toolset-access-specific-users-row td').length > 8 ){
+				$(this).css({'overflow-x' : 'scroll'}).find('table.fixed').css({'table-layout' : 'auto'});
+				$(this).find('table.fixed td').css({'min-width' : '125px'});
+				console.log($(this).find('table.fixed').outerWidth(true));
+				$(this).find('.wpcf-access-buttons-wrap').css({'width' : ( $(this).find('table.fixed').outerWidth(true) - 20)+'px'});
+			}
+		});
+	}
+	toolset_access_fix_cred_permission_tables();
 	
 	$( document ).on( 'click', '.js-otg-access-manual-tab', function( e ) {
 		e.preventDefault();
@@ -379,7 +395,7 @@ OTGAccess.AccessSettings = function( $ ) {
 				.prepend('<div class="dep-message toolset-alert toolset-alert-info toolset-access-table-notification hidden"></div>');
 
 		// Disable admin checkboxes
-		$( ':checkbox[value="administrator"]', container )
+		$( 'input:checkbox[value="administrator"]', container )
 				.prop('disabled', true)
 				.prop('readonly', true)
 				.prop('checked', true);
@@ -390,25 +406,25 @@ OTGAccess.AccessSettings = function( $ ) {
 			var $manageByAccessCheckbox = $(this)
 						.closest('.js-wpcf-access-type-item')
 						.find('.js-wpcf-enable-access');
-			
+
 			if ( ! $manageByAccessCheckbox.is(':checked') ) {
 				$(this)
 					.prop('disabled', true)
 					.prop('readonly', true);
 			}
-			
-			
+
+
 			var $container = $(this).closest('.js-wpcf-access-type-item');
 			var checked = $(this).is(':checked');
 			var $tableInputs = $container.find('table :checkbox, table input[type=text]');
-		
+
 			$tableInputs = $tableInputs.filter(function() { // All elements except 'administrator' role checkboxes
 				return ( $(this).val() !== 'administrator' );
 			});
 			if ( checked) {
 				wpcfAccess.DisableTableInputs($tableInputs, $container);
 				$container.find('.js-wpcf-access-reset').prop('disabled', true);
-			} 
+			}
 		});
 	};
 	
@@ -1212,7 +1228,7 @@ jQuery( document ).ready( function( $ ) {
                                     .html(data);
 							OTGAccess.access_settings.access_control_dialog.dialog('close');
                         }
-                        wpcfAccess.addSuggestedUser();
+                        //wpcfAccess.addSuggestedUser();
                     } else {
                         $('.js-error-container').html('<p class="toolset-alert toolset-alert-error " style="display: block; opacity: 1;">' + wpcf_access_dialog_texts.wpcf_group_exists + '</p>');
                         $('.js-otg-access-spinner').remove();

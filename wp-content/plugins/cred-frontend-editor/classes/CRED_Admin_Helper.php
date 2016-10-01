@@ -38,11 +38,6 @@ final class CRED_Admin_Helper {
         add_filter('toolset_filter_toolset_register_settings_forms_section', array(__CLASS__, 'register_settings_forms_section_other'), 40);
         add_filter('toolset_filter_toolset_register_settings_forms_section', array(__CLASS__, 'register_settings_forms_section_recaptcha'), 50);
         add_filter('toolset_filter_toolset_register_settings_forms_section', array(__CLASS__, 'register_settings_forms_section_filter'), 60);
-        $use_notification_for_autogeneration = defined('CRED_NOTIFICATION_4_AUTOGENERATION') ? CRED_NOTIFICATION_4_AUTOGENERATION : true;
-        if (!$use_notification_for_autogeneration) {
-            add_filter('toolset_filter_toolset_register_settings_forms_section', array(__CLASS__, 'register_settings_forms_section_user_forms'), 70);
-        }
-
         add_action('wp_ajax_cred_get_allowed_tags', array(__CLASS__, 'cred_get_allowed_tags'));
         add_action('wp_ajax_cred_set_allowed_tags', array(__CLASS__, 'cred_set_allowed_tags'));
         add_action('wp_ajax_cred_save_wizard_settings', array(__CLASS__, 'cred_save_wizard_settings'));

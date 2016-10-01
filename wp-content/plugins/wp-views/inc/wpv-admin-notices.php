@@ -28,13 +28,43 @@ define( 'WPT_ADMIN_NOTICES', true );
 
 class WPToolset_Admin_Notices {
 	
+	protected static $instance              = null;
+	
+	/**
+	 * Get or generate an instance of WPToolset_Admin_Notices
+	 *
+	 * @return null|WPToolset_Admin_Notices
+	 *
+	 * @since 2.2.1
+	 */
+	public static function get_instance() {
+		if ( null == self::$instance ) {
+			self::$instance = new WPToolset_Admin_Notices();
+		}
+		return self::$instance;
+	}
+	
+	/**
+	 * WPToolset_Admin_Notices constructor.
+	 *
+	 * @since 1.6.2
+	 */
 	function __construct() {
-		$this->has_notices = false;
-		add_action( 'init', array( $this, 'register_admin_notices' ) );
-		add_action( 'admin_notices', array( $this, 'display_admin_notices' ) );
-		add_action( 'admin_init', array( $this, 'ignore_admin_notice' ) );
-		add_action( 'wp_ajax_wpv_dismiss_notice', array( $this, 'wpv_dismiss_notice' ) );
-		add_action( 'admin_footer', array( $this, 'dismiss_admin_notices_assets') );
+	
+		$this->has_notices                              = false;
+		
+		add_action( 'plugins_loaded',                   array( $this, 'ignore_admin_notice' ) );
+		
+		add_action( 'init',                             array( $this, 'register_admin_notices' ) );
+		add_action( 'admin_notices',                    array( $this, 'display_admin_notices' ) );
+		
+		add_action( 'wp_ajax_wpv_dismiss_notice',       array( $this, 'ajax_dismiss_notice' ) );
+		add_action( 'admin_footer',                     array( $this, 'dismiss_admin_notices_assets') );
+		
+		// API hooks
+		add_action( 'wpv_action_wpv_dismiss_notice',    array( $this, 'dismiss_notice' ) );
+		add_filter( 'wpv_filter_wpv_is_dismissed_notice',   array( $this, 'is_dismissed_notice' ), 10, 2 );
+		
 	}
 	
 	/**
@@ -46,78 +76,9 @@ class WPToolset_Admin_Notices {
 	*/
 	
 	function register_admin_notices() {
-		// Global notice when WooCommerce is active but WooCommerce Views is not
-		add_filter( 'wptoolset_filter_admin_notices', array( $this, 'wpv_woocommerce_recommend_woocommerceviews' ) );
 		// Global notice about release notes
 		// @since 2.0 Disabled by design
 		//add_filter( 'wptoolset_filter_admin_notices', array( $this, 'release_notes' ) );
-	}
-	
-	/**
-	* wpv_woocommerce_recommend_woocommerceviews
-	*
-	* Notice when WooCommerce is active but WooCommerce Views is not
-	*
-	* $type global
-	* $id wc_active_wcv_missing
-	*
-	* @since 1.7
-	*/
-	
-	function wpv_woocommerce_recommend_woocommerceviews( $notices ) {
-		global $pagenow;
-		if ( $pagenow == 'plugin-install.php' && isset( $_GET['tab'] ) && $_GET['tab'] == 'commercial' ) {
-			return $notices;
-		} else if ( current_user_can( 'activate_plugins' ) ) {
-			$add_notice = false;
-			$links = '';
-			$dismissed_notices = get_option( '_wpv_global_dismissed_notices', array() );
-			if ( ! is_array( $dismissed_notices ) || empty( $dismissed_notices ) ) {
-				$dismissed_notices = array();
-			}
-			if ( isset( $dismissed_notices['wc_active_wcv_missing'] ) ) {
-				$add_notice = false;
-			} else {
-				if ( class_exists( 'WooCommerce' ) ) {
-					if ( ! class_exists( 'Class_WooCommerce_Views' ) ) {
-						$add_notice = true;
-						if ( class_exists( 'WP_Installer' ) ) {
-							$links = '<a href="' 
-								. esc_url( admin_url( 'plugin-install.php?tab=commercial' ) ) 
-								. '" class="button button-primary button-primary-toolset">' 
-								. __( 'Install WooCommerce Views', 'wpv-views' ) 
-								. '</a>';
-						} else {
-							$links = '<a href="'
-								. 'https://wp-types.com/account/?utm_source=viewsplugin&utm_campaign=views&utm_medium=suggest-install-woocommerce-views&utm_term=Download WooCommerce Views'
-								. '" class="button button-primary button-primary-toolset">'
-								. __( 'Download WooCommerce Views', 'wpv-views' )
-								. '</a>';
-						}
-					}
-				}
-			}
-			if ( $add_notice ) {
-				$notice_text = '<p>'
-							. sprintf(
-								__( 'To add WooCommerce fields to Views and Content Templates, you need to use <a href="%s" title="Getting started with WooCommerce Views">WooCommerce Views</a>.', 'wpv-views' ),
-								'https://wp-types.com/documentation/user-guides/getting-started-woocommerce-views/?utm_source=viewsplugin&utm_campaign=views&utm_medium=suggest-install-woocommerce-views&utm_term=Getting started with WooCommerce Views'
-							)
-							. '</p><p>'
-							. $links
-							. '  <a class="button button-secondary js-wpv-dismiss" href="' . esc_url( add_query_arg( array( 'wpv_dismiss_global_notice' => 'wc_active_wcv_missing' ) ) ) . '">'
-							. __( 'Dismiss', 'wpv-views' )
-							. '</a>'
-							. '</p>';
-				$args = array(
-					'notice_class' => 'notice notice-warning',
-					'notice_text' => $notice_text,
-					'notice_type' => 'global'
-				);
-				$notices['wc_active_wcv_missing'] = $args;
-			}
-		}
-		return $notices;
 	}
 	
 	/**
@@ -248,7 +209,7 @@ class WPToolset_Admin_Notices {
 		*
 		* Dismisses user and global admin notices based on a URL parameter
 		*
-		* @since 1.7
+		* @since 1.7.0
 		*/
 		
 		if ( isset( $_GET['wpv_dismiss_user_notice'] ) ) {
@@ -385,40 +346,24 @@ class WPToolset_Admin_Notices {
 	}
 	
 	/**
-	* wpv_dismiss_notice
+	* ajax_dismiss_notice
 	*
 	* Callback for the AJAX action to dismiss a notice
 	*
 	* @since 1.9
 	*/
 	
-	function wpv_dismiss_notice() {
+	function ajax_dismiss_notice() {
         if ( 
 			$_POST 
 			&& isset( $_POST['notice'] )
 			&& wp_verify_nonce( $_POST['nonce'], 'wpv_ajax_dismiss_admin_notice' ) 
 		) {
-			$notice_id = sanitize_text_field( $_POST['notice'] );
-			if (
-				isset( $_POST['type'] ) 
-				&& 'user' == $_POST['type']
-			) {
-				global $current_user;
-				$user_id = $current_user->ID;
-				$dismissed_notices = get_user_meta( $user_id, '_wpv_dismissed_notices', true );
-				if ( ! is_array( $dismissed_notices ) || empty( $dismissed_notices ) ) {
-					$dismissed_notices = array();
-				}
-				$dismissed_notices[ $notice_id ] = 'yes';
-				update_user_meta( $user_id, '_wpv_dismissed_notices', $dismissed_notices );
-			} else {
-				$dismissed_notices = get_option( '_wpv_global_dismissed_notices', array() );
-				if ( ! is_array( $dismissed_notices ) || empty( $dismissed_notices ) ) {
-					$dismissed_notices = array();
-				}
-				$dismissed_notices[ $notice_id ] = 'yes';
-				update_option( '_wpv_global_dismissed_notices', $dismissed_notices );
-			}
+			$notice_data = array(
+				'type'  => isset( $_POST['type'] ) ? sanitize_text_field( $_POST['type'] ) : 'global',
+				'id'    => isset( $_POST['notice'] ) ? sanitize_text_field( $_POST['notice'] ) : ''
+			);
+			$this->dismiss_notice( $notice_data );
 			$data = array(
 				'message' => __( 'Admin notice dismissed', 'wpv-views' )
 			);
@@ -430,7 +375,86 @@ class WPToolset_Admin_Notices {
 			wp_send_json_error( $data );
         }
     }
+	
+	/**
+	 * Manually dismiss a notice, given its data.
+	 *
+	 * @param $notice_data
+	 */
+	public function dismiss_notice( $notice_data ) {
+        
+        $defaults = array(
+            'type'  => 'global',
+	        'id'    => ''
+        );
+        
+        $notice_data = wp_parse_args( $notice_data, $defaults );
+        
+        if ( empty( $notice_data['id'] ) ) {
+            return;
+        }
+        
+        switch ( $notice_data['type'] ) {
+	        case 'user':
+		        global $current_user;
+		        $user_id = $current_user->ID;
+		        $dismissed_notices = get_user_meta( $user_id, '_wpv_dismissed_notices', true );
+		        if ( ! is_array( $dismissed_notices ) || empty( $dismissed_notices ) ) {
+			        $dismissed_notices = array();
+		        }
+		        $dismissed_notices[ $notice_data['id'] ] = 'yes';
+		        update_user_meta( $user_id, '_wpv_dismissed_notices', $dismissed_notices );
+	            break;
+	        case 'global':
+	        default:
+		        $dismissed_notices = get_option( '_wpv_global_dismissed_notices', array() );
+		        if ( ! is_array( $dismissed_notices ) || empty( $dismissed_notices ) ) {
+			        $dismissed_notices = array();
+		        }
+		        $dismissed_notices[ $notice_data['id'] ] = 'yes';
+		        update_option( '_wpv_global_dismissed_notices', $dismissed_notices );
+	            break;
+        }
+        
+    }
+    
+    public function is_dismissed_notice( $status, $notice_data = array() ) {
+	
+	    $defaults = array(
+		    'type'  => 'global',
+		    'id'    => ''
+	    );
+	
+	    $notice_data = wp_parse_args( $notice_data, $defaults );
+	
+	    if ( empty( $notice_data['id'] ) ) {
+		    return $status;
+	    }
+	
+	    switch ( $notice_data['type'] ) {
+		    case 'user':
+			    global $current_user;
+			    $user_id = $current_user->ID;
+			    $dismissed_notices = get_user_meta( $user_id, '_wpv_dismissed_notices', true );
+			    if ( ! is_array( $dismissed_notices ) || empty( $dismissed_notices ) ) {
+				    $dismissed_notices = array();
+			    }
+			    $status = isset( $dismissed_notices[ $notice_data['id'] ] );
+			    break;
+		    case 'global':
+		    default:
+			    $dismissed_notices = get_option( '_wpv_global_dismissed_notices', array() );
+			    if ( ! is_array( $dismissed_notices ) || empty( $dismissed_notices ) ) {
+				    $dismissed_notices = array();
+			    }
+		        $status = isset( $dismissed_notices[ $notice_data['id'] ] );
+			    break;
+	    }
+        
+        return $status;
+        
+    }
 
 }
 
-new WPToolset_Admin_Notices();
+WPToolset_Admin_Notices::get_instance();

@@ -326,9 +326,9 @@ function wpv_add_controls_labels_to_translation( $content, $view_id ) {
 			'reset_label'
 		);
 		/*
-		** If there are commas escaped please replace with '|' (pipe char)
+		** If there are commas escaped or placeheld please replace with '|' (pipe char)
 		*/
-		$content = str_replace("\\\\\,", '|', $content);
+		$content = str_replace( array( '%%COMMA%%', "\\\\\," ), '|', $content );
 		/*
 		** Strip all slashes if any left
 		*/

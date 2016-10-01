@@ -95,6 +95,8 @@ class CRED_PostExpiration {
         // shortcodes
         $this->_shortcodes['cred-post-expiration'] = array($this, 'cred_pe_shortcode_cred_post_expiration');
         add_filter('wpv_custom_inner_shortcodes', array($this, 'cred_pe_shortcodes'));
+        add_filter('cred_modify_pe_settings_compatibility', array($this, "modifyPESettingsForCompatibility"), 10, 1);
+        
         foreach ($this->_shortcodes as $tag => $function) {
             add_shortcode($tag, $function);
         }
@@ -318,6 +320,7 @@ class CRED_PostExpiration {
                         }
                     }
                     $notifications = $aux_array;
+                    
                     update_post_meta($post_id, $this->_post_expiration_notifications_field, $notifications);
                 }
             }
@@ -452,7 +455,7 @@ class CRED_PostExpiration {
      * get CRED PE Settings
      */
     public function getCredPESettings() {
-        return get_option($this->_cron_settings_option, array());
+        return apply_filters("cred_modify_pe_settings_compatibility", get_option($this->_cron_settings_option, array()));
     }
 
     /**
@@ -468,7 +471,20 @@ class CRED_PostExpiration {
     public function deleteCredPESettings() {
         delete_option($this->_cron_settings_option);
     }
-
+    
+    /**
+     * get CRED PE Settings
+     */
+    public function modifyPESettingsForCompatibility($settings) {
+        if(isset($settings['expiration_time']['weeks']) && $settings['expiration_time']['days']){
+            $hours_in_weeks = ($settings['expiration_time']['weeks'] * 7) * 24;
+            $hours_in_days  = $settings['expiration_time']['days'] * 24;
+            $settings['expiration_time']["expiration_date"] = $hours_in_days + $hours_in_weeks;
+            $settings["expiration_time"]["expiration_period"] = "hours";
+        }
+        return $settings;
+    }
+    
     /**
      * set CRED Settings cron
      */
@@ -636,9 +652,14 @@ class CRED_PostExpiration {
                 foreach ($post_meta->notifications as $key => $notification) {
                     cred_log($key);
                     cred_log($notification);
-                    
-                    $notification_time = $post_meta->expiration_time - ($notification['event']['expiration_date'] * $notification['event']['expiration_period']);
 
+                    //Check if expiration_period index exists, for backward compatibility with versions prior to 1.9 
+                    if(isset($notification['event']['expiration_period'])){
+                        $notification_time = $post_meta->expiration_time - ($notification['event']['expiration_date'] * $notification['event']['expiration_period']);
+                    }else{
+                        $notification_time = $post_meta->expiration_time - $notification['event']['expiration_date'] * DAY_IN_SECONDS;
+                    }
+                    
                     if ($notification_time <= $now) {
                         // notify
                         $posts_ids_for_notifications[] = $post_meta->post_id;
@@ -754,6 +775,22 @@ class CRED_PostExpiration {
             // Update the meta field.
             // expire time default is 0, that means no expiration
             update_post_meta($post_id, $this->_post_expiration_time_field, $expiration_time);
+            
+            $expiration_notifications = get_post_meta($post_id, $this->_post_expiration_notifications_field);
+            $updated_notifications = array();
+            foreach($expiration_notifications as $notifications){
+                foreach($notifications as $notification){
+                    if(isset($notification) && isset($notification["event"]["type"])){
+                        if($notification["event"]["type"] == "expiration_date"){
+                            $notification["event"]["notification_timestamp"] = $expiration_time;
+                        }
+                    }
+                    $updated_notifications[] = $notification;
+                }
+            }
+            
+            update_post_meta($post_id, $this->_post_expiration_notifications_field, $updated_notifications);
+
             if (self::_isTimestampInRange($expiration_time)) {
                 // save expiration action
                 $post_status = array('post_status' => (isset($_POST['cred_pe'][$this->_post_expiration_action_field]['post_status']) ? $_POST['cred_pe'][$this->_post_expiration_action_field]['post_status'] : ''));

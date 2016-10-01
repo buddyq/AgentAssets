@@ -12,7 +12,7 @@ if ( defined( 'WPV_VERSION' ) ) {
     return; 
 }
 
-define( 'WPV_VERSION', '2.2' );
+define( 'WPV_VERSION', '2.2.1' );
 
 /**
 * Set constants
@@ -205,6 +205,12 @@ require WPV_PATH_EMBEDDED . '/inc/filters/wpv-filter-sticky-embedded.php';
 */
 
 require WPV_PATH_EMBEDDED . '/inc/WPML/wpv_wpml.php';
+
+/**
+ * WooCommerce integration
+ */
+
+require WPV_PATH_EMBEDDED . '/inc/third-party/wpv-compatibility-woocommerce.class.php';
 
 /**
 * Main plugin classes

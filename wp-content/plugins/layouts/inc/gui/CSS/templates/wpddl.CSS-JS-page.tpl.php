@@ -1,8 +1,8 @@
 <div class="wrap">
-    <h2>
+    <h1>
         <i class="icon-layouts-logo ont-icon-24 ont-color-orange css-layouts-logo"></i>
         <?php _e('Layouts CSS and JS Editor','ddl-layouts');?>
-    </h2>
+    </h1>
     
     <div id="editor_tabs">
         <ul>

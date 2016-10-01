@@ -1,4 +1,8 @@
 -------------------------------------------------------------------------------------------------------------------
+Toolset Maps 1.2.1
+	- Fixed a bug that rejected valid latitude and longitude values.
+
+-------------------------------------------------------------------------------------------------------------------
 Toolset Maps 1.2, AKA Colombo
 	- Added settings for hiding some Google Maps controls, like the zooming buttons, the street view toggler and the map type selection.
 	- Added name attributes to each auxiliar latitude and longitude input for address fields, so they can be used on save actions.

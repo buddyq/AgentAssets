@@ -163,7 +163,7 @@ DDLayout.ParentLayoutsSettings = function($){
         $default_parent = $('select[name="'+DDL_Settings_JS.parent_option_name+'"]');
 
     self.init = function(){
-        $default_parent.select2({'width' : '300px'});
+        $default_parent.toolset_select2({'width' : '300px'});
         self.handle_change();
     };
 

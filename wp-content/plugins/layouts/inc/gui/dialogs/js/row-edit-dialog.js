@@ -9,7 +9,7 @@ DDLayout.RowDialog = function($, row_view)
     _.extend( DDLayout.RowDialog.prototype, new DDLayout.Dialogs.Prototype(jQuery) );
 
     self.init = function() {
-
+         
         jQuery(document).on('click', '.js-row-dialog-edit-save,.js-row-dialog-edit-add-row', {dialog: self}, function(event) {
             event.preventDefault();
 
@@ -39,6 +39,14 @@ DDLayout.RowDialog = function($, row_view)
         });
 		
 		jQuery('#js-row-edit-mode figure').on('click', function(event) {
+            
+            var selected_row_type = jQuery(this).children('img').data('name');
+            if(selected_row_type === 'row-full-width'){
+                jQuery('.default_container_padding_label').fadeOut(200);
+            } else {
+                jQuery('.default_container_padding_label').fadeIn(200);
+            }
+            
 			jQuery('#js-row-edit-mode figure').each( function () {
 				jQuery(this).removeClass('selected');
 			})
@@ -94,6 +102,14 @@ DDLayout.RowDialog = function($, row_view)
 		}
 
         if (mode == 'edit') {
+            
+            // hide padding checkbox by default if selected row type is not "normal-row"
+            if(row_view.model.get('mode') === 'full-width'){
+                jQuery('.default_container_padding_label').hide();
+            } else {
+                jQuery('.default_container_padding_label').show();
+            }
+            
             jQuery('#ddl-row-edit').data('mode', 'edit-row');
             jQuery('#ddl-row-edit').data('row_view', row_view);
 
@@ -101,7 +117,13 @@ DDLayout.RowDialog = function($, row_view)
 	        jQuery('input.js-edit-css-class', jQuery('#ddl-row-edit') ).val(row_view.model.get('additionalCssClasses'));
 	        jQuery('input.js-edit-css-id', jQuery('#ddl-row-edit') ).val( row_view.model.get('cssId') );
             jQuery('#ddl-row-edit select[name="ddl_tag_name"]').val( row_view.model.get('tag') );
-
+            
+            if(row_view.model.get('containerPadding') === true || typeof row_view.model.get('containerPadding') === 'undefined'){
+                jQuery('#ddl-row-edit input[name="ddl_container_padding"]').prop('checked', true);
+            } else {
+                jQuery('#ddl-row-edit input[name="ddl_container_padding"]').prop('checked', false);
+            }
+            
             jQuery('#ddl-row-edit .js-dialog-edit-title').show();
             jQuery('#ddl-row-edit .js-row-dialog-edit-save').show();
 
@@ -175,15 +197,17 @@ DDLayout.RowDialog = function($, row_view)
 
         } else if (jQuery('#ddl-row-edit').data('mode') == 'edit-row') {
 
+            
 
             DDLayout.ddl_admin_page.save_undo();
 
             var target_row = target_row_view.model;
-
+            
             target_row.set('name', jQuery('input[name="ddl-row-edit-row-name"]').val());
             target_row.set('additionalCssClasses', jQuery('input.js-edit-css-class', jQuery('#ddl-row-edit') ).val() );
             target_row.set('cssId', jQuery('input.js-edit-css-id', jQuery('#ddl-row-edit') ).val() );
             target_row.set('tag', jQuery('#ddl-row-edit select[name="ddl_tag_name"]').val() );
+            target_row.set('containerPadding', jQuery('#ddl-row-edit input[name="ddl_container_padding"]').prop('checked') );
 			target_row.set( 'mode', self._get_row_mode() );
 
 	       // target_row.set('cssClass',jQuery('#ddl-row-edit #ddl-row-edit-layout-type').val() );

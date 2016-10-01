@@ -239,7 +239,33 @@ class WPV_Meta_Field_Filter {
 				. '</option>';
 		}
 		$select_type .= '</select>';
-		
+
+		/**
+		 * @since 2.3
+		 */
+		$decimals_selected = 2;
+		if ( isset( $view_settings[ $meta_type . '-field-' . $name_sanitized . '_decimals' ] ) ) {
+			$decimals_selected = $view_settings[ $meta_type . '-field-' . $name_sanitized . '_decimals' ];
+		}
+
+		$show_hide_decimals = ( $type_selected == 'DECIMAL' ) ? '' : 'display: none;';
+		$select_decimals = '<span class="' . esc_attr( 'js-wpv-' . $meta_type . '-field-decimals-span' ) . '" style="' . $show_hide_decimals . '">';
+		$select_decimals .= 'with <select'
+			. ' name="' . esc_attr( sprintf( $name, '_decimals' ) ) . '"'
+			. ' class="' . esc_attr( 'js-wpv-' . $meta_type . '-field-decimals-select' ) . '"'
+			. ' autocomplete="off"'
+			. '>';
+		for ( $i = 1; $i <= 10; $i++ ) {
+			$select_decimals .= '<option'
+				. ' value="' . $i . '"'
+				. ' ' . selected( $decimals_selected, $i, false )
+				. '>'
+				. $i
+				. '</option>';
+		}
+		$select_decimals .= '</select> decimal places';
+		$select_decimals .= '</span>';
+
 		$select_compare = '<select'
 			. ' name="' . esc_attr( sprintf( $name, '_compare' ) ) . '"'
 			. ' class="' . esc_attr( 'wpv_' . $meta_type . '_field_compare_select js-wpv-' . $meta_type . '-field-compare-select' ) . '"'
@@ -258,10 +284,11 @@ class WPV_Meta_Field_Filter {
 		<?php 
 		/* translators: for example, "The field *field-slug* is a *string|number|date* that is *equal to|different from|greater than* the following: */
 		echo sprintf( 
-			__( 'The field %1$s is a %2$s that is %3$s the following:', 'wpv-views' ), 
+			__( 'The field %1$s is a %2$s %4$s that is %3$s the following:', 'wpv-views' ),
 			esc_attr( $args['nicename'] ),
 			$select_type,
-			$select_compare
+			$select_compare,
+			$select_decimals
 		); 
 		?>
 			<div class="<?php echo esc_attr( 'wpv-filter-multiple-element-options-mode js-wpv-' . $meta_type . '-field-values' ); ?>">

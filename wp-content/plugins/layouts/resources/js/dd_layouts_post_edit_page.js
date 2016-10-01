@@ -33,15 +33,15 @@ DDLayout.templateSelector = function($)
         }
 
         self._show_template_warning();
-        self.unselect_select2_onmouseleave();
+        self.unselect_toolset_select2_onmouseleave();
 
         self.manage_if_layout_is_loop( jQuery('#js-layout-template-name option:selected') );
 
     };
 
-    self.unselect_select2_onmouseleave = function(){
-      $('.select2-with-searchbox').live("mouseleave", function() {
-         $(".select2-results>li.select2-highlighted").removeClass("select2-highlighted");
+    self.unselect_toolset_select2_onmouseleave = function(){
+      $('.toolset_select2-with-searchbox').live("mouseleave", function() {
+         $(".toolset_select2-results>li.toolset_select2-highlighted").removeClass("toolset_select2-highlighted");
       });
     };
 
@@ -216,7 +216,7 @@ DDLayout.templateSelector = function($)
         }
 
         $combinedLayoutTemplate.on('change', self._handle_combined_combo_change);
-        $combinedLayoutTemplate.select2({
+        $combinedLayoutTemplate.toolset_select2({
             'width': '100%',
             formatResult: self._format_select,
             formatSelection: self._format_select
@@ -254,18 +254,18 @@ DDLayout.templateSelector = function($)
 
         if ( selected == 'show-all-templates'){
             $('.js-wpddl-special-dropdown-option').remove();
-            jQuery('#js-combined-layout-template-name').select2("destroy");
+            jQuery('#js-combined-layout-template-name').toolset_select2("destroy");
 
-            jQuery('#js-combined-layout-template-name').select2({
+            jQuery('#js-combined-layout-template-name').toolset_select2({
                 'width': '100%',
                 formatResult: self._format_select,
                 formatSelection: self._format_select}
             );
             jQuery('#js-combined-layout-template-name option').removeClass('option_hidden');
-            $('#js-combined-layout-template-name').select2('val', self.selected_combined);
-            $('#js-combined-layout-template-name').select2('open');
+            $('#js-combined-layout-template-name').toolset_select2('val', self.selected_combined);
+            $('#js-combined-layout-template-name').toolset_select2('open');
             WPV_Toolset.Utils.eventDispatcher.trigger( 'ddl-layout-template-name-changed', jQuery('#js-layout-template-name').val() );
-            $('.select2-results').scrollTop();
+            $('.toolset_select2-results').scrollTop();
 
             return;
         }

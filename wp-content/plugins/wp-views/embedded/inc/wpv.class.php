@@ -3646,7 +3646,7 @@ class WP_Views {
 			
 		// Views utils script
 		// @todo diff with toolset-utils, this might be redundant once we ditch Colorbox
-		wp_register_script( 'views-utils-script', WPV_URL_EMBEDDED . '/res/js/lib/utils.js', array( 'jquery','toolset-colorbox', 'select2', 'toolset-utils' ), WPV_VERSION );
+		wp_register_script( 'views-utils-script', WPV_URL_EMBEDDED . '/res/js/lib/utils.js', array( 'jquery','toolset-colorbox', 'toolset_select2', 'toolset-utils' ), WPV_VERSION );
 		$help_box_translations = array(
 				'wpv_dont_show_it_again' => __( "Got it! Don't show this message again", 'wpv-views'),
 				'wpv_close' => __( 'Close', 'wpv-views') );
@@ -3710,11 +3710,6 @@ class WP_Views {
 		// @todo deprecate and move to common
 		wp_deregister_style( 'toolset-colorbox' );
 		wp_register_style( 'toolset-colorbox', WPV_URL_EMBEDDED . '/res/css/colorbox.css', array(), WPV_VERSION );
-		// Select2 style
-		// @tdeprecated This is not used anywhere, might be removed as we use 'toolset-select2-css' now
-		if( ! wp_style_is( 'select2', 'registered' ) ) {
-			wp_register_style( 'select2', TOOLSET_COMMON_URL . '/res/lib/select2/select2.css', array(), WPV_VERSION );
-		}
 		// Notifications styles
 		// @todo notifications seems to be spread, needs to go to common after a diff
 		wp_register_style( 'views-notifications-css', WPV_URL_EMBEDDED . '/res/css/notifications.css', array(), WPV_VERSION );
@@ -4059,8 +4054,8 @@ function wpv_views_plugin_plugin_row_meta( $plugin_meta, $plugin_file, $plugin_d
 	if ( $plugin_file == $this_plugin ) {
 		$plugin_meta[] = sprintf(
 				'<a href="%s" target="_blank">%s</a>',
-				'https://wp-types.com/version/views-2-2/?utm_source=viewsplugin&utm_campaign=views&utm_medium=release-notes-plugin-row&utm_term=Views 2.2 release notes',
-				__( 'Views 2.2 release notes', 'wpv-views' ) 
+				'https://wp-types.com/version/views-2-2-1/?utm_source=viewsplugin&utm_campaign=views&utm_medium=release-notes-plugin-row&utm_term=Views 2.2.1 release notes',
+				__( 'Views 2.2.1 release notes', 'wpv-views' ) 
 			);
 	}
 	return $plugin_meta;

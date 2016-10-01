@@ -48,7 +48,7 @@ class WPDD_Layouts_RenderManager{
 
     public function fix_cred_preview_render( $bool ){
         if( $_GET && ( isset( $_GET['cred_form_preview'] ) || isset( $_GET['cred_user_form_preview'] ) ) ){
-            $bool = apply_filters( 'ddl-template_include_force_render', false );
+            $bool = false;
         }
 
         return $bool;

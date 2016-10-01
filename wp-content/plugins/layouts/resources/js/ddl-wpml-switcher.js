@@ -33,10 +33,10 @@ DDLayout.WPMLSwitcher  = function($){
     };
 
     self.init_selector = function( $lang_select ){
-        function format( option, select2_element ) {
+        function format( option, toolset_select2_element ) {
 
             if( $(option.element).data('languageIcon') === 'none' ) return option.text;
-            if( select2_element.hasClass('select2-chosen') ){
+            if( toolset_select2_element.hasClass('toolset_select2-chosen') ){
                 var icon = $(option.element).data('languageIcon') ? '<i class="ddl-wpml-flag" style="background:url('+$(option.element).data('languageIcon')+') no-repeat bottom left"></i>' : '';
                 return  icon + option.text;
             } else {
@@ -48,7 +48,7 @@ DDLayout.WPMLSwitcher  = function($){
 	if(self.current_language === 'all'){
 	    self.current_language = self.default_language;
 	}
-        $lang_select.select2({
+        $lang_select.toolset_select2({
             minimumResultsForSearch: Infinity,
             formatResult: format,
             formatSelection: format,
@@ -57,7 +57,7 @@ DDLayout.WPMLSwitcher  = function($){
             escapeMarkup: function(m) { return m; }
         });
 
-        $lang_select.select2('val', self.current_language );
+        $lang_select.toolset_select2('val', self.current_language );
         $lang_select.val(self.current_language).trigger('change');
         self.change_handler( $lang_select );
 
@@ -65,7 +65,7 @@ DDLayout.WPMLSwitcher  = function($){
 
     self.clean_up_events = function( ){
         self.current_language = DDLayout_LangSwitch_Settings.current_language;
-        $lang_select.select2('close');
+        $lang_select.toolset_select2('close');
     };
 
     self.change_handler = function( $lang_select ){

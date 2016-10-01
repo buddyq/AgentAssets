@@ -101,7 +101,7 @@ class WPDDL_scripts_manager extends Toolset_Assets_Manager
 		$this->scripts['wp-layouts-colorbox-script'] = new WPDDL_script('wp-layouts-colorbox-script', WPDDL_RES_RELPATH . '/js/external_libraries/jquery.colorbox-min.js', array('jquery'), WPDDL_VERSION);
 		$this->scripts['ddl_post_edit_page'] = new WPDDL_script('ddl_post_edit_page', (WPDDL_RES_RELPATH . "/js/dd_layouts_post_edit_page.js"), array('jquery', 'toolset-utils', 'toolset-event-manager'), WPDDL_VERSION, true);
 
-		$this->scripts['wp-layouts-dialogs-script'] = new WPDDL_script('wp-layouts-dialogs-script', WPDDL_GUI_RELPATH . 'dialogs/js/dialogs.js', array('jquery', 'editor', 'thickbox', 'media-upload', 'toolset-utils', 'select2'));
+		$this->scripts['wp-layouts-dialogs-script'] = new WPDDL_script('wp-layouts-dialogs-script', WPDDL_GUI_RELPATH . 'dialogs/js/dialogs.js', array('jquery', 'editor', 'thickbox', 'media-upload', 'toolset-utils', 'toolset_select2'));
 
 		$this->scripts['ddl-post-types'] = new WPDDL_script('ddl-post-types', WPDDL_RES_RELPATH . '/js/ddl-post-types.js', array('jquery', 'layouts-prototypes'));
 
@@ -113,7 +113,7 @@ class WPDDL_scripts_manager extends Toolset_Assets_Manager
 		$this->scripts['ddl-cssframework-settings-script'] = new WPDDL_script('ddl-cssframework-settings-script', WPDDL_RES_RELPATH . '/js/dd_layouts_cssframework_settings.js',array('jquery','underscore'), WPDDL_VERSION, true);
 
         $this->scripts['ddl-wpml-switcher'] = new WPDDL_script('ddl-wpml-switcher', WPDDL_RES_RELPATH . '/js/ddl-wpml-switcher.js', array('jquery', 'jquery-ui-core', 'jquery-ui-widget', 'jquery-ui-selectmenu'), WPDDL_VERSION, true);
-		$this->scripts['layouts-settings-admin-js'] = new WPDDL_script( 'layouts-settings-admin-js',  WPDDL_RES_RELPATH . '/js/ddl-settings.js', array( 'jquery', 'toolset-utils', 'select2' ), WPDDL_VERSION, true );
+		$this->scripts['layouts-settings-admin-js'] = new WPDDL_script( 'layouts-settings-admin-js',  WPDDL_RES_RELPATH . '/js/ddl-settings.js', array( 'jquery', 'toolset-utils', 'toolset_select2' ), WPDDL_VERSION, true );
 		$this->scripts['ddl-css-editor-main'] = new WPDDL_script('ddl-css-editor-main', WPDDL_GUI_RELPATH . "CSS/js/main.js", array('headjs', 'jquery', 'toolset-utils', 'underscore', 'backbone'), WPDDL_VERSION, true);
         $this->scripts['ddl-css-editor-main'] = new WPDDL_script('ddl-js-editor-main', WPDDL_GUI_RELPATH . "CSS/js/jsmain.js", array('headjs', 'jquery', 'toolset-utils', 'underscore', 'backbone','jquery-ui-tabs'), WPDDL_VERSION, true);
         #codemirror.js and related
@@ -227,7 +227,7 @@ class WPDDL_scripts_manager extends Toolset_Assets_Manager
         $this->scripts['ddl-video-cell-front-end'] = new WPDDL_script('ddl-video-cell-front-end', WPDDL_RES_RELPATH . '/js/ddl-video-cell-front-end.js', array('jquery'), WPDDL_VERSION, true);
         
         #embedded mode only
-        $this->scripts['ddl-embedded-mode'] = new WPDDL_script('ddl-embedded-mode', WPDDL_RES_RELPATH . '/js/dd-layouts-embedded.js', array('jquery',  'toolset-utils', 'layouts-prototypes', 'wp-layouts-dialogs-script', 'wp-layouts-colorbox-script', 'select2' ), WPDDL_VERSION, true);
+        $this->scripts['ddl-embedded-mode'] = new WPDDL_script('ddl-embedded-mode', WPDDL_RES_RELPATH . '/js/dd-layouts-embedded.js', array('jquery',  'toolset-utils', 'layouts-prototypes', 'wp-layouts-dialogs-script', 'wp-layouts-colorbox-script', 'toolset_select2' ), WPDDL_VERSION, true);
 
         return parent::__initialize_scripts();
     }

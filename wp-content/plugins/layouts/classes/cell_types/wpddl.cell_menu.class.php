@@ -39,7 +39,10 @@ if (!class_exists('Layouts_cell_Menu')) {
                         'cell-content-callback' => array(&$this, 'menu_cell_content_callback'),
                         'cell-template-callback' => array(&$this, 'menu_cell_template_callback'),
                         'has_settings' => true,
-                        'preview-image-url' => DDL_ICONS_PNG_REL_PATH . 'menu_expand-image.png'
+                        'preview-image-url' => DDL_ICONS_PNG_REL_PATH . 'menu_expand-image.png',
+                        'register-scripts' => array(
+                            array('ddl-menu-cell-script', WPDDL_GUI_RELPATH . 'editor/js/ddl-menu-cell-script.js', array('jquery'), WPDDL_VERSION, true),
+                        ),
                     )
                 );
             }
@@ -93,6 +96,15 @@ if (!class_exists('Layouts_cell_Menu')) {
                         <option value="3"><?php _e('Level three', 'ddl-layouts'); ?></option>
                     </select>
                 </p>
+                
+                <p>
+                    <label
+                        for="<?php the_ddl_name_attr('menu_alignment'); ?>"><?php _e('Menu alignment', 'ddl-layouts'); ?></label>
+                    <select name="<?php the_ddl_name_attr('menu_alignment'); ?>">
+                        <option value="right"><?php _e('Right', 'ddl-layouts'); ?></option>
+                        <option value="left"><?php _e('Left', 'ddl-layouts'); ?></option>
+                    </select>
+                </p>
                 <?php do_action('ddl-menu_additional_fields');?>
             </div>
 
@@ -106,7 +118,7 @@ if (!class_exists('Layouts_cell_Menu')) {
             $id = 'ddl-navbar-collapse-' . md5(time() + rand(0, 100));
             $menu_name = get_ddl_field('menu_name');
             $menu_dir = get_ddl_field('menu_dir');
-            $menu_depth = get_ddl_field('menu_depth');
+            $menu_depth = get_ddl_field('menu_depth');       
             $menu_class	= 'ddl-nav ddl-navbar-nav ' . 'ddl-'.$menu_dir;
             $container_class = 'collapse ddl-navbar-collapse ' . $id;
             $menu_style = 'bootstrap';
@@ -137,7 +149,11 @@ if (!class_exists('Layouts_cell_Menu')) {
 
         private function wrap_menu_start($menu_dir)
         {
-            return apply_filters('ddl-wrap_menu_start', '<nav class="ddl-nav-wrap ddl-navbar ddl-navbar-default ddl-'.$menu_dir.'">', $menu_dir, $this);
+            $menu_alignment = get_ddl_field('menu_alignment');
+            if(!isset($menu_alignment)){
+                $menu_alignment = 'right';
+            }
+            return apply_filters('ddl-wrap_menu_start', '<nav class="ddl-nav-wrap ddl-navbar ddl-navbar-default ddl-'.$menu_dir.' pull-'.$menu_alignment.'">', $menu_dir, $this);
         }
 
         private function wrap_menu_end($menu_dir)

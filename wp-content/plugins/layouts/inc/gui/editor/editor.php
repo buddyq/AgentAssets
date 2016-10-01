@@ -692,7 +692,7 @@ class WPDD_GUI_EDITOR{
 				'jquery-ui-tabs',
 				'wp-pointer',
 				'backbone',
-				'select2',
+				'toolset_select2',
 				'toolset-utils',
 				'wp-pointer',
 				'wp-mediaelement',

@@ -111,7 +111,7 @@ class WPDDL_Templates_Settings{
     }
 
     public function register_scripts( $scripts ){
-            $scripts['ddl-templates-settings'] = new WPDDL_script('ddl-templates-settings', WPDDL_RES_RELPATH . "/js/ddl-templates-settings.js", array('jquery', 'underscore', 'select2', 'toolset-utils'), WPDDL_VERSION, true);
+            $scripts['ddl-templates-settings'] = new WPDDL_script('ddl-templates-settings', WPDDL_RES_RELPATH . "/js/ddl-templates-settings.js", array('jquery', 'underscore', 'toolset_select2', 'toolset-utils'), WPDDL_VERSION, true);
             return $scripts;
     }
 

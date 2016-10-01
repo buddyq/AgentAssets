@@ -1476,13 +1476,13 @@ function wpv_shortcode_wpv_control( $atts ) {
 					}
 					if ( $auto_fill_default != '' ) {
 						// translate the auto_fill_default option if needed, just when it's one of the existing options
-						$auto_fill_default = str_replace( '\,', ',', $auto_fill_default );
+						$auto_fill_default = str_replace( array( '%%COMMA%%', '\,' ), ',', $auto_fill_default );
 						if ( $auto_fill_default == $option['title'] ) {
 							$auto_fill_default = wpv_translate( 'field '. $fields[ $field_name ]['id'] .' option '. $field_key .' title', $option['title'], false, 'plugin Types' );
 							// set this flat to true: we already have translated auto_fill_default
 							$auto_fill_default_trans = true; 
 						}
-						$auto_fill_default = str_replace( ',', '\,', $auto_fill_default );
+						$auto_fill_default = str_replace( ',', '%%COMMA%%', $auto_fill_default );
 					}
 				}
 			}
@@ -1580,12 +1580,12 @@ function wpv_shortcode_wpv_control( $atts ) {
 			// If auto_fill_default is not empty, adjust and translate when needed
 			if ( !$auto_fill_default_trans ) {
 				// translate the auto_fill_default option when it's not one of the existing options
-				$auto_fill_default = str_replace( '\,', ',', $auto_fill_default );
+				$auto_fill_default = str_replace( array( '%%COMMA%%', '\,' ), ',', $auto_fill_default );
 				$auto_fill_default = wpv_translate( $url_param . '_auto_fill_default', stripslashes( $auto_fill_default ), false, 'View ' . $view_name );
-				$auto_fill_default = str_replace( ',', '\,', $auto_fill_default );
+				$auto_fill_default = str_replace( ',', '%%COMMA%%', $auto_fill_default );
 			}
             $values = '';
-            $display_values = str_replace( '\,', '%comma%', $auto_fill_default );
+            $display_values = str_replace( '\,', '%%COMMA%%', $auto_fill_default );
             // flag to whether there is an auto_fill_default value that we ad at the beginning of the $display_value string
             $first = false; 
         } else {
@@ -1600,13 +1600,13 @@ function wpv_shortcode_wpv_control( $atts ) {
                     $display_values .= ',';
                 }
                 // HACK to handle commas in values
-                $values .= str_replace( ',', '%comma%', $value ); 
+                $values .= str_replace( ',', '%%COMMA%%', $value ); 
                 if ( isset( $display_text[$value] ) ) {
 					// HACK to handle commas in display_values
-					$display_values .= str_replace( ',', '%comma%', $display_text[ $value ] ); 
+					$display_values .= str_replace( ',', '%%COMMA%%', $display_text[ $value ] ); 
 				} else {
 					// HACK to handle commas in display_values
-					$display_values .= str_replace( ',', '%comma%', $value ); 
+					$display_values .= str_replace( ',', '%%COMMA%%', $value ); 
 				}
                 $first = false;
             }
@@ -1625,18 +1625,18 @@ function wpv_shortcode_wpv_control( $atts ) {
 	
 	if( !empty( $values ) ) {
 		// When values attributes are manually defined, the inner commas are formatted as \, and we need to apply the same HACK as for the automatically set values
-		$values_fix = str_replace( '\,', '%comma%', $values );
+		$values_fix = str_replace( '\,', '%%COMMA%%', $values );
 		// Now, get the $values_arr array of values
 		$values_arr = explode( ',', $values_fix );
 		// And undo the comma HACK
-		$values_arr = str_replace( '%comma%', ',', $values_arr );
+		$values_arr = str_replace( array( '%%COMMA%%', '%comma%' ), ',', $values_arr );
         if ( !empty( $display_values ) ) {
 			// If there are display_values,again sync the comma HACK
-			$display_values = str_replace( '\,', '%comma%', $display_values );
+			$display_values = str_replace( '\,', '%%COMMA%%', $display_values );
 			// Get an array of $display_values
 			$display_values = explode( ',', $display_values );
 			// And undo the comma HACK
-			$display_values = str_replace( '%comma%', ',', $display_values );
+			$display_values = str_replace( array( '%%COMMA%%', '%comma%' ), ',', $display_values );
 			if ( $display_values_trans ) {
 				// If we need to translate the $display_values
 				$translated_values = array();
@@ -1677,7 +1677,7 @@ function wpv_shortcode_wpv_control( $atts ) {
                 if ( isset( $auto_fill_default ) ) {
 					// First, check if the defaul value already exists and set the appropriate arrays and values
 					$num_auto_fill_default_display = array_count_values( $display_values );
-					$auto_fill_default_trans = str_replace( '\,', ',', $auto_fill_default );
+					$auto_fill_default_trans = str_replace( array( '%%COMMA%%', '\,' ), ',', $auto_fill_default );
 					if (
 							// if the auto_fill_default is one of the display_values
 							( isset( $num_auto_fill_default_display[ $auto_fill_default_trans ] )
@@ -1691,9 +1691,9 @@ function wpv_shortcode_wpv_control( $atts ) {
 						$display_values_def = array_shift( $display_values );
 					}
 					// Then, set the preliminary $defaults value based on auto_fill_default
-					$defaults = str_replace( '\,', '%comma%', $auto_fill_default );
+					$defaults = str_replace( '\,', '%%COMMA%%', $auto_fill_default );
 					$defaults = explode( ',', $defaults );
-					$defaults = str_replace( '%comma%', ',', $defaults );
+					$defaults = str_replace( array( '%%COMMA%%', '%comma%' ), ',', $defaults );
 					$defaults = array_map( 'trim', $defaults );
                 }
                 if ( isset( $_GET[ $url_param ] ) ) {
@@ -4006,15 +4006,15 @@ function wpv_shortcode_wpv_control_item( $atts, $value ) {
 			}
 			// Loop through the posts and add them as options like post_title => ID
 			foreach ( $pa_results as $pa_item ) {
-				$options[ $pa_item->post_title ] = array(
+				$options[ $pa_item->ID ] = array(
 					'#title'	=> $pa_item->post_title,
 					'#value'	=> $pa_item->ID,
 					'#inline'	=> true,
 					'#after'	=> '<br />'
 				);
 				if ( $format ) {
-					$display_value_formatted_name = str_replace( '%%NAME%%', $options[$pa_item->post_title]['#title'], $format );
-					$options[ $pa_item->post_title]['#title' ] = $display_value_formatted_name;
+					$display_value_formatted_name = str_replace( '%%NAME%%', $options[$pa_item->ID]['#title'], $format );
+					$options[ $pa_item->ID]['#title' ] = $display_value_formatted_name;
 				}
 				if ( 
 					$dependant 
@@ -4028,23 +4028,23 @@ function wpv_shortcode_wpv_control_item( $atts, $value ) {
 							$counters 
 							&& isset( $stored_relationship_cache[ $pa_item->ID ]['count'] )
 						) {
-							$options[ $pa_item->post_title ]['#title'] = str_replace( '%%COUNT%%', $stored_relationship_cache[ $pa_item->ID ]['count'], $options[ $pa_item->post_title ]['#title'] );
+							$options[ $pa_item->ID ]['#title'] = str_replace( '%%COUNT%%', $stored_relationship_cache[ $pa_item->ID ]['count'], $options[ $pa_item->ID ]['#title'] );
 						}
 					} else {
 						if ( $counters ) {
-							$options[ $pa_item->post_title ]['#title'] = str_replace( '%%COUNT%%', '0', $options[ $pa_item->post_title ]['#title'] );
+							$options[ $pa_item->ID ]['#title'] = str_replace( '%%COUNT%%', '0', $options[ $pa_item->ID ]['#title'] );
 						}
 						if ( 
 							$dependant 
 							&& ! in_array( $pa_item->ID, $element['field']['#default_value'] ) 
 						) {
-							$options[ $pa_item->post_title ]['#disable'] = 'true';
-							$options[ $pa_item->post_title ]['#labelclass'] = 'wpv-parametric-disabled';
+							$options[ $pa_item->ID ]['#disable'] = 'true';
+							$options[ $pa_item->ID ]['#labelclass'] = 'wpv-parametric-disabled';
 							if ( 
 								isset( $empty_action[ $type ] ) 
 								&& $empty_action[ $type ] == 'hide' 
 							) {
-								unset( $options[ $pa_item->post_title ] );
+								unset( $options[ $pa_item->ID ] );
 							}
 						}
 					}
@@ -4243,7 +4243,7 @@ function wpv_shortcode_wpv_control_item( $atts, $value ) {
 			}
 			// Loop through the posts and add them as options like post_title => ID
 			foreach ( $pa_results as $pa_item ) {
-				$options[ $pa_item->post_title ] = array(
+				$options[ $pa_item->ID ] = array(
 					'#title'		=> $pa_item->post_title,
 					'#value'		=> $pa_item->ID,
 					'#inline'		=> true,
@@ -4252,8 +4252,8 @@ function wpv_shortcode_wpv_control_item( $atts, $value ) {
 					'#labelstyle'	=> $label_style
 				);
 				if ( $format ) {
-					$display_value_formatted_name = str_replace( '%%NAME%%', $options[ $pa_item->post_title ]['#title'], $format );
-					$options[ $pa_item->post_title ]['#title'] = $display_value_formatted_name;
+					$display_value_formatted_name = str_replace( '%%NAME%%', $options[ $pa_item->ID ]['#title'], $format );
+					$options[ $pa_item->ID ]['#title'] = $display_value_formatted_name;
 				}
 				if ( 
 					$dependant 
@@ -4267,23 +4267,23 @@ function wpv_shortcode_wpv_control_item( $atts, $value ) {
 							$counters 
 							&& isset( $stored_relationship_cache[ $pa_item->ID ]['count'] )
 						) {
-							$options[ $pa_item->post_title ]['#title'] = str_replace( '%%COUNT%%', $stored_relationship_cache[ $pa_item->ID ]['count'], $options[ $pa_item->post_title ]['#title'] );
+							$options[ $pa_item->ID ]['#title'] = str_replace( '%%COUNT%%', $stored_relationship_cache[ $pa_item->ID ]['count'], $options[ $pa_item->ID ]['#title'] );
 						}
 					} else {
 						if ( $counters ) {
-							$options[ $pa_item->post_title ]['#title'] = str_replace( '%%COUNT%%', '0', $options[ $pa_item->post_title ]['#title'] );
+							$options[ $pa_item->ID ]['#title'] = str_replace( '%%COUNT%%', '0', $options[ $pa_item->ID ]['#title'] );
 						}
 						if ( 
 							$dependant 
 							&& $pa_item->ID != $element['field']['#default_value'] 
 						) {
-							$options[ $pa_item->post_title ]['#disable'] = 'true';
-							$options[ $pa_item->post_title ]['#labelclass'] .= ' wpv-parametric-disabled';
+							$options[ $pa_item->ID ]['#disable'] = 'true';
+							$options[ $pa_item->ID ]['#labelclass'] .= ' wpv-parametric-disabled';
 							if ( 
 								isset( $empty_action['radios'] ) 
 								&& $empty_action['radios'] == 'hide' 
 							) {
-								unset( $options[ $pa_item->post_title ] );
+								unset( $options[ $pa_item->ID ] );
 							}
 						}
 					}

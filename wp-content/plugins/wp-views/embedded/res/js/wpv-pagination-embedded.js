@@ -936,13 +936,6 @@ WPViews.ViewPagination = function( $ ) {
 		}
 		window.wpvPaginationAnimationFinished[ view_number ] = false;
 		
-		if ( self.paged_views[ view_number ].effect in self.pagination_effects_conditions ) {
-			if ( ! self.pagination_effects_conditions[ self.paged_views[ view_number ].effect ]( self.paged_views[ view_number ], page ) ) {
-				window.wpvPaginationAnimationFinished[ view_number ] = true;
-				return;
-			}
-		}
-		
 		var data = {},
 		wpvPaginatorLayout = $( '#wpv-view-layout-' + view_number ),
 		wpvPaginatorFilter = $( 'form[name=wpv-filter-' + view_number + ']' ),
@@ -984,7 +977,16 @@ WPViews.ViewPagination = function( $ ) {
 			}
 			return;
 		}
+		
 		// Using AJAX pagination
+		
+		if ( self.paged_views[ view_number ].effect in self.pagination_effects_conditions ) {
+			if ( ! self.pagination_effects_conditions[ self.paged_views[ view_number ].effect ]( self.paged_views[ view_number ], page ) ) {
+				window.wpvPaginationAnimationFinished[ view_number ] = true;
+				return;
+			}
+		}
+		
 		window.wpvPaginationAjaxLoaded[view_number] = false;
 		window.wpvCachedPages[ view_number ] = window.wpvCachedPages[view_number] || [];
 		

@@ -2083,6 +2083,15 @@ div#visual-editor-editor-container{padding:0px 0px 44px 10px;}
     position:relative;
     bottom:24px;
 }
+
+.default_container_padding_label{
+    width: auto !important;
+    font-size: 12px !important;
+    font-weight: normal !important;
+    color: #444 !important;
+    margin-top: 10px !important;
+}
+
 /************* CRED OVERRIDES *****************************/
 .ddl-dialog-header, .ddl-dialog-footer{z-index:1;}
 .ddl-dialog-content, .js-popup-tabs,.ddl-dialog-content-main, .ddl-form, #visual-editor-editor-container,

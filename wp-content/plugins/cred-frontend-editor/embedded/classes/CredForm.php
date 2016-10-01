@@ -297,6 +297,7 @@ class CredForm {
         if ($field == 'form_messages') {
             $post_not_saved_singular = str_replace("%PROBLEMS_UL_LIST", "", $formHelper->getLocalisedMessage('post_not_saved_singular'));
             $post_not_saved_plural = str_replace("%PROBLEMS_UL_LIST", "", $formHelper->getLocalisedMessage('post_not_saved_plural'));
+
             return '<label id="wpt-form-message-' . $form->getForm()->ID . '"
               data-message-single="' . esc_js($post_not_saved_singular) . '"
               data-message-plural="' . esc_js($post_not_saved_plural) . '"
@@ -1209,6 +1210,74 @@ class CredForm {
     }
 
     /**
+     * setValueAndDefaultValue set value and default_value
+     * @param type $field
+     * @param type $_curr_value
+     * @param type $_default_value
+     */
+    function setValueAndDefaultValue($field, &$_curr_value, &$_default_value, $fieldConfig) {
+        switch ($field['type']) {
+            case 'date':
+                if (isset($field['attr']['repetitive']) && $field['attr']['repetitive'] == 1) {
+                    $_default_value = $field['value'];
+                    $_curr_value = $_default_value;
+                } else {
+                    $fieldConfig->set_add_time(false);
+                    if (isset($field['data']['date_and_time']) && (isset($field['data']['date']) && 'and_time' != $field['data']['date'])) {
+                        $fieldConfig->set_add_time(true);
+                    }
+                    if (isset($field['value']['timestamp'])) {
+                        $_default_value = array('timestamp' => $field['value']['timestamp']);
+                    } else {
+                        //In Edit + Ajax call the object contains array of 5 elements timestamps only 1 and 5 (starting from 0) contains number timestamp
+                        if (isset($field['value'][1]['timestamp']) &&
+                                is_numeric($field['value'][1]['timestamp']))
+                            $_default_value = array('timestamp' => $field['value'][1]['timestamp']);
+                    }
+                    $_curr_value = $_default_value;
+                }
+                break;
+            case 'select':
+                if (isset($field['attr']['multiple'])) {
+                    $_default_value = $field['value'];
+                } else {
+                    if (isset($field['attr']['actual_value'])) {
+                        //This value is not array if from parent
+                        if (is_array($field['attr']['actual_value']))
+                            $_default_value = isset($field['attr']['actual_value'][0]) ? $field['attr']['actual_value'][0] : null;
+                        else
+                            $_default_value = isset($field['attr']['actual_value']) ? $field['attr']['actual_value'] : null;
+                    } else {
+                        $_default_value = null;
+                    }
+                }
+                $_curr_value = $_default_value;
+                break;
+            case 'checkboxes':
+                $def = array();
+                if (!empty($field['value']))
+                    foreach ($field['value'] as $n => $value) {
+                        $def[$value] = $value;
+                    }
+                $_default_value = $def;
+                $_curr_value = $_default_value;
+                break;
+            case 'checkbox':
+                $_default_value = isset($field['data']['checked']) ? true : false;
+                $_curr_value = $field['value'];
+                break;
+            case 'radios':
+                $_default_value = $field['attr']['default'];
+                $_curr_value = $_default_value;
+                break;
+            default:
+                $_default_value = $field['value'];
+                $_curr_value = $_default_value;
+                break;
+        }
+    }
+
+    /**
      * This function render the single field
      * @global type $post
      * @param type $field
@@ -1260,26 +1329,14 @@ class CredForm {
 
             $fieldConfig = new FieldConfig();
 
-            //TODO: remove from here and add to 'date' setDefaultValue for repetitive date is enought to get field['value']          
-            if ($field['type'] == 'date' &&
-                    isset($field['attr']['repetitive']) && $field['attr']['repetitive'] == 1) {
-                $fieldConfig->setDefaultValue('default', $field);
-                $_curr_value = $fieldConfig->getDefaultValue();
-            } else {
-                if ($field['type'] == 'checkbox') {
-                    $fieldConfig->setDefaultValue($field['type'], $field);
-                    $_curr_value = $field['value'];
-                } else {
-                    $fieldConfig->setDefaultValue($field['type'], $field);
-                    $_curr_value = $fieldConfig->getDefaultValue();
-                }
-            }
-
+            $this->setValueAndDefaultValue($field, $_curr_value, $_default_value, $fieldConfig);
+            
             $fieldConfig->setOptions($field['name'], $field['type'], $field['value'], $field['attr']);
             $fieldConfig->setId($this->form_properties['name'] . "_" . $field['name']);
             $fieldConfig->setName($field['name']);
             $this->cleanAttr($field['attr']);
             $fieldConfig->setAttr($field['attr']);
+            $fieldConfig->setDefaultValue($_default_value);
             $fieldConfig->setValue($_curr_value);
             $fieldConfig->setDescription(!empty($field['description']) ? $field['description'] : "");
             $fieldConfig->setTitle($field['title']);
@@ -1313,6 +1370,8 @@ class CredForm {
             }
             // Modified by Srdjan END
 
+            //Common adaptation
+            //TODO:adapting before
             $_values = array();
             if (isset($field['data']['repetitive']) && $field['data']['repetitive'] == 1) {
                 //$_values = $field['value'];
@@ -1514,13 +1573,17 @@ class CredForm {
         $valid = true;
         // Loop over fields
         $form_source_data = $this->_formData->getForm()->post_content;
+        
         preg_match_all("/\[cred_show_group.*cred_show_group\]/Uism", $form_source_data, $res);
-        $conditional_group_fields = array();
-        if (count($res[0]) > 0) {
-            for ($i = 0, $res_limit = count($res[0]); $i < $res_limit; $i++) {
-                preg_match_all("/field=\"([^\"]+)\"/Uism", $res[0][$i], $parsed_fields);
-                if (count($parsed_fields[1]) > 0) {
-                    for ($j = 0, $count_parsed_fields = count($parsed_fields); $j < $count_parsed_fields; $j++) {
+        $conditional_group_fields = array();        
+        
+        $len_res = count($res[0]);
+        if ($len_res > 0) {            
+            for ($i = 0, $res_limit = $len_res; $i < $res_limit; $i++) {
+                preg_match_all("/field=[\"|']([^\"]+)['|\"]/Uism", $res[0][$i], $parsed_fields);
+                $len_parse_fields = count($parsed_fields[1]);
+                if ($len_parse_fields > 0) {
+                    for ($j = 0, $count_parsed_fields = $len_parse_fields; $j < $count_parsed_fields; $j++) {
                         if (!empty($parsed_fields[1][$j])) {
                             $conditional_group_fields[] = trim($parsed_fields[1][$j]);
                         }
@@ -1528,7 +1591,7 @@ class CredForm {
                 }
             }
         }
-
+        
         foreach ($this->form_properties['fields'] as $field) {
             if (in_array(str_replace('wpcf-', '', $field['name']), $conditional_group_fields)) {
                 continue;
@@ -1547,9 +1610,11 @@ class CredForm {
                   if ( $field['type'] == 'text' ) {
                   $field['type'] = 'textfield';
                   } */
-                $field = wpcf_fields_get_field_by_slug(str_replace('wpcf-', '', $field['name']), $is_user_form ? 'wpcf-usermeta' : 'wpcf-fields');
-                if (empty($field)) {
-                    continue;
+                if (function_exists('wpcf_fields_get_field_by_slug')) {
+                    $field = wpcf_fields_get_field_by_slug(str_replace('wpcf-', '', $field['name']), $is_user_form ? 'wpcf-usermeta' : 'wpcf-fields');
+                    if (empty($field)) {
+                        continue;
+                    }
                 }
 
                 // Skip copied fields

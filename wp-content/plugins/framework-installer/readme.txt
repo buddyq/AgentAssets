@@ -5,7 +5,7 @@ Tags: CMS, Views, Demos, Download
 License: GPLv2
 Requires at least: 3.8.1
 Tested up to: 4.5.3
-Stable tag: 2.0.3
+Stable tag: 2.0.4
 
 Download complete reference sites for Types and Views.
 
@@ -347,3 +347,7 @@ Improved Layouts import calls.
  Fixed any unneeded dashboard notices after import.
  Compatibility with WPML 3.5.0 +
  Fixed PHP notices when resetting a multilingual site.
+ 
+  ==2.0.4==
+ Compatibility with WPML 3.5.3 +
+ Fixed import issues with Classifieds multilingual versions.

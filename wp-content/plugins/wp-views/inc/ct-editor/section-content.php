@@ -94,8 +94,10 @@ function wpv_ct_editor_content_section_localize_script( $l10n_data ) {
         Render section content
 \* ************************************************************************* */
 
-add_action( 'wpv_ct_editor_sections', function() {
-    $editor_select = apply_filters( 'toolset_user_editors_backend_html_editor_select', '' );
+add_action( 'wpv_ct_editor_sections', 'wpv_ct_editor_content_section_template_section', 20 );
+
+function wpv_ct_editor_content_section_template_section() {
+	$editor_select = apply_filters( 'toolset_user_editors_backend_html_editor_select', '' );
     $content = apply_filters( 'toolset_user_editors_backend_html_active_editor', false );
     if( $content ) {
         wpv_ct_editor_render_section(
@@ -108,7 +110,7 @@ add_action( 'wpv_ct_editor_sections', function() {
             array( 'section' => 'content_section', 'pointer_slug' => 'ptr_section' )
         );
     }
-}, 20 );
+}
 
 
 /**

@@ -414,12 +414,13 @@ class WPDD_layout_element {
 class WPDD_layout_row extends WPDD_layout_element {
 
     private $cells;
-    function __construct($name, $css_class_name = '', $editor_visual_template_id = '', $layout_type = 'fixed', $css_id = '', $additionalCssClasses = '', $tag = 'div', $mode = 'normal') {
+    function __construct($name, $css_class_name = '', $editor_visual_template_id = '', $layout_type = 'fixed', $css_id = '', $additionalCssClasses = '', $tag = 'div', $mode = 'normal', $containerPadding = '') {
         parent::__construct($name, $css_class_name, $editor_visual_template_id, $css_id, $tag);
         $this->cells = array();
         $this->additionalCssClasses = $additionalCssClasses;
         $this->set_layout_type( $layout_type );
         $this->mode = $mode;
+        $this->containerPadding = $containerPadding;
         
         $this->context = null;
 
@@ -436,6 +437,11 @@ class WPDD_layout_row extends WPDD_layout_element {
     function get_additional_css_classes()
     {
         return $this->additionalCssClasses;
+    }
+    
+    function get_container_padding()
+    {
+        return $this->containerPadding;
     }
 
     function get_as_array() {

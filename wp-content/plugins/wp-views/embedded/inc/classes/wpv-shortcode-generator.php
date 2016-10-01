@@ -55,6 +55,47 @@ if ( ! class_exists( 'WPV_Shortcode_Generator' ) ) {
 			if ( ! $register_section ) {
 				return $registered_sections;
 			}
+			$this->is_registered = true;
+			$this->prepare_fields_and_views_shortcode_generator();
+			$registered_sections[ 'fields_and_views' ] = array(
+				'id'		=> 'fields-and-views',
+				'title'		=> __( 'Fields and Views', 'wpv-views' ),
+				'href'		=> '#fields_and_views_shortcodes',
+				'parent'	=> 'toolset-shortcodes',
+				'meta'		=> 'js-wpv-shortcode-generator-node'
+			);
+			return $registered_sections;
+		}
+		
+		public function force_fields_and_views_dialog_shortcode_generator() {
+			if ( $this->is_registered ) {
+				// If we got to the footer without an editor that generates the Fields and Views dialog
+				// It means we are on a page that might as well show all the Types shortcodes too
+				// Since there is no active post to restrict to
+				do_action( 'wpv_action_wpv_add_types_postmeta_usermeta_to_editor_menus' );
+				$this->wpv_editor_addon->render_shortcodes_wrapper_dialogs();
+			} else if ( 
+				/**
+				* toolset_filter_force_fields_and_views_dialog_shortcode_generator
+				*
+				* Manually force the Fields and Views dialog content.
+				*
+				* Forces the Fields and Views dialog content on the admin footer,
+				* in case it has not been rendered yet and the current page is not already loading it either.
+				*
+				* @param bool false
+				*
+				* @since 2.3
+				*/
+				apply_filters( 'toolset_filter_force_fields_and_views_dialog_shortcode_generator', false ) 
+			) {
+				$this->prepare_fields_and_views_shortcode_generator();
+				do_action( 'wpv_action_wpv_add_types_postmeta_usermeta_to_editor_menus' );
+				$this->wpv_editor_addon->render_shortcodes_wrapper_dialogs();
+			}
+		}
+		
+		public function prepare_fields_and_views_shortcode_generator() {
 			// Register the section and make sure the right assets are also included
 			// Not the best solution, but the one we have :-(
 			if ( ! wp_script_is( 'views-shortcodes-gui-script' ) ) {
@@ -89,7 +130,8 @@ if ( ! class_exists( 'WPV_Shortcode_Generator' ) ) {
 			) {
 				wp_enqueue_style( 'toolset-colorbox' );
 			}
-			$this->is_registered = true;
+			// In some cases, we need to always force this dialog to be available
+			// Think of Content Templates whose Template editor is replaced with an integration like VC
 			$this->wpv_editor_addon = new WPV_Editor_addon(
 				'wpv-views',
 				__('Insert Views Shortcodes', 'wpv-views'),
@@ -114,24 +156,6 @@ if ( ! class_exists( 'WPV_Shortcode_Generator' ) ) {
 				),
 				$this->wpv_editor_addon
 			);
-			$registered_sections[ 'fields_and_views' ] = array(
-				'id'		=> 'fields-and-views',
-				'title'		=> __( 'Fields and Views', 'wpv-views' ),
-				'href'		=> '#fields_and_views_shortcodes',
-				'parent'	=> 'toolset-shortcodes',
-				'meta'		=> 'js-wpv-shortcode-generator-node'
-			);
-			return $registered_sections;
-		}
-		
-		public function force_fields_and_views_dialog_shortcode_generator() {
-			if ( $this->is_registered ) {
-				// If we got to the footer without an editor that generates the Fields and Views dialog
-				// It means we are on a page that might as well show all the Types shortcodes too
-				// Since there is no active post to restrict to
-				do_action( 'wpv_action_wpv_add_types_postmeta_usermeta_to_editor_menus' );
-				$this->wpv_editor_addon->render_shortcodes_wrapper_dialogs();
-			}
 		}
 		
 		public function display_shortcodes_target_dialog() {

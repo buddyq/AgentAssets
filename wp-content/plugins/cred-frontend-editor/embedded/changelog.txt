@@ -3,6 +3,60 @@ Toolset CRED, by OnTheGoSystems
 
 Changelog:
 
+1.8.1
+
+- Added support for wp_max_upload_size function in uploaded file validation
+https://wp-types.com/forums/topic/upload-image-file-size-limit-not-respected/
+
+- Fixed issue with featured image that was not attached to post
+https://wp-types.com/forums/topic/cannot-upload-images-2/
+
+- Fixed issue when trying to submit again the same form after navigating back through browser history
+https://wp-types.com/forums/topic/cred-overwriting-posts/
+
+- Fixed issue with delete post link when url contains "?" character
+https://wp-types.com/forums/topic/post-delete-doesnt-refresh-page-if-url-has-cred-params/
+
+- Fixed notice in skype generic field
+
+- Fixed issue with the user password placeholder that was displaying the lost password link instead of the user password.
+
+- Fixed issue with undefined index notice when submitting a form with post expiration
+https://wp-types.com/forums/topic/undefined-index-expiration_period-and-cannot-submit-form-with-expiration-date/
+
+- Fixed compatibility issue with insert/edit link button in WordPress editors.
+
+- Fixed issue that the global post object was being replaced with a draft post when  shown in a page.
+https://wp-types.com/forums/topic/how-i-can-store-data-from-frontend-radio-button-to-custom-post-field/#post-355368 
+
+- Fixed validation issue in edit user forms.
+
+- Improved upload file mechanism in order to be compatible with custom WordPress directory structures.
+https://wp-types.com/forums/topic/toolset-code-errors/
+
+- Fixed compatibility issue with Advanced Custom Fields PRO that was not allowing to save forms.
+https://wp-types.com/forums/topic/cannot-save-cred-forms-after-updating-to-cred-1-8-with-acf-installed/
+
+- Fixed issue when there are more than one taxonomy fields in a form.
+https://wp-types.com/forums/topic/terms-being-added-to-the-wrong-custom-taxonomy/
+
+- Fixed cosmetic issues in forms scaffolding.
+
+- Fixed issue with featured Image attachment.
+https://wp-types.com/forums/topic/cannot-upload-images-2/
+
+- Fixed issues in notification manager.
+
+- Fixed issue that a checkbox was always checked regardless the option in Types.
+
+- Fixed issue when replacing an image.
+
+- Fixed issue with custom image size validation.
+https://wp-types.com/forums/topic/hi-i-am-trying-to-add-some-code-to-functions-php-to-validate-image-size-and-type/
+
+- Improved auto-generation mechanism in user forms.
+
+
 1.8
 
 - Fixed an issue where already saved repetitive image fields where not showing in CRED edit forms.

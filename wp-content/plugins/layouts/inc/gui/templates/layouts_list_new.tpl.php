@@ -5,14 +5,14 @@
 
 <div class="wrap js-dd-layout-listing">
     <div id="icon-edit fa fa-pencil-square-o" class="icon32 icon32-posts-dd_layouts"></div>
-    <h2>
+    <h1>
 		<i class="icon-layouts-logo ont-icon-24 ont-color-orange css-layouts-logo"></i><?php _e('Layouts', 'ddl-layouts');?>
         <?php do_action('ddl_create_layout_button'); ?>
 		    <span class="subtitle">
 
 					</span>
 
-    </h2>
+    </h1>
 
 	<ul class="subsubsub" style="clear:left"><!-- links to lists WPA in different statuses -->
 		<li><a name="publish" href="<?php echo admin_url('admin.php'); ?>?page=dd_layouts&amp;status=publish"<?php if ( $this->get_arg('post_status') == 'publish' && !isset( $_GET["search"] ) ) echo ' class="current"'; ?>><?php _e('Published', 'ddl-layouts'); ?></a> (<span class="count-published"><?php echo  $this->get_count_published(); ?></span>) | </li>

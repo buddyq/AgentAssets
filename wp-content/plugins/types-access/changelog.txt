@@ -1,3 +1,10 @@
+2.2.1
+* Improved Access control table when there are more than 8 CRED forms
+* Fixed issue with custom post type permissions in Types relationship tables
+* Fixed issue when importing CRED forms
+* Fixed issue with permissions in Views WordPress Archives when using AJAX search or pagination
+* Fixed issue when saving CRED form settings in a fresh WordPress installation
+
 2.2
 * Added a new role-based system and deprecated the old level-based system
 * Added a new role management listing page and a form to add a new role

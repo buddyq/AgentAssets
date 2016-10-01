@@ -279,8 +279,11 @@ WPViews.LayoutWizard = function( $ ) {
 		});
 		self.manage_dialog_buttons( 1 );
 		$.each( $('.js-wpv-dialog-layout-wizard select.js-wpv-select2' ),function() {
-			if ( ! $( this ).hasClass( 'select2-offscreen' ) ) {
-				$( this ).select2().trigger( 'change' );
+			if ( ! $( this ).hasClass( 'js-wpv-selec2-inited' ) ) {
+				$( this )
+					.addClass( 'js-wpv-selec2-inited' )
+					.toolset_select2()
+					.trigger( 'change' );
 			}
 		});
 	};
@@ -870,21 +873,47 @@ WPViews.LayoutWizard = function( $ ) {
 				
 				}
 				
-				$.each( $('.js-wpv-dialog-layout-wizard select.js-wpv-select2' ),function() {
-					if ( ! $( this ).hasClass( 'select2-offscreen' ) ) {
-						$( this ).select2();
-					}
-				});
-				$( '.js-wpv-layout-wizard-layout-fields' )
-					.addClass( 'js-wpv-layout-wizard-layout-fields-loaded' )
-					.sortable({
-						handle: ".js-layout-wizard-move-field",
-						axis: 'y',
-						containment: ".js-wpv-layout-wizard-layout-fields",
-						helper: 'clone',
-						tolerance: "pointer"
-					});
+				/**
+				* todo:
+				*
+				* we need to initialize select2 *after* loading the new tab cause select2 on hidden elements is nasty
+				* hence we can not use self.change_tab here, we need to do it manually, or add the select2 as a callback to change_tab
+				*/
+				
+				
 			}
+			
+			$( '.wpv-dialog-nav-tab a' ).removeClass('active');
+			$( '.wpv-dialog-content-tab' ).hide();
+			
+			index++;
+			
+			$( '.wpv-dialog-nav-tab a' )
+				.eq( index )
+					.addClass( 'active' )
+					.removeClass( 'js-tab-not-visited' );
+			$( '.wpv-dialog-content-tab' )
+				.eq( index )
+					.fadeIn( 'fast', function() {
+						$.each( $('.js-wpv-dialog-layout-wizard select.js-wpv-select2' ),function() {
+							if ( ! $( this ).hasClass( 'js-wpv-selec2-inited' ) ) {
+								$( this )
+									.addClass( 'js-wpv-selec2-inited' )
+									.toolset_select2();
+							}
+						});
+						$( '.js-wpv-layout-wizard-layout-fields' )
+							.addClass( 'js-wpv-layout-wizard-layout-fields-loaded' )
+							.sortable({
+								handle: ".js-layout-wizard-move-field",
+								axis: 'y',
+								containment: ".js-wpv-layout-wizard-layout-fields",
+								helper: 'clone',
+								tolerance: "pointer"
+							});
+					});
+			self.manage_dialog_buttons( index );
+			
         } else if ( index === 1 ) {
 			self.saved_fields_html = null;
             var fields = [],
@@ -982,32 +1011,32 @@ WPViews.LayoutWizard = function( $ ) {
 				});
             }
 		}
-		index++;
-		$( '.wpv-dialog-nav-tab a' ).eq( index ).removeClass( 'js-tab-not-visited' );
-		self.change_tab( false );
+		
 	});
 	
 	// Select2 behaviour
 	
 	// Close select2 when clicking outside the dropdowns
 	$( document ).on( 'mousedown','.js-wpv-dialog-layout-wizard, #cboxOverlay',function( e ) {
-		if ( $( e.target ).parents( '.js-wpv-select2' ).length === 0 ) {
+		if ( $( e.target ).parents( '.js-wpv-loop-wizard-item-container' ).length === 0 ) {
 			$( 'select.js-wpv-select2' ).each( function() {
-				$( this ).select2( 'close' );
+				$( this ).toolset_select2( 'close' );
 			});
 		}
 	});
 	
 	// Close select2 when opening a new one
-	$( document ).on( 'select2-opening', '.js-wpv-select2', function( e ) {
+	$( document ).on( 'toolset_select2-opening', '.js-wpv-select2', function( e ) {
 		$( 'select.js-wpv-select2' ).each( function() {
-			$( this ).select2( 'close' );
+			$( this ).toolset_select2( 'close' );
 		});
 	});
 	
 	// @todo review if this is used anywhere outside Views, and kill it with fire!
     $( document ).on( 'cbox_closed', function() {
-         $( '.js-wpv-select2' ).select2( 'destroy' );
+         $( '.js-wpv-select2' )
+			.removeClass( 'js-wpv-selec2-inited' )
+			.toolset_select2( 'destroy' );
          $( document ).off( 'keypress.colorbox' ); // unbind the keypress event
     });
 	
@@ -1125,7 +1154,9 @@ jQuery( document ).ready( function( $ ) {
 		});
 
 		jQuery.each(jQuery('.js-wpv-dialog-layout-wizard select.js-wpv-select2'),function(){
-				jQuery(this).select2('destroy');
+				jQuery(this)
+					.removeClass( 'js-wpv-selec2-inited' )
+					.toolset_select2('destroy');
 		});
 		
 		WPViews.layout_wizard.wizard_dialog = jQuery('#colorbox').clone();
@@ -1193,9 +1224,21 @@ function wpv_restore_wizard_popup(shortcode) {
 			jQuery( 'input#js-wpv-use-view-loop-ct' ).prop( 'checked', WPViews.layout_wizard.wizard_dialog_use_content_template );
 			
 			
-			jQuery.each(jQuery('.js-wpv-dialog-layout-wizard select.js-wpv-select2'),function(){
-                    jQuery(this).select2();
+			jQuery.each( jQuery('.js-wpv-dialog-layout-wizard select.js-wpv-select2'),function() {
+                    jQuery(this)
+						.addClass( 'js-wpv-selec2-inited' )
+						.toolset_select2();
             });
+			
+			jQuery( '.js-wpv-layout-wizard-layout-fields' )
+				.addClass( 'js-wpv-layout-wizard-layout-fields-loaded' )
+				.sortable({
+					handle: ".js-layout-wizard-move-field",
+					axis: 'y',
+					containment: ".js-wpv-layout-wizard-layout-fields",
+					helper: 'clone',
+					tolerance: "pointer"
+				});
 
         }
     });
@@ -1231,9 +1274,21 @@ function wpv_cancel_wizard_popup() {
 			jQuery( '#bootstrap_grid_individual_no' ).prop( 'checked', WPViews.layout_wizard.wizard_dialog_bootstrap_grid_individual_no );
 			jQuery( 'input#js-wpv-use-view-loop-ct' ).prop( 'checked', WPViews.layout_wizard.wizard_dialog_use_content_template );
 
-            jQuery.each(jQuery('.js-wpv-dialog-layout-wizard select.js-wpv-select2'),function(){
-                    jQuery(this).select2();
+            jQuery.each( jQuery('.js-wpv-dialog-layout-wizard select.js-wpv-select2'),function() {
+                    jQuery(this)
+						.addClass( 'js-wpv-selec2-inited' )
+						.toolset_select2();
             });
+			
+			jQuery( '.js-wpv-layout-wizard-layout-fields' )
+				.addClass( 'js-wpv-layout-wizard-layout-fields-loaded' )
+				.sortable({
+					handle: ".js-layout-wizard-move-field",
+					axis: 'y',
+					containment: ".js-wpv-layout-wizard-layout-fields",
+					helper: 'clone',
+					tolerance: "pointer"
+				});
 
         }
     });

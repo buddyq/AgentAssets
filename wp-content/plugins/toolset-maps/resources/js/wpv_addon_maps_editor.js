@@ -21,7 +21,7 @@ WPViews.AddonMapsEditor = function( $ ) {
 	self.selector = '.js-toolset-google-map, [data-types-field-type="google_address"]';
 	// Latitude and longitude validation regex
 	self.validate_lat = /^(-?([0-9]|8[0-4]|[1-7][0-9])(\.{1}\d{1,20})?)$/;
-	self.validate_lon = /^-?([1]?[1-7][1-9]|[1]?[1-8][0]|[1-9]|[1]?[0][1-9]|[0])(\.{1}\d{1,20})?$/;
+	self.validate_lon = /^-?([0-9]|[1-9][0-9]|[1][0-7][0-9]|180)(\.{1}\d{1,20})?$/;
 	// Extra inputs structure for latitude and longitude
 	self.inputs_structure = '<a class="toolset-google-map-toggle-latlon js-toolset-google-map-toggle-latlon">' + toolset_google_address_i10n.showhidecoords + '</a>';
 	self.inputs_structure += '<div class="js-toolset-google-map-toggling-latlon toolset-google-map-toggling-latlon" style="display:none"><p><label for="toolset-google-map-lat" class="toolset-google-map-label js-wpt-auxiliar-label">' + toolset_google_address_i10n.latitude + '</label><input id="toolset-google-map-lat" class="js-toolset-google-map-latlon js-toolset-google-map-lat toolset-google-map-lat" type="text" value="" /></p>';

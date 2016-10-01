@@ -825,6 +825,9 @@ final class CRED_User_Forms_Model extends CRED_Abstract_Model implements CRED_Si
     }
    
     public function addTemporaryUser($userdata, $usermeta, $fieldsInfo, $removed_fields = null) {
+        if (StaticClass::$_password_generated!=null)
+            $usermeta[md5('_password_generated')] = StaticClass::$_password_generated;
+        
         cred_log(array($userdata, $usermeta, $fieldsInfo, $removed_fields));
         $temp = array();
 
@@ -877,6 +880,11 @@ final class CRED_User_Forms_Model extends CRED_Abstract_Model implements CRED_Si
 
         cred_log($data);
 
+        if (isset($data['usermeta'][md5('_password_generated')])) {
+            StaticClass::$_password_generated = $data['usermeta'][md5('_password_generated')];
+            unset($data['usermeta'][md5('_password_generated')]);
+        }
+        
         $new_user_id = $this->addUser($data['userdata'], $data['usermeta'], $data['fieldsInfo'], $data['removed_fields']);
         cred_log($new_user_id);
         if (isset($order_id)) {

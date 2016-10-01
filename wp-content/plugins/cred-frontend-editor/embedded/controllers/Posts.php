@@ -86,6 +86,30 @@ final class CRED_Posts_Controller extends CRED_Abstract_Controller {
         die();
     }
 
+    public function suggestPagePostsByTitle($get, $post) {
+        if (!current_user_can(CRED_CAPABILITY))
+            wp_die();
+
+        if (!isset($get['q'])) {
+            echo '';
+            die();
+        }
+        
+        $q = sanitize_text_field($get['q']);
+        $results = CRED_Loader::get('MODEL/Fields')->suggestPostsByTitle($q, array('page', 'post'), 20);
+        $output = '';
+        /* foreach ($results as $result)
+          $output.=$result->post_title."\n"; */
+        $results2 = array();
+        if (is_array($results)) {
+            foreach ($results as $result)
+                $results2[] = array('display' => $result->post_title, 'val' => $result->ID);
+            $output = json_encode($results2);
+        }
+        echo $output;
+        die();
+    }
+    
     public function suggestPostsByTitle($get, $post) {
         if (!current_user_can(CRED_CAPABILITY))
             wp_die();

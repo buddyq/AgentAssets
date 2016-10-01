@@ -13,6 +13,17 @@ You're done!
 
 = Changelog =
 
+v. 2.2.1
+	- Added decimal places support for Views meta query filters.
+	- Fixed the Fields and Views dialog when using Visual Composer on Content Templates without Toolset shortcodes in the admin bar.
+	- Fixed the frontend custom search filter by post relationship when two or more ancestors on the same level have the same post title.
+	- Fixed the frontend custom search filter by Types checkboxes fields when used on a WordPress Archive.
+	- Fixed a problem with getting data from parent posts using the id attribute on search results provided by the Relevanssi plugin.
+	- Fixed a problem with localization for the password management shortcodes and their related forms labels.
+	- Fixed a problem on manual pagination with page reload when the stored effect for AJAX pagination is infinite scrolling.
+	- Fixed a problem with frontend filters for custom fields if they are using custom values containing commas.
+	- Fixed a problem with Relevanssi searches not getting sorted by relevance.
+
 v. 2.2, AKA Dr. Dick Somolon
     - Added Relevanssi compatibility with custom searches to support searching in some custom fields content.
 	- Added Beaver Builder compatibility with Content Templates.

@@ -105,7 +105,7 @@ DDLayout.RowTooltip = function()
 			}
 		}
 
-		self._row_view.addRow( self._row_view.model.get(kind)+' '+count, '', layout_type, row_divider );
+		self._row_view.addRow( self._row_view.model.get('kind')+' '+count, '', layout_type, row_divider );
 	};
 
 	self.showMenu = function(e) {

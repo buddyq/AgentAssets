@@ -56,7 +56,7 @@ DDLayout.HtmlAttributesHandler = function()
 
 	var setUpSelectForClasses = function(){
 		var classes = layouts_classes;
-		self.$cssClassEl.select2({
+		self.$cssClassEl.toolset_select2({
 			selectOnBlur:false,
 			tags:  _.isEmpty( classes ) ? [] : classes,
 			tokenSeparators: [",", " "],
@@ -92,7 +92,7 @@ DDLayout.HtmlAttributesHandler = function()
 				}
 			});
 
-			self.$cssClassEl.on('select2-removed', function(event){
+			self.$cssClassEl.on('toolset_select2-removed', function(event){
 
 			});
 

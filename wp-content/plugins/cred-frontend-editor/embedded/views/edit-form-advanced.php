@@ -107,7 +107,7 @@ wp_nonce_field( 'closedpostboxes', 'closedpostboxesnonce', false );
 <?php if ( post_type_supports($post_type, 'title') ) { ?>
 <div id="titlediv">
 <a id="cred_add_forms_to_site_help" class="cred-help-link" style="position:absolute;top:0;right:0;" href="<?php echo CRED_CRED::$help['add_forms_to_site']['link']; ?>" target="_blank" title="<?php echo CRED_CRED::$help['add_forms_to_site']['text']; ?>"><?php echo CRED_CRED::$help['add_forms_to_site']['text']; ?></a>
-<p class="cred-explain-text"><?php _e('Set the title for this new form.', 'wp-cred'); ?></p>
+<p class="cred-explain-text">&nbsp;</p>
 <div id="titlewrap">
 	<label class="screen-reader-text" id="title-prompt-text" for="title"><?php _e( 'Enter title here' ); ?></label>
 	<input type="text" name="post_title" size="30" value="<?php echo esc_attr( htmlspecialchars( $post->post_title ) ); ?>" id="title" autocomplete="off" />

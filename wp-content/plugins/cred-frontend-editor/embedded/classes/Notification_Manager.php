@@ -813,16 +813,14 @@ final class CRED_Notification_Manager {
             if (isset($notification['to']['author']) &&
                     'author' == $notification['to']['author']) {
                 cred_log("author");
+				$author_id = 0;
                 $author_post_id = isset($_POST['form_' . $form_id . '_referrer_post_id']) ? $_POST['form_' . $form_id . '_referrer_post_id'] : 0;
                 if (0 == $author_post_id && $post_id) {
                     $mypost = get_post($post_id);
                     $author_id = $mypost->post_author;
                 } else {
                     $mypost = get_post($author_post_id);
-                    $author_id = $user->ID;
-                    if (!isset($author_id)) {
-                        $author_id = $mypost->post_author;
-                    }
+                    $author_id = $mypost->post_author;
                 }
                 
                 cred_log("author: ".$author_id);

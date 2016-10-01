@@ -39,7 +39,7 @@ class WPV_View_Post_Query {
 		*/
 		
 		add_filter( 'wpv_filter_query',					array( $this, 'wpv_filter_query_post_in_and_not_in_fix' ), 999, 3 );
-		
+
 		/**
 		* Extensibility
 		*/

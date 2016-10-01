@@ -579,6 +579,7 @@ final class Access_XML_Processor
 
 						$new_settings['third_party']['__CRED_CRED'][$key] = array();
 						$new_settings['third_party']['__CRED_CRED'][$key]['mode'] = $items['item']['item_mode'];
+
 						if ( isset($items['item']['permissions']) && is_array($items['item']['permissions']) ){
 							$new_settings['third_party'][$key]['permissions'] = array();
 							$new_settings['third_party']['__CRED_CRED'][$key]['permissions'] = array();
@@ -590,7 +591,7 @@ final class Access_XML_Processor
 										$role[0] = $temp;
 									}
 									for ( $i=0, $lim = count($role); $i<$lim; $i++){
-										if ( isset($role[$i]['form_roles']['roles']) ){
+										if ( isset($role[$i]['form_roles']['role']) ){
                                             $new_settings['third_party']['__CRED_CRED'][$key]['permissions'][$role[$i]['form_value'].$role[$i]['form_name']]['roles'] = $role[$i]['form_roles']['role'];
                                         }else{
                                             $new_settings['third_party']['__CRED_CRED'][$key]['permissions'][$role[$i]['form_value'].$role[$i]['form_name']]['roles'] =
@@ -633,7 +634,7 @@ final class Access_XML_Processor
 										$role[0] = $temp;
 									}
 									for ( $i=0, $lim = count($role); $i<$lim; $i++){
-										if ( isset($role[$i]['form_roles']['roles']) ){
+										if ( isset($role[$i]['form_roles']['role']) ){
                                             $new_settings['third_party']['__CRED_CRED_USER'][$key]['permissions'][$role[$i]['form_value'].$role[$i]['form_name']]['roles'] = $role[$i]['form_roles']['role'];
                                         }else{
                                             $new_settings['third_party']['__CRED_CRED_USER'][$key]['permissions'][$role[$i]['form_value'].$role[$i]['form_name']]['roles'] =
@@ -1212,10 +1213,12 @@ final class Access_XML_Processor
         libxml_clear_errors();
 		libxml_use_internal_errors($use_errors);
         $dataresult=self::toArray($xml);
-			
-		if ( isset($dataresult['types']['item']) ){
+
+		if ( isset($dataresult['types']['item']) || isset($dataresult['taxonomies']['item']) || isset($dataresult['third_party']['__CRED_CRED']['item'])
+			|| isset($dataresult['third_party']['__CRED_CRED_USER']['item']) || isset($dataresult['third_party']['__FIELDS']['item']) || isset($dataresult['third_party']['__USERMETA_FIELDS']['item']) ){
 			//Import new files
             $dataresult = self::ArraytoSettings($dataresult);
+
 		}
 		
         if (false!==$dataresult && !is_wp_error($dataresult))

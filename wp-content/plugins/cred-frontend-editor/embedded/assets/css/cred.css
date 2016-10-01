@@ -21,8 +21,12 @@
     border: solid 1px #ccc;
 }
 
-#post-status-info{
+#credformcontentdiv > .inside > #postdivrich > #post-status-info{
     display:none;
+}
+
+.CodeMirror-wrap{
+    width: inherit !important;
 }
 
 .hidden{

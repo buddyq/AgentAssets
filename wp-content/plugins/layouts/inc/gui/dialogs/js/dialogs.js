@@ -178,11 +178,11 @@ DDLayout.Dialogs.Prototype.prototype.is_new_cell = function () {
 
 DDLayout.Dialogs.Prototype.setUpAdditionalClassInput = function( $input ){
 
-        var $el = typeof $input !== 'undefined' ? $input : jQuery('.js-select2-tokenizer'),
+        var $el = typeof $input !== 'undefined' ? $input : jQuery('.js-toolset_select2-tokenizer'),
             classes = typeof DDLayout_settings !== 'undefined' && DDLayout_settings.DDL_JS && DDLayout_settings.DDL_JS.layouts_css_properties ? DDLayout_settings.DDL_JS.layouts_css_properties.additionalCssClasses : [];
 
         if( $el.length ){
-            return $el.select2({
+            return $el.toolset_select2({
                 selectOnBlur:false,
                 tags:  _.isEmpty( classes ) ? [] : classes,
                 tokenSeparators: [",", " "],
@@ -206,7 +206,7 @@ DDLayout.Dialogs.DDL_Dialog = function($){
 
     self.init = function(){
         color_box_settings();
-        select2_overrides();
+        toolset_select2_overrides();
         color_box_overrides();
         jquery_ui_tabs_overrides();
     };
@@ -239,11 +239,11 @@ DDLayout.Dialogs.DDL_Dialog = function($){
         });
     };
 
-    var select2_overrides = function(){
+    var toolset_select2_overrides = function(){
 
-        if( typeof $.fn.select2 === 'undefined' ) return;
+        if( typeof $.fn.toolset_select2 === 'undefined' ) return;
 
-        $.extend($.fn.select2.defaults, { // override Select2 defaults
+        $.extend($.fn.toolset_select2.defaults, { // override toolset_select2 defaults
             'width': 250
             ,selectOnBlur:true
 //		dropdownAutoWidth: true
@@ -387,18 +387,18 @@ DDLayout.Dialogs.DDL_Dialog = function($){
             jQuery(document).trigger('ddl-editor-dialog-complete');
 
 
-            jQuery('#cboxWrapper .js-select2').select2({
+            jQuery('#cboxWrapper .js-toolset_select2').toolset_select2({
                 width: 'resolve'
             });
 
-            // Fix for Select2 and Colorbox incopatibility issue
+            // Fix for toolset_select2 and Colorbox incopatibility issue
             jQuery(document).on('mousedown.colorbox','#cboxLoadedContent, #cboxOverlay', function(e){
-                if ( jQuery(e.target).parents('.js-select2').length === 0 ) {
-                    jQuery('select.js-select2').select2('close');
+                if ( jQuery(e.target).parents('.js-toolset_select2').length === 0 ) {
+                    jQuery('select.js-toolset_select2').toolset_select2('close');
                 }
-                if( jQuery(e.target).parents('.js-select2-tokenizer').length === 0 )
+                if( jQuery(e.target).parents('.js-toolset_select2-tokenizer').length === 0 )
                 {
-                    jQuery('input.js-select2-tokenizer').select2('close');
+                    jQuery('input.js-toolset_select2-tokenizer').toolset_select2('close');
                 }
             });
 
@@ -416,12 +416,12 @@ DDLayout.Dialogs.DDL_Dialog = function($){
             // Unbind keyup.colorbox event on colorbox close
             jQuery(document).off('keyup.colorbox');
 
-            // Unbind select2 workaround
+            // Unbind toolset_select2 workaround
             jQuery(document).off('mousedown.colorbox');
 
-            // Destroy select2 obj
-            jQuery('.js-select2').select2('destroy');
-            jQuery('.js-select2-tokenizer').select2('destroy');
+            // Destroy toolset_select2 obj
+            jQuery('.js-toolset_select2').toolset_select2('destroy');
+            jQuery('.js-toolset_select2-tokenizer').toolset_select2('destroy');
 
             self.disable_enable_editing_elements_in_css_tab(false);
             jQuery('#js-row-edit-mode').show();

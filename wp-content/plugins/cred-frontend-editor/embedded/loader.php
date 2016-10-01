@@ -740,7 +740,7 @@ final class CRED_Loader
                     $uri = $_class['path'];
                     $depends = $_class['dependencies'];
                 }
-                
+
                 wp_register_script($registerAs, $uri, $depends, $_class['version'], $isFooter);
                 if ($enqueueIt)
                     wp_enqueue_script($registerAs);

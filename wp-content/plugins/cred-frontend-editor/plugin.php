@@ -4,7 +4,7 @@
   Plugin Name: Toolset CRED
   Plugin URI: https://wp-types.com/home/toolset-components/#cred
   Description: Create Edit Delete Wordpress content (ie. posts, pages, custom posts) from the front end using fully customizable forms
-  Version: 1.8
+  Version: 1.8.1
   Author: OnTheGoSystems
   Author URI: http://www.onthegosystems.com/
   License: GPLv2
@@ -33,7 +33,7 @@ if (defined('CRED_FE_VERSION'))
 // TODO use WP Cache object to cache queries(in base model) and templates(in loader DONE)
 /* removed */
 // current version
-define('CRED_FE_VERSION', '1.8');
+define('CRED_FE_VERSION', '1.8.1');
 // configuration constants
 define('CRED_NAME', 'CRED');
 define('CRED_CAPABILITY', 'manage_options');
@@ -52,9 +52,6 @@ define('CRED_DEBUG', false);
 //define('CRED_DISABLE_SUBMISSION', true);
 //to prevent strict warnings in debug
 date_default_timezone_set(@date_default_timezone_get());
-
-define('CRED_NOTIFICATION_4_AUTOGENERATION', true);
-
 //if ( function_exists('realpath') ) {
 //    define('CRED_FILE_PATH', realpath(__FILE__));
 //} else {
@@ -254,7 +251,7 @@ CRED_Loader::add('assets', array(
             'loader_url' => CRED_FILE_URL,
             'loader_path' => CRED_FILE_PATH,
             'version' => CRED_FE_VERSION,
-            'dependencies' => array('jquery', 'underscore', 'cred_console_polyfill', 'cred_codemirror_dev', 'cred_extra', 'cred_utils', 'cred_gui', 'cred_mvc'),
+            'dependencies' => array('jquery', 'underscore', 'cred_console_polyfill', 'cred_codemirror_dev', 'cred_extra', 'cred_utils', 'cred_gui', 'cred_mvc', 'jquery-ui-sortable'),
             'path' => CRED_ASSETS_URL . '/js/cred.js',
             'src' => CRED_ASSETS_PATH . '/js/cred.js'
         ),
@@ -262,7 +259,7 @@ CRED_Loader::add('assets', array(
             'loader_url' => CRED_FILE_URL,
             'loader_path' => CRED_FILE_PATH,
             'version' => CRED_FE_VERSION,
-            'dependencies' => array('jquery', 'underscore', 'cred_console_polyfill', 'cred_extra', 'cred_utils', 'cred_gui', 'cred_mvc'),
+            'dependencies' => array('jquery', 'underscore', 'cred_console_polyfill', 'cred_extra', 'cred_utils', 'cred_gui', 'cred_mvc', 'jquery-ui-sortable'),
             'path' => CRED_ASSETS_URL . '/js/cred.js',
             'src' => CRED_ASSETS_PATH . '/js/cred.js'
         ),
@@ -278,7 +275,7 @@ CRED_Loader::add('assets', array(
             'loader_url' => CRED_FILE_URL,
             'loader_path' => CRED_FILE_PATH,
             'version' => CRED_FE_VERSION,
-            'dependencies' => array('jquery', 'underscore', 'jquery-ui-dialog', 'wp-pointer', 'jquery-effects-scale', 'cred_extra', 'cred_utils', 'cred_gui', 'cred_mvc'),
+            'dependencies' => array('jquery', 'underscore', 'jquery-ui-dialog', 'wp-pointer', 'jquery-effects-scale', 'cred_extra', 'cred_utils', 'cred_gui', 'cred_mvc', 'jquery-ui-sortable'),
             'path' => CRED_ASSETS_URL . '/js/cred.js',
             'src' => CRED_ASSETS_PATH . '/js/cred.js'
         ),
@@ -774,20 +771,7 @@ if (defined('ABSPATH')) {
 
 require_once "embedded/common/functions.php";
 
-//function cred_auto_load() {
-//    // load basic classes
-//    CRED_Loader::load('CLASS/CRED');
-//    // init them
-//    CRED_CRED::init();
-//}
-//
-//add_action('cred_loader_auto_load', 'cred_auto_load', 1);
-function cred_is_ajax_call() {
-    return ((defined('DOING_AJAX') && DOING_AJAX) || !empty($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) == 'xmlhttprequest');
-}
-
 function cred_start() {
-    // load basic classes
     CRED_Loader::load('CLASS/CRED');
     CRED_CRED::init();
 }

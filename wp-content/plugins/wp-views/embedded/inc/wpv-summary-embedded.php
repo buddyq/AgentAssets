@@ -1731,6 +1731,11 @@ function wpv_get_meta_field_summary( $type, $view_settings = array(), $meta_type
 		$type_selected = __( 'value', 'wpv-views' );
 	}
 	$value_selected = esc_html( str_replace( ',', ', ', $view_settings[ $type . '_value' ] ) );
+	if ( isset( $view_settings[ $type . '_decimals' ] ) && 'DECIMAL' == $type_selected ) {
+		$decimals_selected = __( 'with ' . $view_settings[ $type . '_decimals' ] . ' decimal places', 'wpv-views' );
+	} else {
+		$decimals_selected = '';
+	}
 	ob_start();
 	?>
 	<span class="wpv-filter-multiple-summary-item">
@@ -1741,7 +1746,7 @@ function wpv_get_meta_field_summary( $type, $view_settings = array(), $meta_type
 	) {
 		$WP_Views_fapi->framework_missing_message_for_filters( $field_nicename );
 	} else {
-		echo sprintf( __( '<strong>%s</strong> is a %s <strong>%s</strong> <strong>%s</strong>', 'wpv-views' ), $field_nicename, $type_selected, $compare_selected, $value_selected );
+		echo sprintf( __( '<strong>%s</strong> is a %s %s <strong>%s</strong> <strong>%s</strong>', 'wpv-views' ), $field_nicename, $type_selected, $decimals_selected, $compare_selected, $value_selected );
 	}
 	?>
 	</span>

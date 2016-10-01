@@ -259,8 +259,8 @@
 					</p>
 
 					<p>
-						<label for="select2">select2</label>
-						<select name="" id="select2" class="js-select2">
+						<label for="toolset_select2">select2</label>
+						<select name="" id="toolset_select2" class="js-toolset_select2">
 							<option value="Option 4">option 4</option>
 							<option value="Option 5">option 5</option>
 							<option value="Option 6">option 6</option>

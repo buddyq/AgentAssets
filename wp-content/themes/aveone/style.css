@@ -91,6 +91,10 @@ a, a:focus, a:hover, a:link {outline:none!important;-webkit-transition: all 0.1s
 
 .author.vcard .avatar {float:left;margin:0;position:relative;top:-7px;left:-5px;padding:0;margin-right:5px;}
 
+.av-catalogue-list.details{
+  background: #999480;
+  padding: 10px 0;
+}
 
 .entry-meta { margin-bottom: 10px;text-shadow:0 1px 0px #fff;font-size:13px!important;line-height:20px!important;  }
 .entry-meta .meta-sep {margin:0 5px; }
@@ -399,11 +403,11 @@ a:hover { text-decoration: underline; }
 /* Headings */
 h1, h2, h3, h4, h5, h6 { color:#999480; font-family:'Roboto';font-weight:normal;font-style:normal!important; clear: both;margin-bottom:15px; }
 h1 { font-size: 46px; line-height: 46px; padding: 5px 0px;}
-h2 { font-size: 40px; line-height: 40px; padding: 5px 0px;}
+h2 { font-size: 40px; line-height: 40px; padding: 5px 0px; margin-top: 0 !important;}
 h3 { font-size: 34px; line-height: 34px; padding: 5px 0px;}
 h4 { font-size: 27px; line-height: 27px; padding: 5px 0px;}
 h5 { font-size: 20px; line-height: 20px; padding: 5px 0px;}
-h6 { font-size: 14px; line-height: 18px; padding: 5px 0px; }
+h6 { font-size: 14px; line-height: 18px; padding: 5px 0px;}
 
 
 /* Widgets */
@@ -1697,12 +1701,7 @@ div#carousel {
 #slides li { border-left: 5px solid #000000; }
 #slides li:first-child { border-left: none; }
 #primary .entry-title { border-bottom: 1px solid #FFFFFF; color:#FFFFFF !important; margin: 10px 0 0 0; }
-.property-details h3.heading{
-/*  font-size: 20px;
-  font-style: italic !important;
-  font-weight: bolder;
-  text-transform: uppercase;*/
-}
+
 .contact-page input, .contact-page textarea, .contact-page select{ width: 100%; color: #000;}
 
 .contact-page input{
@@ -2132,7 +2131,7 @@ body #header.sticky-header,body #header.sticky-header.sticky{display:none !impor
 }
 .property-details.row > div { padding: 0; }
 
-.property-details > .col-sm-4{
+.property-details > .col-sm-4, .av-catalogue-list.details{
   background: rgba(255,0,0,0.5);
 }
 

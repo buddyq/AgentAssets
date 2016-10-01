@@ -88,7 +88,7 @@ if ($doaction) {
                 <i class="icon-question-sign"></i>
             </a>
         <?php } ?>
-    </h2><br />
+    </h2>
     <form id="list" action="" method="post" style="margin-bottom: 3em;">
         <?php
         if (function_exists('wp_nonce_field'))

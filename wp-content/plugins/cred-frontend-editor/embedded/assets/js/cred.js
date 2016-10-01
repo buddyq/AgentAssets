@@ -2047,6 +2047,31 @@ var _original_cred_autogenerate_password_scaffold;
                         event.preventDefault();
                         return aux.formPreview();
                     });
+					
+					/**
+					 * _do_submit_compatibility
+					 *
+					 * Compatibility solutions before submitting the CRED edit page form.
+					 *
+					 * @since 1.8.1
+					 */
+					
+					var _do_submit_compatibility = function() {
+						
+						/**
+						 * ACF compatibility
+						 *
+						 * ACF hijacks the post form submit, performs some validation, and then it should submit the form, but it does not
+						 * Because of that, we need to disable the ACF validation on CRED forms edit pages.
+						 *
+						 * @since 1.8.1
+						 */
+						
+						acf						= ( typeof acf != 'undefined' ) ? acf : {};
+						acf.validation			= acf.validation || {};
+						acf.validation.active	= 0;
+						
+					};
 
                     var _do_submit = function () {
                         var form_name_1 = $('#title').val();
@@ -2131,6 +2156,7 @@ var _original_cred_autogenerate_password_scaffold;
                     };
 
                     $_post.bind('submit', function (event) {
+						_do_submit_compatibility();
                         return _do_submit();
                     });
 
@@ -2595,11 +2621,11 @@ var _original_cred_autogenerate_password_scaffold;
             // add explain texts for title and content
             if (settings._current_page == 'cred-form') {
                 $('#titlediv')
-                        .prepend('<p class="cred-explain-text">' + settings.locale.title_explain_text + '</p>')
+                        .prepend('<p class="cred-explain-text">&nbsp;</p>')
                         .prepend('<a id="cred_add_forms_to_site_help" class="cred-help-link" style="position:absolute;top:0;right:0;" href="' + settings.help['add_post_forms_to_site']['link'] + '" target="_blank" title="' + settings.help['add_post_forms_to_site']['text'] + '">' + settings.help['add_post_forms_to_site']['text'] + '</a>');
             } else {
                 $('#titlediv')
-                        .prepend('<p class="cred-explain-text">' + settings.locale.title_explain_text + '</p>')
+                        .prepend('<p class="cred-explain-text">&nbsp;</p>')
                         .prepend('<a id="cred_add_forms_to_site_help" class="cred-help-link" style="position:absolute;top:0;right:0;" href="' + settings.help['add_user_forms_to_site']['link'] + '" target="_blank" title="' + settings.help['add_user_forms_to_site']['text'] + '">' + settings.help['add_user_forms_to_site']['text'] + '</a>');
             }
 

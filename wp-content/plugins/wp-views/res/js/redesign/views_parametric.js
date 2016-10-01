@@ -451,10 +451,10 @@ var WPV_ParametricFilterWindow = function() {
 		jqp.each( user_values, function( i, v ) {
 			if( v ) {
 				try	{
-					var actualValue = v.values ? v.values.replace(",", "\\\\,") : '';
+					var actualValue = v.values ? v.values.replace(",", "%%COMMA%%") : '';
 					ret.values.push( actualValue );
 
-					var actualDisplayValue = v.display_values ? v.display_values.replace(",", "\\\\,") : '';
+					var actualDisplayValue = v.display_values ? v.display_values.replace(",", "%%COMMA%%") : '';
 					ret.display_values.push( actualDisplayValue );
 				} catch( e ) {
 					//if(  WPV_Parametric.debug ) console.log( e.message )
@@ -1490,29 +1490,31 @@ var WPV_ParametricFilterWindow = function() {
 				if( field.display_values === undefined && values.values[0].length === 2 )
 				{
 					jqp.each(values.values, function(i, v){
-						var display = v[1].replace(/\\\\\\\\,/g, "|" );
-						valuesValues.push( new parametricViewModel.WPV_Value( v[0], display.replace("|", ",") ) );
+						var display = v[1].replace(/\\\\\\\\,/g, "|" ).replace( /%%COMMA%%/g, '|' ),
+						actual_value = v[0].replace(/\\\\\\\\,/g, "|" ).replace( /%%COMMA%%/g, '|' );
+						valuesValues.push( new parametricViewModel.WPV_Value( actual_value.replace( "|", "," ), display.replace("|", ",") ) );
 					});
 				}
 				else
 				{
-					field.display_values = field.display_values.replace(/\\\\\\\\,/g, "|" );
+					field.display_values = field.display_values.replace(/\\\\\\\\,/g, "|" ).replace( /%%COMMA%%/g, '|' );
 					var display = field.display_values.split(",");
 					jqp.each(values.values, function(i, v){
-
-						valuesValues.push( new parametricViewModel.WPV_Value( v, display[i].replace("|", ",") ) );
+						var actual_value = v.replace(/\\\\\\\\,/g, "|" ).replace( /%%COMMA%%/g, '|' );
+						valuesValues.push( new parametricViewModel.WPV_Value( actual_value.replace( "|", "," ), display[i].replace("|", ",") ) );
 					});
 				}
 			}
 			// this is for retrocompatibility
 			else if( values && values.length && values.constructor.name == 'Array' )
 			{
-				field.display_values = field.display_values.replace(/\\\\\\\\,/g, "|" );
+				field.display_values = field.display_values.replace(/\\\\\\\\,/g, "|" ).replace( /%%COMMA%%/g, '|' );
 
 				var display = field.display_values.split(",");
 
 				jqp.each(values, function(i, v){
-					valuesValues.push( new parametricViewModel.WPV_Value( v[0], display[i].replace("|", ",") ) );
+					var actual_value = v[0].replace(/\\\\\\\\,/g, "|" ).replace( /%%COMMA%%/g, '|' );
+					valuesValues.push( new parametricViewModel.WPV_Value( actual_value.replace( "|", "," ), display[i].replace( "|", "," ) ) );
 				});
 			}
 

@@ -5,12 +5,13 @@ if (empty($settings_defaults))
     
 if (empty($settings))
     $settings = array();
-    
+
+$settings = apply_filters("cred_modify_pe_settings_compatibility", $settings);    
+ 
 if(!isset($settings['expiration_time']['expiration_period']))
     $settings['expiration_time']['expiration_period'] = "";
-    
-$expiration_period = $settings['expiration_time']['expiration_period'];
 
+$expiration_period = (isset($settings['expiration_time']['expiration_period']) ? $settings['expiration_time']['expiration_period'] : "days");
 $settings = CRED_PostExpiration::array_merge_distinct($settings_defaults, $settings);
 ?>
 

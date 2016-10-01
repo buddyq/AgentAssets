@@ -98,8 +98,17 @@ final class CRED_Fields_Model extends CRED_Abstract_Model implements CRED_Single
         $text = esc_sql(cred_wrap_esc_like($text));
 
         $sql = "SELECT ID, post_title FROM {$this->wpdb->posts} WHERE post_title LIKE '%$text%' AND post_status IN $post_status AND post_type NOT IN $not_in_post_types";
-        if ($post_type !== null)
-            $sql.= $this->wpdb->prepare(' AND post_type="%s"', $post_type);
+        if ($post_type !== null) {
+            if (is_array($post_type)) {
+                $post_type_str = "";
+                foreach ($post_type as $pt) {
+                    $post_type_str .= "'$pt',";
+                }
+                $post_type_str = rtrim($post_type_str,',');
+                $sql.= " AND post_type in ($post_type_str)";
+            } else
+                $sql.= $this->wpdb->prepare(' AND post_type="%s"', $post_type);
+        }
         $limit = intval($limit);
         if ($limit > 0)
             $sql.=" LIMIT 0, $limit";
@@ -491,7 +500,7 @@ final class CRED_Fields_Model extends CRED_Abstract_Model implements CRED_Single
             }
 
             $post_ids = implode(',', $post_ids);
-            
+
             //cred_log(print_r($post_ids,true));
             if (empty($post_ids)) {
                 $groups = array();
@@ -624,42 +633,22 @@ final class CRED_Fields_Model extends CRED_Abstract_Model implements CRED_Single
 
         //echo "isTypesActive=$isTypesActive post_type=$post_type_orig isTypesPost=$isTypesPost<pre>";print_r($wpcf_custom_types);echo "</pre>";
         // add parent fields
-        if ($isTypesPost) {
-            if (
-                    array_key_exists('post_relationship', $wpcf_custom_types[$post_type_orig]) &&
-                    array_key_exists('belongs', $wpcf_custom_types[$post_type_orig]['post_relationship'])
-            ) {
-
-                // get parents defined via 'belongs' relationship
-                foreach ($wpcf_custom_types[$post_type_orig]['post_relationship']['belongs'] as $ptype => $belong) {
-                    if ($belong) {
-                        $_slug = '_wpcf_belongs_' . $ptype . '_id';
-                        $parents[$_slug] = array('is_parent' => true, 'plugin_type' => 'types', 'data' => array('post_type' => $ptype, 'repetitive' => false, 'options' => array()), 'id' => $_slug, 'slug' => $_slug, 'name' => esc_js(sprintf(__('%s Parent', 'wp-cred'), $ptype)), 'type' => 'select', 'description' => esc_js(sprintf(__('Set the %s Parent', 'wp-cred'), $ptype)));
-                    }
-                }
-            }
-            // get parents defined via 'has' relationship (reverse)
-            foreach ($wpcf_custom_types as $ptype => $pdata) {
+        if ($isTypesActive) {
+            if ($isTypesPost) {
                 if (
-                        isset($pdata['post_relationship']['has']) &&
-                        isset($pdata['post_relationship']['has'][$post_type_orig]) &&
-                        $pdata['post_relationship']['has'][$post_type_orig]
+                        array_key_exists('post_relationship', $wpcf_custom_types[$post_type_orig]) &&
+                        array_key_exists('belongs', $wpcf_custom_types[$post_type_orig]['post_relationship'])
                 ) {
 
-                    $_slug = '_wpcf_belongs_' . $ptype . '_id';
-                    $parents[$_slug] = array('is_parent' => true, 'plugin_type' => 'types', 'data' => array('post_type' => $ptype, 'repetitive' => false, 'options' => array()), 'id' => $_slug, 'slug' => $_slug, 'name' => esc_js(sprintf(__('%s Parent', 'wp-cred'), $ptype)), 'type' => 'select', 'description' => esc_js(sprintf(__('Set the %s Parent', 'wp-cred'), $ptype)));
+                    // get parents defined via 'belongs' relationship
+                    foreach ($wpcf_custom_types[$post_type_orig]['post_relationship']['belongs'] as $ptype => $belong) {
+                        if ($belong) {
+                            $_slug = '_wpcf_belongs_' . $ptype . '_id';
+                            $parents[$_slug] = array('is_parent' => true, 'plugin_type' => 'types', 'data' => array('post_type' => $ptype, 'repetitive' => false, 'options' => array()), 'id' => $_slug, 'slug' => $_slug, 'name' => esc_js(sprintf(__('%s Parent', 'wp-cred'), $ptype)), 'type' => 'select', 'description' => esc_js(sprintf(__('Set the %s Parent', 'wp-cred'), $ptype)));
+                        }
+                    }
                 }
-            }
-            // hierarchical custom post type, parent of itself
-            /* if (isset($wpcf_custom_types[$post_type_orig]['hierarchical']) && $wpcf_custom_types[$post_type_orig]['hierarchical'])
-              {
-              $_slug='post_parent';
-              $ptype=$post_type_orig;
-              $parents[$_slug]=array('is_parent'=>true,'data'=>array('post_type'=>$ptype,'repetitive'=>false,'options'=>array()),'id'=>$_slug,'slug'=>$_slug,'name'=>$ptype.' Parent','type'=>'select','description'=>sprintf(__('Set the %s Parent','wp-cred'),$ptype));
-              } */
-        } else {
-            // get parents defined via 'has' relationship (reverse)
-            if (isset($wpcf_custom_types) && is_array($wpcf_custom_types) && count($wpcf_custom_types) > 0) {
+                // get parents defined via 'has' relationship (reverse)
                 foreach ($wpcf_custom_types as $ptype => $pdata) {
                     if (
                             isset($pdata['post_relationship']['has']) &&
@@ -669,6 +658,28 @@ final class CRED_Fields_Model extends CRED_Abstract_Model implements CRED_Single
 
                         $_slug = '_wpcf_belongs_' . $ptype . '_id';
                         $parents[$_slug] = array('is_parent' => true, 'plugin_type' => 'types', 'data' => array('post_type' => $ptype, 'repetitive' => false, 'options' => array()), 'id' => $_slug, 'slug' => $_slug, 'name' => esc_js(sprintf(__('%s Parent', 'wp-cred'), $ptype)), 'type' => 'select', 'description' => esc_js(sprintf(__('Set the %s Parent', 'wp-cred'), $ptype)));
+                    }
+                }
+                // hierarchical custom post type, parent of itself
+                /* if (isset($wpcf_custom_types[$post_type_orig]['hierarchical']) && $wpcf_custom_types[$post_type_orig]['hierarchical'])
+                  {
+                  $_slug='post_parent';
+                  $ptype=$post_type_orig;
+                  $parents[$_slug]=array('is_parent'=>true,'data'=>array('post_type'=>$ptype,'repetitive'=>false,'options'=>array()),'id'=>$_slug,'slug'=>$_slug,'name'=>$ptype.' Parent','type'=>'select','description'=>sprintf(__('Set the %s Parent','wp-cred'),$ptype));
+                  } */
+            } else {
+                // get parents defined via 'has' relationship (reverse)
+                if (isset($wpcf_custom_types) && is_array($wpcf_custom_types) && count($wpcf_custom_types) > 0) {
+                    foreach ($wpcf_custom_types as $ptype => $pdata) {
+                        if (
+                                isset($pdata['post_relationship']['has']) &&
+                                isset($pdata['post_relationship']['has'][$post_type_orig]) &&
+                                $pdata['post_relationship']['has'][$post_type_orig]
+                        ) {
+
+                            $_slug = '_wpcf_belongs_' . $ptype . '_id';
+                            $parents[$_slug] = array('is_parent' => true, 'plugin_type' => 'types', 'data' => array('post_type' => $ptype, 'repetitive' => false, 'options' => array()), 'id' => $_slug, 'slug' => $_slug, 'name' => esc_js(sprintf(__('%s Parent', 'wp-cred'), $ptype)), 'type' => 'select', 'description' => esc_js(sprintf(__('Set the %s Parent', 'wp-cred'), $ptype)));
+                        }
                     }
                 }
             }

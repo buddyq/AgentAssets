@@ -3003,13 +3003,13 @@ WPViews.ViewEditScreen = function( $ ) {
 	*/
 	
 	self.init_third_party = function() {
-		// select2 in orderby dropdowns
+		// toolset_select2 in orderby dropdowns
 		// IE11 needs a minimum width set in CSS or hidden items will get visible with no width at all
 		$( 'select.js-wpv-posts-orderby, select.js-wpv-taxonomy-orderby, select.js-wpv-users-orderby' )
 			.css(
 				{ 'min-width': '100px' }
 			)
-			.select2(
+			.toolset_select2(
 				{ 
 					width:				'resolve',
 					dropdownAutoWidth:	true 

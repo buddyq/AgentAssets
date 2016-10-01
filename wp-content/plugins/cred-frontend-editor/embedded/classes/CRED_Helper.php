@@ -399,7 +399,7 @@ final class CRED_Helper {
             if ((self::$currentPage->isCustomPostEdit || self::$currentPage->isCustomPostNew) ||
                     (self::$currentUPage->isCustomPostEdit || self::$currentUPage->isCustomPostNew)) {
                 CRED_Loader::loadAsset('SCRIPT/cred_cred_dev', 'cred_cred', false, CRED_CONCAT_ASSETS);
-                CRED_Loader::loadAsset('SCRIPT/cred_wizard_dev', 'cred_wizard');
+                CRED_Loader::loadAsset('SCRIPT/cred_wizard_dev', 'cred_wizard', false);
                 CRED_Loader::loadAsset('STYLE/cred_cred_style_dev', 'cred_cred_style', false, CRED_CONCAT_ASSETS);
 // WordPress 4.0 compatibility: remove all the new fancy editor enhancements that break the highlighting and toolbars
                 wp_dequeue_script('editor-expand');
@@ -2015,7 +2015,7 @@ final class CRED_Helper {
                         __link__.href = _cred_cred_parse_url(__link__.href, {
                             remove: ['_cred_url'],
                             add: {
-                                '_cred_url': document.location
+                                '_cred_url': document.location.href.split('?')[0]
                             }
                         });
                     }
@@ -2892,7 +2892,6 @@ final class CRED_Helper {
 
     public static function getMediaButtons($id, $params = array()) {
         global $wp_version;
-        global $wp_filter;
         static $template_with_media = null, $template_no_media = null, $dummy = "___%%ID%%___";
 
         $output = '';
@@ -2915,7 +2914,6 @@ final class CRED_Helper {
 
                 $media_button_priority = has_action('media_buttons', 'media_buttons');
                 if (false !== $media_button_priority) {
-                    $media_filter_hook = $wp_filter['media_buttons'][$media_button_priority]['media_buttons'];
                     remove_action('media_buttons', 'media_buttons', $media_button_priority);
                 }
 
@@ -2936,10 +2934,9 @@ final class CRED_Helper {
                 if (false !== $media_button_priority) {
 //add_action('media_buttons', 'media_buttons', $media_button_priority);
 // this is better since it prepends the media buttons first and not append it
-                    if (!isset($wp_filter['media_buttons'][$media_button_priority])) {
-                        $wp_filter['media_buttons'][$media_button_priority] = array();
+                    if (!has_action("media_buttons")) {
+                        add_action("media_buttons", "media_buttons", $media_button_priority, 2);
                     }
-                    $wp_filter['media_buttons'][$media_button_priority] = array('media_buttons' => $media_filter_hook) + $wp_filter['media_buttons'][$media_button_priority];
                 }
             }
 // computed once statically, ;)

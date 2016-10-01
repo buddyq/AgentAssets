@@ -425,14 +425,14 @@ class Toolset_Addon_Maps_Common {
 					'utm_source'	=> 'mapsplugin',
 					'utm_campaign'	=> 'maps',
 					'utm_medium'	=> 'release-notes-plugin-row',
-					'utm_term'		=> 'Toolset Maps 1.2 release notes'
+					'utm_term'		=> 'Toolset Maps 1.2.1 release notes'
 				)
 			);
-			$plugin_link = self::get_documentation_promotional_link( $promo_args, 'https://wp-types.com/version/maps-1-2/' );
+			$plugin_link = self::get_documentation_promotional_link( $promo_args, 'https://wp-types.com/version/maps-1-2-1/' );
 			$plugin_meta[] = sprintf(
 					'<a href="%1$s" target="_blank">%2$s</a>',
 					$plugin_link,
-					__( 'Toolset Maps 1.2 release notes', 'toolset-maps' ) 
+					__( 'Toolset Maps 1.2.1 release notes', 'toolset-maps' ) 
 				);
 		}
 		return $plugin_meta;

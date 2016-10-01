@@ -1,5 +1,52 @@
 <?php
 
+if (!function_exists('cred_is_ajax_call')) {
+
+    function cred_is_ajax_call() {
+        return ((defined('DOING_AJAX') && DOING_AJAX) || !empty($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) == 'xmlhttprequest');
+    }
+
+}
+
+if (!function_exists('cred__return_zero')) {
+
+    function cred__return_zero() {
+        return 0;
+    }
+
+}
+
+if (!function_exists('cred__create_auto_draft')) {
+
+    function cred__create_auto_draft($post_title, $post_type, $user_id) {
+        $mypost = get_default_post_to_edit($post_type);
+        $mypost->post_title = $post_title;
+        $mypost->content = '';
+        $mypost->post_status = 'auto-draft';
+        $mypost->post_author = $user_id;
+        $mypost->post_category = '';
+        $mypost_id = wp_insert_post($mypost);
+        return $mypost_id;
+    }
+
+}
+
+if (!function_exists('cred__parent_sort')) {
+
+    function cred__parent_sort(array $fields, array &$result = array(), $parent = 0, $depth = 0) {
+        foreach ($fields as $key => $field) {
+            if ($field['parent'] == $parent) {
+                $field['depth'] = $depth;
+                array_push($result, $field);
+                unset($fields[$key]);
+                cred__parent_sort($fields, $result, $field['term_id'], $depth + 1);
+            }
+        }
+        return $result;
+    }
+
+}
+
 if (!function_exists('is_cred_embedded')) {
 
     function is_cred_embedded() {
@@ -13,11 +60,11 @@ if (function_exists('add_action')) {
 
     function cred_common_path() {
         if (!defined('WPTOOLSET_FORMS_VERSION')) {
-			$toolset_common_bootstrap = Toolset_Common_Bootstrap::getInstance();
-			$toolset_common_sections = array(
-				'toolset_forms'
-			);
-			$toolset_common_bootstrap->load_sections( $toolset_common_sections );
+            $toolset_common_bootstrap = Toolset_Common_Bootstrap::getInstance();
+            $toolset_common_sections = array(
+                'toolset_forms'
+            );
+            $toolset_common_bootstrap->load_sections($toolset_common_sections);
         }
     }
 
@@ -26,7 +73,8 @@ if (function_exists('add_action')) {
 if (!function_exists('cred_log')) {
 
     function cred_log($message, $file = null, $type = null, $level = 1) {
-        if (!CRED_DEBUG) return;
+        if (!CRED_DEBUG)
+            return;
         // debug levels
         $dlevels = array(
             'default' => true, //defined('CRED_DEBUG') && CRED_DEBUG,
@@ -173,10 +221,9 @@ function cred_export_to_xml_string($forms) {
 function cred_translate($name, $string, $context = 'CRED_CRED') {
     if (!function_exists('icl_t'))
         return $string;
-    
+
     //cred_log("cred_translate");
     //cred_log(array($name, $string, $context));
-
 //    cred_log("########################## cred_translate ############################");
 //    cred_log($context);
     if (strpos($context, 'cred-form-') !== false) {
@@ -213,7 +260,7 @@ function cred_translate($name, $string, $context = 'CRED_CRED') {
 function cred_translate_register_string($context, $name, $value, $allow_empty_value = false) {
     //cred_log("cred_translate_register_string");
     cred_log(array($context, $name, $value));
-    
+
     //cred_log("########################## cred_translate_register_string ############################");
     //cred_log($context);
     if (strpos($context, 'cred-form-') !== false) {
@@ -227,8 +274,8 @@ function cred_translate_register_string($context, $name, $value, $allow_empty_va
         }
         //cred_log("> new context");
         //cred_log($context);
-    }    
-    
+    }
+
     if (function_exists('icl_register_string')) {
         //cred_log("icl_register_string");
         //cred_log(array($context, $name, stripslashes($value)));
@@ -272,13 +319,13 @@ function cred_re_enable_shortcodes($shortcode_back) {
 }
 
 function cred_disable_filters_for($hook) {
-    global $wp_filter;
-    if (isset($wp_filter[$hook])) {
-        $wp_filter_back = $wp_filter[$hook];
-        $wp_filter[$hook] = array();
-    } else
-        $wp_filter_back = array();
-    return($wp_filter_back);
+    if (has_action($hook)) {
+        remove_all_actions($hook);
+    }
+
+    if(has_filter($hook)){
+        remove_all_filters($hook);
+    }
 }
 
 function cred_re_enable_filters_for($hook, $back) {

@@ -260,6 +260,7 @@ class CRED_Form_Builder implements CRED_Friendable, CRED_FriendableStatic {
     // manage form submission / validation and rendering and return rendered html
     public function form($form_id, $post_id = null, $preview = false, $force_form_count = false, $specific_post_id = null) {
         cred_log("################## form ########################");
+        add_filter('wp_revisions_to_keep', 'cred__return_zero', 10, 2);
 
         $bypass_form = apply_filters('cred_bypass_process_form_' . $form_id, false, $form_id, $post_id, $preview);
         $bypass_form = apply_filters('cred_bypass_process_form', $bypass_form, $form_id, $post_id, $preview);
@@ -371,9 +372,7 @@ class CRED_Form_Builder implements CRED_Friendable, CRED_FriendableStatic {
             $formHelper->checkFilesType($this->out_['fields']['post_fields'], $this->out_['form_fields_info'], $zebraForm, $error_files);
         //##########################################################################################                
 
-        $pre_validation = $this->validate($tmp, true);
-        StaticClass::$_reset_file_values = ($is_ajax && $form_type == 'new' && $_fields['form_settings']->form['action'] == 'form' && $pre_validation);
-        cred_log("pre_validation: " . $pre_validation);
+        StaticClass::$_reset_file_values = ($is_ajax && $form_type == 'new' && $_fields['form_settings']->form['action'] == 'form' && self::$_self_updated_form);
         cred_log("_reset_file_values: " . StaticClass::$_reset_file_values);
 
         $cloned = false;
@@ -408,7 +407,7 @@ class CRED_Form_Builder implements CRED_Friendable, CRED_FriendableStatic {
 
         $this->CRED_build();
 
-        $validate = $this->validate($error_files);
+        $validate = (self::$_self_updated_form) ? true : $this->validate($error_files);
         //$validate = (StaticClass::$_reset_file_values) ? true : false;
 
         if ($cloned) {
@@ -755,9 +754,7 @@ class CRED_Form_Builder implements CRED_Friendable, CRED_FriendableStatic {
             $formHelper->checkFilesType($this->out_['fields']['post_fields'], $this->out_['form_fields_info'], $zebraForm, $error_files);
         //##########################################################################################
 
-        $pre_validation = $this->validate($tmp, true);
-        StaticClass::$_reset_file_values = ($is_ajax && $form_type == 'new' && $_fields['form_settings']->form['action'] == 'form');
-        cred_log("pre_validation: " . $pre_validation);
+        StaticClass::$_reset_file_values = ($is_ajax && $form_type == 'new' && $_fields['form_settings']->form['action'] == 'form' && self::$_self_updated_form);
         cred_log("_reset_file_values: " . StaticClass::$_reset_file_values);
 
         $cloned = false;
@@ -801,7 +798,7 @@ class CRED_Form_Builder implements CRED_Friendable, CRED_FriendableStatic {
 
         $this->CRED_User_build();
 
-        $validate = $this->validate($error_files);
+        $validate = (self::$_self_updated_form) ? true : $this->validate($error_files);
         //$validate = (StaticClass::$_reset_file_values && $valid) ? true : false;
 
         if ($cloned) {
@@ -1075,6 +1072,15 @@ class CRED_Form_Builder implements CRED_Friendable, CRED_FriendableStatic {
         $form_type = $_fields['form_settings']->form['type'];
         $post_type = $_fields['form_settings']->post['post_type'];
 
+        $user_id = get_current_user_id();
+
+        //Pre-check access as guest in order to avoid creation of auto-draft
+        if ($user_id <= 0) {
+            if (!$preview && !$formHelper->checkFormAccess($form_type, $form_id)) {
+                return $formHelper->error();
+            }
+        }
+
         //Added by Ahmed Hussein, for issue where multiple cred forms in same page get same post ids
         if ($form_type == "new") {
             $_post_to_create = null;
@@ -1094,46 +1100,30 @@ class CRED_Form_Builder implements CRED_Friendable, CRED_FriendableStatic {
             // always get new dummy id, to avoid the issue of editing the post on browser back button
             //$post_id=get_default_post_to_edit( $post_type, true )->ID;
             if (!isset($_post_to_create) || empty($_post_to_create)) {
-                //Fix
-                global $wpdb;
-
                 //Adding auto-draft with each form render
                 $unique_value = md5(StaticClass::getIP());
                 $unique_post_title = "CRED Auto Draft {$unique_value}";
 
-                /* $querystr = $wpdb->prepare("SELECT $wpdb->posts.ID FROM $wpdb->posts WHERE $wpdb->posts.post_status = 'auto-draft' AND $wpdb->posts.post_type = %s AND $wpdb->posts.post_title = %s ORDER by ID desc Limit 1", $post_type, $unique_post_title);
-                  $_myposts = $wpdb->get_results($querystr, OBJECT); */
+                global $wpdb;
 
-                $mypost = get_default_post_to_edit($post_type, true);
-                $my_post = array(
-                    'ID' => $mypost->ID,
-                    'post_title' => $unique_post_title,
-                    'post_content' => '',
-                );
-                wp_update_post($my_post);
+                if ($user_id > 0) {
+                    $querystr = $wpdb->prepare("SELECT $wpdb->posts.ID FROM $wpdb->posts WHERE $wpdb->posts.post_status = 'auto-draft' AND $wpdb->posts.post_type = %s AND $wpdb->posts.post_title like %s AND $wpdb->posts.post_author = %d ORDER by ID desc Limit 1", $post_type, $unique_post_title, $user_id);
+                    $_myposts = $wpdb->get_results($querystr, OBJECT);
 
-                //Fix https://icanlocalize.basecamphq.com/projects/7393061-toolset/todo_items/192489607/comments
-                /* if (!empty($_myposts)) {
-                  $mypost = get_post($_myposts[0]->ID);
-                  $mypost->post_title = $unique_post_title;
-                  $mypost->post_content = '';
-                  } else {
-                  //$post_id
-                  //Fixed https://icanlocalize.basecamphq.com/projects/7393061-toolset/todo_items/192489607/comments
-                  $mypost = get_default_post_to_edit($post_type, true);
-                  $my_post = array(
-                  'ID' => $mypost->ID,
-                  'post_title' => $unique_post_title,
-                  'post_content' => '',
-                  );
-                  wp_update_post($my_post);
-                  //################################################################################################
-                  } */
+                    //if exists 
+                    if (!empty($_myposts)) {
+                        $mypost = get_post($_myposts[0]->ID);
+                        $mypost_id = $mypost->ID;
+                        unset($_myposts);
+                    } else {
+                        $mypost_id = cred__create_auto_draft($unique_post_title, $post_type, $user_id);
+                    }
+                } else
+                    $mypost_id = cred__create_auto_draft($unique_post_title, $post_type, $user_id);
 
-                $_post_to_create = $mypost->ID;
+                $_post_to_create = $mypost_id;
                 $this->_post_ID = $_post_to_create;
 
-                //Fix https://icanlocalize.basecamphq.com/projects/7393061-toolset/todo_items/193427659/comments#303699314
                 //If post_id is not null and is not auto-draft means that the user used 
                 //back arrow of the browser
                 //So i set post_id with a new one
@@ -1711,8 +1701,8 @@ class CRED_Form_Builder implements CRED_Friendable, CRED_FriendableStatic {
     }
 
     // validate form
-    private function validate(&$error_files, $disable_recaptcha = false) {
-        cred_log("######################## validate ######################### $disable_recaptcha");
+    private function validate(&$error_files) {
+        cred_log("######################## validate #########################");
 
         // reference to the form submission method
         global ${'_' . StaticClass::METHOD};
@@ -1752,7 +1742,7 @@ class CRED_Form_Builder implements CRED_Friendable, CRED_FriendableStatic {
                 }
             }
 
-            if (!$disable_recaptcha && isset($_POST['_recaptcha'])) {
+            if (isset($_POST['_recaptcha'])) {
                 if
                 (
                         (isset($_POST["g-recaptcha-response"]) && !empty($_POST["g-recaptcha-response"]))
@@ -1930,10 +1920,10 @@ class CRED_Form_Builder implements CRED_Friendable, CRED_FriendableStatic {
                         $ofname = $fname;
                         $fname = str_replace("wpcf-", "", $fname);
                     }
-                    
-                    if (isset($this->out_['fields']['extra_fields'][$fname]))                         
-                            $more_result = false;
-                            
+
+                    if (isset($this->out_['fields']['extra_fields'][$fname]))
+                        $more_result = false;
+
                     if ($form->getForm()->post_type == CRED_USER_FORMS_CUSTOM_POST_NAME) {
                         if ((isset($this->out_['fields']['post_fields']) &&
                                 (array_key_exists($fname, $this->out_['fields']['post_fields']) ||
@@ -1967,7 +1957,7 @@ class CRED_Form_Builder implements CRED_Friendable, CRED_FriendableStatic {
                             //############################################################
                             $more_result = false;
                         }
-                    } else {                        
+                    } else {
                         if (isset($this->out_['form_fields']) &&
                                 array_key_exists($fname, $this->out_['form_fields'])) {
                             //Added result to fix conditional elements of this todo
@@ -2358,7 +2348,8 @@ class CRED_Form_Builder implements CRED_Friendable, CRED_FriendableStatic {
     public function extraSubjectNotificationCodes($codes, $form_id, $post_id) {
         $form = $this->_formData;
         if ($form_id == $form->getForm()->ID) {
-            $codes['%%POST_PARENT_TITLE%%'] = $this->cred_parent(array('get' => 'title'));
+            //$codes['%%POST_PARENT_TITLE%%'] = $this->cred_parent(array('get' => 'title'));
+            $codes['%%POST_PARENT_TITLE%%'] = $this->cred_parent_for_notification($post_id, array('get' => 'title'));
         }
         return $codes;
     }
@@ -2369,8 +2360,10 @@ class CRED_Form_Builder implements CRED_Friendable, CRED_FriendableStatic {
         $form = $this->_formData;
         if ($form_id == $form->getForm()->ID) {
             $codes['%%FORM_DATA%%'] = isset($this->out_['notification_data']) ? $this->out_['notification_data'] : '';
-            $codes['%%POST_PARENT_TITLE%%'] = $this->cred_parent(array('get' => 'title'));
-            $codes['%%POST_PARENT_LINK%%'] = $this->cred_parent(array('get' => 'url'));
+            //$codes['%%POST_PARENT_TITLE%%'] = $this->cred_parent(array('get' => 'title'));
+            //$codes['%%POST_PARENT_LINK%%'] = $this->cred_parent(array('get' => 'url'));            
+            $codes['%%POST_PARENT_TITLE%%'] = $this->cred_parent_for_notification($post_id, array('get' => 'title'));
+            $codes['%%POST_PARENT_LINK%%'] = $this->cred_parent_for_notification($post_id, array('get' => 'url'));
         }
         return $codes;
     }
@@ -2411,6 +2404,125 @@ class CRED_Form_Builder implements CRED_Friendable, CRED_FriendableStatic {
         $this->_form_content = $content;
         return StaticClass::FORM_TAG . '_' . $this->_zebraForm->form_properties['name'] . '%';
     }
+
+    public function cred_parent_for_notification($post_id, $atts) {
+        extract(shortcode_atts(array(
+            'post_type' => null,
+            'get' => 'title'
+                        ), $atts));
+
+        $post_type = get_post_type($post_id);
+        cred_log("############################# cred_parent_for_notification $post_id $post_type");        
+        $parent_id = null;
+        foreach ($this->out_['fields']['parents'] as $k => $v) {
+            if (isset($_REQUEST[$k])) {
+                $parent_id = $_REQUEST[$k];
+                break;
+            }
+        }
+
+        if ($parent_id !== null) {
+            cred_log($get);
+            switch ($get) {
+                case 'title':
+                    return get_the_title($parent_id);
+                case 'url':
+                    return get_permalink($parent_id);
+                case 'id':
+                    return $parent_id;
+                default:
+                    return '';
+            }
+        }
+        return '';
+    }
+
+//    public function cred_parent_for_notification($post_id, $get) {
+//        cred_log("################################### cred_parent_for_notification");
+//        $post_type_orig = get_post_type($post_id);
+//        cred_log("$post_id - $post_type_orig");
+//        $isTypesActive = defined('WPCF_VERSION');
+//        cred_log($isTypesActive);
+//        $wpcf_custom_types = get_option('wpcf-custom-types');
+//        cred_log($wpcf_custom_types);
+//        $isTypesPost = ($isTypesActive && $wpcf_custom_types) ? array_key_exists($post_type_orig, $wpcf_custom_types) : false;
+//        cred_log($isTypesPost);
+//        $parents = array();
+//        if ($isTypesActive) {
+//            if ($isTypesPost) {
+//                if (
+//                        array_key_exists('post_relationship', $wpcf_custom_types[$post_type_orig]) &&
+//                        array_key_exists('belongs', $wpcf_custom_types[$post_type_orig]['post_relationship'])
+//                ) {
+//
+//                    // get parents defined via 'belongs' relationship
+//                    foreach ($wpcf_custom_types[$post_type_orig]['post_relationship']['belongs'] as $ptype => $belong) {
+//                        if ($belong) {
+//                            $_slug = '_wpcf_belongs_' . $ptype . '_id';
+//                            $parents[$_slug] = array('is_parent' => true, 'plugin_type' => 'types', 'data' => array('post_type' => $ptype, 'repetitive' => false, 'options' => array()), 'id' => $_slug, 'slug' => $_slug, 'name' => esc_js(sprintf(__('%s Parent', 'wp-cred'), $ptype)), 'type' => 'select', 'description' => esc_js(sprintf(__('Set the %s Parent', 'wp-cred'), $ptype)));
+//                        }
+//                    }
+//                }
+//                // get parents defined via 'has' relationship (reverse)
+//                foreach ($wpcf_custom_types as $ptype => $pdata) {
+//                    if (
+//                            isset($pdata['post_relationship']['has']) &&
+//                            isset($pdata['post_relationship']['has'][$post_type_orig]) &&
+//                            $pdata['post_relationship']['has'][$post_type_orig]
+//                    ) {
+//
+//                        $_slug = '_wpcf_belongs_' . $ptype . '_id';
+//                        $parents[$_slug] = array('is_parent' => true, 'plugin_type' => 'types', 'data' => array('post_type' => $ptype, 'repetitive' => false, 'options' => array()), 'id' => $_slug, 'slug' => $_slug, 'name' => esc_js(sprintf(__('%s Parent', 'wp-cred'), $ptype)), 'type' => 'select', 'description' => esc_js(sprintf(__('Set the %s Parent', 'wp-cred'), $ptype)));
+//                    }
+//                }
+//                // hierarchical custom post type, parent of itself
+//                /* if (isset($wpcf_custom_types[$post_type_orig]['hierarchical']) && $wpcf_custom_types[$post_type_orig]['hierarchical'])
+//                  {
+//                  $_slug='post_parent';
+//                  $ptype=$post_type_orig;
+//                  $parents[$_slug]=array('is_parent'=>true,'data'=>array('post_type'=>$ptype,'repetitive'=>false,'options'=>array()),'id'=>$_slug,'slug'=>$_slug,'name'=>$ptype.' Parent','type'=>'select','description'=>sprintf(__('Set the %s Parent','wp-cred'),$ptype));
+//                  } */
+//            } else {
+//                // get parents defined via 'has' relationship (reverse)
+//                if (isset($wpcf_custom_types) && is_array($wpcf_custom_types) && count($wpcf_custom_types) > 0) {
+//                    foreach ($wpcf_custom_types as $ptype => $pdata) {
+//                        if (
+//                                isset($pdata['post_relationship']['has']) &&
+//                                isset($pdata['post_relationship']['has'][$post_type_orig]) &&
+//                                $pdata['post_relationship']['has'][$post_type_orig]
+//                        ) {
+//
+//                            $_slug = '_wpcf_belongs_' . $ptype . '_id';
+//                            $parents[$_slug] = array('is_parent' => true, 'plugin_type' => 'types', 'data' => array('post_type' => $ptype, 'repetitive' => false, 'options' => array()), 'id' => $_slug, 'slug' => $_slug, 'name' => esc_js(sprintf(__('%s Parent', 'wp-cred'), $ptype)), 'type' => 'select', 'description' => esc_js(sprintf(__('Set the %s Parent', 'wp-cred'), $ptype)));
+//                        }
+//                    }
+//                }
+//            }
+//        }
+//        cred_log("###################################");
+//        cred_log($parents);
+//        cred_log("###################################");
+//        
+//        $parent_id = null;
+//        if (!empty($parents))
+//            if (isset($parents['_wpcf_belongs_' . $post_type . '_id'])) {
+//                $parent_id = intval($_GET['parent_' . $post_type . '_id']);
+//            }
+//        cred_log($parent_id);
+//        if ($parent_id !== null) {
+//            switch ($get) {
+//                case 'title':
+//                    return get_the_title($parent_id);
+//                case 'url':
+//                    return get_permalink($parent_id);
+//                case 'id':
+//                    return $parent_id;
+//                default:
+//                    return '';
+//            }
+//        }
+//        return '';
+//    }
 
     /**
      * CRED-Shortcode: cred_parent

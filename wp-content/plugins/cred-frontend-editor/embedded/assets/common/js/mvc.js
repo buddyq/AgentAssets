@@ -2231,7 +2231,7 @@ CRED.suggest_cache = false;
                             data: this.serialize('#post'),
                             type: 'post',
                             success: function () {
-                                console.log("form updated");
+                                //console.log("form updated");
                             }
                         });
                     },

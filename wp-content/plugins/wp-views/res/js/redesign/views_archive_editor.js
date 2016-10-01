@@ -2772,8 +2772,8 @@ WPViews.WPAEditScreen = function( $ ) {
 	*/
 	
 	self.init_third_party = function() {
-		// select2 in orderby dropdowns
-		$( 'select.js-wpv-posts-orderby' ).select2(
+		// toolset_select2 in orderby dropdowns
+		$( 'select.js-wpv-posts-orderby' ).toolset_select2(
 			{ 
 				width:				'resolve',
 				dropdownAutoWidth:	true 

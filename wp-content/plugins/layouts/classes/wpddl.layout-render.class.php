@@ -125,6 +125,13 @@ class WPDD_layout_render {
         $additionalCssClasses = $additionalCssClasses ? $additionalCssClasses : '';
         $tag = $tag ? $tag : 'div';
         $mode = $mode ? $mode : 'normal';
+        $containerPadding = $row->get_container_padding();
+        
+        $containerPaddingClass = '';
+        if(false === $containerPadding){
+            $containerPaddingClass .='ddl-remove-bs-padding';
+        }
+        
         
         $this->offset = 0; // reset offset at the beginning of the row
 
@@ -156,7 +163,7 @@ class WPDD_layout_render {
             case 'normal':
 
                 ?>
-                <div class="<?php printf('%s', $this->get_container_class($mode)); ?>">
+                <div class="<?php printf('%s', $this->get_container_class($mode)); ?> <?php echo $containerPaddingClass;?>">
                 <<?php echo $tag; ?> class="<?php echo $this->get_row_class($mode);
                 if ($additionalCssClasses) {
                     echo ' ' . $additionalCssClasses;
@@ -176,7 +183,7 @@ class WPDD_layout_render {
                 echo ' id="' . $cssId . '"';
             } ?>>
 
-                <div class="<?php printf('%s', $this->get_container_class($mode)); ?>">
+                <div class="<?php printf('%s', $this->get_container_class($mode)); ?> <?php echo $containerPaddingClass;?>">
                 <div class="<?php echo $this->get_row_class($mode); ?>">
 
                 <?php
@@ -185,7 +192,7 @@ class WPDD_layout_render {
             case 'full-width':
 
                 ?>
-                <div class="<?php printf('%s', $this->get_container_fluid_class($mode)); ?>">
+                <div class="<?php printf('%s', $this->get_container_fluid_class($mode)); ?> <?php echo $containerPaddingClass;?>">
                 <<?php echo $tag; ?> class="ddl-full-width-row <?php echo $this->get_row_class($mode);
                 if ($additionalCssClasses) {
                     echo ' ' . $additionalCssClasses;
@@ -207,7 +214,7 @@ class WPDD_layout_render {
                 break;
             default:
                 ?>
-                <div class="<?php printf('%s', $this->get_container_class($mode)); ?>">
+                <div class="<?php printf('%s', $this->get_container_class($mode)); ?> <?php echo $containerPaddingClass;?>">
                 <<?php echo $tag; ?> class="<?php echo $this->get_row_class($mode);
                 if ($additionalCssClasses) {
                     echo ' ' . $additionalCssClasses;
@@ -405,7 +412,7 @@ class WPDD_layout_preset_render extends WPDD_layout_render {
 
     function __construct($layout){
         $layout->convert_sidebar_grid_for_preset();
-        parent::__construct($layout);
+        parent::__construct($layout);    
     }
 
     function cell_start_callback($cssClass, $width, $cssId = '', $tag = 'div', $cell = null ) {
@@ -426,7 +433,7 @@ class WPDD_layout_preset_render extends WPDD_layout_render {
         $additionalCssClasses = $row->get_additional_css_classes();
         $tag = $row->get_tag();
         $mode = $row->get_mode();
-
+        
         $layout_type = $layout_type ? $layout_type : 'fixed';
         $cssId = $row->get_css_id() ? $cssId : '';
         $additionalCssClasses = $additionalCssClasses ? $additionalCssClasses : '';

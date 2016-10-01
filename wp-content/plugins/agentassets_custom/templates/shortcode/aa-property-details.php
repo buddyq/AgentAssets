@@ -112,12 +112,12 @@
 </div>
 <?php
 function print_li($label, $value){
-  echo '<li>
+  echo '<li class="row">
   <div class="av-catalogue-item">
     <div class="av-catalogue-item-inner">
         <div class="av-catalogue-title-container">
-            <div class="av-catalogue-title">'.$label.'</div>
-            <div class="av-catalogue-price">'.$value.'</div>
+            <div class="av-catalogue-title col-sm-6">'.$label.'</div>
+            <div class="av-catalogue-price col-sm-6">'.$value.'</div>
         </div>
     </div>
   </div>

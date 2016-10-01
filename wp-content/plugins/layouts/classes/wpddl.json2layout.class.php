@@ -131,7 +131,8 @@ class WPDD_json2layout {
 			isset( $row['cssId'] ) ? $row['cssId'] : '',
 			isset($row['additionalCssClasses']) ? $row['additionalCssClasses'] : '',
 			isset( $row['tag'] ) ? $row['tag'] : '',
-			isset( $row['mode'] ) ? $row['mode'] : 'normal'
+			isset( $row['mode'] ) ? $row['mode'] : 'normal',
+            isset($row['containerPadding']) ? $row['containerPadding'] : true
 		);
 		if( isset( $row['Cells'] ) )
 		{

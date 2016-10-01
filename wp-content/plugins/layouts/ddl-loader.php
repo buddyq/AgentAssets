@@ -1,11 +1,11 @@
 <?php
 if (defined('WPDDL_VERSION')) return;
 
-define('WPDDL_VERSION', '1.8.3');
+define('WPDDL_VERSION', '1.8.5');
 
 define('LAYOUTS_PLUGIN_NAME', 'Toolset Layouts');
 
-define('WPDDL_NOTES_URL', 'https://wp-types.com/version/layouts-1-8/');
+define('WPDDL_NOTES_URL', 'https://wp-types.com/version/layouts-1-8-4/');
 
 define('WPDDL_RELPATH', plugins_url() . '/' . basename(dirname(__FILE__)));
 define('WPDDL_ABSPATH', dirname(__FILE__));

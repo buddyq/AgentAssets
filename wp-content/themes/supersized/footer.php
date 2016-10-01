@@ -66,7 +66,7 @@
                                     // $attachment_id = get_user_meta($users['0']->data->ID,'profile_picture',true);
                                             ?>
                                             <?php if (!empty($agentInformation->twitter)) { ?>
-                                            <a target="_blank" class="twitter" title="Follow me on Twitter!" href="http://twitter.com/<?php echo $agentInformation->twitter; ?>"><span><img src="<?php echo get_template_directory_uri();?>/images/Twitter.png"></span></a>\
+                                            <a target="_blank" class="twitter" title="Follow me on Twitter!" href="http://twitter.com/<?php echo $agentInformation->twitter; ?>"><span><img src="<?php echo get_template_directory_uri();?>/images/Twitter.png"></span></a>
                                             <?php } ?>
                                             <?php if (!empty($agentInformation->facebook)) { ?>
                                             <a target="_blank" class="facebook" title="Friend me on Facebook!" href="http://facebook.com/<?php echo $agentInformation->facebook; ?>"><span><img src="<?php echo get_template_directory_uri();?>/images/Facebook.png"></span></a>

@@ -59,7 +59,6 @@ class AgentInformationModel extends SiteSettingsModel {
                     array('length', 'min' => 6),
                 ),
                 'formIndex'  => 0,
-
             ),
             'agent_email' => array(
                 'label'      => 'Agent Email',
@@ -95,6 +94,7 @@ class AgentInformationModel extends SiteSettingsModel {
                 'label'      => 'Profile Picture',
                 'type'       => 'image',
                 'rules' => array(),
+                'default' => isset($user_meta['profile_picture']) ? '1,'.$user_meta['profile_picture'][0] : '',
                 'formIndex'  => 5,
             ),
             'broker_name' => array(
@@ -115,6 +115,7 @@ class AgentInformationModel extends SiteSettingsModel {
                 'label'      => 'Broker Logo',
                 'type'       => 'image',
                 'rules' => array(),
+                'default' => isset($user_meta['broker_logo']) ? '1,'.$user_meta['broker_logo'][0] : '',
                 'formIndex'  => 8,
             ),
             'facebook' => array(

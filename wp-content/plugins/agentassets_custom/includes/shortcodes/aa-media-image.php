@@ -16,9 +16,24 @@ function aa_media_image_shortcode($atts, $content) {
     ), $atts);
 
     $mediaIdRaw = do_shortcode($content);
+
+    $blogId = null;
+    if (false !== mb_strpos($mediaIdRaw, ',')) {
+        $idComponens = explode(',', $mediaIdRaw);
+        if (count($idComponens) == 2) {
+            $mediaIdRaw = $idComponens[1];
+            $blogId = filter_var($idComponens[0], FILTER_SANITIZE_NUMBER_INT);
+        }
+    }
     $mediaId = filter_var($mediaIdRaw, FILTER_SANITIZE_NUMBER_INT);
 
+    if ($blogId) {
+        switch_to_blog($blogId);
+    }
     $image = wp_get_attachment_image_src((int)$mediaId, $atts['size']);
+    if ($blogId) {
+        restore_current_blog();
+    }
     $image_url = ($image) ? $image[0] : $atts['default'];
 
     return '<img src="'.$image_url.'" '

@@ -603,6 +603,12 @@ function mism_clone_blog($clone_from_blog_id, $clone_to_blog_id, $domain)
         );
     }
 
+    // drop Agent Information data from template site
+    $agentInformationObject = new AgentInformationModel();
+    foreach($agentInformationObject->attributesMetadata() as $key => $data) {
+        $drop_options[] = AgentInformationModel::OPTION_PREFIX . $key;
+    }
+
     $drop_options_list =  "('" . join("','", $drop_options) . "')";
     $wpdb->query("DELETE FROM {$new_blog_options_table} WHERE option_name IN {$drop_options_list}");
 }

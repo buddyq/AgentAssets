@@ -8,7 +8,7 @@ $analyticstracking_code = get_option('google_analytics');
   })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
 
   <?php if(!empty($analyticstracking_code)){ ?>
-    ga('create', <?php echo $analyticstracking_code ?>, 'auto');
+    ga('create', '<?php echo $analyticstracking_code ?>', 'auto');
   <?php }else{ ?>
   ga('create', 'UA-52470449-1', 'auto');
   <?php } ?>

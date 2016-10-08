@@ -13,12 +13,18 @@ The SG CachePress is a plugin that allows you to use the SiteGround dynamic cach
 
 The main functionality of SG CachePress is to purge your dynamic cache whenever your content updates. For example, when you create a new post, someone comments your articles, etc. In addition to that, if you have a working Memcached service on your server, the plugin will allow you to easily configure and enable WordPress to use it.
 
+There is public Purge function - sg_cachepress_purge_cache, which can be used by other plugins/themes. Example usage:
+
+if (function_exists('sg_cachepress_purge_cache')) {
+sg_cachepress_purge_cache();
+}
+
 = Requirements =
 
 In order to work correctly, this plugin requires that your server meets the following criteria:
 
 * Your SiteGround SuperCacher enabled
-* If you're not hosted with SiteGround this plugin may not work because it relies on a specific server configuration
+* If you're not hosted with SiteGround this plugin WILL NOT WORK  because it relies on a specific server configuration
 
 == Installation ==
 
@@ -54,6 +60,10 @@ This field allows you to exclude URLs from the cache. This means that if you nee
 * Enable Memcached - Store in the server's memory (using Memcached) frequently executed queries to the database for a faster access on a later use.
 
 == Changelog ==
+
+= Version 2.3.11 =
+* Added public purge function
+* Memcached bug fixes
 
 = Version 2.3.10 =
 * Improved Memcached performance

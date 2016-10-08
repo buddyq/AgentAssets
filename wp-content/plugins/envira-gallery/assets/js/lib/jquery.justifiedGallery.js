@@ -702,7 +702,7 @@
     }, this));
 
     this.$gallery.css('height', '');
-    this.$gallery.removeClass('justified-gallery');
+    this.$gallery.removeClass('envira-justified-gallery');
     this.$gallery.data('jg.controller', undefined);
   };
 
@@ -1067,7 +1067,7 @@
     return this.each(function (index, gallery) {
 
       var $gallery = $(gallery);
-      $gallery.addClass('justified-gallery');
+      $gallery.addClass('envira-justified-gallery');
 
       var controller = $gallery.data('jg.controller');
       if (typeof controller === 'undefined') {

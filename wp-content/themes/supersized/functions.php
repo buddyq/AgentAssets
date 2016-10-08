@@ -2012,7 +2012,7 @@ $model->registerCustomizeResources(array(
         ),
     ),
     'navigation_text_color' => array(
-        'selector' => '.navbar-default .navbar-nav > li > a',
+        'selector' => '.navbar-default .navbar-nav > li > a, .toggle-footer-button',
         'css' => array(
             'color' => '{value}',
         ),
@@ -2024,7 +2024,7 @@ $model->registerCustomizeResources(array(
         ),
     ),
     'main_navigation_background_color' => array(
-        'selector' => 'header nav.navbar-default',
+        'selector' => 'header nav.navbar-default, .toggle-footer-button',
         'css' => array(
             'background-color' => '{value}',
         ),
@@ -2035,21 +2035,20 @@ $model->registerCustomizeResources(array(
             'background-color' => '{value}',
         ),
     ),
-		'accent_text_color' => array(
-        'selector' => 'ul.details, .itemAttachments li, .property-details span, .btn-primary',
-        'css' => array(
-            'color' => '{value}',
-        ),
-    ),
     'site_rest_font_face' => array(
         'selector' => '.main-content .container .content, #footer',
         'css' => array(
             'font-family' => '{value}',
         ),
     ),
-
+		'accent_text_color' => array(
+        'selector' => 'ul.details, .property-details span, .btn-primary, #aa_google_map_focus',
+        'css' => array(
+            'color' => '{value}',
+        ),
+    ),
     'highlighted_accent_color' => array(
-        'selector' => 'a.btn, .btn-primary, .btn, a.btn:hover, ul.details',
+        'selector' => 'a.btn, .btn-primary, .btn, a.btn:hover, ul.details, #aa_google_map_focus',
         'css' => array(
             'background-color' => '{value}',
         ),
@@ -2136,3 +2135,16 @@ function render_dynamic_css() {
     );
 }
 */
+
+
+function edit_admin_menus() {
+    global $menu;
+    global $submenu;
+     
+    $menu[5][0] = 'Recipes'; // Change Posts to Recipes
+    $submenu['edit.php'][5][0] = 'All Recipes';
+    $submenu['edit.php'][10][0] = 'Add a Recipe';
+    $submenu['edit.php'][15][0] = 'Meal Types'; // Rename categories to meal types
+    $submenu['edit.php'][16][0] = 'Ingredients'; // Rename tags to ingredients
+}
+add_action( 'admin_menu', 'edit_admin_menus' );

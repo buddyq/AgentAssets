@@ -4,20 +4,20 @@ add_shortcode('edit_my_profile','cu_edit_profile_form');
 
 function cu_edit_profile_form()
 {
-    
+
     $user_id = get_current_user_id();
     $user_details = get_user_by('id',$user_id);
-    
+
     if(isset($_POST['update_form']) && $_POST['update_form'] == "Update")
     {
         $username = $_POST['micu_username'];
         $email = $_POST['micu_email'];
-        
+
 //        if(isset($_POST['micu_pwd']) && $_POST['micu_pwd']!="")
 //        {
 //            $password = trim($_POST['micu_pwd']);
 //        }
-        
+
         $name = $_POST['micu_name'];
         $business_phone = $_POST['micu_business_phone'];
         $mobile_phone = $_POST['micu_mobile_phone'];
@@ -27,16 +27,8 @@ function cu_edit_profile_form()
         $facebook = $_POST['micu_facebook'];
         $designation = $_POST['micu_designation'];
         $googleplus = $_POST['micu_googleplus'];
-        /*
-        $billing_address_1 = $_POST['micu_billing_address_1'];
-        $billing_address_2 = $_POST['micu_billing_address_2'];
-        $billing_city = $_POST['micu_billing_city'];
-        $billing_state = $_POST['micu_billing_state'];
-        $billing_zip = $_POST['micu_billing_zip'];
-        $billing_email = $_POST['micu_billing_email'];
-        */
         $return_url = $_POST['micu_return_url'];
-            
+
         # Profile Picture Upload
         $profile_picture_id = '';
         if(isset($_FILES['micu_profile_picture']['error']) && $_FILES['micu_profile_picture']['error']=="0")
@@ -52,7 +44,7 @@ function cu_edit_profile_form()
             if(in_array($uploaded_file_type, $allowed_file_types)) {
 
                 // Options array for the wp_handle_upload function. 'test_upload' => false
-                $upload_overrides = array( 'test_form' => false ); 
+                $upload_overrides = array( 'test_form' => false );
 
                 // Handle the upload using WP's wp_handle_upload function. Takes the posted file and an options array
                 $uploaded_file = wp_handle_upload($_FILES['micu_profile_picture'], $upload_overrides);
@@ -101,7 +93,7 @@ function cu_edit_profile_form()
             if(in_array($uploaded_file_type, $allowed_file_types)) {
 
                 // Options array for the wp_handle_upload function. 'test_upload' => false
-                $upload_overrides = array( 'test_form' => false ); 
+                $upload_overrides = array( 'test_form' => false );
 
                 // Handle the upload using WP's wp_handle_upload function. Takes the posted file and an options array
                 $uploaded_file = wp_handle_upload($_FILES['micu_broker_logo'], $upload_overrides);
@@ -146,17 +138,9 @@ function cu_edit_profile_form()
         update_user_meta($user_id, 'facebook', $facebook );
         update_user_meta($user_id, 'googleplus', $googleplus );
         update_user_meta($user_id, 'designation', $designation );
-        /*
-        update_user_meta($user_id, 'billing_address_1', $billing_address_1 );
-        update_user_meta($user_id, 'billing_address_2', $billing_address_2 );
-        update_user_meta($user_id, 'billing_city', $billing_city );
-        update_user_meta($user_id, 'billing_state', $billing_state );
-        update_user_meta($user_id, 'billing_zip', $billing_zip );
-        update_user_meta($user_id, 'billing_email', $billing_email );
-        */
     }
-    
-    
+
+
     $username = $user_details->data->user_login;
     $email = $user_details->data->user_email;
     $attachment_id = get_user_meta($user_id, 'profile_picture', true);
@@ -167,7 +151,7 @@ function cu_edit_profile_form()
     }else{
         $profile_pic = plugins_url('medma-site-manager').'/images/dummy_agent_pic.png';
     }
-    
+
     $broker_attachment_id = get_user_meta($user_id, 'broker_logo', true);
     if($broker_attachment_id!=""){
         $broker_pic_url = wp_get_attachment_image_src($broker_attachment_id,'full');
@@ -175,7 +159,7 @@ function cu_edit_profile_form()
     }else{
         $broker_pic = plugins_url('medma-site-manager').'/images/placeholder_wide.jpg';
     }
-    
+
     $html = '';
     if(isset($_GET['form']) && $_GET['form']=="edit")
     {
@@ -190,18 +174,10 @@ function cu_edit_profile_form()
         $designation = get_user_meta($user_id, 'designation', true);
         $brokerName = get_user_meta($user_id, 'broker', true);
         $brokerWebsite = get_user_meta($user_id, 'broker_website', true);
-        /*
-        $billingAddress1 = get_user_meta($user_id, 'billing_address_1', true);
-        $billingAddress2 = get_user_meta($user_id, 'billing_address_2', true);
-        $billingCity = get_user_meta($user_id, 'billing_city', true);
-        $billingState = get_user_meta($user_id, 'billing_state', true);
-        $billingZip = get_user_meta($user_id, 'billing_zip', true);
-        $billingEmail = get_user_meta($user_id, 'billing_email', true);
-        */
         $edit_form_return_url = get_option('msm_edit_return_url');
-        
+
         $html .= '<form id="micu_signup_form" class="micu_ajax_form el_after_av_heading  avia-builder-el-last  " method="post" novalidate="novalidate" enctype="multipart/form-data" action="'.$edit_form_return_url.'">';
-        
+
         # USER INFORMATION
         $html .= '<div class="av-special-heading av-special-heading-h3 meta-heading  el_after_av_textblock  el_before_av_contact ">';
         $html .= '<h3 class="av-special-heading-tag" itemprop="headline">'.__('User Information','micu').'</h3>';
@@ -219,7 +195,7 @@ function cu_edit_profile_form()
         $html .= '<label for="micu_name">'.__('Name','micu').' <abbr class="required" title="required">*</abbr></label>';
         $html .= '<input name="micu_name" class="text_input is_empty" type="text" id="micu_name" value="'.$firstName.'">';
         $html .= '</p>';
-        
+
 //        $html .= '<p class="first_form form_element form_element_half" id="element_micu_pwd">';
 //        $html .= '<label for="micu_pwd">'.__('Password','micu').' <abbr class="required" title="required">*</abbr></label>';
 //        $html .= '<input name="micu_pwd" class="text_input is_empty" type="password" id="micu_pwd" value="">';
@@ -244,12 +220,12 @@ function cu_edit_profile_form()
         $html .= '<label for="micu_email">'.__('Email','micu').' <abbr class="required" title="required">*</abbr></label>';
         $html .= '<input name="micu_email" readonly="true" class="text_input is_empty is_email" type="text" id="micu_email" value="'.$email.'">';
         $html .= '</p>';
-        
+
         $html .= '<p class="form_element form_element_half" id="element_micu_designation">';
         $html .= '<label for="micu_designation">'.__('Designaton','micu').' </label>';
         $html .= '<input class="av_four_fiftth edit_form_designation text_input" name="micu_designation" class="text_input is_empty" type="text" id="micu_designation" value="'.$designation.'">';
         $html .= '</p>';
-        
+
         $html .= '<p class="first_form form_element form_element_half" id="element_micu_profile_picture">';
         $html .= '<label for="micu_profile_picture">'.__('Profile Picture','micu').' </label>';
         $html .= '<img class="av_one_fifth edit_form_profile_pic no_margin" src="'.$profile_pic.'" /><input class="av_four_fiftth edit_form_profile_pic_file" name="micu_profile_picture" class="text_input is_empty" type="file" id="micu_profile_picture" value="">';
@@ -307,50 +283,8 @@ function cu_edit_profile_form()
 
         $html .= '</fieldset>';
 
-        # BILLING INFORMATION
-        /*
-        $html .= '<div class="av-special-heading av-special-heading-h3 meta-heading   avia-builder-el-4  el_after_av_textblock  el_before_av_contact ">';
-        $html .= '<h3 class="av-special-heading-tag" itemprop="headline">'.__('Billing Information','micu').'</h3>';
-        $html .= '<div class="special-heading-border"><div class="special-heading-inner-border"></div></div>';
-        $html .= '</div>';
-
-        $html .= '<fieldset>';
-
-        $html .= '<p class=" first_form  form_element form_element_half" id="element_micu_billing_address_1">';
-        $html .= '<label for="micu_billing_address_1">'.__('Billing Address 1','micu').' <abbr class="required" title="required">*</abbr></label>';
-        $html .= '<input name="micu_billing_address_1" class="text_input is_empty" type="text" id="micu_billing_address_1" value="'.$billingAddress1.'">';
-        $html .= '</p>';
-
-        $html .= '<p class=" form_element form_element_half" id="element_micu_billing_address_2">';
-        $html .= '<label for="micu_billing_address_2">'.__('Billing Address 2','micu').' </label>';
-        $html .= '<input name="micu_billing_address_2" class="text_input" type="text" id="micu_billing_address_2" value="'.$billingAddress2.'">';
-        $html .= '</p>';
-
-        $html .= '<p class=" first_form  form_element form_element_half" id="element_micu_billing_city">';
-        $html .= '<label for="micu_billing_city">'.__('Billing City','micu').' <abbr class="required" title="required">*</abbr></label>';
-        $html .= '<input name="micu_billing_city" class="text_input is_empty" type="text" id="micu_billing_city" value="'.$billingCity.'">';
-        $html .= '</p>';
-
-        $html .= '<p class=" form_element form_element_half" id="element_micu_billing_state">';
-        $html .= '<label for="micu_billing_state">'.__('Billing State','micu').' <abbr class="required" title="required">*</abbr></label>';
-        $html .= '<input name="micu_billing_state" class="text_input is_empty" type="text" id="micu_billing_state" value="'.$billingState.'">';
-        $html .= '</p>';
-
-        $html .= '<p class=" first_form  form_element form_element_half" id="element_micu_billing_zip">';
-        $html .= '<label for="micu_billing_zip">'.__('Billing Zip','micu').' <abbr class="required" title="required">*</abbr></label>';
-        $html .= '<input name="micu_billing_zip" class="text_input is_empty is_number" type="text" id="micu_billing_zip" value="'.$billingZip.'">';
-        $html .= '</p>';
-
-        $html .= '<p class=" form_element form_element_half" id="element_micu_billing_email">';
-        $html .= '<label for="micu_billing_email">'.__('Billing Email','micu').' <abbr class="required" title="required">*</abbr></label>';
-        $html .= '<input name="micu_billing_email" class="text_input is_empty is_email" type="text" id="micu_billing_email" value="'.$billingEmail.'">';
-        $html .= '</p>';
-
-        $html .= '</fieldset>';
-        */
-
         $html .= '<input name="update_form" type="submit" value="'.__('Update','micu').'" class="button" data-sending-label="Processing">';
-        
+
         $html .= '</form>';
     }
     else
@@ -364,9 +298,9 @@ function cu_edit_profile_form()
                     <p>Profile updated successfully.</p>
                 </div>
             </div>
-            <?php 
+            <?php
         }
-        
+
         # Fetch User Meta Information
         $firstName = get_user_meta($user_id, 'first_name', true);
         if($firstName==""){
@@ -380,42 +314,17 @@ function cu_edit_profile_form()
         if($mobilePhone==""){
             $mobilePhone = 'N/A';
         }
-        
+
         $designation = get_user_meta($user_id, 'designation', true);
         if($designation==""){
             $designation = 'N/A';
         }
-        
+
         $brokerName = get_user_meta($user_id, 'broker', true);
         if($brokerName==""){
             $brokerName = 'N/A';
         }
-        /*
-        $billingAddress1 = get_user_meta($user_id, 'billing_address_1', true);
-        if($billingAddress1==""){
-            $billingAddress1 = 'N/A';
-        }
-        $billingAddress2 = get_user_meta($user_id, 'billing_address_2', true);
-        if($billingAddress2==""){
-            $billingAddress2 = 'N/A';
-        }
-        $billingCity = get_user_meta($user_id, 'billing_city', true);
-        if($billingCity==""){
-            $billingCity = 'N/A';
-        }
-        $billingState = get_user_meta($user_id, 'billing_state', true);
-        if($billingState==""){
-            $billingState = 'N/A';
-        }
-        $billingZip = get_user_meta($user_id, 'billing_zip', true);
-        if($billingZip==""){
-            $billingZip = 'N/A';
-        }
-        $billingEmail = get_user_meta($user_id, 'billing_email', true);
-        if($billingEmail==""){
-            $billingEmail = 'N/A';
-        }
-        */
+
         $html .= '<div id="micu_signup_form" class="micu_ajax_form el_after_av_heading  avia-builder-el-last  ">';
 
         # USER INFORMATION
@@ -423,7 +332,7 @@ function cu_edit_profile_form()
         $html .= '<thead class="site-list-container">';
         $html .= '<th colspan="2" itemprop="headline">'.__('User Information','micu').'</th>';
         $html .= '</thead>';
-        
+
         $html .= '<tbody>';
 
         $html .= '<tr>';
@@ -435,7 +344,7 @@ function cu_edit_profile_form()
         $html .= '<span>'.$username.'</span>';
         $html .= '</td>';
         $html .= '</tr>';
-        
+
         $html .= '<tr>';
         $html .= '<td>';
         $html .= '<label for="micu_name">'.__('Name','micu').' </label>';
@@ -445,7 +354,7 @@ function cu_edit_profile_form()
         $html .= '<span>'.$firstName.'</span>';
         $html .= '</td>';
         $html .= '</tr>';
-        
+
         $html .= '<tr>';
         $html .= '<td>';
         $html .= '<label for="micu_designation">'.__('Designations','micu').' </label>';
@@ -455,7 +364,7 @@ function cu_edit_profile_form()
         $html .= '<span>'.$designation.'</span>';
         $html .= '</td>';
         $html .= '</tr>';
-        
+
         $html .= '<tr>';
         $html .= '<td>';
         $html .= '<label for="micu_email">'.__('Email','micu').' </label>';
@@ -465,7 +374,7 @@ function cu_edit_profile_form()
         $html .= '<span>'.$email.'</span>';
         $html .= '</td>';
         $html .= '</tr>';
-        
+
         $html .= '<tr>';
         $html .= '<td>';
         $html .= '<label for="micu_business_phone">'.__('Business Phone','micu').' </label>';
@@ -475,7 +384,7 @@ function cu_edit_profile_form()
         $html .= '<span>'.$businessPhone.'</span>';
         $html .= '</td>';
         $html .= '</tr>';
-        
+
         $html .= '<tr>';
         $html .= '<td>';
         $html .= '<label for="micu_mobile_phone">'.__('Mobile Phone','micu').' </label>';
@@ -485,7 +394,7 @@ function cu_edit_profile_form()
         $html .= '<span>'.$mobilePhone.'</span>';
         $html .= '</td>';
         $html .= '</tr>';
-        
+
         $html .= '<tr>';
         $html .= '<td>';
         $html .= '<label for="micu_profile_picture">'.__('Profile Picture','micu').' </label>';
@@ -495,7 +404,7 @@ function cu_edit_profile_form()
         $html .= '<span><img src="'.$profile_pic.'" alt="'.$firstName.'" height="75" width="75"/></span>';
         $html .= '</td>';
         $html .= '</tr>';
-        
+
         $html .= '<tr>';
         $html .= '<td>';
         $html .= '<label for="micu_broker">'.__('Broker','micu').' </label>';
@@ -505,7 +414,7 @@ function cu_edit_profile_form()
         $html .= '<span>'.$brokerName.'</span>';
         $html .= '</td>';
         $html .= '</tr>';
-        
+
         $html .= '<tr>';
         $html .= '<td>';
         $html .= '<label for="micu_broker">'.__('Broker Logo','micu').' </label>';
@@ -516,80 +425,6 @@ function cu_edit_profile_form()
         $html .= '</td>';
         $html .= '</tr>';
 
-        /*
-        $html .= '</tbody>';
-        $html .= '</table>';
-        */
-
-        /*
-        # BILLING INFORMATION
-        $html .= '<table>';
-        $html .= '<thead class="site-list-container">';
-        $html .= '<th colspan="2" class="av-special-heading-tag" itemprop="headline">'.__('Billing Information','micu').'</th>';
-        $html .= '</thead>';
-        
-        $html .= '<tbody>';
-
-        $html .= '<tr>';
-        $html .= '<td>';
-        $html .= '<label for="micu_billing_address_1">'.__('Billing Address 1','micu').' </label>';
-        $html .= '</td>';
-
-        $html .= '<td>';
-        $html .= '<span>'.$billingAddress1.'</span>';
-        $html .= '</td>';
-        $html .= '</tr>';
-        
-        $html .= '<tr>';
-        $html .= '<td>';
-        $html .= '<label for="micu_billing_address_2">'.__('Billing Address 2','micu').' </label>';
-        $html .= '</td>';
-
-        $html .= '<td>';
-        $html .= '<span>'.$billingAddress2.'</span>';
-        $html .= '</td>';
-        $html .= '</tr>';
-        
-        $html .= '<tr>';
-        $html .= '<td>';
-        $html .= '<label for="micu_billing_city">'.__('Billing City','micu').' </label>';
-        $html .= '</td>';
-
-        $html .= '<td>';
-        $html .= '<span>'.$billingCity.'</span>';
-        $html .= '</td>';
-        $html .= '</tr>';
-        
-        $html .= '<tr>';
-        $html .= '<td>';
-        $html .= '<label for="micu_billing_state">'.__('Billing State','micu').' </label>';
-        $html .= '</td>';
-
-        $html .= '<td>';
-        $html .= '<span>'.$billingState.'</span>';
-        $html .= '</td>';
-        $html .= '</tr>';
-        
-        $html .= '<tr>';
-        $html .= '<td>';
-        $html .= '<label for="micu_billing_zip">'.__('Billing Zip','micu').' </label>';
-        $html .= '</td>';
-
-        $html .= '<td>';
-        $html .= '<span>'.$billingZip.'</span>';
-        $html .= '</td>';
-        $html .= '</tr>';
-        
-        $html .= '<tr>';
-        $html .= '<td>';
-        $html .= '<label for="micu_billing_email">'.__('Billing Email','micu').' </label>';
-        $html .= '</td>';
-
-        $html .= '<td>';
-        $html .= '<span>'.$billingEmail.'</span>';
-        $html .= '</td>';
-        $html .= '</tr>';
-        */
         $html .= '<tr>';
         $html .= '<td colspan="2" align="right">';
         $html .= '<a class="button" href="?form=edit">'.__('Edit Profile','micu').'</a>';

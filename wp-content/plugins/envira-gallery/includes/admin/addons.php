@@ -190,7 +190,7 @@ class Envira_Gallery_Addons {
         ?>
 
         <div id="addon-heading" class="subheading clearfix">
-            <h1><?php _e( 'Envira Gallery Addons', 'envira-gallery' ); ?></h1>
+            <h2><?php _e( 'Envira Gallery Addons', 'envira-gallery' ); ?></h2>
             <form id="add-on-search">
                 <span class="spinner"></span>
                 <input id="add-on-searchbox" name="envira-addon-search" value="" placeholder="<?php _e( 'Search Envira Addons', 'envira-gallery' ); ?>" />
@@ -202,6 +202,7 @@ class Envira_Gallery_Addons {
         </div>
 
         <div id="envira-gallery-addons" class="wrap">
+          	<h1 class="envira-hideme"></h1>
             <div class="envira-gallery envira-clear">
                 <?php do_action( 'envira_gallery_addons_section' ); ?>
             </div>

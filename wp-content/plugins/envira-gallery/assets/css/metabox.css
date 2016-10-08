@@ -288,7 +288,8 @@ form#post.envira-gallery {
         form#post.envira-gallery #poststuff ul.envira-gallery-images-output.list li img {
           display: inline-block;
           width: 75px;
-          margin-left: 45px; }
+          margin-left: 45px;
+          height: auto; }
         form#post.envira-gallery #poststuff ul.envira-gallery-images-output.list li div.meta {
           position: absolute;
           z-index: 1;

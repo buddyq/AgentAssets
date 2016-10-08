@@ -21,11 +21,13 @@
 	//Add helper object
 	F.helpers.thumbs = {
 		defaults : {
-			width    : 50,       // thumbnail width
-			height   : 50,       // thumbnail height
-			position : 'bottom', // 'top' or 'bottom'
-			inline   : false, 	 // if true, positioned to scroll with the content (typically set by the Comments helper)
-			source   : function ( item ) {  // function to obtain the URL of the thumbnail image
+			width         : 50,       // thumbnail width
+			height        : 50,       // thumbnail height
+			position      : 'bottom', // 'top' or 'bottom'
+			inline        : false, 	 // if true, positioned to scroll with the content (typically set by the Comments helper)
+			dynamicMargin : false,   // set the margins based on the thumbnail height
+			dynamicMarginAmount: false,
+			source        : function ( item ) {  // function to obtain the URL of the thumbnail image
 				var href;
 
 				if (item.element) {
@@ -58,7 +60,7 @@
 				list += '<li><a style="width:' + thumbWidth + 'px;height:' + thumbHeight + 'px;" href="javascript:jQuery.envirabox.jumpto(' + n + ');"></a></li>';
 			}
 
-			this.wrap = $('<div id="envirabox-thumbs"></div>').addClass(opts.position).appendTo('body');
+			this.wrap = $('<div id="envirabox-thumbs" class="envirabox-thumbs-' + obj.lightboxTheme + '"></div>').addClass(opts.position).appendTo('body');
 			this.list = $('<ul>' + list + '</ul>').appendTo(this.wrap);
 
 			//Load each thumbnail
@@ -138,22 +140,17 @@
 		},
 
 		beforeLoad: function (opts, obj) {
-			//Remove self if gallery do not have at least two items
+			//Remove self if gallery does not have at least two items
 			if (obj.group.length < 2) {
 				obj.helpers.thumbs = false;
 
 				return;
 			}
-
-			//Increase bottom margin to give space for thumbs
-			obj.margin[ opts.position === 'top' ? 0 : 2 ] += ((opts.height) + 15);
 		},
 
-		afterShow: function (opts, obj) {
-			//Check if exists and create or update list
+		beforeShow: function(opts, obj) {
 			if (this.list) {
 				this.onUpdate(opts, obj);
-
 			} else {
 				this.init(opts, obj);
 			}
@@ -161,6 +158,15 @@
 			// If set to inline, add a class now
 			if ( opts.inline ) {
 				this.wrap.addClass( 'inline' );
+			}
+			
+			//Increase bottom margin to give space for thumbs
+			if(opts.dynamicMargin) {
+				opts.dynamicMarginAmount = opts.dynamicMarginAmount === false ? 75 : opts.dynamicMarginAmount;
+				obj.margin[ opts.position === 'top' ? 0 : 2 ] = (this.list.parent().height() + opts.dynamicMarginAmount);
+			}
+			else {
+				obj.margin[ opts.position === 'top' ? 0 : 2 ] = ((opts.height) + 50);
 			}
 
 			//Set active element
@@ -170,6 +176,16 @@
 		//Center list
 		onUpdate: function (opts, obj) {
 			if (this.list) {
+				var thumb = this.list.children().eq(0),
+					thumb_link = $('a', $(thumb));
+				this.width = parseInt( thumb_link.css('border-left-width') ) + parseInt( thumb_link.css('border-left-width') ) + parseInt( thumb.css('margin-left') ) + parseInt( thumb.css('margin-right') ) + parseInt( thumb.css('width') );
+
+				this.list.width(this.width * obj.group.length);
+				if(opts.dynamicMargin) {
+					opts.dynamicMarginAmount = opts.dynamicMarginAmount === false ? 75 : opts.dynamicMarginAmount;
+					obj.margin[ opts.position === 'top' ? 0 : 2 ] = (this.list.parent().height() + opts.dynamicMarginAmount);
+				}
+
 				this.list.stop(true).animate({
 					'left': Math.floor($(window).width() * 0.5 - (obj.index * this.width + this.width * 0.5))
 				}, 150);

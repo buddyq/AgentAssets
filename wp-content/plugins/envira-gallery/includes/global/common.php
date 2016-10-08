@@ -243,15 +243,25 @@ class Envira_Gallery_Common {
      */
     public function get_lightbox_themes() {
 
-        $themes = array(
+        /*$themes = array(
             array(
-                'value' => 'base',
-                'name'  => __( 'Base', 'envira-gallery' ),
+                'value' => 'base_dark',
+                'name'  => __( 'Base (Dark)', 'envira-gallery' ),
                 'file'  => $this->base->file
             )
+        );*/
+
+        //$themes = apply_filters( 'envira_gallery_lightbox_themes', $themes );
+
+        $themes[] = array(
+            'value' => 'base',
+            'name'  => __( 'Legacy', 'envira-gallery' ),
+            'file'  => $this->base->file
         );
 
-        return apply_filters( 'envira_gallery_lightbox_themes', $themes );
+        $themes = apply_filters( 'envira_gallery_lightbox_themes', $themes );
+
+        return $themes;
 
     }
 
@@ -601,7 +611,7 @@ class Envira_Gallery_Common {
 
             // Lightbox
             'lightbox_enabled'    => 1,
-            'lightbox_theme'      => 'base',
+            'lightbox_theme'      => 'base_dark',
             'lightbox_image_size' => 'default',
             'title_display'       => 'float',
             'arrows'              => 1,

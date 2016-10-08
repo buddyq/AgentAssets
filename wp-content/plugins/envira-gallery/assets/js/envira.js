@@ -10,6 +10,7 @@
 // @codekit-append "lib/isotope.js";
 // @codekit-append "lib/fancybox.js";
 // @codekit-append "lib/fancybox-buttons.js";
+// @codekit-append "lib/fancybox-slideshow.js";
 // @codekit-append "lib/fancybox-media.js";
 // @codekit-append "lib/fancybox-thumbs.js";
 // @codekit-append "lib/fancybox-video.js";

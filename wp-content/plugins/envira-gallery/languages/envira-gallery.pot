@@ -2,9 +2,9 @@
 # This file is distributed under the same license as the Envira Gallery package.
 msgid ""
 msgstr ""
-"Project-Id-Version: Envira Gallery 1.5.6\n"
+"Project-Id-Version: Envira Gallery 1.5.7.2\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/envira-gallery\n"
-"POT-Creation-Date: 2016-09-22 17:42:50+00:00\n"
+"POT-Creation-Date: 2016-10-06 22:31:14+00:00\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -28,7 +28,7 @@ msgstr ""
 msgid "Envira Gallery Addons"
 msgstr ""
 
-#: includes/admin/addons.php:80 includes/admin/addons.php:447
+#: includes/admin/addons.php:80 includes/admin/addons.php:448
 msgid "Addons"
 msgstr ""
 
@@ -36,7 +36,7 @@ msgstr ""
 msgid "Status: Active"
 msgstr ""
 
-#: includes/admin/addons.php:162 includes/admin/addons.php:554
+#: includes/admin/addons.php:162 includes/admin/addons.php:555
 #: includes/admin/settings.php:414
 msgid "Activate"
 msgstr ""
@@ -45,7 +45,7 @@ msgstr ""
 msgid "Activating..."
 msgstr ""
 
-#: includes/admin/addons.php:166 includes/admin/addons.php:538
+#: includes/admin/addons.php:166 includes/admin/addons.php:539
 #: includes/admin/settings.php:418
 msgid "Deactivate"
 msgstr ""
@@ -58,7 +58,7 @@ msgstr ""
 msgid "Status: Inactive"
 msgstr ""
 
-#: includes/admin/addons.php:170 includes/admin/addons.php:520
+#: includes/admin/addons.php:170 includes/admin/addons.php:521
 #: includes/admin/settings.php:422
 msgid "Install"
 msgstr ""
@@ -83,51 +83,51 @@ msgstr ""
 msgid "Sort Descending (Z-A)"
 msgstr ""
 
-#: includes/admin/addons.php:225
+#: includes/admin/addons.php:226
 msgid "In order to get access to Addons, you need to resolve your license key errors."
 msgstr ""
 
-#: includes/admin/addons.php:241
+#: includes/admin/addons.php:242
 msgid "There was an issue retrieving the addons for this site. Please click on the button below the refresh the addons data."
 msgstr ""
 
-#: includes/admin/addons.php:244
+#: includes/admin/addons.php:245
 msgid "Refresh Addons"
 msgstr ""
 
-#: includes/admin/addons.php:262
+#: includes/admin/addons.php:263
 msgid "Available Addons"
 msgstr ""
 
-#: includes/admin/addons.php:282
+#: includes/admin/addons.php:283
 msgid "Unlock More Addons"
 msgstr ""
 
-#: includes/admin/addons.php:283
+#: includes/admin/addons.php:284
 msgid "<strong>Want even more addons?</strong> <a href=\"%s\">Upgrade your Envira Gallery account</a> and unlock the following addons."
 msgstr ""
 
-#: includes/admin/addons.php:501
+#: includes/admin/addons.php:502
 msgid "Upgrade Now"
 msgstr ""
 
-#: includes/admin/addons.php:516
+#: includes/admin/addons.php:517
 msgid "Status: <span>Not Installed</span>"
 msgstr ""
 
-#: includes/admin/addons.php:534
+#: includes/admin/addons.php:535
 msgid "Status: <span>Active</span>"
 msgstr ""
 
-#: includes/admin/addons.php:550
+#: includes/admin/addons.php:551
 msgid "Status: <span>Inactive</span>"
 msgstr ""
 
-#: includes/admin/ajax.php:923 includes/admin/ajax.php:926
+#: includes/admin/ajax.php:930 includes/admin/ajax.php:933
 msgid "The From Gallery ID has not been specified."
 msgstr ""
 
-#: includes/admin/ajax.php:929
+#: includes/admin/ajax.php:936
 msgid "No images were selected to be moved between Galleries."
 msgstr ""
 
@@ -244,7 +244,7 @@ msgstr ""
 msgid "Display Title"
 msgstr ""
 
-#: includes/admin/media-view.php:181 includes/global/common.php:746
+#: includes/admin/media-view.php:181 includes/global/common.php:756
 msgid "No"
 msgstr ""
 
@@ -443,7 +443,7 @@ msgstr ""
 msgid "Envira Gallery Code"
 msgstr ""
 
-#: includes/admin/metaboxes.php:586 includes/global/common.php:274
+#: includes/admin/metaboxes.php:586 includes/global/common.php:284
 msgid "Default"
 msgstr ""
 
@@ -1034,11 +1034,11 @@ msgstr ""
 msgid "By upgrading to Envira Pro, you can split your Gallery across multiple pages with pagination, load paginated images via AJAX, lazy loading and more!"
 msgstr ""
 
-#: includes/admin/metaboxes.php:2119
+#: includes/admin/metaboxes.php:2147
 msgid "Remove Image from Gallery?"
 msgstr ""
 
-#: includes/admin/metaboxes.php:2120
+#: includes/admin/metaboxes.php:2148
 msgid "Modify Image"
 msgstr ""
 
@@ -1303,7 +1303,7 @@ msgstr ""
 msgid "Six Columns (6)"
 msgstr ""
 
-#: includes/global/common.php:107 includes/global/common.php:249
+#: includes/global/common.php:107
 msgid "Base"
 msgstr ""
 
@@ -1327,7 +1327,7 @@ msgstr ""
 msgid "No Sorting"
 msgstr ""
 
-#: includes/global/common.php:180 includes/global/common.php:309
+#: includes/global/common.php:180 includes/global/common.php:319
 msgid "Random"
 msgstr ""
 
@@ -1351,79 +1351,83 @@ msgstr ""
 msgid "Descending (Z-A)"
 msgstr ""
 
-#: includes/global/common.php:329
+#: includes/global/common.php:258
+msgid "Legacy"
+msgstr ""
+
+#: includes/global/common.php:339
 msgid "Float"
 msgstr ""
 
-#: includes/global/common.php:333
+#: includes/global/common.php:343
 msgid "Float (Wrapped)"
 msgstr ""
 
-#: includes/global/common.php:337 includes/global/common.php:365
+#: includes/global/common.php:347 includes/global/common.php:375
 msgid "Inside"
 msgstr ""
 
-#: includes/global/common.php:341 includes/global/common.php:369
+#: includes/global/common.php:351 includes/global/common.php:379
 msgid "Outside"
 msgstr ""
 
-#: includes/global/common.php:345
+#: includes/global/common.php:355
 msgid "Over"
 msgstr ""
 
-#: includes/global/common.php:389
+#: includes/global/common.php:399
 msgid "No Effect"
 msgstr ""
 
-#: includes/global/common.php:393
+#: includes/global/common.php:403
 msgid "Fade"
 msgstr ""
 
-#: includes/global/common.php:397
+#: includes/global/common.php:407
 msgid "Elastic"
 msgstr ""
 
-#: includes/global/common.php:445
+#: includes/global/common.php:455
 msgid "Swing"
 msgstr ""
 
-#: includes/global/common.php:501 includes/global/common.php:525
+#: includes/global/common.php:511 includes/global/common.php:535
 msgid "Top"
 msgstr ""
 
-#: includes/global/common.php:505 includes/global/common.php:529
+#: includes/global/common.php:515 includes/global/common.php:539
 msgid "Bottom"
 msgstr ""
 
-#: includes/global/common.php:672
+#: includes/global/common.php:682
 msgid "Image Files"
 msgstr ""
 
-#: includes/global/common.php:722
+#: includes/global/common.php:732
 msgid "Before Existing Images"
 msgstr ""
 
-#: includes/global/common.php:726
+#: includes/global/common.php:736
 msgid "After Existing Images"
 msgstr ""
 
-#: includes/global/common.php:750
+#: includes/global/common.php:760
 msgid "Yes"
 msgstr ""
 
-#: includes/global/common.php:830
+#: includes/global/common.php:840
 msgid "No image editor could be selected. Please verify with your webhost that you have either the GD or Imagick image library compiled with your PHP install on your server."
 msgstr ""
 
-#: includes/global/common.php:933
+#: includes/global/common.php:943
 msgid "No image URL specified for cropping."
 msgstr ""
 
-#: includes/global/common.php:952
+#: includes/global/common.php:962
 msgid "No file could be found for the image URL specified."
 msgstr ""
 
-#: includes/global/common.php:960 includes/global/common.php:972
+#: includes/global/common.php:970 includes/global/common.php:982
 msgid "The dimensions of the original image could not be retrieved for cropping."
 msgstr ""
 
@@ -1463,19 +1467,19 @@ msgstr ""
 msgid "No Envira galleries found in trash."
 msgstr ""
 
-#: includes/global/shortcode.php:902
+#: includes/global/shortcode.php:957
 msgid "The requested content cannot be loaded.<br/>Please try again later.</p>"
 msgstr ""
 
-#: includes/global/shortcode.php:903 includes/global/shortcode.php:1549
+#: includes/global/shortcode.php:958 includes/global/shortcode.php:1774
 msgid "Close"
 msgstr ""
 
-#: includes/global/shortcode.php:904 includes/global/shortcode.php:1539
+#: includes/global/shortcode.php:959 includes/global/shortcode.php:1764
 msgid "Next"
 msgstr ""
 
-#: includes/global/shortcode.php:905 includes/global/shortcode.php:1535
+#: includes/global/shortcode.php:960 includes/global/shortcode.php:1760
 msgid "Previous"
 msgstr ""
 

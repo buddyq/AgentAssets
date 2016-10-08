@@ -29,16 +29,16 @@
 }
 /*!
  * Justified Gallery - v3.6.2
- * http://miromannino.github.io/Justified-Gallery/
+ * http://miromannino.github.io/Envira-jusTified-gallery/
  * Copyright (c) 2016 Miro Mannino
  * Licensed under the MIT license.
  */
-.justified-gallery {
+.envira-justified-gallery {
   width: 100%;
   position: relative;
   overflow: hidden;
 }
-.justified-gallery > div > div {
+.envira-justified-gallery > div > div {
   position: absolute;
   display: inline-block;
   overflow: hidden;
@@ -46,14 +46,14 @@
   filter: alpha(opacity=0); */
   /* IE8 or Earlier */
 }
-/*.justified-gallery > a > img,
-.justified-gallery > div > img,
-.justified-gallery > a > a > img,
-.justified-gallery > div > a > img,
-.justified-gallery > div > div > a > img,*/
-.justified-gallery > div > div > a > img,
-.justified-gallery > div > div > img,
-.justified-gallery > div > div > a > div.effect-wrapper > img {
+/*.envira-justified-gallery > a > img,
+.envira-justified-gallery > div > img,
+.envira-justified-gallery > a > a > img,
+.envira-justified-gallery > div > a > img,
+.envira-justified-gallery > div > div > a > img,*/
+.envira-justified-gallery > div > div > a > img,
+.envira-justified-gallery > div > div > img,
+.envira-justified-gallery > div > div > a > div.effect-wrapper > img {
   position: absolute;
   top: 50%;
   left: 50%;
@@ -61,9 +61,9 @@
   padding: 0;
   border: none;
 }
-.justified-gallery > div > div > a > .caption,
-.justified-gallery > div > div > .caption,
-.justified-gallery > div > div .caption {
+.envira-justified-gallery > div > div > a > .caption,
+.envira-justified-gallery > div > div > .caption,
+.envira-justified-gallery > div > div .caption {
   display: none;
   position: absolute;
   bottom: 0;
@@ -78,9 +78,9 @@
   font-family: sans-serif;
   z-index: 2;
 }
-.justified-gallery > div > div > a > .caption.caption-visible,
-.justified-gallery > div > div > .caption.caption-visible,
-.justified-gallery > div > .caption.caption-visible {
+.envira-justified-gallery > div > div > a > .caption.caption-visible,
+.envira-justified-gallery > div > div > .caption.caption-visible,
+.envira-justified-gallery > div > .caption.caption-visible {
   display: initial;
   opacity: 0.7;
   filter: "alpha(opacity=70)";
@@ -91,9 +91,9 @@
   transition: opacity 500ms ease-in;
 }
 
-.justified-gallery > div > div > a > .envira-exif,
-.justified-gallery > div > div > .envira-exif,
-.justified-gallery > div > div .envira-exif {
+.envira-justified-gallery > div > div > a > .envira-exif,
+.envira-justified-gallery > div > div > .envira-exif,
+.envira-justified-gallery > div > div .envira-exif {
   display: none;
   opacity: 0.8;
   position: absolute;
@@ -108,8 +108,8 @@
   font-weight: 300;
   font-family: sans-serif;
 }
-.justified-gallery > div > div > a > .envira-exif.exif-visible,
-.justified-gallery > div > .envira-exif.exif-visible {
+.envira-justified-gallery > div > div > a > .envira-exif.exif-visible,
+.envira-justified-gallery > div > .envira-exif.exif-visible {
   display: initial;
   opacity: 0.7;
   filter: "alpha(opacity=70)";
@@ -125,7 +125,7 @@
 
 
 
-.justified-gallery > .entry-visible {
+.envira-justified-gallery > .entry-visible {
   opacity: 1.0;
   filter: alpha(opacity=100);
   /* IE8 or Earlier */
@@ -134,10 +134,10 @@
   -o-transition: opacity 500ms ease-in;
   transition: opacity 500ms ease-in;
 }
-.justified-gallery > .jg-filtered {
+.envira-justified-gallery > .jg-filtered {
   display: none;
 }
-.justified-gallery > .spinner {
+.envira-justified-gallery > .spinner {
   position: absolute;
   bottom: 0;
   margin-left: -24px;
@@ -147,7 +147,7 @@
   filter: initial;
   overflow: initial;
 }
-.justified-gallery > .spinner > span {
+.envira-justified-gallery > .spinner > span {
   display: inline-block;
   opacity: 0;
   filter: alpha(opacity=0);

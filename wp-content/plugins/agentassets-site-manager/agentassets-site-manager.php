@@ -55,7 +55,7 @@ function add_style_to_head()
 }
 
 add_action('wp_head','add_style_to_head');
-    
+
 /*
  * Load Scripts at Footer
  */
@@ -65,7 +65,7 @@ function add_scripts_to_footer()
     <script type="text/javascript">
         jQuery(document).ready(function($) {
             jQuery('.listblog_delete').click(function(){
-                var msg = 'You are going to remove the <strong>%s</strong> site. You can restore it during 24 hours since deletion. Otherwise it will be deleted completely.';
+                var msg = 'You are going to remove the <strong>%s</strong> site. You can restore it during 24 hours after deletion. Otherwise it will be deleted completely.';
                 msg = msg.replace('%s', jQuery(this).attr('data-site-name'));
                 var el = this;
                 alertify.confirm(msg, function() {
@@ -149,21 +149,31 @@ function add_scripts_to_footer()
 }
 add_action('wp_footer','add_scripts_to_footer');
 
+
+function add_blogOwner()
+{
+  $user_id = get_current_user_id();
+  add_site_option( 'blog_owner', $user_id );
+}
+
+add_action( 'wpmu_new_blog', 'add_blogOwner' );
+
+
 add_action('network_admin_menu', 'add_custom_menu_to_admin');
 
 function add_custom_menu_to_admin() {
-	add_submenu_page( 'settings.php', 'Medma Site Manager', 'Medma Site Manager', 'manage_options', 'medma-site-manager-options-page', 'medma_site_manager_options_callback' );
+	add_submenu_page( 'settings.php', 'AA Site Manager', 'AA Site Manager', 'manage_options', 'medma-site-manager-options-page', 'aa_site_manager_options_callback' );
 }
 
-function medma_site_manager_options_callback() {
-	
+function aa_site_manager_options_callback() {
+
     // Check that the user is allowed to update options
     if (!current_user_can('manage_options')) {
         wp_die('You do not have sufficient permissions to access this page.');
     }
-    
-    
-    
+
+
+
     if(isset($_POST['save_settings']) && $_POST['save_settings']!="")
     {
         update_option('msm_edit_return_url',$_POST['edit_return_url']);
@@ -174,115 +184,114 @@ function medma_site_manager_options_callback() {
         update_option('msm_main_site_account',$_POST['main_site_account']);
         update_option('msm_main_site_cpanel_username',$_POST['main_site_cpanel_username']);
         update_option('msm_main_site_cpanel_password',$_POST['main_site_cpanel_password']);
-      
+
     }
-    
+
     $edit_return_url = get_option('msm_edit_return_url');
     if(empty($edit_return_url))
     {
         $edit_return_url = "";
     }
-    
+
     $main_site_domain = get_option('msm_main_site_domain');
     if(empty($main_site_domain))
     {
         $main_site_domain = "";
     }
-    
+
     $main_site_ip = get_option('msm_main_site_ip');
     if(empty($main_site_ip))
     {
         $main_site_ip = "";
     }
-    
+
     $main_site_port = get_option('msm_main_site_port');
     if(empty($main_site_port))
     {
         $main_site_port = "";
     }
-    
+
     $main_site_output_type = get_option('msm_main_site_output_type');
     if(empty($main_site_output_type))
     {
         $main_site_output_type = "";
     }
-    
+
     $main_site_account = get_option('msm_main_site_account');
     if(empty($main_site_account))
     {
         $main_site_account = "";
     }
-    
+
     $main_site_cpanel_username = get_option('msm_main_site_cpanel_username');
     if(empty($main_site_cpanel_username))
     {
         $main_site_cpanel_username = "";
     }
-    
+
     $main_site_cpanel_password = get_option('msm_main_site_cpanel_password');
     if(empty($main_site_cpanel_password))
     {
         $main_site_cpanel_password = "";
     }
-    
+
     //add_settings_field( 'return-url-id', 'Return URL', 'return_url_callback_function', '', '' , array( 'label_for' => 'myprefix_setting-id' ) );
     //settings_fields( 'my-plugin-settings-group' );
-    
+
     $html = '';
     $html .= '<div class="wrap">';
     $html .= '<div id="icon-tools" class="icon32"></div>';
-    $html .= '<h2>Medma Site Manager Settings</h2>';
+    $html .= '<h1>AgentAssets Manager Settings</h1>';
 
-    $html .= '<div class="container">';
+    $html .= '<table class="form-table"><tbody>';
     $html .= '<form method="POST" action="settings.php?page=medma-site-manager-options-page">';
 
-    $html .= '<div class="form-field">';
-    $html .= '<label>Edit Return URL</label>';
-    $html .= '<input type="text" name="edit_return_url" value="'.$edit_return_url.'"/>';
-    $html .= '</div>';
-    
-    $html .= '<div class="form-field">';
-    $html .= '<label>Main Site Domain</label>';
-    $html .= '<input type="text" name="main_site_domain" value="'.$main_site_domain.'"/>';
-    $html .= '</div>';
-    
-    $html .= '<div class="form-field">';
-    $html .= '<label>Site IP Address</label>';
-    $html .= '<input type="text" name="main_site_ip" value="'.$main_site_ip.'"/>';
-    $html .= '</div>';
-    
-    $html .= '<div class="form-field">';
-    $html .= '<label>Port</label>';
-    $html .= '<input type="text" name="main_site_port" value="'.$main_site_port.'"/>';
-    $html .= '</div>';
-    
-    $html .= '<div class="form-field">';
-    $html .= '<label>Output Method Type</label>';
-    $html .= '<input type="text" name="main_site_output_type" value="'.$main_site_output_type.'"/>';
-    $html .= '</div>';
-    
-    $html .= '<div class="form-field">';
-    $html .= '<label>Account</label>';
-    $html .= '<input type="text" name="main_site_account" value="'.$main_site_account.'"/>';
-    $html .= '</div>';
-    
-    $html .= '<div class="form-field">';
-    $html .= '<label>cPanel Username</label>';
-    $html .= '<input type="text" name="main_site_cpanel_username" value="'.$main_site_cpanel_username.'"/>';
-    $html .= '</div>';
-    
-    $html .= '<div class="form-field">';
-    $html .= '<label>cPanel Password</label>';
-    $html .= '<input type="password" name="main_site_cpanel_password" value="'.$main_site_cpanel_password.'"/>';
-    $html .= '</div>';
+    $html .= '<tr>';
+    $html .= '<th scope="row>"<label for="edit_return_url">Edit Return URL</label></th>';
+    $html .= '<td><input class="regular-text" type="text" name="edit_return_url" value="'.$edit_return_url.'"/></td>';
+    $html .= '</tr>';
 
-    $html .= '<div class="form-field">';
-    $html .= '<input type="submit" name="save_settings" class="button button-primary" value="Save Settings"/>';
-    $html .= '</div>';
+    $html .= '<tr>';
+    $html .= '<th scope="row"><label>Main Site Domain</label></th>';
+    $html .= '<td><input class="regular-text" type="text" name="main_site_domain" value="'.$main_site_domain.'"/></td>';
+    $html .= '</tr>';
+
+    $html .= '<tr>';
+    $html .= '<th scope="row"><label>Site IP Address</label></th>';
+    $html .= '<td><input class="regular-text" type="text" name="main_site_ip" value="'.$main_site_ip.'"/></td>';
+    $html .= '</tr>';
+
+    $html .= '<tr>';
+    $html .= '<th scope="row"><label>Port</label></th>';
+    $html .= '<td><input class="regular-text" type="text" name="main_site_port" value="'.$main_site_port.'"/></td>';
+    $html .= '</tr>';
+
+    $html .= '<tr>';
+    $html .= '<th scope="row"><label>Output Method Type</label></th>';
+    $html .= '<td><input class="regular-text" type="text" name="main_site_output_type" value="'.$main_site_output_type.'"/></td>';
+    $html .= '</tr>';
+
+    $html .= '<tr>';
+    $html .= '<th scope="row"><label>Account</label></th>';
+    $html .= '<td><input class="regular-text" type="text" name="main_site_account" value="'.$main_site_account.'"/></td>';
+    $html .= '</tr>';
+
+    $html .= '<tr>';
+    $html .= '<th scope="row"><label>cPanel Username</label></th>';
+    $html .= '<td><input class="regular-text" type="text" name="main_site_cpanel_username" value="'.$main_site_cpanel_username.'"/></td>';
+    $html .= '</tr>';
+
+    $html .= '<tr>';
+    $html .= '<th scope="row"><label>cPanel Password</label></th>';
+    $html .= '<td><input class="regular-text" type="password" name="main_site_cpanel_password" value="'.$main_site_cpanel_password.'"/></td>';
+    $html .= '</tr>';
+
+    // $html .= '<tr>';
+    // $html .= '</tr>';
 
     $html .= '</form>';
-    $html .= '</div>';
-
+    $html .= '</tbody></table>';
+    $html .= '<p><input type="submit" name="save_settings" class="button button-primary" value="Save Settings"/></p>';
     $html .= '</div>';
 
     echo $html;

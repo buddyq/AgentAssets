@@ -1,6 +1,6 @@
  /*!
  * Buttons helper for envirabox
- * version: 1.0.5 (Mon, 15 Oct 2012)
+ * version: 1.1.0 (Mon, 15 Oct 2012)
  * @requires envirabox v2.0 or later
  *
  * Usage:
@@ -41,6 +41,13 @@
 
 			//Increase top margin to give space for buttons
 			obj.margin[ opts.position === 'bottom' ? 2 : 0 ] += 30;
+
+			// console.log ('------');
+			// console.log ( obj );
+			// console.log ( opts );
+			// console.log ('------');
+			// console.log ( obj.margin[ opts.position === 'bottom' ? 2 : 0 ] );
+			// console.log ( opts.position );
 
 			// If both buttons and thumbnails are set to display at the top, add a CSS class to thumbnails to adjust their position.
 			if ( obj.helpers.thumbs != undefined && opts.position == 'top' && obj.helpers.thumbs.position == 'top' ) {

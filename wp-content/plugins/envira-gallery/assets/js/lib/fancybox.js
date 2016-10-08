@@ -1,4 +1,4 @@
-// Envirabox 2.1.5
+// Envirabox 2.2.0
 ;(function (window, document, $, undefined) {
 	"use strict";
 
@@ -39,7 +39,7 @@
 
 	$.extend(F, {
 		// The current version of envirabox
-		version: '2.1.5',
+		version: '2.2.0',
 
 		defaults: {
 			padding : 15,
@@ -77,6 +77,9 @@
 			preload    : 3,
 			modal      : false,
 			loop       : true,
+
+			lightboxTheme : 'base', // 2.2.0
+			navDivsRoot: false, // 2.2.0
 
 			ajax  : {
 				dataType : 'html',
@@ -1211,13 +1214,6 @@
 			origWidth  = isPercentage(width)  ? (viewport.w - wSpace) * getScalar(width)  / 100 : width;
 			origHeight = isPercentage(height) ? (viewport.h - hSpace) * getScalar(height) / 100 : height;
 
-			// console.log ( "origWidth = " + origWidth );
-			// console.log ( "origHeight = " + origWidth );
-			// console.log ( "width = " + width );
-			// console.log ( "height = " + height );
-			// console.log ( "isPercentage(width) = " + isPercentage(width) );
-			// console.log ( "isPercentage(height) = " + isPercentage(height) );
-
 			if (current.type === 'iframe') {
 				iframe = current.content;
 
@@ -1419,15 +1415,25 @@
 					left : margin[3]
 				};
 
+			// console.log ( 'margin: ' + margin );
+			// console.log ( viewport );
+			// console.log ( 'width: ' + width );
+			// console.log ( 'height: ' + height );
+
             // Check for floating title and adjust height.
             if (current.helpers.title.type && 'float' == current.helpers.title.type) {
                 height = height + $('.envirabox-skin .envirabox-title').height();
+//              console.log ( 'floating title' );
             }
 
 			if (current.autoCenter && current.fixed && !onlyAbsolute && height <= viewport.h && width <= viewport.w) {
 				rez.position = 'fixed';
+				//console.log ( 'fixed' );
 
 			} else if (!current.locked) {
+				
+				//console.log ( '!current.locked' );
+
 				rez.top  += viewport.y;
 				rez.left += viewport.x;
 			}
@@ -1473,13 +1479,32 @@
 
 			// Create navigation arrows
 			if (current.arrows && F.group.length > 1) {
+				// console.log ('removing arrows - TEMPORARY SOLUTION');
+				// likely a CSS fix will make this not required but in the meantime...
 				if (current.loop || current.index > 0) {
-					$(current.tpl.prev).appendTo(F.outer).bind('click.fb', F.prev);
+					if ( current.helpers.navDivsRoot == true ) { // 2.2.0
+						$(current.tpl.prev).insertBefore('.envirabox-overlay').bind('click.fb', F.prev);
+					} else {
+						$(current.tpl.prev).appendTo(F.outer).bind('click.fb', F.prev);
+					}
 				}
 
 				if (current.loop || current.index < F.group.length - 1) {
-					$(current.tpl.next).appendTo(F.outer).bind('click.fb', F.next);
+					if ( current.helpers.navDivsRoot == true ) { // 2.2.0
+						$(current.tpl.next).insertBefore('.envirabox-overlay').bind('click.fb', F.next);
+					} else {
+						$(current.tpl.next).appendTo(F.outer).bind('click.fb', F.next);
+					}
+
+					
 				}
+			}
+
+			// Do we need to move envirabox-actions?
+
+			if ( current.helpers.actionDivRoot == true ) { // 2.2.0
+				$('.envirabox-wrap .envirabox-actions').appendTo(document.body);
+				console.log ('actionDivRoot');
 			}
 
 			F.trigger('afterShow');
@@ -1735,7 +1760,7 @@
 
 			parent = F.coming ? F.coming.parent : opts.parent;
 
-			this.overlay = $('<div class="envirabox-overlay"></div>').appendTo( parent && parent.lenth ? parent : 'body' );
+			this.overlay = $('<div class="envirabox-overlay"></div>').appendTo( parent && parent.length ? parent : 'body' );
 			this.fixed   = false;
 
 			if (opts.fixed && F.defaults.fixed) {
@@ -1885,11 +1910,13 @@
 
 	F.helpers.title = {
 		defaults : {
+			alwaysShow: false,
+			marginOffset: 0,
 			type     : 'float', // 'float', 'inside', 'outside' or 'over',
 			position : 'bottom' // 'top' or 'bottom'
 		},
 
-		beforeShow: function (opts) {
+		beforeShow: function (opts, obj) {
 			var current = F.current,
 				text    = current.title,
 				type    = opts.type,
@@ -1900,8 +1927,12 @@
 				text = text.call(current.element, current);
 			}
 
-			if (!isString(text) || $.trim(text) === '') {
+			if (!opts.alwaysShow && (!isString(text) || $.trim(text) === '')) {
 				return;
+			}
+
+			if ( opts.alwaysShow || isString(text) || $.trim(text) !== '') {
+				obj.margin[0] = obj.margin[0] + opts.marginOffset;
 			}
 
 			title = $('<div class="envirabox-title envirabox-title-' + type + '-wrap">' + text + '</div>');

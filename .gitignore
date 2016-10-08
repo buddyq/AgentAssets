@@ -128,6 +128,7 @@ Temporary Items
 # User-specific stuff:
 .idea/workspace.xml
 .idea/tasks.xml
+/buddy.php
 
 # Sensitive or high-churn files:
 .idea/dataSources.ids

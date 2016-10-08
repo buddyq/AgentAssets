@@ -1,0 +1,32 @@
+.broker_logo_edit_view, .edit_form_profile_pic{
+    width: auto !important;
+    height: 100px;
+    
+}
+
+.edit_form_profile_pic_file{
+    padding: 15px 5px !important;
+    vertical-align: bottom;
+}
+
+.edit_form_broker_pic{
+    width: auto !important;
+    height: 100px;
+    
+}
+
+.edit_form_broker_pic_file{
+    padding: 15px 5px !important;
+    vertical-align: bottom;
+}
+
+.site-list-container th{
+	background: #5d9e8d !important;
+	text-align: center;
+	color: white;
+}
+
+.srno {
+	text-align: center;
+}
+

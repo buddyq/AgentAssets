@@ -1,0 +1,340 @@
+
+#username-error{ display: none;}
+
+.micu_ajax_form{
+clear:both;
+}
+
+.micu_ajax_form fieldset p br{display:none;}
+.micu_ajax_form label {display:block; visibility: visible; position: relative; } /*dont delete. ie8 needs this separate*/
+.micu_ajax_form label, .modified_width:before{display:block; visibility: visible; position: relative; /*margin-bottom: 7px;*/ font-weight: 600;}
+
+#top .micu_ajax_form .text_input, #top .micu_ajax_form .select, #top .micu_ajax_form .text_area{
+width:100%;
+margin-bottom:0;
+display:inline;
+min-width:50px;
+padding:13px;
+border-radius: 2px;
+}
+
+#top select, #top .micu_ajax_form .select, #top .entry-content-wrapper select{
+ -webkit-appearance: none;
+border-radius:0px;
+background-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAB4AAAANCAYAAAC+ct6XAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAyJpVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADw/eHBhY2tldCBiZWdpbj0i77u/IiBpZD0iVzVNME1wQ2VoaUh6cmVTek5UY3prYzlkIj8+IDx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IkFkb2JlIFhNUCBDb3JlIDUuMC1jMDYwIDYxLjEzNDc3NywgMjAxMC8wMi8xMi0xNzozMjowMCAgICAgICAgIj4gPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4gPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgeG1sbnM6eG1wPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvIiB4bWxuczp4bXBNTT0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wL21tLyIgeG1sbnM6c3RSZWY9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9zVHlwZS9SZXNvdXJjZVJlZiMiIHhtcDpDcmVhdG9yVG9vbD0iQWRvYmUgUGhvdG9zaG9wIENTNSBNYWNpbnRvc2giIHhtcE1NOkluc3RhbmNlSUQ9InhtcC5paWQ6RjBBRUQ1QTQ1QzkxMTFFMDlDNDdEQzgyNUE1RjI4MTEiIHhtcE1NOkRvY3VtZW50SUQ9InhtcC5kaWQ6RjBBRUQ1QTU1QzkxMTFFMDlDNDdEQzgyNUE1RjI4MTEiPiA8eG1wTU06RGVyaXZlZEZyb20gc3RSZWY6aW5zdGFuY2VJRD0ieG1wLmlpZDpGMEFFRDVBMjVDOTExMUUwOUM0N0RDODI1QTVGMjgxMSIgc3RSZWY6ZG9jdW1lbnRJRD0ieG1wLmRpZDpGMEFFRDVBMzVDOTExMUUwOUM0N0RDODI1QTVGMjgxMSIvPiA8L3JkZjpEZXNjcmlwdGlvbj4gPC9yZGY6UkRGPiA8L3g6eG1wbWV0YT4gPD94cGFja2V0IGVuZD0iciI/Pk5mU4QAAACUSURBVHjaYmRgYJD6////MwY6AyaGAQIspCieM2cOjKkIxCFA3A0TSElJoZ3FUCANxAeAWA6IOYG4iR5BjWwpCDQCcSnNgxoIVJCDFwnwA/FHWlp8EIpHSKoGgiggLkITewrEcbQO6mVAbAbE+VD+a3IsJTc7FQAxDxD7AbEzEF+jR1DDywtoCr9DbhwzDlRZDRBgACYqHJO9bkklAAAAAElFTkSuQmCC);
+ background-position: center right;
+ background-repeat: no-repeat;
+ border-radius: 2px;
+}
+
+/*remove bg on firefox*/
+.avia-mozilla #top select, .avia-mozilla #top .micu_ajax_form .select, .avia-mozilla #top .entry-content-wrapper select{ background-image:none; }
+
+#top .micu_ajax_form input[type="checkbox"] {
+float: left;
+margin-right: 8px;
+top: 2px;
+position: relative;
+}
+
+#top .micu_ajax_form .captcha{padding-left: 65px;}
+
+.micu_ajax_form p{ position: relative; clear:both; float:left; width:100%;}
+.micu_ajax_form p.hidden{position: absolute; width:0px; left:0; top:0; }
+.micu_ajax_form .form_element_half{width:49.5%; float:left; margin-left:1%; clear:none;}
+.micu_ajax_form .form_element_third{width:32.6%; float:left; margin-left:1%; clear:none;}
+.micu_ajax_form .form_element_two_third{width:66.4%; float:left; margin-left:1%; clear:none;}
+.micu_ajax_form .form_element_fourth{width:24.2%; float:left; margin-left:1%; clear:none;}
+.micu_ajax_form .form_element_three_fourth{width:74.8%; float:left; margin-left:1%; clear:none;}
+
+.micu_ajax_form .first_form{clear:both;margin-left:0;}
+
+.micu_ajax_form .button {
+margin: 0;
+padding: 9px 9px;
+border-radius: 2px;
+border-bottom-width: 1px;
+border-bottom-style: solid;
+font-weight: normal;
+font-size: 12px;
+min-width: 142px;
+outline: none;
+}
+
+
+
+#footer .micu_ajax_form textarea{height:90px; }
+
+
+.micu_ajax_form p input, .micu_ajax_form p textarea, .micu_ajax_form p select, .micu_ajax_form p .input_checkbox_label{
+-webkit-transition: all 0.3s ease-in-out;
+-moz-transition: 	all 0.3s ease-in-out;
+transition: 		all 0.3s ease-in-out;
+}
+
+
+@media only screen and (max-width: 479px) {
+
+	.responsive .micu_ajax_form .form_element{
+	width:100%; clear: both; margin-right:0; float: none;
+	}
+}
+
+/* Support fot Login Widget with Shortcode Plugin */
+
+#micu_signup_form fieldset label.error{
+    color: red;
+}
+
+#micu-login-form ul li, #micu-forgot-password ul li{
+    list-style: none;
+}
+
+#micu-login-form ul li:nth-child(odd), #micu-forgot-password ul li:nth-child(odd){
+    font-weight: bold;
+}
+
+#micu-login-form ul li input[type="submit"], #micu-forgot-password ul li input[type="submit"]{
+    border-radius: 2px;
+}
+
+#micu-login-form ul li input[type="text"], #micu-login-form ul li input[type="password"], #micu-forgot-password ul li input[type="text"]{
+    width: 100%;
+    margin-bottom: 0;
+    display: inline;
+    min-width: 50px;
+    padding: 13px;
+    border-radius: 2px;
+}
+
+#contact_us_form .wpcf7-form input{/* width: 100% !important;*/}
+#contact_us_form .wpcf7-form{
+clear:both;
+}
+
+#contact_us_form .wpcf7-form fieldset p br{display:none;}
+#contact_us_form .wpcf7-form label {display:block; visibility: visible; position: relative; } /*dont delete. ie8 needs this separate*/
+#contact_us_form .wpcf7-form label, .modified_width:before{display:block; visibility: visible; position: relative; margin-bottom: 7px; font-weight: 600;}
+
+#top #contact_us_form .wpcf7-form .text_input, #top #contact_us_form .wpcf7-form .select, #top #contact_us_form .wpcf7-form .text_area{
+width:100%;
+margin-bottom:0;
+display:inline;
+min-width:50px;
+padding:13px;
+border-radius: 2px;
+}
+
+#top select, #top #contact_us_form .wpcf7-form .select, #top .entry-content-wrapper select{
+ -webkit-appearance: none;
+border-radius:0px;
+background-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAB4AAAANCAYAAAC+ct6XAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAyJpVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADw/eHBhY2tldCBiZWdpbj0i77u/IiBpZD0iVzVNME1wQ2VoaUh6cmVTek5UY3prYzlkIj8+IDx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IkFkb2JlIFhNUCBDb3JlIDUuMC1jMDYwIDYxLjEzNDc3NywgMjAxMC8wMi8xMi0xNzozMjowMCAgICAgICAgIj4gPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4gPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgeG1sbnM6eG1wPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvIiB4bWxuczp4bXBNTT0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wL21tLyIgeG1sbnM6c3RSZWY9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9zVHlwZS9SZXNvdXJjZVJlZiMiIHhtcDpDcmVhdG9yVG9vbD0iQWRvYmUgUGhvdG9zaG9wIENTNSBNYWNpbnRvc2giIHhtcE1NOkluc3RhbmNlSUQ9InhtcC5paWQ6RjBBRUQ1QTQ1QzkxMTFFMDlDNDdEQzgyNUE1RjI4MTEiIHhtcE1NOkRvY3VtZW50SUQ9InhtcC5kaWQ6RjBBRUQ1QTU1QzkxMTFFMDlDNDdEQzgyNUE1RjI4MTEiPiA8eG1wTU06RGVyaXZlZEZyb20gc3RSZWY6aW5zdGFuY2VJRD0ieG1wLmlpZDpGMEFFRDVBMjVDOTExMUUwOUM0N0RDODI1QTVGMjgxMSIgc3RSZWY6ZG9jdW1lbnRJRD0ieG1wLmRpZDpGMEFFRDVBMzVDOTExMUUwOUM0N0RDODI1QTVGMjgxMSIvPiA8L3JkZjpEZXNjcmlwdGlvbj4gPC9yZGY6UkRGPiA8L3g6eG1wbWV0YT4gPD94cGFja2V0IGVuZD0iciI/Pk5mU4QAAACUSURBVHjaYmRgYJD6////MwY6AyaGAQIspCieM2cOjKkIxCFA3A0TSElJoZ3FUCANxAeAWA6IOYG4iR5BjWwpCDQCcSnNgxoIVJCDFwnwA/FHWlp8EIpHSKoGgiggLkITewrEcbQO6mVAbAbE+VD+a3IsJTc7FQAxDxD7AbEzEF+jR1DDywtoCr9DbhwzDlRZDRBgACYqHJO9bkklAAAAAElFTkSuQmCC);
+ background-position: center right;
+ background-repeat: no-repeat;
+ border-radius: 2px;
+}
+
+/*remove bg on firefox*/
+.avia-mozilla #top select, .avia-mozilla #top #contact_us_form .wpcf7-form .select, .avia-mozilla #top .entry-content-wrapper select{ background-image:none; }
+
+#top #contact_us_form .wpcf7-form input[type="checkbox"] {
+float: left;
+margin-right: 8px;
+top: 2px;
+position: relative;
+}
+
+#top #contact_us_form .wpcf7-form .captcha{padding-left: 65px;}
+
+#contact_us_form .wpcf7-form p{ position: relative; clear:both; float:left; width:100%;}
+#contact_us_form .wpcf7-form p.hidden{position: absolute; width:0px; left:0; top:0; }
+#contact_us_form .wpcf7-form .form_element_half{width:49.5%; float:left; margin-left:1%; clear:none;}
+#contact_us_form .wpcf7-form .form_element_third{width:32.6%; float:left; margin-left:1%; clear:none;}
+#contact_us_form .wpcf7-form .form_element_two_third{width:66.4%; float:left; margin-left:1%; clear:none;}
+#contact_us_form .wpcf7-form .form_element_fourth{width:24.2%; float:left; margin-left:1%; clear:none;}
+#contact_us_form .wpcf7-form .form_element_three_fourth{width:74.8%; float:left; margin-left:1%; clear:none;}
+
+#contact_us_form .wpcf7-form .first_form{clear:both;margin-left:0;}
+
+#contact_us_form .wpcf7-form .button {
+margin: 0;
+padding: 16px 20px;
+border-radius: 2px;
+border-bottom-width: 1px;
+border-bottom-style: solid;
+font-weight: normal;
+font-size: 12px;
+min-width: 142px;
+outline: none;
+}
+
+.success_wid_login {
+    background-color: #e0f1b5;
+    border:1px solid #8baf5b !important;
+    color: #4f5f39;
+    font-size: 14px;
+    font-weight: 600;
+    padding: 35px;
+    text-align: center;
+    text-shadow: 0 1px 0 rgba(255, 255, 255, 0.698);
+    text-transform: uppercase;
+}
+
+.error_wid_login {
+    background-color: #fff8f4;
+    border: 1px solid #cda18f !important;
+    color: #af2c20;
+    font-size: 14px;
+    font-weight: 600;
+    margin-left: 20px;
+    padding: 35px;
+    text-align: center;
+    text-shadow: 0 1px 0 rgba(255, 255, 255, 0.698);
+    text-transform: uppercase;
+    width: 98%;
+}
+
+#footer #contact_us_form .wpcf7-form textarea{height:90px; }
+
+
+#contact_us_form .wpcf7-form p input, #contact_us_form .wpcf7-form p textarea, #contact_us_form .wpcf7-form p select, #contact_us_form .wpcf7-form p .input_checkbox_label{
+-webkit-transition: all 0.3s ease-in-out;
+-moz-transition: 	all 0.3s ease-in-out;
+transition: 		all 0.3s ease-in-out;
+}
+
+#micu-forgot-password .wpmem_msg{
+    background: none repeat scroll 0 0 #ffb6b6;
+    border: 1px solid red;
+    padding: 0;
+    width: 100%;
+    margin-bottom: 20px;
+}
+
+#micu-forgot-password .wpmem_msg.success{
+    background: none repeat scroll 0 0 #BBFFCC;
+    border: 1px solid green;
+    padding: 0;
+    width: 100%;
+    margin-bottom: 20px;
+}
+
+#micu-forgot-password .div_text, #micu-forgot-password .div_text input{
+    width: 100% !important;
+}
+
+#micu-forgot-password .button_div {
+    text-align: inherit !important;
+}
+
+#micu-forgot-password fieldset {
+    margin: 0 !important;
+}
+
+#micu-forgot-password fieldset legend {
+    display: none;
+}
+
+
+.mism-package-status{
+    margin-top: 0px !important;
+    margin-bottom: 20px !important;
+    padding: 0px !important;
+}
+
+.mism-package-status.av_promobox p span {
+    font-weight: bold;
+    width: 20%;
+    background-color: #37827d;
+    color: #FFF;
+    padding: 20px;
+    margin-right: 10px;
+}
+
+@media only screen and (max-width: 479px) {
+
+	.responsive #contact_us_form .wpcf7-form .form_element{
+		width:100%; clear: both; margin-right:0; float: none;
+	}
+}
+
+
+/* Table data  */
+
+@media only screen and (min-width: 768px) {
+
+	#micu_signup_form tr th:first-child,
+	#micu_signup_form tr td:first-child{
+		width:30%;
+
+	}
+	#micu_signup_form tr th:last-child,
+	#micu_signup_form tr td:last-child{
+		width:70%;
+	}
+
+}
+@media only screen and (max-width: 767px) {
+
+	#micu_signup_form tr th:first-child,
+	#micu_signup_form tr td:first-child{
+		width:100%;
+		display: block;
+	}
+	#micu_signup_form tr th:last-child,
+	#micu_signup_form tr td:last-child{
+		width:100%;
+		display: block;
+	}
+	#micu_signup_form  tr:nth-child(odd){
+		background: transparent;
+	}
+	#micu_signup_form  tr:nth-child(even){
+		background-color: transparent;
+	}
+	#micu_signup_form tr td:first-child{
+		background: #F8F8F8;
+	}
+	#micu_signup_form tr td:last-child{
+		background: #FFFFFF;
+	}
+
+}
+
+.wrap h1, h2.options{
+  background: #559987 !important;
+  padding: 30px 20px !important;
+  color: #fff;
+  text-shadow: 1px 1px 1px #333;
+  margin: -10px -20px 10px -22px;
+}
+.wrap h1:before{
+  display: inline-block !important;
+  width: 100px !important;
+  background-image: url('http://agentassets.com/wp-content/plugins/agentassets_custom/images/logo.png') !important;
+}
+h2.options{
+  margin: 0 0 0 0;
+}
+
+.contact_settings_image{
+  width: 25em;
+  height: auto;
+  padding: 5px;
+  margin-bottom: 5px;
+  background: #fff;
+  box-shadow: 1px 1px 1px 0 #000;
+  clear: right;
+  display: block;
+}
+label .desc{
+  display: inline-block;
+  font-size: x-small;
+  font-style: italic;
+  clear: both;
+  font-weight: normal;
+}
+.gm-style{
+  line-height: 1.5em;
+}
+.entry-content #js-wpv-addon-maps-render-location_map img{ box-shadow: none;}

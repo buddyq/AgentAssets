@@ -20,6 +20,13 @@ Version: 1.0
     display: block;
 }
 
+#log_forms{
+  width: 30%;
+  margin: 0 auto;
+  padding: 8px;
+  border: 1px solid;
+}
+
 .coupon-applied.success{
   background: #E0F1B5;
   padding: 5px;

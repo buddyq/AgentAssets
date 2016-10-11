@@ -21,14 +21,14 @@ function mism_list_sites($atts)
         $html .= '	</div>';;
         return $html;
     }
-    
+
     if($atts['type']=="active")
     {
 
         //$blogs = get_blogs_of_user(get_current_user_id(),false);
         $blogs = OrderMap::getUserBlogsDetailed($user_id);
         $html .= '<div class="tng-responsive-table">';
-        
+
         if(count($blogs)>0)
         {
             $duration = 0;
@@ -46,15 +46,15 @@ function mism_list_sites($atts)
 
 			$html .= '<table>';
             $html .= '<h3>'.$atts['title'].'</h3>';
-            
+
             $html .= '<thead class="site-list-container">';
                 $html .= '<th class="numeric">'.__('Sr. No.','mism').'</th>';
                 $html .= '<th class="numeric">'.__('Site Name','mism').'</th>';
                 $html .= '<th class="numeric">'.__('Site URL','mism').'</th>';
                 $html .= '<th class="numeric">'.__('Days Left','mism').'</th>';
-                $html .= '<th class="numeric">'.__('Action','mism').'</th>';
+                $html .= '<th class="numeric">'.__('Actions','mism').'</th>';
             $html .= '</thead>';
-            
+
             $html .= '<tbody>';
                 $active_count = 1;
                 foreach($blogs AS $blog)
@@ -70,17 +70,21 @@ function mism_list_sites($atts)
                     {
                         $html .= '<li><a href="http://'.$externalDomain.'" title="'.$blog->blogname.'" target="_blank">http://'.$externalDomain.'</a></li>';
                     }
+                    $html .= '</ol>';
                     $html .= '</td>';
-                    $html .= '<td data-title="Days Left">'.$blog->days_left.'</td>';
-                    $html .= '<td data-title="Action">';
+                    $html .= '<td data-title="Days Left" class="days-left">'.$blog->days_left.'</td>';
+                    $html .= '<td data-title="Actions" class="actions">';
                     if (0 != $blog->deleted) {
-                        $time = getNextRemovingSitesTime('Y-m-d H:i');
-                        $html .= 'This site was deleted. You can restore it <br/>until the end of the next day ('.$time['string'].')<br/> before it is removed completely.<br/>';
-                        $html .= '<input data-site-name="' . $blog->blogname . '" data-id="' . $blog->userblog_id . '" class="listblog_restore button" data-sending-label="Rstoring..." type="submit" name="restore_site" value="Restore"/>';
+                        $date = getNextRemovingSitesTime('dS');
+                        $tDay = getNextRemovingSitesTime('l');
+                        $tMoYr = getNextRemovingSitesTime('F Y');
+                        $time = getNextRemovingSitesTime('g:i a');
+                        $html .= 'This site was deleted. You can restore it <br/>before '.$tDay['string']. ' the '.$date['string'].' of '. $tMoYr['string'] .' at '.$time['string'].'<br/> before it is removed completely.<br/>';
+                        $html .= '<input data-site-name="' . $blog->blogname . '" data-id="' . $blog->userblog_id . '" class="listblog_restore button" data-sending-label="Restoring..." type="submit" name="restore_site" value="Restore"/>';
                     } else {
                         // $html .= '<input class="listblog_edit" type="submit" name="edit_site" value="Edit"/>';
                         $html .= '<input data-site-name="' . $blog->blogname . '" data-id="' . $blog->userblog_id . '" class="listblog_delete button" data-sending-label="Deleting..." type="submit" name="delete_site" value="Delete"/>';
-
+                        $html .= '&nbsp;<a class="btn btn-primary button" href="'.$blog->siteurl.'/wp-admin/admin.php?page=mi-sub-agent-information">Edit</a>';
                         if ($blog->days_left < 7) {
                             if ($duration) {
                                 $html .= '&nbsp;<input data-duration="' . $duration . '" data-site-name="' . $blog->blogname . '" data-id="' . $blog->userblog_id . '" class="listblog_extend button" data-sending-label="Extending..." type="submit" name="extend_site" value="Extend"/>';
@@ -98,8 +102,8 @@ function mism_list_sites($atts)
             $html .= '</table>';
             $html .= '</div>';
             $html .= '</div>';
-           
-           
+
+
 		 }
 		 else
         {
@@ -111,24 +115,24 @@ function mism_list_sites($atts)
 			$html .= '	</div>';
         }
     }
-  
+
     elseif($atts['type']=="all")
     {
         //$blogs = get_blogs_of_user(get_current_user_id(),false);
         $blogs = OrderMap::getUserBlogsDetailed(get_current_user_id());
-        
+
         if(count($blogs)>0)
         {
 			$html .= '<table class="blog-list-container '.$atts['type'].'">';
             $html .= '<h3>'.$atts['title'].'</h3>';
-            
+
             $html .= '<thead class="blog-list-title">';
                 $html .= '<th>'.__('Sr. No.','mism').'</th>';
                 $html .= '<th>'.__('Site Name','mism').'</th>';
                 $html .= '<th>'.__('Site URL','mism').'</th>';
                 $html .= '<th>'.__('Link','mism').'</th>';
             $html .= '</thead>';
-            
+
             $html .= '<tbody>';
                 $active_count = 1;
                 foreach($blogs AS $blog)
@@ -145,9 +149,9 @@ function mism_list_sites($atts)
                     }
                 }
             $html .= '</tbody>';
-             $html .= '</table>'; 
+             $html .= '</table>';
         }
-       
+
         else
         {
             $html .= '<div class="avia_message_box avia-color-red avia-size-large avia-icon_select-yes avia-border-  avia-builder-el-2  el_after_av_notification  el_before_av_notification ">';
@@ -162,20 +166,20 @@ function mism_list_sites($atts)
     {
         //$blogs = get_blogs_of_user(get_current_user_id(),false);
         $blogs = OrderMap::getUserBlogsDetailed(get_current_user_id());
-        
-        
+
+
         if(count($blogs)>0)
         {
 			$html .= '<table class="blog-list-container '.$atts['type'].'">';
             $html .= '<h3>'.$atts['title'].'</h3>';
-            
+
             $html .= '<thead class="blog-list-title">';
                 $html .= '<th>'.__('Sr. No.','mism').'</th>';
                 $html .= '<th>'.__('Site Name','mism').'</th>';
                 $html .= '<th>'.__('Site URL','mism').'</th>';
                 $html .= '<th>'.__('Link','mism').'</th>';
             $html .= '</thead>';
-            
+
             $html .= '<tbody>';
                 $active_count = 1;
                 foreach($blogs AS $blog)
@@ -190,9 +194,9 @@ function mism_list_sites($atts)
                     $active_count++;
                 }
             $html .= '</tbody>';
-           $html .= '</table>'; 
+           $html .= '</table>';
         }
-         
+
         else
         {
            $html .= '<div class="avia_message_box avia-color-red avia-size-large avia-icon_select-yes avia-border-  avia-builder-el-2  el_after_av_notification  el_before_av_notification ">';
@@ -203,7 +207,7 @@ function mism_list_sites($atts)
 			$html .= '	</div>';
         }
     }
-    
+
     return $html;
 }
 

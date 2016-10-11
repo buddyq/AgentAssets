@@ -1,7 +1,7 @@
 .broker_logo_edit_view, .edit_form_profile_pic{
     width: auto !important;
     height: 100px;
-    
+
 }
 
 .edit_form_profile_pic_file{
@@ -12,7 +12,7 @@
 .edit_form_broker_pic{
     width: auto !important;
     height: 100px;
-    
+
 }
 
 .edit_form_broker_pic_file{
@@ -30,3 +30,8 @@
 	text-align: center;
 }
 
+.actions .button{ font-size: 11px;}
+
+.actions .btn-primary{ padding: 8px 24px;}
+
+td.days-left{ text-align: center;}

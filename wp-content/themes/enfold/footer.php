@@ -1,7 +1,7 @@
 		<?php
-			
-		do_action( 'ava_before_footer' );	
-			
+
+		do_action( 'ava_before_footer' );
+
 		global $avia_config;
 		$blank = isset($avia_config['template']) ? $avia_config['template'] : "";
 
@@ -32,7 +32,7 @@
 
 						//create the footer columns by iterating
 
-						
+
 				        switch($columns)
 				        {
 				        	case 1: $class = ''; break;
@@ -42,7 +42,7 @@
 				        	case 5: $class = 'av_one_fifth'; break;
 				        	case 6: $class = 'av_one_sixth'; break;
 				        }
-				        
+
 				        $firstCol = "first el_before_{$class}";
 
 						//display the footer widget that was defined at appearenace->widgets in the wordpress backend
@@ -72,7 +72,7 @@
 
 
 
-			
+
 
 			<?php
 
@@ -108,8 +108,8 @@
                             	$social_args 	= array('outside'=>'ul', 'inside'=>'li', 'append' => '');
 								echo avia_social_media_icons($social_args, false);
                             }
-                        
-                            
+
+
                                 $avia_theme_location = 'avia3';
                                 $avia_menu_class = $avia_theme_location . '-menu';
 
@@ -124,8 +124,8 @@
                                 );
 
                             $menu = wp_nav_menu($args);
-                            
-                            if($menu){ 
+
+                            if($menu){
                             echo "<nav class='sub_menu_socket' ".avia_markup_helper(array('context' => 'nav', 'echo' => false)).">";
                             echo $menu;
                             echo "</nav>";
@@ -142,13 +142,13 @@
 			} //end nosocket check
 
 
-		
-		
+
+
 		} //end blank & nofooterarea check
 		?>
 		<!-- end main -->
 		</div>
-		
+
 		<?php
 		//display link to previeous and next portfolio entry
 		echo avia_post_nav();

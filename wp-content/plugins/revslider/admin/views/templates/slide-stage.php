@@ -1,4 +1,5 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 <?php
 if( !defined( 'ABSPATH') ) exit();
 
@@ -3324,6 +3325,8 @@ $slider_addons = apply_filters('revslider_slide_addons', array(), $slide, $slide
 		});
 	</script>
 =======
+=======
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
 <?php
 if( !defined( 'ABSPATH') ) exit();
 
@@ -6648,5 +6651,8 @@ $slider_addons = apply_filters('revslider_slide_addons', array(), $slide, $slide
 			UniteAdminRev.initVideoDef();
 		});
 	</script>
+<<<<<<< HEAD
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
+=======
 >>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
 </div>

@@ -1,4 +1,5 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 <?php
 
 include_once(dirname(__FILE__) . '/wp-security-configure-settings.php');//Allows activating via wp-cli
@@ -18,6 +19,8 @@ class AIOWPSecurity_Deactivation
     }
 }
 =======
+=======
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
 <?php
 
 include_once(dirname(__FILE__) . '/wp-security-configure-settings.php');//Allows activating via wp-cli
@@ -36,4 +39,7 @@ class AIOWPSecurity_Deactivation
         AIOWPSecurity_Configure_Settings::turn_off_all_firewall_rules();
     }
 }
+<<<<<<< HEAD
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
+=======
 >>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6

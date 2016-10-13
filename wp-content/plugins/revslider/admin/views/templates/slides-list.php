@@ -1,4 +1,5 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 <?php if( !defined( 'ABSPATH') ) exit(); ?>
 
 <div class="postbox box-slideslist">
@@ -189,6 +190,8 @@
 
 	</div>
 =======
+=======
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
 <?php if( !defined( 'ABSPATH') ) exit(); ?>
 
 <div class="postbox box-slideslist">
@@ -378,5 +381,8 @@
 		</ul>
 
 	</div>
+<<<<<<< HEAD
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
+=======
 >>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
 </div>

@@ -1,4 +1,5 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 <?php
 // make sure it is unique
 if (!class_exists('TAccess_Loader', false))
@@ -536,6 +537,8 @@ final class TAccess_Loader
 TAccess_Loader::init();
 
 =======
+=======
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
 <?php
 // make sure it is unique
 if (!class_exists('TAccess_Loader', false))
@@ -1072,5 +1075,8 @@ final class TAccess_Loader
 // init on load
 TAccess_Loader::init();
 
+<<<<<<< HEAD
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
+=======
 >>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
 }

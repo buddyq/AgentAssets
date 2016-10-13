@@ -1,4 +1,5 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 <?php
 
 /**
@@ -1339,6 +1340,8 @@ class WP_Views_Integration_API {
 
 global $WP_Views_fapi;
 =======
+=======
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
 <?php
 
 /**
@@ -2678,5 +2681,8 @@ class WP_Views_Integration_API {
 }
 
 global $WP_Views_fapi;
+<<<<<<< HEAD
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
+=======
 >>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
 $WP_Views_fapi = new WP_Views_Integration_API();

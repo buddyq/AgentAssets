@@ -1,4 +1,5 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 <?php 
 
 /**
@@ -48,6 +49,8 @@ define('WPV_POST_VIEW', 'wpv-post-view'); // A view used inside another post vie
 $view_fields = array(WPV_TAXONOMY_VIEW => 'taxonomy_view_',
                WPV_POST_VIEW => 'post_view_');
 =======
+=======
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
 <?php 
 
 /**
@@ -96,4 +99,7 @@ define('WPV_POST_VIEW', 'wpv-post-view'); // A view used inside another post vie
 
 $view_fields = array(WPV_TAXONOMY_VIEW => 'taxonomy_view_',
                WPV_POST_VIEW => 'post_view_');
+<<<<<<< HEAD
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
+=======
 >>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6

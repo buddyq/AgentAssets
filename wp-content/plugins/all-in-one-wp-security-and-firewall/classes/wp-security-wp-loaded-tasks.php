@@ -1,4 +1,5 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 <?php
 
 /* * * This class handles tasks that need to be executed at wp-loaded time ** */
@@ -41,6 +42,8 @@ class AIOWPSecurity_WP_Loaded_Tasks {
     }
 
 =======
+=======
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
 <?php
 
 /* * * This class handles tasks that need to be executed at wp-loaded time ** */
@@ -82,5 +85,8 @@ class AIOWPSecurity_WP_Loaded_Tasks {
         exit();
     }
 
+<<<<<<< HEAD
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
+=======
 >>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
 }

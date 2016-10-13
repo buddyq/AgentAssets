@@ -1,4 +1,5 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 <?php
 
 // This is for retro compatibility only with versions < 1.0
@@ -154,6 +155,8 @@ class WPDD_layout_theme_section extends WPDD_layout_element {
         $this->context = $context;
     }
 =======
+=======
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
 <?php
 
 // This is for retro compatibility only with versions < 1.0
@@ -308,5 +311,8 @@ class WPDD_layout_theme_section extends WPDD_layout_element {
     function set_context($context) {
         $this->context = $context;
     }
+<<<<<<< HEAD
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
+=======
 >>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
 }

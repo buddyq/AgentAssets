@@ -8,15 +8,21 @@ if (!defined('ABSPATH')) {
 
 <div class='wrap'>
 <<<<<<< HEAD
+<<<<<<< HEAD
 	<h1><?php _e('Delete Expired Transients', 'delete-expired-transients'); ?></h1>
 
 	<?php if (!empty($message)): ?>
 	<div class='updated'>
 =======
+=======
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
 	<h2><?php _e('Delete Expired Transients', 'delete-expired-transients'); ?></h2>
 
 	<?php if (!empty($message)): ?>
 	<div class='updated fade'>
+<<<<<<< HEAD
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
+=======
 >>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
 		<p><?php echo $message; ?></p>
 	</div>
@@ -31,7 +37,11 @@ if (!defined('ABSPATH')) {
 		if ($site_counts->expired > 0) {
 			$url = wp_nonce_url(add_query_arg('action', 'site-expired', $action_url), 'site-delete', 'delxtrans_nonce');
 <<<<<<< HEAD
+<<<<<<< HEAD
 			printf(' <a href="%s">%s</a>', esc_url($url), __('Delete expired site transients', 'delete-expired-transients'));
+=======
+			printf(' <a href="%s">%s</a>', $url, __('Delete expired site transients', 'delete-expired-transients'));
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
 =======
 			printf(' <a href="%s">%s</a>', $url, __('Delete expired site transients', 'delete-expired-transients'));
 >>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
@@ -40,7 +50,11 @@ if (!defined('ABSPATH')) {
 		if ($site_counts->total + $site_counts->never_expire > 0) {
 			$url = wp_nonce_url(add_query_arg('action', 'site-deleteall', $action_url), 'site-delete', 'delxtrans_nonce');
 <<<<<<< HEAD
+<<<<<<< HEAD
 			printf(' <a class="delete" href="%s">%s</a>', esc_url($url), __('Delete all site transients', 'delete-expired-transients'));
+=======
+			printf(' <a class="delete" href="%s">%s</a>', $url, __('Delete all site transients', 'delete-expired-transients'));
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
 =======
 			printf(' <a class="delete" href="%s">%s</a>', $url, __('Delete all site transients', 'delete-expired-transients'));
 >>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6

@@ -1,4 +1,5 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 <?php
 /**
  * @author    ThemePunch <info@themepunch.com>
@@ -652,6 +653,8 @@ if(!function_exists("dmp")){
  **/
 class UniteFunctionsRev extends RevSliderFunctions {}
 =======
+=======
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
 <?php
 /**
  * @author    ThemePunch <info@themepunch.com>
@@ -1304,5 +1307,8 @@ if(!function_exists("dmp")){
  * @since: 5.0
  **/
 class UniteFunctionsRev extends RevSliderFunctions {}
+<<<<<<< HEAD
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
+=======
 >>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
 ?>

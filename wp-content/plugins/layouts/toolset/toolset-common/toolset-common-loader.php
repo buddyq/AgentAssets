@@ -6,17 +6,23 @@ if ( class_exists( 'Toolset_Common_Bootstrap' ) ) {
 
 if( !defined('TOOLSET_VERSION') ){
 <<<<<<< HEAD
+<<<<<<< HEAD
 	define('TOOLSET_VERSION', '2.2.3');
 }
 
 if ( ! defined('TOOLSET_COMMON_VERSION' ) ) {
     define( 'TOOLSET_COMMON_VERSION', '2.2.3' );
 =======
+=======
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
 	define('TOOLSET_VERSION', '2.2');
 }
 
 if ( ! defined('TOOLSET_COMMON_VERSION' ) ) {
     define( 'TOOLSET_COMMON_VERSION', '2.2' );
+<<<<<<< HEAD
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
+=======
 >>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
 }
 
@@ -52,7 +58,11 @@ if ( ! function_exists( 'toolset_common_boostrap' ) ) {
 			)
 		) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 			define( 'TOOLSET_COMMON_URL', str_replace( 'http://', 'https://', $url ) );
+=======
+			define( 'TOOLSET_COMMON_URL', rtrim( str_replace( 'http://', 'https://', $url ), '/' ) );
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
 =======
 			define( 'TOOLSET_COMMON_URL', rtrim( str_replace( 'http://', 'https://', $url ), '/' ) );
 >>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6

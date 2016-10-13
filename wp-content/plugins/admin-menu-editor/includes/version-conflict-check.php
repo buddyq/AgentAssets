@@ -1,4 +1,5 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 <?php
 //It's not possible to have two versions of this plugin active at the same time. Abort plugin load
 //and display an error if we detect that another version has already been loaded.
@@ -24,6 +25,8 @@ if ( class_exists('WPMenuEditor') ) {
 }
 
 =======
+=======
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
 <?php
 //It's not possible to have two versions of this plugin active at the same time. Abort plugin load
 //and display an error if we detect that another version has already been loaded.
@@ -48,5 +51,8 @@ if ( class_exists('WPMenuEditor') ) {
 	return true; //Conflict detected.
 }
 
+<<<<<<< HEAD
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
+=======
 >>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
 return false; //No conflict.

@@ -1,4 +1,5 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 <?php
 global $wpddlayout;
 $sections = $wpddlayout->registered_theme_sections->get_theme_sections();
@@ -76,6 +77,8 @@ $sections = $wpddlayout->registered_theme_sections->get_theme_sections();
 		<p>{{ description }}</p>
 	</div>
 =======
+=======
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
 <?php
 global $wpddlayout;
 $sections = $wpddlayout->registered_theme_sections->get_theme_sections();
@@ -152,5 +155,8 @@ $sections = $wpddlayout->registered_theme_sections->get_theme_sections();
 		<div class="info-box-header"><?php _e('Custom Row description','ddl-layouts') ?></div>
 		<p>{{ description }}</p>
 	</div>
+<<<<<<< HEAD
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
+=======
 >>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
 </script>

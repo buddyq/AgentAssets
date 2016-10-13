@@ -1,4 +1,5 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 <?php
 
 /**
@@ -683,6 +684,8 @@ function _wpv_deprecated_remove_admin_bar_toolset() {
 		remove_action( 'admin_bar_menu', array( $toolset_admin_bar_menu, 'admin_bar_menu' ), 99 );
 	}
 =======
+=======
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
 <?php
 
 /**
@@ -1366,5 +1369,8 @@ function _wpv_deprecated_remove_admin_bar_toolset() {
 	if ( $toolset_admin_bar_menu_remove ) {
 		remove_action( 'admin_bar_menu', array( $toolset_admin_bar_menu, 'admin_bar_menu' ), 99 );
 	}
+<<<<<<< HEAD
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
+=======
 >>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
 }

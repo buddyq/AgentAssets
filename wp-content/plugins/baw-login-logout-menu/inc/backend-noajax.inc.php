@@ -1,4 +1,5 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 <?php
 if( !defined( 'ABSPATH' ) )
 	die( 'Cheatin\' uh?' );
@@ -87,6 +88,8 @@ function bawllm_nav_menu_type_label( $menu_item ) {
 
 	return $menu_item;
 =======
+=======
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
 <?php
 if( !defined( 'ABSPATH' ) )
 	die( 'Cheatin\' uh?' );
@@ -174,5 +177,8 @@ function bawllm_nav_menu_type_label( $menu_item ) {
 	}
 
 	return $menu_item;
+<<<<<<< HEAD
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
+=======
 >>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
 }

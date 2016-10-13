@@ -1,4 +1,5 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 <?php
 final class Access_Ajax_Helper
 {
@@ -2373,6 +2374,8 @@ final class Access_Ajax_Helper
 
 // init on load
 =======
+=======
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
 <?php
 final class Access_Ajax_Helper
 {
@@ -4746,5 +4749,8 @@ final class Access_Ajax_Helper
 }
 
 // init on load
+<<<<<<< HEAD
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
+=======
 >>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
 Access_Ajax_Helper::init();

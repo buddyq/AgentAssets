@@ -1,4 +1,5 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 pre {
 /*    width: 500px;                           specify width  */
     white-space: pre-wrap;                 /* CSS3 browsers  */
@@ -46,6 +47,8 @@ pre code[class]:after {
     font-size: smaller;
     padding-top: 5px;
 =======
+=======
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
 pre {
 /*    width: 500px;                           specify width  */
     white-space: pre-wrap;                 /* CSS3 browsers  */
@@ -92,5 +95,8 @@ pre code[class]:after {
     display: block; text-align: right;
     font-size: smaller;
     padding-top: 5px;
+<<<<<<< HEAD
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
+=======
 >>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
 }

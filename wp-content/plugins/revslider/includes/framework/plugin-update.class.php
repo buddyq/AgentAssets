@@ -1,4 +1,5 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 <?php
 /**
  * @author    ThemePunch <info@themepunch.com>
@@ -1091,6 +1092,8 @@ class RevSliderPluginUpdate {
  **/
 class UnitePluginUpdateRev extends RevSliderPluginUpdate {}
 =======
+=======
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
 <?php
 /**
  * @author    ThemePunch <info@themepunch.com>
@@ -2182,5 +2185,8 @@ class RevSliderPluginUpdate {
  * @since: 5.0
  **/
 class UnitePluginUpdateRev extends RevSliderPluginUpdate {}
+<<<<<<< HEAD
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
+=======
 >>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
 ?>

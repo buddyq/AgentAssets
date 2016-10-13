@@ -360,6 +360,7 @@ DDLayout.ContentTemplateCell = function($)
 
     self.load_more_paginated_options = function (post_type, nonce) {
 <<<<<<< HEAD
+<<<<<<< HEAD
         jQuery( '#ddl-layout-selected_post' ).on('toolset_select2:select', {post_type:post_type, nonce:nonce}, self.toolset_select2_onSelect);
     };
 
@@ -378,6 +379,8 @@ DDLayout.ContentTemplateCell = function($)
             //return self.toolset_select2_onSelect.apply(this, arguments);
         }
 =======
+=======
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
         self.toolset_select2_element.onSelect = (function(fn) {
             var me = this;
             return function(data, event) {
@@ -394,6 +397,9 @@ DDLayout.ContentTemplateCell = function($)
                 }
             }
         })(self.toolset_select2_element.onSelect);
+<<<<<<< HEAD
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
+=======
 >>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
     };
 
@@ -477,16 +483,22 @@ DDLayout.ContentTemplateCell = function($)
 
     self._handle_post_select_change = function (event) {
 <<<<<<< HEAD
+<<<<<<< HEAD
         
         if (self.get_display_mode() == 'this_page') {
             if( self._dialog.get_cell_type() == 'cell-content-template' )
             {
                 self.get_selected_post_title();
 =======
+=======
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
 
         if (self.get_display_mode() == 'this_page') {
             if( self._dialog.get_cell_type() == 'cell-content-template' )
             {
+<<<<<<< HEAD
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
+=======
 >>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
                 self._dialog.disable_save_button(self.get_selected_post() == '' ||
                 !DDLayout.content_template_cell.is_save_ok());
@@ -529,6 +541,10 @@ DDLayout.ContentTemplateCell = function($)
                     });
                 }
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
 =======
 
 >>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
@@ -1034,11 +1050,14 @@ DDLayout.ContentTemplateCell = function($)
         return jQuery('#ddl-default-edit #ddl-layout-selected_post').val();
     };
 <<<<<<< HEAD
+<<<<<<< HEAD
     
     self.get_selected_post_title = function(){
         var post_value = jQuery('#ddl-default-edit #ddl-layout-selected_post :selected').text();
         jQuery('#toolset_select2-ddl-layout-selected_post-container').text(post_value);
     };
+=======
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
 =======
 >>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
 

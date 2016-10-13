@@ -1,4 +1,5 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 <?php
 
 if (!function_exists('cred_is_ajax_call')) {
@@ -334,6 +335,8 @@ function cred_re_enable_filters_for($hook, $back) {
     $wp_filter[$hook] = $back;
 }
 =======
+=======
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
 <?php
 
 if (!function_exists('cred_is_ajax_call')) {
@@ -668,4 +671,7 @@ function cred_re_enable_filters_for($hook, $back) {
     global $wp_filter;
     $wp_filter[$hook] = $back;
 }
+<<<<<<< HEAD
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
+=======
 >>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6

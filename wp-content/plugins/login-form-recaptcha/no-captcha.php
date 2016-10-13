@@ -6,7 +6,11 @@
  * Author: Ash Matadeen
  * Author URI: http://ashmatadeen.com
 <<<<<<< HEAD
+<<<<<<< HEAD
  * Version: 1.4.1
+=======
+ * Version: 1.4
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
 =======
  * Version: 1.4
 >>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
@@ -20,6 +24,7 @@ add_action( 'login_form', 'wr_no_captcha_render_login_captcha' );
 add_filter( 'wp_authenticate_user', 'wr_no_captcha_verify_login_captcha', 10, 2 );
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 // Specific support for WooCommerce login form
 // Using WooCommerce specific hooks because 
 // WooCommerce's login form does not use the expected wp_login_form()
@@ -29,6 +34,8 @@ if ( in_array( 'woocommerce/woocommerce.php', apply_filters( 'active_plugins', g
 	add_action( 'wp_enqueue_scripts', 'wr_no_captcha_css' );
 }
 
+=======
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
 =======
 >>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
 function wr_no_captcha_menu() {

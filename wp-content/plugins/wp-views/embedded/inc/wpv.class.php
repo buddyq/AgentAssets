@@ -1,4 +1,5 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 <?php
 
 // @todo check whethwe we can move this out of here
@@ -4488,6 +4489,8 @@ function get_view_allowed_url_parameters( $view_id ) {
 	return $attributes;
 }
 =======
+=======
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
 <?php
 
 // @todo check whethwe we can move this out of here
@@ -8976,4 +8979,7 @@ function get_view_allowed_url_parameters( $view_id ) {
 
 	return $attributes;
 }
+<<<<<<< HEAD
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
+=======
 >>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6

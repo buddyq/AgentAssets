@@ -1,6 +1,7 @@
 <?php
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 function cred_find_wp_config_path($dir, $file2search) {
     if (file_exists($dir . "/" . $file2search)) {
         return $dir . "/";
@@ -20,6 +21,8 @@ function cred_find_wp_config_path($dir, $file2search) {
 function cred_get_root_path() {
     return cred_find_wp_config_path($_SERVER['DOCUMENT_ROOT'], "wp-load.php");
 =======
+=======
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
 function cred_find_wp_config_path() {
     $dir = dirname(__FILE__);
     do {
@@ -32,6 +35,9 @@ function cred_find_wp_config_path() {
 
 function cred_get_root_path() {
     return cred_find_wp_config_path();
+<<<<<<< HEAD
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
+=======
 >>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
 }
 
@@ -130,6 +136,7 @@ if (isset($_REQUEST['nonce']) && check_ajax_referer('ajax_nonce', 'nonce', false
             if (!empty($_FILES)) {
 
 <<<<<<< HEAD
+<<<<<<< HEAD
                 //Control file size wp_max_upload_size()
                 foreach ($_FILES as $uploaded_file) {
                     if (filesize($uploaded_file["tmp_name"]) > wp_max_upload_size()) {
@@ -215,6 +222,8 @@ if (isset($_REQUEST['nonce']) && check_ajax_referer('ajax_nonce', 'nonce', false
                     $data = ($error) ? array('result' => false, 'error' => __('There was an error uploading your files', 'wpv-views') . ': ' . $res['error']) : array('files' => $files, 'attaches' => $attaches, 'previews' => $previews, 'delete_nonce' => time());
                 }
 =======
+=======
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
                 $fields = array();
                 foreach ($_FILES as $name => $v) {
                     $fields[$name]['field_data'] = $v;
@@ -287,6 +296,9 @@ if (isset($_REQUEST['nonce']) && check_ajax_referer('ajax_nonce', 'nonce', false
                     }
                 }
                 $data = ($error) ? array('result' => false, 'error' => __('There was an error uploading your files', 'wpv-views') . ': ' . $res['error']) : array('files' => $files, 'attaches' => $attaches, 'previews' => $previews, 'delete_nonce' => time());
+<<<<<<< HEAD
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
+=======
 >>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
             } else {
                 $data = array('result' => false, 'error' => __('Error: Files is too big, Max upload size is', 'wpv-views') . ': ' . ini_get('post_max_size'));

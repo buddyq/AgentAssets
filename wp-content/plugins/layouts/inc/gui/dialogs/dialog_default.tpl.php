@@ -1,4 +1,5 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 <div class="ddl-dialogs-container">
 
 	<div class="ddl-dialog" id="ddl-default-edit">
@@ -68,6 +69,8 @@
 </div>
 
 =======
+=======
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
 <div class="ddl-dialogs-container">
 
 	<div class="ddl-dialog" id="ddl-default-edit">
@@ -136,4 +139,7 @@
 	<textarea id="js-layout-children" <?php if(!WPDDL_DEBUG) echo 'style="display:none"'; ?>><?php echo wp_json_encode( array( 'children_layouts' => WPDD_Layouts::get_layout_children($_GET['layout_id']) ) ); ?></textarea>
 </div>
 
+<<<<<<< HEAD
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
+=======
 >>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6

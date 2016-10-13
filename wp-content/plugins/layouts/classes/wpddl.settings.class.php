@@ -1,4 +1,5 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 <?php
 
 class WPDDL_Settings {
@@ -224,6 +225,8 @@ class WPDDL_Settings {
 }
 
 =======
+=======
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
 <?php
 
 class WPDDL_Settings {
@@ -448,5 +451,8 @@ class WPDDL_Settings {
     }
 }
 
+<<<<<<< HEAD
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
+=======
 >>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
 add_action( 'init', array('WPDDL_Settings', 'getInstance') );

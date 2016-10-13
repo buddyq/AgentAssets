@@ -1,7 +1,11 @@
 <?php
 	if ( !defined('ABSPATH') ){ die(); }
 <<<<<<< HEAD
+<<<<<<< HEAD
 	
+=======
+
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
 =======
 
 >>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
@@ -10,7 +14,11 @@
 	$style 				= $avia_config['box_class'];
 	$responsive			= avia_get_option('responsive_active') != "disabled" ? "responsive" : "fixed_layout";
 <<<<<<< HEAD
+<<<<<<< HEAD
 	$blank 				= isset($avia_config['template']) ? $avia_config['template'] : "";	
+=======
+	$blank 				= isset($avia_config['template']) ? $avia_config['template'] : "";
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
 =======
 	$blank 				= isset($avia_config['template']) ? $avia_config['template'] : "";
 >>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
@@ -20,7 +28,11 @@
 	$filterable_classes = avia_header_class_filter( avia_header_class_string() );
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	
+=======
+
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
 =======
 
 >>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
@@ -64,6 +76,7 @@ wp_head();
 
 <body id="top" <?php body_class($style." ".$avia_config['font_stack']." ".$blank." ".$sidebar_styling); avia_markup_helper(array('context' => 'body')); ?>>
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 	<?php 
 		
@@ -73,6 +86,8 @@ wp_head();
 	}
 		
 =======
+=======
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
 	<h1>LOCAL TEST</h1>
 	<?php
 
@@ -81,15 +96,24 @@ wp_head();
 		echo avia_preload_screen();
 	}
 
+<<<<<<< HEAD
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
+=======
 >>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
 	?>
 
 	<div id='wrap_all'>
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	<?php 
 	if(!$blank) //blank templates dont display header nor footer
 	{ 
+=======
+	<?php
+	if(!$blank) //blank templates dont display header nor footer
+	{
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
 =======
 	<?php
 	if(!$blank) //blank templates dont display header nor footer
@@ -100,6 +124,7 @@ wp_head();
 
 	} ?>
 <<<<<<< HEAD
+<<<<<<< HEAD
 		
 	<div id='main' class='all_colors' data-scroll-offset='<?php echo avia_header_setting('header_scroll_offset'); ?>'>
 
@@ -109,6 +134,8 @@ wp_head();
 		do_action('ava_after_main_container'); 
 		
 =======
+=======
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
 
 	<div id='main' class='all_colors' data-scroll-offset='<?php echo avia_header_setting('header_scroll_offset'); ?>'>
 
@@ -117,5 +144,8 @@ wp_head();
 		if(isset($avia_config['temp_logo_container'])) echo $avia_config['temp_logo_container'];
 		do_action('ava_after_main_container');
 
+<<<<<<< HEAD
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
+=======
 >>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
 	?>

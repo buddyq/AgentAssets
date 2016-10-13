@@ -1,4 +1,5 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 <?php
 class AIOWPSecurity_Backup
 {
@@ -352,6 +353,8 @@ class AIOWPSecurity_Backup
         //Keep adding other DB cleanup tasks as they arise...
     }
 =======
+=======
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
 <?php
 class AIOWPSecurity_Backup
 {
@@ -704,5 +707,8 @@ class AIOWPSecurity_Backup
 
         //Keep adding other DB cleanup tasks as they arise...
     }
+<<<<<<< HEAD
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
+=======
 >>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
 }

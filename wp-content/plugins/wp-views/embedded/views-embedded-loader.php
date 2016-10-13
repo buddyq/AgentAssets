@@ -1,4 +1,5 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 <?php
 /*
 Plugin Name: Toolset Views Embedded
@@ -80,6 +81,8 @@ function wpv_embedded_deactivate_notice() {
     </div>
     <?php
 =======
+=======
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
 <?php
 /*
 Plugin Name: Toolset Views Embedded
@@ -160,5 +163,8 @@ function wpv_embedded_deactivate_notice() {
 		</p>
     </div>
     <?php
+<<<<<<< HEAD
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
+=======
 >>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
 }

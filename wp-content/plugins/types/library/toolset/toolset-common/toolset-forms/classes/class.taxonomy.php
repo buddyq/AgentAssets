@@ -1,4 +1,5 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 <?php
 /**
  *
@@ -220,6 +221,8 @@ class WPToolset_Field_Taxonomy extends WPToolset_Field_Textfield {
 
 }
 =======
+=======
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
 <?php
 /**
  *
@@ -440,4 +443,7 @@ class WPToolset_Field_Taxonomy extends WPToolset_Field_Textfield {
     }
 
 }
+<<<<<<< HEAD
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
+=======
 >>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6

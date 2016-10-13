@@ -1,4 +1,5 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 <?php
 /**
  * @author    ThemePunch <info@themepunch.com>
@@ -141,6 +142,8 @@ class RevSliderWidget extends WP_Widget {
  **/
 class RevSlider_Widget extends RevSliderWidget {}
 =======
+=======
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
 <?php
 /**
  * @author    ThemePunch <info@themepunch.com>
@@ -282,5 +285,8 @@ class RevSliderWidget extends WP_Widget {
  * @since: 5.0
  **/
 class RevSlider_Widget extends RevSliderWidget {}
+<<<<<<< HEAD
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
+=======
 >>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
 ?>

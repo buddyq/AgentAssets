@@ -180,6 +180,7 @@ DDLayout.Dialogs.Prototype.setUpAdditionalClassInput = function( $input ){
 
         var $el = typeof $input !== 'undefined' ? $input : jQuery('.js-toolset_select2-tokenizer'),
 <<<<<<< HEAD
+<<<<<<< HEAD
             classes = typeof DDLayout_settings !== 'undefined' && DDLayout_settings.DDL_JS && DDLayout_settings.DDL_JS.layouts_css_properties ? DDLayout_settings.DDL_JS.layouts_css_properties.additionalCssClasses : '';
 
         if( $el.length ){
@@ -192,6 +193,8 @@ DDLayout.Dialogs.Prototype.setUpAdditionalClassInput = function( $input ){
             });
             return $el;
 =======
+=======
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
             classes = typeof DDLayout_settings !== 'undefined' && DDLayout_settings.DDL_JS && DDLayout_settings.DDL_JS.layouts_css_properties ? DDLayout_settings.DDL_JS.layouts_css_properties.additionalCssClasses : [];
 
         if( $el.length ){
@@ -201,6 +204,9 @@ DDLayout.Dialogs.Prototype.setUpAdditionalClassInput = function( $input ){
                 tokenSeparators: [",", " "],
                 'width': "555px"
             });
+<<<<<<< HEAD
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
+=======
 >>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
         }
 
@@ -247,7 +253,11 @@ DDLayout.Dialogs.DDL_Dialog = function($){
             jQuery( event.target ).trigger( 'before-activate_tab', {
                 tabIndex: ui.newTab.index(),
 <<<<<<< HEAD
+<<<<<<< HEAD
                 cssClassEl: jQuery('select.js-edit-css-class', event.target),
+=======
+                cssClassEl: jQuery('input.js-edit-css-class', event.target),
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
 =======
                 cssClassEl: jQuery('input.js-edit-css-class', event.target),
 >>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
@@ -387,6 +397,11 @@ DDLayout.Dialogs.DDL_Dialog = function($){
                 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+            DDLayout.Dialogs.Prototype.setUpAdditionalClassInput();
+
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
 =======
             DDLayout.Dialogs.Prototype.setUpAdditionalClassInput();
 
@@ -400,8 +415,11 @@ DDLayout.Dialogs.DDL_Dialog = function($){
             overrides_visibility();
 
 <<<<<<< HEAD
+<<<<<<< HEAD
             DDLayout.Dialogs.Prototype.setUpAdditionalClassInput( jQuery('select.js-edit-css-class', jQuery('#cboxWrapper') ) );
 
+=======
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
 =======
 >>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
             _.defer( fix_cancel_button_helper );
@@ -421,17 +439,23 @@ DDLayout.Dialogs.DDL_Dialog = function($){
             jQuery(document).on('mousedown.colorbox','#cboxLoadedContent, #cboxOverlay', function(e){
                 if ( jQuery(e.target).parents('.js-toolset_select2').length === 0 ) {
 <<<<<<< HEAD
+<<<<<<< HEAD
                  //   jQuery('select.js-toolset_select2').toolset_select2('close');
                 }
                 if( jQuery(e.target).parents('.js-toolset_select2-tokenizer').length === 0 )
                 {
                  //   jQuery('input.js-toolset_select2-tokenizer').toolset_select2('close');
 =======
+=======
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
                     jQuery('select.js-toolset_select2').toolset_select2('close');
                 }
                 if( jQuery(e.target).parents('.js-toolset_select2-tokenizer').length === 0 )
                 {
                     jQuery('input.js-toolset_select2-tokenizer').toolset_select2('close');
+<<<<<<< HEAD
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
+=======
 >>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
                 }
             });
@@ -455,6 +479,7 @@ DDLayout.Dialogs.DDL_Dialog = function($){
 
             // Destroy toolset_select2 obj
 <<<<<<< HEAD
+<<<<<<< HEAD
             jQuery('.js-toolset_select2').each(function(){
                 jQuery(this).toolset_select2('destroy');
             });
@@ -462,6 +487,10 @@ DDLayout.Dialogs.DDL_Dialog = function($){
             jQuery('.js-toolset_select2-tokenizer').each(function(){
                 jQuery(this).toolset_select2('destroy');
             });
+=======
+            jQuery('.js-toolset_select2').toolset_select2('destroy');
+            jQuery('.js-toolset_select2-tokenizer').toolset_select2('destroy');
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
 =======
             jQuery('.js-toolset_select2').toolset_select2('destroy');
             jQuery('.js-toolset_select2-tokenizer').toolset_select2('destroy');

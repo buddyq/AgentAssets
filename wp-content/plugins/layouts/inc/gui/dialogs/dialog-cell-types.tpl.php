@@ -1,4 +1,5 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 <div id="wrapper-element-box-type">
     <div class="ddl-dialog" id="ddl-select-element-box">
 
@@ -42,6 +43,8 @@
 
     </div> <!-- .ddl-dialog -->
 =======
+=======
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
 <div id="wrapper-element-box-type">
     <div class="ddl-dialog" id="ddl-select-element-box">
 
@@ -84,5 +87,8 @@
         </div>
 
     </div> <!-- .ddl-dialog -->
+<<<<<<< HEAD
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
+=======
 >>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
 </div>

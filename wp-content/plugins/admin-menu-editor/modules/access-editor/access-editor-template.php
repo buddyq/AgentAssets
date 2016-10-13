@@ -1,4 +1,5 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 <div id="ws_menu_access_editor" title="Permissions">
 
 	<div class="ws_dialog_panel">
@@ -200,6 +201,8 @@
 	</div>
 
 =======
+=======
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
 <div id="ws_menu_access_editor" title="Permissions">
 
 	<div class="ws_dialog_panel">
@@ -400,5 +403,8 @@
 		<input type="button" class="button ws_close_dialog" value="Cancel">
 	</div>
 
+<<<<<<< HEAD
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
+=======
 >>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
 </div>

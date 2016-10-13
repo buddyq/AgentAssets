@@ -1,4 +1,5 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 <?php
 /**
  * External Sources Input Classes for Back and Front End
@@ -1101,6 +1102,8 @@ class RevSliderVimeo {
   }
 } // End Class
 =======
+=======
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
 <?php
 /**
  * External Sources Input Classes for Back and Front End
@@ -2202,5 +2205,8 @@ class RevSliderVimeo {
     return $rsp;
   }
 } // End Class
+<<<<<<< HEAD
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
+=======
 >>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
 ?>

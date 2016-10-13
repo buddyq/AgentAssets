@@ -1,4 +1,5 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 <?php
 /*
  * Comments cell type.
@@ -387,6 +388,8 @@ if (!class_exists('Layouts_cell_comments')) {
     }
     new Layouts_cell_comments();
 =======
+=======
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
 <?php
 /*
  * Comments cell type.
@@ -774,5 +777,8 @@ if (!class_exists('Layouts_cell_comments')) {
 
     }
     new Layouts_cell_comments();
+<<<<<<< HEAD
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
+=======
 >>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
 }

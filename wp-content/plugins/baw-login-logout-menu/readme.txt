@@ -1,4 +1,5 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 === Login Logout Menu ===
 Contributors: juliobox, GregLone
 Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=KJGT942XKWJ6W
@@ -80,6 +81,8 @@ There is a new hook (1.3.3) named 'bawregister_item", this is a menu item, when 
 == Upgrade Notice ==
 
 =======
+=======
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
 === Login Logout Menu ===
 Contributors: juliobox, GregLone
 Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=KJGT942XKWJ6W
@@ -160,5 +163,8 @@ There is a new hook (1.3.3) named 'bawregister_item", this is a menu item, when 
 
 == Upgrade Notice ==
 
+<<<<<<< HEAD
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
+=======
 >>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
 None

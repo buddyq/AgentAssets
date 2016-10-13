@@ -1,4 +1,5 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 <?php
 global $wpddlayout;
 ?>
@@ -43,6 +44,8 @@ global $wpddlayout;
 	</div> <!-- .ddl-settings-wrap -->
 
 =======
+=======
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
 <?php
 global $wpddlayout;
 ?>
@@ -86,5 +89,8 @@ global $wpddlayout;
 
 	</div> <!-- .ddl-settings-wrap -->
 
+<<<<<<< HEAD
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
+=======
 >>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
 <div class="clear"></div>

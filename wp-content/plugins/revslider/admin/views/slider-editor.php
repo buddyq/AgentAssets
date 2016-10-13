@@ -1,4 +1,5 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 <?php
 if( !defined('ABSPATH') ) exit();
 
@@ -30,6 +31,8 @@ if(!empty($sliderID)){
 }
 
 =======
+=======
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
 <?php
 if( !defined('ABSPATH') ) exit();
 
@@ -60,5 +63,8 @@ if(!empty($sliderID)){
 	require self::getPathTemplate('create-slider');		
 }
 
+<<<<<<< HEAD
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
+=======
 >>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
 ?>

@@ -1,4 +1,5 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 <?php
 /**
  * @author    ThemePunch <info@themepunch.com>
@@ -647,6 +648,8 @@ class RevSliderBase {
  **/
 class UniteBaseClassRev extends RevSliderBase {}
 =======
+=======
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
 <?php
 /**
  * @author    ThemePunch <info@themepunch.com>
@@ -1294,5 +1297,8 @@ class RevSliderBase {
  * @since: 5.0
  **/
 class UniteBaseClassRev extends RevSliderBase {}
+<<<<<<< HEAD
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
+=======
 >>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
 ?>

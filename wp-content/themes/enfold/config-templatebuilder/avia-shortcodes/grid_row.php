@@ -1,4 +1,5 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 <?php
 /**
  * COLUMNS
@@ -232,6 +233,8 @@ if ( !class_exists( 'avia_sc_grid_row' ) )
 
 
 =======
+=======
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
 <?php
 /**
  * COLUMNS
@@ -464,4 +467,7 @@ if ( !class_exists( 'avia_sc_grid_row' ) )
 
 
 
+<<<<<<< HEAD
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
+=======
 >>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6

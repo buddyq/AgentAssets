@@ -1,4 +1,5 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 body {direction: rtl;unicode-bidi: embed;}
 #top .main_menu .menu li{float:right;}
 #top .main_menu .menu > li:last-child > a{padding-left: 0 !important;padding-right: 13px !important;}
@@ -186,6 +187,8 @@ left: 0!important;
 }
 
 =======
+=======
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
 body {direction: rtl;unicode-bidi: embed;}
 #top .main_menu .menu li{float:right;}
 #top .main_menu .menu > li:last-child > a{padding-left: 0 !important;padding-right: 13px !important;}
@@ -372,5 +375,8 @@ left: 0!important;
     float: right;
 }
 
+<<<<<<< HEAD
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
+=======
 >>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
 .avia_transform .rtl .border-extra-arrow-down { left: auto; right: 50%; }

@@ -1,4 +1,5 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 <?php
 global $wpddlayout;
 $cell_categories = $wpddlayout->get_cell_categories();
@@ -98,6 +99,8 @@ $cell_categories = $wpddlayout->get_cell_categories();
         </div>
     </div> <!-- .ddl-dialog -->
 =======
+=======
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
 <?php
 global $wpddlayout;
 $cell_categories = $wpddlayout->get_cell_categories();
@@ -196,5 +199,8 @@ $cell_categories = $wpddlayout->get_cell_categories();
             <button class="button js-edit-dialog-close"><?php _e('Cancel','ddl-layouts') ?></button>
         </div>
     </div> <!-- .ddl-dialog -->
+<<<<<<< HEAD
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
+=======
 >>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
 </div>

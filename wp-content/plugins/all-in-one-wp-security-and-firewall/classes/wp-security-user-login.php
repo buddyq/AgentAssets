@@ -1,4 +1,5 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 <?php
 class AIOWPSecurity_User_Login
 {
@@ -566,6 +567,8 @@ class AIOWPSecurity_User_Login
     }
     
 =======
+=======
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
 <?php
 class AIOWPSecurity_User_Login
 {
@@ -1132,5 +1135,8 @@ class AIOWPSecurity_User_Login
         echo $unlock_request_form;
     }
     
+<<<<<<< HEAD
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
+=======
 >>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
 }

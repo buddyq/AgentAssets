@@ -43,7 +43,10 @@ class WPSEO_Option_Wpseo extends WPSEO_Option {
 		'enable_admin_bar_menu'			  => true,
 		'show_onboarding_notice'          => false,
 <<<<<<< HEAD
+<<<<<<< HEAD
 		'first_activated_on'              => false,
+=======
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
 =======
 >>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
 	);
@@ -93,6 +96,7 @@ class WPSEO_Option_Wpseo extends WPSEO_Option {
 		add_action( 'add_option_' . $this->option_name, array( 'WPSEO_Utils', 'clear_cache' ) );
 		add_action( 'update_option_' . $this->option_name, array( 'WPSEO_Utils', 'clear_cache' ) );
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 		/**
 		 * Filter the `wpseo` option defaults.
@@ -100,6 +104,8 @@ class WPSEO_Option_Wpseo extends WPSEO_Option {
 		 * @param array $defaults Array the defaults for the `wpseo` option attributes.
 		 */
 		$this->defaults = apply_filters( 'wpseo_option_wpseo_defaults', $this->defaults );
+=======
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
 =======
 >>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
 	}
@@ -205,6 +211,7 @@ class WPSEO_Option_Wpseo extends WPSEO_Option {
 					break;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 				case 'first_activated_on' :
 					$clean[ $key ] = false;
 					if ( isset( $dirty[ $key ] ) ) {
@@ -214,6 +221,8 @@ class WPSEO_Option_Wpseo extends WPSEO_Option {
 					}
 					break;
 
+=======
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
 =======
 >>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
 				/*

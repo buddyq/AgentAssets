@@ -1,4 +1,5 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 <?php
 
 Class SIS_Admin_Main {
@@ -314,6 +315,8 @@ Class SIS_Admin_Main {
 		return apply_filters( 'wp_generate_attachment_metadata', $metadata, $attachment_id );
 	}
 =======
+=======
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
 <?php
 
 Class SIS_Admin_Main {
@@ -628,5 +631,8 @@ Class SIS_Admin_Main {
 
 		return apply_filters( 'wp_generate_attachment_metadata', $metadata, $attachment_id );
 	}
+<<<<<<< HEAD
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
+=======
 >>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
 }

@@ -1,4 +1,5 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 <?php
 
 /**
@@ -920,6 +921,8 @@ function wpv_embedded_post_link( $link, $post_type, $post_id, $link_purpose ) {
 }
 
 =======
+=======
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
 <?php
 
 /**
@@ -1840,4 +1843,7 @@ function wpv_embedded_post_link( $link, $post_type, $post_id, $link_purpose ) {
 	return $link;
 }
 
+<<<<<<< HEAD
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
+=======
 >>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6

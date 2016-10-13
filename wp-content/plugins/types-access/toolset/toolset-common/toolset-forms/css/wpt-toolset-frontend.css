@@ -1,4 +1,5 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 .wpt-form-fieldset {
     background-color: #ffffff;
     padding: 0 15px 15px 15px;
@@ -342,6 +343,8 @@ body.wpt-loading {
 body.wpt-loading .wpt-modal {
     display: block;
 =======
+=======
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
 .wpt-form-fieldset {
     background-color: #ffffff;
     padding: 0 15px 15px 15px;
@@ -684,5 +687,8 @@ body.wpt-loading {
 
 body.wpt-loading .wpt-modal {
     display: block;
+<<<<<<< HEAD
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
+=======
 >>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
 }

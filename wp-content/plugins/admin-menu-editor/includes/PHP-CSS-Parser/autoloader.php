@@ -1,4 +1,5 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 <?php
 
 spl_autoload_register(function($class)
@@ -9,6 +10,8 @@ spl_autoload_register(function($class)
         return true;
     }
 =======
+=======
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
 <?php
 
 spl_autoload_register(function($class)
@@ -18,5 +21,8 @@ spl_autoload_register(function($class)
         require $file;
         return true;
     }
+<<<<<<< HEAD
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
+=======
 >>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
 });

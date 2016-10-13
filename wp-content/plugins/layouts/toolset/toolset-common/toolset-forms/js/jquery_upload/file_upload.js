@@ -127,7 +127,10 @@ jQuery(function () {
                         jQuery('#' + id).siblings(".js-wpt-credfile-undo").hide();
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
 
 //                            //add image/file uploaded and button to delete
 //                            if (isImage(file) && data.result.previews) {
@@ -140,6 +143,9 @@ jQuery(function () {
 //                            }
 //                        } else {
 //                        
+<<<<<<< HEAD
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
+=======
 >>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
                         var preview_span = jQuery('#' + id).siblings(".js-wpt-credfile-preview");
 
@@ -160,6 +166,7 @@ jQuery(function () {
                                     jQuery("<img id='loaded_" + myid + "' src='" + preview + "'>").prependTo(preview_span);
                                 }
 <<<<<<< HEAD
+<<<<<<< HEAD
                                 
                                 if (myid == '_featured_image') {
                                     if (jQuery("#attachid_" + myid).lenght > 0) {
@@ -171,6 +178,8 @@ jQuery(function () {
                             }
 
 =======
+=======
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
                             }
 
                             //<input id='butt_" + myid + "' style='width:100%;margin-top:2px;margin-bottom:2px;' type='button' value='" + settings.delete_text + "' rel='" + preview + "' class='delete_ajax_file'>
@@ -178,6 +187,9 @@ jQuery(function () {
                             //jQuery(".js-wpt-credfile-preview-item").find("img").attr("src", preview);
                             //jQuery("<input type='hidden' id='attachid_" + myid + "' name='attachid_" + myid + "' value='" + attachid + "'>").insertAfter('#' + jQuery(curr_file).attr('id'));
                             jQuery("#attachid_" + myid).attr("value", attachid);
+<<<<<<< HEAD
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
+=======
 >>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
                         } else {
                             //<input id='butt_" + myid + "' style='width:100%;margin-top:2px;margin-bottom:2px;' type='button' value='" + settings.delete_text + "' rel='" + file + "' class='delete_ajax_file'>
@@ -187,7 +199,10 @@ jQuery(function () {
                             jQuery(preview_span).show();
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
 //                        }
 
                         //add function to delete button
@@ -227,6 +242,9 @@ jQuery(function () {
 //                            }
 //                        });
 
+<<<<<<< HEAD
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
+=======
 >>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
                         wptCredfile.init('body');
                     });
@@ -257,7 +275,11 @@ jQuery(function () {
                 var progress = parseInt(data.loaded / data.total * 100, 10);
                 var id = jQuery(curr_file).attr('id');
 <<<<<<< HEAD
+<<<<<<< HEAD
 
+=======
+          
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
 =======
           
 >>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6

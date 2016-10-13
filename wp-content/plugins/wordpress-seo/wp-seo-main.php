@@ -14,7 +14,11 @@ if ( ! function_exists( 'add_filter' ) ) {
  * with the options, so no if ( ! defined() )
  */
 <<<<<<< HEAD
+<<<<<<< HEAD
 define( 'WPSEO_VERSION', '3.7.0' );
+=======
+define( 'WPSEO_VERSION', '3.6.1' );
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
 =======
 define( 'WPSEO_VERSION', '3.6.1' );
 >>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6

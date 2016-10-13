@@ -31,6 +31,11 @@ class WPSEO_Admin_Pages {
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+
+
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
 =======
 
 
@@ -87,7 +92,11 @@ class WPSEO_Admin_Pages {
 		$this->asset_manager->enqueue_script( 'admin-script' );
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 		wp_localize_script( WPSEO_Admin_Asset_Manager::PREFIX . 'admin-script', 'wpseoAdminL10n', WPSEO_Help_Center::get_translated_texts() );
+=======
+		wp_localize_script( WPSEO_Admin_Asset_Manager::PREFIX . 'admin-script', 'wpseoAdminL10n', $this->localize_admin_script() );
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
 =======
 		wp_localize_script( WPSEO_Admin_Asset_Manager::PREFIX . 'admin-script', 'wpseoAdminL10n', $this->localize_admin_script() );
 >>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
@@ -124,7 +133,10 @@ class WPSEO_Admin_Pages {
 
 	/**
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
 	 * Pass some variables to js for the admin JS module.
 	 *
 	 * %s is replaced with <code>%s</code> and replaced again in the javascript with the actual variable.
@@ -154,6 +166,9 @@ class WPSEO_Admin_Pages {
 	}
 
 	/**
+<<<<<<< HEAD
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
+=======
 >>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
 	 * Enqueues and handles all the tool dependencies.
 	 */

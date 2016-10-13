@@ -1,4 +1,5 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 <?php
 /*
 Plugin Name: Print-O-Matic
@@ -502,6 +503,8 @@ $WP_Print_O_Matic = new WP_Print_O_Matic;
 
 ?>
 =======
+=======
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
 <?php
 /*
 Plugin Name: Print-O-Matic
@@ -1004,4 +1007,7 @@ class WP_Print_O_Matic {
 $WP_Print_O_Matic = new WP_Print_O_Matic;
 
 ?>
+<<<<<<< HEAD
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
+=======
 >>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6

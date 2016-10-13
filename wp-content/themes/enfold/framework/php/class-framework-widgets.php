@@ -1,4 +1,5 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 <?php  if ( ! defined('AVIA_FW')) exit('No direct script access allowed');
 /**
  * This file holds several widgets exclusive to the framework
@@ -1732,6 +1733,8 @@ class avia_instagram_widget extends WP_Widget {
 		return false;
 	}
 =======
+=======
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
 <?php  if ( ! defined('AVIA_FW')) exit('No direct script access allowed');
 /**
  * This file holds several widgets exclusive to the framework
@@ -3464,5 +3467,8 @@ class avia_instagram_widget extends WP_Widget {
 
 		return false;
 	}
+<<<<<<< HEAD
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
+=======
 >>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
 }

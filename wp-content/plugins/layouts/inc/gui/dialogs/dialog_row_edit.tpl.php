@@ -1,4 +1,5 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 <div class="ddl-dialogs-container">
 
 	<div class="ddl-dialog" id="ddl-row-edit">
@@ -98,6 +99,8 @@
 	</div>
 
 =======
+=======
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
 <div class="ddl-dialogs-container">
 
 	<div class="ddl-dialog" id="ddl-row-edit">
@@ -196,5 +199,8 @@
 
 	</div>
 
+<<<<<<< HEAD
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
+=======
 >>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
 </div>

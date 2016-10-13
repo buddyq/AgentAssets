@@ -1,4 +1,5 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 <?php
 
 /**
@@ -1845,6 +1846,8 @@ function wpv_ordering_summary_filter( $summary, $view_id, $view_settings ) {
     return $summary;
 }
 =======
+=======
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
 <?php
 
 /**
@@ -3690,4 +3693,7 @@ function wpv_ordering_summary_filter( $summary, $view_id, $view_settings ) {
     $summary .= wpv_get_ordering_summary( $view_settings );
     return $summary;
 }
+<<<<<<< HEAD
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
+=======
 >>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6

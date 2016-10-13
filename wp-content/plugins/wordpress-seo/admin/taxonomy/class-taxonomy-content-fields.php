@@ -19,7 +19,11 @@ class WPSEO_Taxonomy_Content_Fields extends WPSEO_Taxonomy_Fields {
 				__( 'Snippet editor', 'wordpress-seo' ),
 				'',
 <<<<<<< HEAD
+<<<<<<< HEAD
 				'snippetpreview',
+=======
+				'div',
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
 =======
 				'div',
 >>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
@@ -32,7 +36,11 @@ class WPSEO_Taxonomy_Content_Fields extends WPSEO_Taxonomy_Fields {
 				__( 'Focus keyword', 'wordpress-seo' ),
 				'',
 <<<<<<< HEAD
+<<<<<<< HEAD
 				'focuskeyword',
+=======
+				'text',
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
 =======
 				'text',
 >>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
@@ -45,7 +53,11 @@ class WPSEO_Taxonomy_Content_Fields extends WPSEO_Taxonomy_Fields {
 				__( 'Analysis', 'wordpress-seo' ),
 				'',
 <<<<<<< HEAD
+<<<<<<< HEAD
 				'pageanalysis',
+=======
+				'div',
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
 =======
 				'div',
 >>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6

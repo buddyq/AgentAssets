@@ -149,6 +149,7 @@ if (!$items)
 				'Domain Name:' => 'domain.name',
 				'Domain ID:' => 'domain.handle',
 <<<<<<< HEAD
+<<<<<<< HEAD
 				'Sponsoring Registrar:' => 'domain.sponsor',
 				'Registrar ID:' => 'domain.sponsor',
 				'Domain Status:' => 'domain.status.',
@@ -162,6 +163,8 @@ if (!$items)
 				'Domain Expiration Date:' => 'domain.expires',
 				'Domain Last Updated Date:' => 'domain.changed',
 =======
+=======
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
 				'Sponsoring Registrar:' => 'domain.sponsor',
 				'Registrar ID:' => 'domain.sponsor',
 				'Domain Status:' => 'domain.status.',
@@ -174,6 +177,9 @@ if (!$items)
 				'Domain Create Date:' => 'domain.created',
 				'Domain Expiration Date:' => 'domain.expires',
 				'Domain Last Updated Date:' => 'domain.changed',
+<<<<<<< HEAD
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
+=======
 >>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
 				'Creation Date:' => 'domain.created',
 				'Last Modification Date:' => 'domain.changed',
@@ -181,6 +187,7 @@ if (!$items)
 				'Created On:' => 'domain.created',
                 'Last Updated On:' => 'domain.changed',
 <<<<<<< HEAD
+<<<<<<< HEAD
                 'Expiration Date:' => 'domain.expires',
 				 
 				'Registrant ID:' => 'owner.handle',
@@ -193,6 +200,8 @@ if (!$items)
 				'Registrant Street1:' => 'owner.address.street.',
 				'Registrant Street2:' => 'owner.address.street.',
 =======
+=======
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
                 'Expiration Date:' => 'domain.expires',
 				 
 				'Registrant ID:' => 'owner.handle',
@@ -204,11 +213,15 @@ if (!$items)
 				'Registrant Street:' => 'owner.address.street.',
 				'Registrant Street1:' => 'owner.address.street.',
 				'Registrant Street2:' => 'owner.address.street.',
+<<<<<<< HEAD
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
+=======
 >>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
 				'Registrant Street3:' => 'owner.address.street.',
 				'Registrant Postal Code:' => 'owner.address.pcode',
 				'Registrant City:' => 'owner.address.city',
 				'Registrant State/Province:' => 'owner.address.state',
+<<<<<<< HEAD
 <<<<<<< HEAD
 				'Registrant Country:' => 'owner.address.country',
 				'Registrant Country/Economy:' => 'owner.address.country',
@@ -223,6 +236,8 @@ if (!$items)
 				'Administrative Contact Name:' => 'admin.name',
 				'Administrative Contact Organization:' => 'admin.organization',
 =======
+=======
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
 				'Registrant Country:' => 'owner.address.country',
 				'Registrant Country/Economy:' => 'owner.address.country',
 				'Registrant Phone Number:' => 'owner.phone',
@@ -235,6 +250,9 @@ if (!$items)
 				'Administrative Contact ID:' => 'admin.handle',
 				'Administrative Contact Name:' => 'admin.name',
 				'Administrative Contact Organization:' => 'admin.organization',
+<<<<<<< HEAD
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
+=======
 >>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
 				'Administrative Contact Address:' => 'admin.address.street.',
 				'Administrative Contact Address1:' => 'admin.address.street.',
@@ -246,6 +264,7 @@ if (!$items)
 				'Administrative Contact Phone Number:' => 'admin.phone',
 				'Administrative Contact Email:' => 'admin.email',
 <<<<<<< HEAD
+<<<<<<< HEAD
 				'Administrative Contact Facsimile Number:' => 'admin.fax',
 				'Administrative Contact Tel:' => 'admin.phone',
 				'Administrative Contact Fax:' => 'admin.fax',
@@ -253,12 +272,17 @@ if (!$items)
 				'Administrative Name:' => 'admin.name',
 				'Administrative Organization:' => 'admin.organization',
 =======
+=======
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
 				'Administrative Contact Facsimile Number:' => 'admin.fax',
 				'Administrative Contact Tel:' => 'admin.phone',
 				'Administrative Contact Fax:' => 'admin.fax',
 				'Administrative ID:' => 'admin.handle',
 				'Administrative Name:' => 'admin.name',
 				'Administrative Organization:' => 'admin.organization',
+<<<<<<< HEAD
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
+=======
 >>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
 				'Administrative Address:' => 'admin.address.street.',
 				'Administrative Address1:' => 'admin.address.street.',
@@ -270,6 +294,7 @@ if (!$items)
 				'Administrative Phone:' => 'admin.phone',
 				'Administrative E-mail:' => 'admin.email',
 <<<<<<< HEAD
+<<<<<<< HEAD
 				'Administrative Facsimile Number:' => 'admin.fax',
 				'Administrative Tel:' => 'admin.phone',
 				'Administrative FAX:' => 'admin.fax',
@@ -283,6 +308,8 @@ if (!$items)
 				'Admin Address:' => 'admin.address.street.',
 				'Admin Address2:' => 'admin.address.street.',
 =======
+=======
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
 				'Administrative Facsimile Number:' => 'admin.fax',
 				'Administrative Tel:' => 'admin.phone',
 				'Administrative FAX:' => 'admin.fax',
@@ -295,11 +322,15 @@ if (!$items)
 				'Admin Street3:' => 'admin.address.street.',
 				'Admin Address:' => 'admin.address.street.',
 				'Admin Address2:' => 'admin.address.street.',
+<<<<<<< HEAD
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
+=======
 >>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
 				'Admin Address3:' => 'admin.address.street.',
 				'Admin City:' => 'admin.address.city',
 				'Admin State/Province:' => 'admin.address.state',
 				'Admin Postal Code:' => 'admin.address.pcode',
+<<<<<<< HEAD
 <<<<<<< HEAD
 				'Admin Country:' => 'admin.address.country',
 				'Admin Country/Economy:' => 'admin.address.country',
@@ -312,6 +343,8 @@ if (!$items)
 				'Technical Contact Name:' => 'tech.name',
 				'Technical Contact Organization:' => 'tech.organization',
 =======
+=======
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
 				'Admin Country:' => 'admin.address.country',
 				'Admin Country/Economy:' => 'admin.address.country',
 				'Admin Phone:' => 'admin.phone',
@@ -322,6 +355,9 @@ if (!$items)
 				'Technical Contact ID:' => 'tech.handle',
 				'Technical Contact Name:' => 'tech.name',
 				'Technical Contact Organization:' => 'tech.organization',
+<<<<<<< HEAD
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
+=======
 >>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
 				'Technical Contact Address:' => 'tech.address.street.',
 				'Technical Contact Address1:' => 'tech.address.street.',
@@ -332,6 +368,7 @@ if (!$items)
 				'Technical Contact Country:' => 'tech.address.country',
 				'Technical Contact Phone Number:' => 'tech.phone',
 <<<<<<< HEAD
+<<<<<<< HEAD
 				'Technical Contact Facsimile Number:' => 'tech.fax',
 				'Technical Contact Phone:' => 'tech.phone',
 				'Technical Contact Fax:' => 'tech.fax',
@@ -340,6 +377,8 @@ if (!$items)
 				'Technical Name:' => 'tech.name',
 				'Technical Organization:' => 'tech.organization',
 =======
+=======
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
 				'Technical Contact Facsimile Number:' => 'tech.fax',
 				'Technical Contact Phone:' => 'tech.phone',
 				'Technical Contact Fax:' => 'tech.fax',
@@ -347,6 +386,9 @@ if (!$items)
 				'Technical ID:' => 'tech.handle',
 				'Technical Name:' => 'tech.name',
 				'Technical Organization:' => 'tech.organization',
+<<<<<<< HEAD
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
+=======
 >>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
 				'Technical Address:' => 'tech.address.street.',
 				'Technical Address1:' => 'tech.address.street.',
@@ -357,6 +399,7 @@ if (!$items)
 				'Technical Country/Economy:' => 'tech.address.country',
 				'Technical Phone Number:' => 'tech.phone',
 <<<<<<< HEAD
+<<<<<<< HEAD
 				'Technical Facsimile Number:' => 'tech.fax',
 				'Technical Phone:' => 'tech.phone',
 				'Technical Fax:' => 'tech.fax',
@@ -372,6 +415,8 @@ if (!$items)
 				'Tech Street1:' => 'tech.address.street.',
 				'Tech Street2:' => 'tech.address.street.',
 =======
+=======
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
 				'Technical Facsimile Number:' => 'tech.fax',
 				'Technical Phone:' => 'tech.phone',
 				'Technical Fax:' => 'tech.fax',
@@ -386,11 +431,15 @@ if (!$items)
 				'Tech Street:' => 'tech.address.street.',
 				'Tech Street1:' => 'tech.address.street.',
 				'Tech Street2:' => 'tech.address.street.',
+<<<<<<< HEAD
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
+=======
 >>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
 				'Tech Street3:' => 'tech.address.street.',
 				'Tech City:' => 'tech.address.city',
 				'Tech Postal Code:' => 'tech.address.pcode',
 				'Tech State/Province:' => 'tech.address.state',
+<<<<<<< HEAD
 <<<<<<< HEAD
 				'Tech Country:' => 'tech.address.country',
 				'Tech Country/Economy:' => 'tech.address.country',
@@ -399,12 +448,17 @@ if (!$items)
 				'Tech Email:' => 'tech.email',
 				'Tech E-mail:' => 'tech.email',
 =======
+=======
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
 				'Tech Country:' => 'tech.address.country',
 				'Tech Country/Economy:' => 'tech.address.country',
 				'Tech Phone:' => 'tech.phone',
 				'Tech FAX:' => 'tech.fax',
 				'Tech Email:' => 'tech.email',
 				'Tech E-mail:' => 'tech.email',
+<<<<<<< HEAD
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
+=======
 >>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
 
 				'Billing Contact ID:' => 'billing.handle',
@@ -419,6 +473,7 @@ if (!$items)
 				'Billing Contact Phone Number:' => 'billing.phone',
 				'Billing Contact Facsimile Number:' => 'billing.fax',
 <<<<<<< HEAD
+<<<<<<< HEAD
 				'Billing Contact Email:' => 'billing.email',
 				'Billing ID:' => 'billing.handle',
 				'Billing Name:' => 'billing.name',
@@ -431,6 +486,8 @@ if (!$items)
 				'Billing Street1:' => 'billing.address.street.',
 				'Billing Street2:' => 'billing.address.street.',
 =======
+=======
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
 				'Billing Contact Email:' => 'billing.email',
 				'Billing ID:' => 'billing.handle',
 				'Billing Name:' => 'billing.name',
@@ -442,11 +499,15 @@ if (!$items)
 				'Billing Street:' => 'billing.address.street.',
 				'Billing Street1:' => 'billing.address.street.',
 				'Billing Street2:' => 'billing.address.street.',
+<<<<<<< HEAD
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
+=======
 >>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
 				'Billing Street3:' => 'billing.address.street.',
 				'Billing City:' => 'billing.address.city',
 				'Billing Postal Code:' => 'billing.address.pcode',
 				'Billing State/Province:' => 'billing.address.state',
+<<<<<<< HEAD
 <<<<<<< HEAD
 				'Billing Country:' => 'billing.address.country',
 				'Billing Country/Economy:' => 'billing.address.country',
@@ -457,6 +518,8 @@ if (!$items)
 				'Billing E-mail:' => 'billing.email',
 				
 =======
+=======
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
 				'Billing Country:' => 'billing.address.country',
 				'Billing Country/Economy:' => 'billing.address.country',
 				'Billing Phone:' => 'billing.phone',
@@ -465,6 +528,9 @@ if (!$items)
 				'Billing Email:' => 'billing.email',
 				'Billing E-mail:' => 'billing.email',
 				
+<<<<<<< HEAD
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
+=======
 >>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
 				'Zone ID:' => 'zone.handle',
                 'Zone Organization:' => 'zone.organization',
@@ -684,6 +750,7 @@ function get_contacts ( $array, $extra_items='', $has_org= false )
 {
 if (isset($array['billing']))
 <<<<<<< HEAD
+<<<<<<< HEAD
 	$array['billing'] = get_contact($array['billing'], $extra_items, $has_org);
 
 if (isset($array['tech']))
@@ -700,6 +767,8 @@ if (isset($array['owner']))
 
 if (isset($array['registrar']))
 =======
+=======
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
 	$array['billing'] = get_contact($array['billing'], $extra_items, $has_org);
 
 if (isset($array['tech']))
@@ -715,6 +784,9 @@ if (isset($array['owner']))
 	$array['owner'] = get_contact($array['owner'], $extra_items, $has_org);
 
 if (isset($array['registrar']))
+<<<<<<< HEAD
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
+=======
 >>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
 	$array['registrar'] = get_contact($array['registrar'], $extra_items, $has_org);
 

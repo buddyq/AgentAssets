@@ -1,4 +1,5 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 <?php
 /* * * This class handles tasks that need to be executed at wp-loaded time ** */
 
@@ -58,6 +59,8 @@ class AIOWPSecurity_WP_Footer_Content {
 }
 
 =======
+=======
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
 <?php
 /* * * This class handles tasks that need to be executed at wp-loaded time ** */
 
@@ -116,5 +119,8 @@ class AIOWPSecurity_WP_Footer_Content {
 
 }
 
+<<<<<<< HEAD
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
+=======
 >>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
 //End of class

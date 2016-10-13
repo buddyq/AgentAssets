@@ -1,4 +1,5 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 <?php
 
 require_once( dirname( __FILE__ ) . "/classes/wpv-wp-filter-state.class.php" );
@@ -6125,6 +6126,8 @@ function wpv_attribute( $atts, $value ) {
 	return $view_atts[ $name ];
 }
 =======
+=======
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
 <?php
 
 require_once( dirname( __FILE__ ) . "/classes/wpv-wp-filter-state.class.php" );
@@ -12250,4 +12253,7 @@ function wpv_attribute( $atts, $value ) {
 
 	return $view_atts[ $name ];
 }
+<<<<<<< HEAD
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
+=======
 >>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6

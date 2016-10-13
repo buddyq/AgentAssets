@@ -1,4 +1,5 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 <?php
 
 define("PAD", "\t");
@@ -461,6 +462,8 @@ if (!class_exists("CredFormCreator", false)) {
     }
 
 =======
+=======
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
 <?php
 
 define("PAD", "\t");
@@ -922,5 +925,8 @@ if (!class_exists("CredFormCreator", false)) {
 
     }
 
+<<<<<<< HEAD
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
+=======
 >>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
 }

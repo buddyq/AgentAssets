@@ -57,6 +57,7 @@ class WPSEO_Upgrade {
 		}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 		// Since 3.7.
 		$features = new WPSEO_Features();
 		if ( ! $features->is_premium() ) {
@@ -64,6 +65,8 @@ class WPSEO_Upgrade {
 			$upsell_notice->set_upgrade_notice();
 		}
 
+=======
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
 =======
 >>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
 		/**

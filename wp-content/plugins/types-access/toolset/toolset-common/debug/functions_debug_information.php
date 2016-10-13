@@ -1,4 +1,5 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 <?php
 /**
   * produce debug information
@@ -168,6 +169,8 @@ if ( ! class_exists( 'ICL_Debug_Information' ) ) {
 
 }
 =======
+=======
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
 <?php
 /**
   * produce debug information
@@ -336,4 +339,7 @@ if ( ! class_exists( 'ICL_Debug_Information' ) ) {
 	}
 
 }
+<<<<<<< HEAD
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
+=======
 >>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6

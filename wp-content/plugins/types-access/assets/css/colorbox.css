@@ -1,4 +1,5 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 /* Dialogs */
 
 body.disable-scrollbar {
@@ -81,6 +82,8 @@ body.disable-scrollbar {
 .cboxIE #cboxMiddleRight {
 	filter: progid:DXImageTransform.Microsoft.gradient(startColorstr=#00FFFFFF,endColorstr=#00FFFFFF);
 =======
+=======
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
 /* Dialogs */
 
 body.disable-scrollbar {
@@ -162,5 +165,8 @@ body.disable-scrollbar {
 .cboxIE #cboxMiddleLeft,
 .cboxIE #cboxMiddleRight {
 	filter: progid:DXImageTransform.Microsoft.gradient(startColorstr=#00FFFFFF,endColorstr=#00FFFFFF);
+<<<<<<< HEAD
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
+=======
 >>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
 }

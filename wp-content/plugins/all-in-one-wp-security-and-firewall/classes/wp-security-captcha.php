@@ -1,4 +1,5 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 <?php
 class AIOWPSecurity_Captcha
 {
@@ -121,6 +122,8 @@ class AIOWPSecurity_Captcha
     }
 
 =======
+=======
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
 <?php
 class AIOWPSecurity_Captcha
 {
@@ -242,5 +245,8 @@ class AIOWPSecurity_Captcha
         return $number_map[$num];
     }
 
+<<<<<<< HEAD
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
+=======
 >>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
 }

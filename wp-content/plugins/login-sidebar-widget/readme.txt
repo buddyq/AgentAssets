@@ -1,4 +1,5 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 === Login Widget With Shortcode ===
 Contributors: avimegladon
 Donate link: http://www.aviplugins.com/donate/
@@ -157,6 +158,8 @@ The Serbo-Croatian Language translation file is provided by <a href="http://www.
 = 1.0 =
 I will update this plugin when ever it is required.
 =======
+=======
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
 === Login Widget With Shortcode ===
 Contributors: avimegladon
 Donate link: http://www.aviplugins.com/donate/
@@ -314,4 +317,7 @@ The Serbo-Croatian Language translation file is provided by <a href="http://www.
 
 = 1.0 =
 I will update this plugin when ever it is required.
+<<<<<<< HEAD
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
+=======
 >>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6

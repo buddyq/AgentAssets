@@ -107,7 +107,11 @@ class WPSEO_Meta {
 			),
 			'focuskw_text_input' => array(
 <<<<<<< HEAD
+<<<<<<< HEAD
 				'type'          => 'focuskeyword',
+=======
+				'type'          => 'text',
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
 =======
 				'type'          => 'text',
 >>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
@@ -152,7 +156,11 @@ class WPSEO_Meta {
 			),
 			'metakeywords'   => array(
 <<<<<<< HEAD
+<<<<<<< HEAD
 				'type'          => 'metakeywords',
+=======
+				'type'          => 'text',
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
 =======
 				'type'          => 'text',
 >>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6

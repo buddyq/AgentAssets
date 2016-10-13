@@ -1,4 +1,5 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 <?php
 global $wpddlayout, $wpddl_features;
 
@@ -194,6 +195,8 @@ $wpddl_settings->init();
 	</div>
 
 =======
+=======
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
 <?php
 global $wpddlayout, $wpddl_features;
 
@@ -388,5 +391,8 @@ $wpddl_settings->init();
 
 	</div>
 
+<<<<<<< HEAD
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
+=======
 >>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
 </div>

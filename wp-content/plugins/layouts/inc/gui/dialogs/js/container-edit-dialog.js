@@ -25,7 +25,11 @@ DDLayout.ContainerDialog = function($)
 
 			target_container.set('name', jQuery('input[name="ddl-container-edit-container-name"]').val());
 <<<<<<< HEAD
+<<<<<<< HEAD
 			target_container.set( 'additionalCssClasses', jQuery('select.js-edit-css-class', jQuery('#ddl-container-edit')).val() );
+=======
+			target_container.set( 'additionalCssClasses', jQuery('input.js-edit-css-class', jQuery('#ddl-container-edit')).val() );
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
 =======
 			target_container.set( 'additionalCssClasses', jQuery('input.js-edit-css-class', jQuery('#ddl-container-edit')).val() );
 >>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
@@ -53,7 +57,11 @@ DDLayout.ContainerDialog = function($)
 
 			jQuery('input[name="ddl-container-edit-container-name"]').val( container_view.model.get('name') );
 <<<<<<< HEAD
+<<<<<<< HEAD
 			//jQuery('select.js-edit-css-class', jQuery('#ddl-container-edit')).val( container_view.model.get('additionalCssClasses') );
+=======
+			jQuery('input.js-edit-css-class', jQuery('#ddl-container-edit')).val( container_view.model.get('additionalCssClasses') );
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
 =======
 			jQuery('input.js-edit-css-class', jQuery('#ddl-container-edit')).val( container_view.model.get('additionalCssClasses') );
 >>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6

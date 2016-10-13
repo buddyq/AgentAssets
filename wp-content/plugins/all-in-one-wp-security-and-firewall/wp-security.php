@@ -1,4 +1,5 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 <?php
 /*
 Plugin Name: All In One WP Security
@@ -41,6 +42,8 @@ function aiowps_ms_handle_new_blog_creation($blog_id, $user_id, $domain, $path, 
 }
 add_action('wpmu_new_blog', 'aiowps_ms_handle_new_blog_creation', 10, 6);
 =======
+=======
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
 <?php
 /*
 Plugin Name: All In One WP Security
@@ -82,4 +85,7 @@ function aiowps_ms_handle_new_blog_creation($blog_id, $user_id, $domain, $path, 
     }
 }
 add_action('wpmu_new_blog', 'aiowps_ms_handle_new_blog_creation', 10, 6);
+<<<<<<< HEAD
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
+=======
 >>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6

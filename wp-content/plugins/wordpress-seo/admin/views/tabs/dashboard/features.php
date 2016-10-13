@@ -10,7 +10,11 @@ if ( ! defined( 'WPSEO_VERSION' ) ) {
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 $feature_toggles = array(
+=======
+$features = array(
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
 =======
 $features = array(
 >>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
@@ -34,6 +38,7 @@ $features = array(
 );
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 /**
  * Filter to add feature toggles from add-ons.
  *
@@ -41,6 +46,8 @@ $features = array(
  */
 $feature_toggles = apply_filters( 'wpseo_feature_toggles', $feature_toggles );
 
+=======
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
 =======
 >>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
 ?>
@@ -51,7 +58,11 @@ $feature_toggles = apply_filters( 'wpseo_feature_toggles', $feature_toggles );
 	'Yoast SEO'
 ) ) ?>
 <<<<<<< HEAD
+<<<<<<< HEAD
 <?php foreach ( $feature_toggles as $feature ) : ?>
+=======
+<?php foreach ( $features as $feature ) : ?>
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
 =======
 <?php foreach ( $features as $feature ) : ?>
 >>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6

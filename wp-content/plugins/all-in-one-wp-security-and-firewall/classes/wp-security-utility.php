@@ -1,4 +1,5 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 <?php
 
 class AIOWPSecurity_Utility
@@ -598,6 +599,8 @@ class AIOWPSecurity_Utility
 
 }
 =======
+=======
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
 <?php
 
 class AIOWPSecurity_Utility
@@ -1196,4 +1199,7 @@ class AIOWPSecurity_Utility
     }
 
 }
+<<<<<<< HEAD
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
+=======
 >>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6

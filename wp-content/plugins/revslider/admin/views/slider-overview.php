@@ -1,4 +1,5 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 <?php
 
 if( !defined( 'ABSPATH') ) exit();
@@ -845,6 +846,8 @@ require self::getPathTemplate('template-slider-selector');
 	</div>
 	<a target="_blank" class="get_purchase_code" href="http://codecanyon.net/item/slider-revolution-responsive-wordpress-plugin/2751380?ref=themepunch&license=regular&open_purchase_for_item_id=2751380&purchasable=source"><?php _e('GET A PURCHASE CODE', 'revslider'); ?></a>
 =======
+=======
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
 <?php
 
 if( !defined( 'ABSPATH') ) exit();
@@ -1690,5 +1693,8 @@ require self::getPathTemplate('template-slider-selector');
 		</ul>
 	</div>
 	<a target="_blank" class="get_purchase_code" href="http://codecanyon.net/item/slider-revolution-responsive-wordpress-plugin/2751380?ref=themepunch&license=regular&open_purchase_for_item_id=2751380&purchasable=source"><?php _e('GET A PURCHASE CODE', 'revslider'); ?></a>
+<<<<<<< HEAD
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
+=======
 >>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
 </div>

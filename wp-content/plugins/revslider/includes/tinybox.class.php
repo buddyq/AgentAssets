@@ -1,4 +1,5 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 <?php
 /**
  * @author    ThemePunch <info@themepunch.com>
@@ -413,6 +414,8 @@ class RevSliderTinyBox {
  **/
 class RevSlider_TinyBox extends RevSliderTinyBox {}
 =======
+=======
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
 <?php
 /**
  * @author    ThemePunch <info@themepunch.com>
@@ -826,5 +829,8 @@ class RevSliderTinyBox {
  * @since: 5.0
  **/
 class RevSlider_TinyBox extends RevSliderTinyBox {}
+<<<<<<< HEAD
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
+=======
 >>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
 ?>

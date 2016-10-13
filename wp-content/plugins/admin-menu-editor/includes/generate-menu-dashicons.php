@@ -1,4 +1,5 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 <?php
 /**
  * This utility script generates menu icons metadata based on the Dashicons icon font included in WordPress.
@@ -106,6 +107,8 @@ echo '<div class="clear"></div><br>';
 echo '<textarea cols="100" rows="20">', esc_textarea($arrayDefinition), '</textarea>';
 
 =======
+=======
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
 <?php
 /**
  * This utility script generates menu icons metadata based on the Dashicons icon font included in WordPress.
@@ -212,5 +215,8 @@ $arrayDefinition .= ')';
 echo '<div class="clear"></div><br>';
 echo '<textarea cols="100" rows="20">', esc_textarea($arrayDefinition), '</textarea>';
 
+<<<<<<< HEAD
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
+=======
 >>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
 echo '</div>';

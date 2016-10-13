@@ -1,4 +1,5 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 <?php
 global $wpddlayout_theme;
 $wpddlayout_theme->file_manager_export->check_theme_dir_is_writable(__('You can either make it writable by the server or download the exported layouts and save them yourself.', 'ddl-layouts'));
@@ -113,6 +114,8 @@ $wpddlayout_theme->file_manager_export->check_theme_dir_is_writable(__('You can 
     </div> <!-- .wrap -->
 <?php
 =======
+=======
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
 <?php
 global $wpddlayout_theme;
 $wpddlayout_theme->file_manager_export->check_theme_dir_is_writable(__('You can either make it writable by the server or download the exported layouts and save them yourself.', 'ddl-layouts'));
@@ -226,4 +229,7 @@ $wpddlayout_theme->file_manager_export->check_theme_dir_is_writable(__('You can 
         <div id="icon-tools" class="icon32 icon32-posts-dd_layouts"><br></div>
     </div> <!-- .wrap -->
 <?php
+<<<<<<< HEAD
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
+=======
 >>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6

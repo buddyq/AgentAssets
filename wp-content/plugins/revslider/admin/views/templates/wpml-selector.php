@@ -1,4 +1,5 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 <?php
 
 if( !defined( 'ABSPATH') ) exit();
@@ -84,6 +85,8 @@ $langFloatMenu = RevSliderWpml::getLangsWithFlagsHtmlList("id='slides_langs_floa
 	</div>
 </div>
 =======
+=======
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
 <?php
 
 if( !defined( 'ABSPATH') ) exit();
@@ -168,4 +171,7 @@ $langFloatMenu = RevSliderWpml::getLangsWithFlagsHtmlList("id='slides_langs_floa
 		</div>
 	</div>
 </div>
+<<<<<<< HEAD
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
+=======
 >>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6

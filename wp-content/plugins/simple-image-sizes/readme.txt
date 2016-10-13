@@ -1,4 +1,5 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 === Simple Image Sizes ===
 Contributors: Rahe
 Donate link: http://www.beapi.fr/donate/
@@ -203,6 +204,8 @@ And then you can choose if the image is displayed on the media insertion or not 
 	* First release
 	* Thumbnail regenerate
 =======
+=======
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
 === Simple Image Sizes ===
 Contributors: Rahe
 Donate link: http://www.beapi.fr/donate/
@@ -406,5 +409,8 @@ And then you can choose if the image is displayed on the media insertion or not 
 * 1.0
 	* First release
 	* Thumbnail regenerate
+<<<<<<< HEAD
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
+=======
 >>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
 	* Image size generation

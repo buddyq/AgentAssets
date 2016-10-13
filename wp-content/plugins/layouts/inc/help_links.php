@@ -1,4 +1,5 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 <?php
 
 define ( 'WPDDL_CSS_STYLING_LINK', 'http://wp-types.com/documentation/user-guides/using-html-css-style-layout-cells?utm_source=layoutsplugin&utm_campaign=layouts&utm_medium=css-styling-tab&utm_term=help-link' );
@@ -37,6 +38,8 @@ function ddl_add_help_link_to_dialog($link, $text, $same_line = false) {
 }
 
 =======
+=======
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
 <?php
 
 define ( 'WPDDL_CSS_STYLING_LINK', 'http://wp-types.com/documentation/user-guides/using-html-css-style-layout-cells?utm_source=layoutsplugin&utm_campaign=layouts&utm_medium=css-styling-tab&utm_term=help-link' );
@@ -74,4 +77,7 @@ function ddl_add_help_link_to_dialog($link, $text, $same_line = false) {
     endif;
 }
 
+<<<<<<< HEAD
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
+=======
 >>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6

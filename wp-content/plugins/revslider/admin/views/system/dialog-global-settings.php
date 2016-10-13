@@ -1,4 +1,5 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 <?php 
 if( !defined( 'ABSPATH') ) exit();
 
@@ -267,6 +268,8 @@ $force_activation_box = RevSliderBase::getVar($arrValues, 'force_activation_box'
 
 </div>
 =======
+=======
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
 <?php 
 if( !defined( 'ABSPATH') ) exit();
 
@@ -534,4 +537,7 @@ $force_activation_box = RevSliderBase::getVar($arrValues, 'force_activation_box'
 <span id="loader_general_settings" class="loader_round mleft_10" style="display: none;"></span>
 
 </div>
+<<<<<<< HEAD
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
+=======
 >>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6

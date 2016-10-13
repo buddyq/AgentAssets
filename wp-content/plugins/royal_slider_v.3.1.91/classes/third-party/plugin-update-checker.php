@@ -1,4 +1,5 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 <?php
 /**
  * Plugin Update Checker Library 1.3
@@ -796,6 +797,8 @@ class RSPluginUpdate_1_3 {
 	
 endif;
 =======
+=======
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
 <?php
 /**
  * Plugin Update Checker Library 1.3
@@ -1592,4 +1595,7 @@ class RSPluginUpdate_1_3 {
 }
 	
 endif;
+<<<<<<< HEAD
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
+=======
 >>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6

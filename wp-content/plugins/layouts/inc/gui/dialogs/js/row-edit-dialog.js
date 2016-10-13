@@ -115,6 +115,10 @@ DDLayout.RowDialog = function($, row_view)
 
             jQuery('input[name="ddl-row-edit-row-name"]').val(row_view.model.get('name'));
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+	        jQuery('input.js-edit-css-class', jQuery('#ddl-row-edit') ).val(row_view.model.get('additionalCssClasses'));
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
 =======
 	        jQuery('input.js-edit-css-class', jQuery('#ddl-row-edit') ).val(row_view.model.get('additionalCssClasses'));
 >>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
@@ -136,11 +140,14 @@ DDLayout.RowDialog = function($, row_view)
 	        jQuery('#ddl-row-edit #ddl-row-edit-layout-type').parent().hide();
 
 <<<<<<< HEAD
+<<<<<<< HEAD
             _.delay(function(){
                 var saved_css_classes = row_view.model.get('additionalCssClasses');
                 jQuery('select.js-edit-css-class', jQuery('#ddl-row-edit') ).val('');
                 jQuery('select.js-edit-css-class', jQuery('#ddl-row-edit') ).val( (saved_css_classes != null ? saved_css_classes.split(",") : saved_css_classes) ).trigger("change");
             }, 200);
+=======
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
 =======
 >>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
 
@@ -182,9 +189,12 @@ DDLayout.RowDialog = function($, row_view)
             href: '#ddl-row-edit',
             closeButton:false,
 <<<<<<< HEAD
+<<<<<<< HEAD
             onLoad:function(){
 
             },
+=======
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
 =======
 >>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
             onComplete: function() {
@@ -222,8 +232,12 @@ DDLayout.RowDialog = function($, row_view)
             
             target_row.set('name', jQuery('input[name="ddl-row-edit-row-name"]').val());
 <<<<<<< HEAD
+<<<<<<< HEAD
             var css_classes_tosave = ( jQuery('select.js-edit-css-class', jQuery('#ddl-row-edit') ).val());
             target_row.set('additionalCssClasses', (css_classes_tosave != null ? css_classes_tosave.join(",") : "") );
+=======
+            target_row.set('additionalCssClasses', jQuery('input.js-edit-css-class', jQuery('#ddl-row-edit') ).val() );
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
 =======
             target_row.set('additionalCssClasses', jQuery('input.js-edit-css-class', jQuery('#ddl-row-edit') ).val() );
 >>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6

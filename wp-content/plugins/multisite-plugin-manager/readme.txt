@@ -1,4 +1,5 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 === Multisite Plugin Manager ===
 Contributors: uglyrobot
 Tags: multisite, wpmu, plugins
@@ -87,6 +88,8 @@ Not at all, but if you install the <a href="https://premium.wpmudev.org/project/
 
 = 3.0 =
 =======
+=======
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
 === Multisite Plugin Manager ===
 Contributors: uglyrobot
 Tags: multisite, wpmu, plugins
@@ -174,5 +177,8 @@ Not at all, but if you install the <a href="https://premium.wpmudev.org/project/
 * Fix auto-activate for new blogs
 
 = 3.0 =
+<<<<<<< HEAD
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
+=======
 >>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
 * Complete rewrite for WP 3.1

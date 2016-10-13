@@ -1,4 +1,5 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 <?php
 /*
 *   Access updater
@@ -81,6 +82,8 @@ final class Access_Updater
         self::$db_ver = array_merge(self::$db_ver, array('1.1.6' => 1));
     }
 =======
+=======
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
 <?php
 /*
 *   Access updater
@@ -162,5 +165,8 @@ final class Access_Updater
         
         self::$db_ver = array_merge(self::$db_ver, array('1.1.6' => 1));
     }
+<<<<<<< HEAD
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
+=======
 >>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
 }

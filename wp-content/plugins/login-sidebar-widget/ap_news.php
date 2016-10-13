@@ -1,4 +1,5 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 <?php
 if(!session_id()){
 	@session_start();
@@ -84,6 +85,8 @@ if (!function_exists('afo_news_dashboard_widget')) {
 		$wp_meta_boxes['dashboard']['normal']['core'] = $sorted_dashboard;
 	} 
 =======
+=======
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
 <?php
 if(!session_id()){
 	@session_start();
@@ -168,5 +171,8 @@ if (!function_exists('afo_news_dashboard_widget')) {
 		$sorted_dashboard = array_merge( $afonews_dashboard_widget, $normal_dashboard );
 		$wp_meta_boxes['dashboard']['normal']['core'] = $sorted_dashboard;
 	} 
+<<<<<<< HEAD
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
+=======
 >>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
 }

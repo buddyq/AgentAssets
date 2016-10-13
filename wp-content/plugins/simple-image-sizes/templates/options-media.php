@@ -1,4 +1,5 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 <?php
 // Get the sizes
 global $_wp_additional_image_sizes, $_wp_post_type_features;
@@ -152,6 +153,8 @@ global $_wp_additional_image_sizes, $_wp_post_type_features;
 	<input type="button" class="button" name="ajax_thumbnail_rebuild" id="ajax_thumbnail_rebuild"
 	       value="<?php _e( 'Regenerate Thumbnails', 'simple-image-sizes' ) ?>"/>
 =======
+=======
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
 <?php
 // Get the sizes
 global $_wp_additional_image_sizes, $_wp_post_type_features;
@@ -304,5 +307,8 @@ global $_wp_additional_image_sizes, $_wp_post_type_features;
 	<div class="thumb"><h4><?php _e( 'Last image:', 'simple-image-sizes' ); ?></h4><img class="thumb-img"/></div>
 	<input type="button" class="button" name="ajax_thumbnail_rebuild" id="ajax_thumbnail_rebuild"
 	       value="<?php _e( 'Regenerate Thumbnails', 'simple-image-sizes' ) ?>"/>
+<<<<<<< HEAD
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
+=======
 >>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
 </div>

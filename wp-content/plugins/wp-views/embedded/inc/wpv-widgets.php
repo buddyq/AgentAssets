@@ -1,4 +1,5 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 <?php
 
 /**
@@ -322,6 +323,8 @@ function wpv_wpddl_register_layouts_widget_cell_scripts( $scripts ) {
 }
   
 =======
+=======
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
 <?php
 
 /**
@@ -644,5 +647,8 @@ function wpv_wpddl_register_layouts_widget_cell_scripts( $scripts ) {
 	return $scripts;
 }
   
+<<<<<<< HEAD
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
+=======
 >>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
 ?>

@@ -1,4 +1,5 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 <?php
 /*
 Plugin Name: Slider Revolution
@@ -229,6 +230,8 @@ try{
 }
 
 =======
+=======
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
 <?php
 /*
 Plugin Name: Slider Revolution
@@ -458,5 +461,8 @@ try{
 	echo _e("Revolution Slider Error:",'revslider')." <b>".$message."</b>";
 }
 
+<<<<<<< HEAD
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
+=======
 >>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
 ?>

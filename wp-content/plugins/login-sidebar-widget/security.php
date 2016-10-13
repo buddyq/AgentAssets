@@ -1,4 +1,5 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 <?php
 
 if(!class_exists('login_widget_admin_security')){
@@ -56,6 +57,8 @@ if(!function_exists('security_init')){
 }
 
 =======
+=======
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
 <?php
 
 if(!class_exists('login_widget_admin_security')){
@@ -112,5 +115,8 @@ if(!function_exists('security_init')){
 	}
 }
 
+<<<<<<< HEAD
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
+=======
 >>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
 security_init();

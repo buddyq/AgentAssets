@@ -1,4 +1,5 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 <?php
 
 function views_update_help() {
@@ -139,6 +140,8 @@ function wpv_scan_wpv_if_callback() {
 
     die();
 =======
+=======
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
 <?php
 
 function views_update_help() {
@@ -278,5 +281,8 @@ function wpv_scan_wpv_if_callback() {
 	echo json_encode( $items );
 
     die();
+<<<<<<< HEAD
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
+=======
 >>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
 }

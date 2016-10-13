@@ -110,7 +110,11 @@ class Whois extends WhoisClient
 
 			if (isset($this->WHOIS_SPECIAL['ip']))
 <<<<<<< HEAD
+<<<<<<< HEAD
 				{
+=======
+				{
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
 =======
 				{
 >>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
@@ -138,7 +142,11 @@ class Whois extends WhoisClient
 
 			if (isset($this->WHOIS_SPECIAL['ip']))
 <<<<<<< HEAD
+<<<<<<< HEAD
 				{
+=======
+				{
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
 =======
 				{
 >>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6

@@ -1,4 +1,5 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 <?php
 class ameRoleUtils {
 	/**
@@ -61,6 +62,8 @@ class ameRoleUtils {
 		return $wp_roles;
 	}
 =======
+=======
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
 <?php
 class ameRoleUtils {
 	/**
@@ -122,5 +125,8 @@ class ameRoleUtils {
 		}
 		return $wp_roles;
 	}
+<<<<<<< HEAD
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
+=======
 >>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
 }

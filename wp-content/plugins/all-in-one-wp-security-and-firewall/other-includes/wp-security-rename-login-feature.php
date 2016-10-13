@@ -1,4 +1,5 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 <?php
 /**
  * WordPress User Page
@@ -996,6 +997,8 @@ if(typeof wpOnload=='function')wpOnload();
         break;
 } // end action switch
 =======
+=======
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
 <?php
 /**
  * WordPress User Page
@@ -1992,4 +1995,7 @@ if(typeof wpOnload=='function')wpOnload();
         login_footer();
         break;
 } // end action switch
+<<<<<<< HEAD
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
+=======
 >>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6

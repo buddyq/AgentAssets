@@ -1,4 +1,5 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 === Menu Item Visibility Control ===
 Contributors: shazdeh
 Plugin Name: Menu Item Visibility Control
@@ -69,6 +70,8 @@ Please see this page: https://wordpress.org/plugins/nav-menu-roles/faq/
 = 0.2 =
 * Compatibility with latest WordPress release
 =======
+=======
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
 === Menu Item Visibility Control ===
 Contributors: shazdeh
 Plugin Name: Menu Item Visibility Control
@@ -138,5 +141,8 @@ Please see this page: https://wordpress.org/plugins/nav-menu-roles/faq/
 
 = 0.2 =
 * Compatibility with latest WordPress release
+<<<<<<< HEAD
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
+=======
 >>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
 * Fixed a minor bug where conditions would also execute on the admin area

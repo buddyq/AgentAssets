@@ -207,7 +207,11 @@ class WPSEO_GSC_Table extends WP_List_Table {
 		}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 		$actions['view']        = '<a href="' . home_url( $item['url'] ) . '" target="_blank">' . __( 'View', 'wordpress-seo' ) . '</a>';
+=======
+		$actions['view']        = '<a href="' . $item['url'] . '" target="_blank">' . __( 'View', 'wordpress-seo' ) . '</a>';
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
 =======
 		$actions['view']        = '<a href="' . $item['url'] . '" target="_blank">' . __( 'View', 'wordpress-seo' ) . '</a>';
 >>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6

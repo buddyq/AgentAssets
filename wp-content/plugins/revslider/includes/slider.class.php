@@ -1,4 +1,5 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 <?php
 /**
  * @author    ThemePunch <info@themepunch.com>
@@ -3394,6 +3395,8 @@ class RevSliderSlider extends RevSliderElementsBase{
  **/
 class RevSlider extends RevSliderSlider {}
 =======
+=======
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
 <?php
 /**
  * @author    ThemePunch <info@themepunch.com>
@@ -6788,5 +6791,8 @@ class RevSliderSlider extends RevSliderElementsBase{
  * @since: 5.0
  **/
 class RevSlider extends RevSliderSlider {}
+<<<<<<< HEAD
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
+=======
 >>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
 ?>

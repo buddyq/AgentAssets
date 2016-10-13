@@ -1,4 +1,5 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 <div class="dd-layouts-wrap">
 
 		<p class="dd-layouts-breadcrumbs js-dd-layouts-breadcrumbs-wrap">
@@ -472,6 +473,8 @@
 
 	<?php // $layout_json_not_decoded_debug = WPDD_Layouts::get_layout_settings($post->ID); ?>
 =======
+=======
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
 <div class="dd-layouts-wrap">
 
 		<p class="dd-layouts-breadcrumbs js-dd-layouts-breadcrumbs-wrap">
@@ -944,5 +947,8 @@
 	</div>
 
 	<?php // $layout_json_not_decoded_debug = WPDD_Layouts::get_layout_settings($post->ID); ?>
+<<<<<<< HEAD
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
+=======
 >>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
   <!--  <div class="hidden DEBUG"><?php //print $layout_json_not_decoded_debug;?></div> -->

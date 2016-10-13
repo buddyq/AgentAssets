@@ -1,4 +1,5 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 <?php
 class login_settings {
 
@@ -392,6 +393,8 @@ input[type=text]:focus,input[type=password]:focus,textarea:focus {
 }
 new login_settings;
 =======
+=======
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
 <?php
 class login_settings {
 
@@ -784,4 +787,7 @@ input[type=text]:focus,input[type=password]:focus,textarea:focus {
 	}
 }
 new login_settings;
+<<<<<<< HEAD
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
+=======
 >>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6

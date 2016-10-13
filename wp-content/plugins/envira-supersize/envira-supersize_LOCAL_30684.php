@@ -1,4 +1,5 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 <?php
 /**
  * Plugin Name: Envira Gallery - Supersize Addon
@@ -348,6 +349,8 @@ function envira_supersize_load( $data ) {
     echo ob_get_clean();
 
 =======
+=======
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
 <?php
 /**
  * Plugin Name: Envira Gallery - Supersize Addon
@@ -696,5 +699,8 @@ function envira_supersize_load( $data ) {
     <?php
     echo ob_get_clean();
 
+<<<<<<< HEAD
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
+=======
 >>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
 }

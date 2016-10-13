@@ -1,5 +1,9 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 order deny, allow
+=======
+order deny, allow
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
 =======
 order deny, allow
 >>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6

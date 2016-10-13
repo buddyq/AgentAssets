@@ -39,7 +39,10 @@ class WPSEO_Installation {
 		$options['enable_setting_pages']   = false;
 		$options['show_onboarding_notice'] = true;
 <<<<<<< HEAD
+<<<<<<< HEAD
 		$options['first_activated_on']     = time();
+=======
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
 =======
 >>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
 

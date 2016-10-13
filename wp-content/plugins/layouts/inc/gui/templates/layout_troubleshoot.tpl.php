@@ -1,4 +1,5 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 <div class="wrap">
 	<h2><?php _e('Layouts Troubleshoot', 'ddl-layouts'); ?></h2>
     <p><?php
@@ -47,6 +48,8 @@ jQuery( document ).on( 'click', '#js-remove-layouts-loop-pagination-links', func
 	});
 });
 =======
+=======
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
 <div class="wrap">
 	<h2><?php _e('Layouts Troubleshoot', 'ddl-layouts'); ?></h2>
     <p><?php
@@ -94,5 +97,8 @@ jQuery( document ).on( 'click', '#js-remove-layouts-loop-pagination-links', func
 			.prop( 'disabled', false );
 	});
 });
+<<<<<<< HEAD
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
+=======
 >>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
 </script>

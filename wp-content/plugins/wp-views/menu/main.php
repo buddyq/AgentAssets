@@ -1,4 +1,5 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 <div class="wrap">
 
     <h1><?php _e('Views subscription', 'wpv-views') ?></h1>
@@ -78,6 +79,8 @@
     
 </div>
 =======
+=======
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
 <div class="wrap">
 
     <h1><?php _e('Views subscription', 'wpv-views') ?></h1>
@@ -156,4 +159,7 @@
     </form>
     
 </div>
+<<<<<<< HEAD
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
+=======
 >>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6

@@ -5,9 +5,15 @@ License: GPLv3
 License URI: http://www.gnu.org/licenses/gpl.html
 Tags: SEO, Google, xml sitemap, google search console, google webmaster tools, canonical, meta description, meta title, noindex, snippet preview, redirects, focus keyword, seo copywriting, content marketing
 <<<<<<< HEAD
+<<<<<<< HEAD
 Requires at least: 4.4
 Tested up to: 4.6
 Stable tag: 3.7.0
+=======
+Requires at least: 4.3
+Tested up to: 4.6
+Stable tag: 3.6.1
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
 =======
 Requires at least: 4.3
 Tested up to: 4.6
@@ -123,6 +129,7 @@ You'll find the [FAQ on Yoast.com](https://yoast.com/wordpress/plugins/seo/faq/)
 == Changelog ==
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 = 3.7.0 =
 
 Release Date: October 11th, 2016
@@ -144,6 +151,11 @@ Release Date: October 11th, 2016
 = 3.6.1 =
 
 Release Date: October 3rd, 2016
+=======
+= 3.6.1 =
+
+Release Date: Oktober 3rd, 2016
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
 =======
 = 3.6.1 =
 
@@ -183,7 +195,10 @@ Release Date: September 27th, 2016
     * Fixes a bug where keywords with a $ where not recognized.
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
 = 3.5.0 =
 
 Release Date: September 7th, 2016
@@ -225,6 +240,9 @@ Release Date: September 7th, 2016
 
 
 
+<<<<<<< HEAD
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
+=======
 >>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
 = Earlier versions =
 

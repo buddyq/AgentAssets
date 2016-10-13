@@ -1,4 +1,5 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 <?php
 
 class AIOWPSecurity_List_Comment_Spammer_IP extends AIOWPSecurity_List_Table {
@@ -271,6 +272,8 @@ class AIOWPSecurity_List_Comment_Spammer_IP extends AIOWPSecurity_List_Table {
         ));
     }
 =======
+=======
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
 <?php
 
 class AIOWPSecurity_List_Comment_Spammer_IP extends AIOWPSecurity_List_Table {
@@ -542,5 +545,8 @@ class AIOWPSecurity_List_Comment_Spammer_IP extends AIOWPSecurity_List_Table {
             'total_pages' => ceil($total_items / $per_page)   //WE have to calculate the total number of pages
         ));
     }
+<<<<<<< HEAD
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
+=======
 >>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
 }

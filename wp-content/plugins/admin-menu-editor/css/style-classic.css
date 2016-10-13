@@ -1,4 +1,5 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 .ws_main_container {
 	padding-bottom: 4px;
 }
@@ -139,6 +140,8 @@ a.ws_button:hover {
 	background: transparent none;
 	color: #004665;
 =======
+=======
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
 .ws_main_container {
 	padding-bottom: 4px;
 }
@@ -278,5 +281,8 @@ a.ws_button:hover {
 .ui-dialog-titlebar-close:hover {
 	background: transparent none;
 	color: #004665;
+<<<<<<< HEAD
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
+=======
 >>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
 }

@@ -1,4 +1,5 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 <?php if( !defined( 'ABSPATH') ) exit(); 
 
 $slide_general_addon = apply_filters('revslider_slide_settings_addons', array(), $slide, $slider);
@@ -1400,6 +1401,8 @@ $slide_general_addon = apply_filters('revslider_slide_settings_addons', array(),
 		
 	});
 =======
+=======
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
 <?php if( !defined( 'ABSPATH') ) exit(); 
 
 $slide_general_addon = apply_filters('revslider_slide_settings_addons', array(), $slide, $slider);
@@ -2800,5 +2803,8 @@ $slide_general_addon = apply_filters('revslider_slide_settings_addons', array(),
 		jQuery('input[name="link_type"]:checked').change();
 		
 	});
+<<<<<<< HEAD
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
+=======
 >>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
 </script>

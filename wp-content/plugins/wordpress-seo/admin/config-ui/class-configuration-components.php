@@ -16,9 +16,15 @@ class WPSEO_Configuration_Components {
 
 	/**
 <<<<<<< HEAD
+<<<<<<< HEAD
 	 * Add default components.
 	 */
 	public function initialize() {
+=======
+	 * WPSEO_Configuration_Components constructor.
+	 */
+	public function __construct() {
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
 =======
 	 * WPSEO_Configuration_Components constructor.
 	 */

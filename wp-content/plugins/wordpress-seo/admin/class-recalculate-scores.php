@@ -42,7 +42,11 @@ class WPSEO_Recalculate_Scores {
 
 		?>
 <<<<<<< HEAD
+<<<<<<< HEAD
 		<div id="wpseo_recalculate" class="hidden">
+=======
+		<div id="wpseo_recalculate" style="display:none;">
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
 =======
 		<div id="wpseo_recalculate" style="display:none;">
 >>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6

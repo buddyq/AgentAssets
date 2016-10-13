@@ -113,7 +113,11 @@ class utils extends Whois {
 			if (is_array($nserver))
 				{
 <<<<<<< HEAD
+<<<<<<< HEAD
 				reset($nserver); 
+=======
+				reset($nserver); 
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
 =======
 				reset($nserver); 
 >>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
@@ -122,7 +126,11 @@ class utils extends Whois {
 					$url = '<a href="'. str_replace('$0',$ip,$link)."\">$host</a>";
 					$out = str_replace($host, $url, $out);
 <<<<<<< HEAD
+<<<<<<< HEAD
 					$out = str_replace(strtoupper($host), $url, $out);
+=======
+					$out = str_replace(strtoupper($host), $url, $out);
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
 =======
 					$out = str_replace(strtoupper($host), $url, $out);
 >>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6

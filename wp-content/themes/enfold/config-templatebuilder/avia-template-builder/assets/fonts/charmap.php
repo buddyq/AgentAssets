@@ -1,4 +1,5 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 <?php $chars = array();
 $chars['entypo-fontello']['ue91c'] = 'ue91c';
 $chars['entypo-fontello']['ue816'] = 'ue816';
@@ -305,6 +306,8 @@ $chars['entypo-fontello']['ue929'] = 'ue929';
 
 
 =======
+=======
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
 <?php $chars = array();
 $chars['entypo-fontello']['ue91c'] = 'ue91c';
 $chars['entypo-fontello']['ue816'] = 'ue816';
@@ -610,4 +613,7 @@ $chars['entypo-fontello']['ue929'] = 'ue929';
 
 
 
+<<<<<<< HEAD
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
+=======
 >>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6

@@ -1,4 +1,5 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 <?php
 
 if (defined('CRED_FE_VERSION'))
@@ -634,6 +635,8 @@ CRED_Loader::load('CLASS/CRED');
 
 CRED_CRED::init();
 =======
+=======
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
 <?php
 
 if (defined('CRED_FE_VERSION'))
@@ -1268,4 +1271,7 @@ require_once "common/functions.php";
 CRED_Loader::load('CLASS/CRED');
 
 CRED_CRED::init();
+<<<<<<< HEAD
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
+=======
 >>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6

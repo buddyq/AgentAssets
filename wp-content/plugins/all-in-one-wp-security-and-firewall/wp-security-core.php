@@ -1,4 +1,5 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 <?php 
 
 if (!class_exists('AIO_WP_Security')){
@@ -266,6 +267,8 @@ class AIO_WP_Security{
 
 $GLOBALS['aio_wp_security'] = new AIO_WP_Security();
 =======
+=======
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
 <?php 
 
 if (!class_exists('AIO_WP_Security')){
@@ -532,4 +535,7 @@ class AIO_WP_Security{
 }//End of class not exists check
 
 $GLOBALS['aio_wp_security'] = new AIO_WP_Security();
+<<<<<<< HEAD
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
+=======
 >>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6

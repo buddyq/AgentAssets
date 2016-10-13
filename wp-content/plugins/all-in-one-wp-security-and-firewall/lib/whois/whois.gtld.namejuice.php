@@ -1,4 +1,5 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 <?php
 /*
 Whois.php        PHP classes to conduct whois queries
@@ -52,6 +53,8 @@ class namejuice_handler
 		}
 	}
 =======
+=======
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
 <?php
 /*
 Whois.php        PHP classes to conduct whois queries
@@ -104,5 +107,8 @@ class namejuice_handler
 		return easy_parser($data_str, $items, 'dmy', false, true, true);
 		}
 	}
+<<<<<<< HEAD
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
+=======
 >>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
 ?>

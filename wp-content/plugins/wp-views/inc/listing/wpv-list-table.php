@@ -1,4 +1,5 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 <?php
 
 // todo @Jan: determine if we need screens, ajax, hidden columns, filters; check if all works after making the embedded version thinner
@@ -528,6 +529,8 @@ abstract class WPV_List_Table extends WPV_List_Table_Embedded {
 
 }
 =======
+=======
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
 <?php
 
 // todo @Jan: determine if we need screens, ajax, hidden columns, filters; check if all works after making the embedded version thinner
@@ -1056,4 +1059,7 @@ abstract class WPV_List_Table extends WPV_List_Table_Embedded {
     }
 
 }
+<<<<<<< HEAD
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
+=======
 >>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6

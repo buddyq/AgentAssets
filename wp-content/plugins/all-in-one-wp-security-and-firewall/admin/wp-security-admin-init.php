@@ -1,4 +1,5 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 <?php
 /* 
  * Inits the admin dashboard side of things.
@@ -330,6 +331,8 @@ class AIOWPSecurity_Admin_Init
 }//End of class
 
 =======
+=======
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
 <?php
 /* 
  * Inits the admin dashboard side of things.
@@ -660,4 +663,7 @@ class AIOWPSecurity_Admin_Init
     
 }//End of class
 
+<<<<<<< HEAD
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
+=======
 >>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6

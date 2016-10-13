@@ -735,6 +735,7 @@ class WPSEO_Bulk_List_Table extends WP_List_Table {
 	protected function column_attributes( $column_name, $hidden, $classes ) {
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 		$attributes = '';
 		$class = array( $column_name, "column-$column_name$classes" );
 
@@ -746,6 +747,8 @@ class WPSEO_Bulk_List_Table extends WP_List_Table {
 			$attributes = 'class="' . implode( ' ', $class ) . '"';
 		}
 =======
+=======
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
 		$class = sprintf( 'class="%1$s column-%1$s%2$s"', $column_name, $classes );
 		$style = '';
 
@@ -754,6 +757,9 @@ class WPSEO_Bulk_List_Table extends WP_List_Table {
 		}
 
 		$attributes = $class . $style;
+<<<<<<< HEAD
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
+=======
 >>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
 
 		return $attributes;
@@ -769,9 +775,13 @@ class WPSEO_Bulk_List_Table extends WP_List_Table {
 	protected function parse_page_title_column( $rec ) {
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 		$title = empty( $rec->post_title ) ? __( '(no title)', 'wordpress-seo' ) : $rec->post_title;
 
 		$return = sprintf( '<strong>%1$s</strong>', stripslashes( wp_strip_all_tags( $title ) ) );
+=======
+		$return = sprintf( '<strong>%1$s</strong>', stripslashes( wp_strip_all_tags( $rec->post_title ) ) );
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
 =======
 		$return = sprintf( '<strong>%1$s</strong>', stripslashes( wp_strip_all_tags( $rec->post_title ) ) );
 >>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
@@ -787,7 +797,11 @@ class WPSEO_Bulk_List_Table extends WP_List_Table {
 				esc_url( get_edit_post_link( $rec->ID, true ) ),
 				/* translators: %s: post title */
 <<<<<<< HEAD
+<<<<<<< HEAD
 				esc_attr( sprintf( __( 'Edit &#8220;%s&#8221;', 'wordpress-seo' ), $title ) ),
+=======
+				esc_attr( sprintf( __( 'Edit &#8220;%s&#8221;', 'wordpress-seo' ), $rec->post_title ) ),
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
 =======
 				esc_attr( sprintf( __( 'Edit &#8220;%s&#8221;', 'wordpress-seo' ), $rec->post_title ) ),
 >>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
@@ -803,7 +817,11 @@ class WPSEO_Bulk_List_Table extends WP_List_Table {
 						esc_url( add_query_arg( 'preview', 'true', get_permalink( $rec->ID ) ) ),
 						/* translators: %s: post title */
 <<<<<<< HEAD
+<<<<<<< HEAD
 						esc_attr( sprintf( __( 'Preview &#8220;%s&#8221;', 'wordpress-seo' ), $title ) ),
+=======
+						esc_attr( sprintf( __( 'Preview &#8220;%s&#8221;', 'wordpress-seo' ), $rec->post_title ) ),
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
 =======
 						esc_attr( sprintf( __( 'Preview &#8220;%s&#8221;', 'wordpress-seo' ), $rec->post_title ) ),
 >>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
@@ -817,7 +835,11 @@ class WPSEO_Bulk_List_Table extends WP_List_Table {
 					esc_url( get_permalink( $rec->ID ) ),
 					/* translators: %s: post title */
 <<<<<<< HEAD
+<<<<<<< HEAD
 					esc_attr( sprintf( __( 'View &#8220;%s&#8221;', 'wordpress-seo' ), $title ) ),
+=======
+					esc_attr( sprintf( __( 'View &#8220;%s&#8221;', 'wordpress-seo' ), $rec->post_title ) ),
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
 =======
 					esc_attr( sprintf( __( 'View &#8220;%s&#8221;', 'wordpress-seo' ), $rec->post_title ) ),
 >>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6

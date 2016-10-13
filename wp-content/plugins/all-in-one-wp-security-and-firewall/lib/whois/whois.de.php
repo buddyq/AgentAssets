@@ -65,9 +65,15 @@ class de_handler
 
 		 if (!isset($r['regrinfo']['domain']['status']) || $r['regrinfo']['domain']['status'] == "free")
 <<<<<<< HEAD
+<<<<<<< HEAD
 			{
             $r['regrinfo']['registered'] = 'no';
             }
+=======
+			{
+            $r['regrinfo']['registered'] = 'no';
+            }
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
 =======
 			{
             $r['regrinfo']['registered'] = 'no';

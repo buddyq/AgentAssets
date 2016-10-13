@@ -1,4 +1,5 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 <?php
 /**
  * Filter the_content tag 
@@ -113,6 +114,8 @@ function wpv_resolve_internal_shortcodes_for_widgets($content) {
 }
 
 =======
+=======
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
 <?php
 /**
  * Filter the_content tag 
@@ -226,5 +229,8 @@ function wpv_resolve_internal_shortcodes_for_widgets($content) {
 	return do_shortcode($content);
 }
 
+<<<<<<< HEAD
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
+=======
 >>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
 add_filter('widget_text', 'wpv_resolve_internal_shortcodes_for_widgets', 9, 1);

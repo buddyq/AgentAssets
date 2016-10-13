@@ -22,7 +22,11 @@ function mism_list_sites($atts)
         return $html;
     }
 <<<<<<< HEAD
+<<<<<<< HEAD
 
+=======
+    
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
 =======
     
 >>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
@@ -33,7 +37,11 @@ function mism_list_sites($atts)
         $blogs = OrderMap::getUserBlogsDetailed($user_id);
         $html .= '<div class="tng-responsive-table">';
 <<<<<<< HEAD
+<<<<<<< HEAD
 
+=======
+        
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
 =======
         
 >>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
@@ -55,7 +63,11 @@ function mism_list_sites($atts)
 			$html .= '<table>';
             $html .= '<h3>'.$atts['title'].'</h3>';
 <<<<<<< HEAD
+<<<<<<< HEAD
 
+=======
+            
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
 =======
             
 >>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
@@ -65,9 +77,15 @@ function mism_list_sites($atts)
                 $html .= '<th class="numeric">'.__('Site URL','mism').'</th>';
                 $html .= '<th class="numeric">'.__('Days Left','mism').'</th>';
 <<<<<<< HEAD
+<<<<<<< HEAD
                 $html .= '<th class="numeric">'.__('Actions','mism').'</th>';
             $html .= '</thead>';
 
+=======
+                $html .= '<th class="numeric">'.__('Action','mism').'</th>';
+            $html .= '</thead>';
+            
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
 =======
                 $html .= '<th class="numeric">'.__('Action','mism').'</th>';
             $html .= '</thead>';
@@ -89,6 +107,7 @@ function mism_list_sites($atts)
                         $html .= '<li><a href="http://'.$externalDomain.'" title="'.$blog->blogname.'" target="_blank">http://'.$externalDomain.'</a></li>';
                     }
 <<<<<<< HEAD
+<<<<<<< HEAD
                     $html .= '</ol>';
                     $html .= '</td>';
                     $html .= '<td data-title="Days Left" class="days-left">'.$blog->days_left.'</td>';
@@ -105,6 +124,8 @@ function mism_list_sites($atts)
                         $html .= '<input data-site-name="' . $blog->blogname . '" data-id="' . $blog->userblog_id . '" class="listblog_delete button" data-sending-label="Deleting..." type="submit" name="delete_site" value="Delete"/>';
                         $html .= '&nbsp;<a class="btn btn-primary button" href="'.$blog->siteurl.'/wp-admin/admin.php?page=mi-sub-agent-information">Edit</a>';
 =======
+=======
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
                     $html .= '</td>';
                     $html .= '<td data-title="Days Left">'.$blog->days_left.'</td>';
                     $html .= '<td data-title="Action">';
@@ -116,6 +137,9 @@ function mism_list_sites($atts)
                         // $html .= '<input class="listblog_edit" type="submit" name="edit_site" value="Edit"/>';
                         $html .= '<input data-site-name="' . $blog->blogname . '" data-id="' . $blog->userblog_id . '" class="listblog_delete button" data-sending-label="Deleting..." type="submit" name="delete_site" value="Delete"/>';
 
+<<<<<<< HEAD
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
+=======
 >>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
                         if ($blog->days_left < 7) {
                             if ($duration) {
@@ -135,8 +159,13 @@ function mism_list_sites($atts)
             $html .= '</div>';
             $html .= '</div>';
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 
+=======
+           
+           
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
 =======
            
            
@@ -153,7 +182,11 @@ function mism_list_sites($atts)
         }
     }
 <<<<<<< HEAD
+<<<<<<< HEAD
 
+=======
+  
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
 =======
   
 >>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
@@ -162,7 +195,11 @@ function mism_list_sites($atts)
         //$blogs = get_blogs_of_user(get_current_user_id(),false);
         $blogs = OrderMap::getUserBlogsDetailed(get_current_user_id());
 <<<<<<< HEAD
+<<<<<<< HEAD
 
+=======
+        
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
 =======
         
 >>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
@@ -171,7 +208,11 @@ function mism_list_sites($atts)
 			$html .= '<table class="blog-list-container '.$atts['type'].'">';
             $html .= '<h3>'.$atts['title'].'</h3>';
 <<<<<<< HEAD
+<<<<<<< HEAD
 
+=======
+            
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
 =======
             
 >>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
@@ -182,7 +223,11 @@ function mism_list_sites($atts)
                 $html .= '<th>'.__('Link','mism').'</th>';
             $html .= '</thead>';
 <<<<<<< HEAD
+<<<<<<< HEAD
 
+=======
+            
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
 =======
             
 >>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
@@ -203,9 +248,15 @@ function mism_list_sites($atts)
                 }
             $html .= '</tbody>';
 <<<<<<< HEAD
+<<<<<<< HEAD
              $html .= '</table>';
         }
 
+=======
+             $html .= '</table>'; 
+        }
+       
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
 =======
              $html .= '</table>'; 
         }
@@ -226,8 +277,13 @@ function mism_list_sites($atts)
         //$blogs = get_blogs_of_user(get_current_user_id(),false);
         $blogs = OrderMap::getUserBlogsDetailed(get_current_user_id());
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 
+=======
+        
+        
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
 =======
         
         
@@ -237,7 +293,11 @@ function mism_list_sites($atts)
 			$html .= '<table class="blog-list-container '.$atts['type'].'">';
             $html .= '<h3>'.$atts['title'].'</h3>';
 <<<<<<< HEAD
+<<<<<<< HEAD
 
+=======
+            
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
 =======
             
 >>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
@@ -248,7 +308,11 @@ function mism_list_sites($atts)
                 $html .= '<th>'.__('Link','mism').'</th>';
             $html .= '</thead>';
 <<<<<<< HEAD
+<<<<<<< HEAD
 
+=======
+            
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
 =======
             
 >>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
@@ -267,9 +331,15 @@ function mism_list_sites($atts)
                 }
             $html .= '</tbody>';
 <<<<<<< HEAD
+<<<<<<< HEAD
            $html .= '</table>';
         }
 
+=======
+           $html .= '</table>'; 
+        }
+         
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
 =======
            $html .= '</table>'; 
         }
@@ -286,7 +356,11 @@ function mism_list_sites($atts)
         }
     }
 <<<<<<< HEAD
+<<<<<<< HEAD
 
+=======
+    
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
 =======
     
 >>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6

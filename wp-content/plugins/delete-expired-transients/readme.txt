@@ -2,6 +2,7 @@
 Contributors: webaware
 Plugin Name: Delete Expired Transients
 <<<<<<< HEAD
+<<<<<<< HEAD
 Plugin URI: https://shop.webaware.com.au/downloads/delete-expired-transients/
 Author URI: https://webaware.com.au/
 Donate link: https://shop.webaware.com.au/donations/?donation_for=Delete+Expired+Transients
@@ -12,6 +13,8 @@ Stable tag: 2.0.5
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 =======
+=======
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
 Plugin URI: http://shop.webaware.com.au/downloads/delete-expired-transients/
 Author URI: http://webaware.com.au/
 Donate link: http://shop.webaware.com.au/donations/?donation_for=Delete+Expired+Transients
@@ -21,6 +24,9 @@ Tested up to: 4.4
 Stable tag: 2.0.4.1
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
+<<<<<<< HEAD
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
+=======
 >>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
 
 delete old, expired transients from WordPress wp_options table
@@ -42,6 +48,7 @@ Now optimised for WordPress Multisite.
 Many thanks to the generous efforts of our translators:
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 * English (en_CA) -- [the English (Canadian) translation team](https://translate.wordpress.org/locale/en-ca/default/wp-plugins/delete-expired-transients)
 * French (fr_FR) -- [the French translation team](https://translate.wordpress.org/locale/fr/default/wp-plugins/delete-expired-transients)
 * Hungarian (hu_HU) -- [the Hungarian translation team](https://translate.wordpress.org/locale/hu/default/wp-plugins/delete-expired-transients)
@@ -52,12 +59,17 @@ Many thanks to the generous efforts of our translators:
 
 If you'd like to help out by translating this plugin, please [sign up for an account and dig in](https://translate.wordpress.org/projects/wp-plugins/delete-expired-transients).
 =======
+=======
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
 * French (fr_FR) -- [Mathieu Hays](http://mathieuhays.co.uk/)
 * Norwegian: Bokmål (nb_NO) -- [neonnero](http://www.neonnero.com/)
 * Norwegian: Nynorsk (nn_NO) -- [neonnero](http://www.neonnero.com/)
 * Spanish (es_ES) -- [David Sandoval](http://BieberNoticias.com)
 
 If you'd like to help out by translating this plugin, please [sign up for an account and dig in](https://translate.webaware.com.au/projects/delete-expired-transients).
+<<<<<<< HEAD
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
+=======
 >>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
 
 == Installation ==
@@ -72,7 +84,11 @@ That's it! Expired transients will be deleted the next time you visit your websi
 = What is a "transient" anyway? =
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 According to [Codex](https://codex.wordpress.org/Transients_API), transients are:
+=======
+According to [Codex](http://codex.wordpress.org/Transients_API), transients are:
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
 =======
 According to [Codex](http://codex.wordpress.org/Transients_API), transients are:
 >>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
@@ -104,7 +120,11 @@ NB: after you install and activate this plugin, the first thing it does is sched
 = Do I need this if I'm running an object cache? =
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 No. Object caches like memcached are limited pools of data, and they already purge old data periodically so that they can fit newer data. This means that old transients will be removed from the cache automatically. It also means that new, fresh transients can be removed at any time too, which is why you should never store anything in a transient that can't be rebuilt easily. See this article on the WPEngine blog for more details: [A Technical Transients Treatise](https://wpengine.com/2013/02/wordpress-transient-api/).
+=======
+No. Object caches like memcached are limited pools of data, and they already purge old data periodically so that they can fit newer data. This means that old transients will be removed from the cache automatically. It also means that new, fresh transients can be removed at any time too, which is why you should never store anything in a transient that can't be rebuilt easily. See this article on the WPEngine blog for more details: [A Technical Transients Treatise](http://wpengine.com/2013/02/wordpress-transient-api/).
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
 =======
 No. Object caches like memcached are limited pools of data, and they already purge old data periodically so that they can fit newer data. This means that old transients will be removed from the cache automatically. It also means that new, fresh transients can be removed at any time too, which is why you should never store anything in a transient that can't be rebuilt easily. See this article on the WPEngine blog for more details: [A Technical Transients Treatise](http://wpengine.com/2013/02/wordpress-transient-api/).
 >>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
@@ -126,7 +146,11 @@ NB: if your website has multiple networks (e.g. if you're running [WP Multi Netw
 == Contributions ==
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 * [Translate into your preferred language](https://translate.wordpress.org/projects/wp-plugins/delete-expired-transients)
+=======
+* [Translate into your preferred language](https://translate.webaware.com.au/projects/delete-expired-transients)
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
 =======
 * [Translate into your preferred language](https://translate.webaware.com.au/projects/delete-expired-transients)
 >>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
@@ -172,9 +196,15 @@ order by t1.option_value desc;`
 == Upgrade Notice ==
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 = 2.0.5 =
 
 added manual deletion of obsolete sessions from WooCommerce version 2.4 and earlier
+=======
+= 2.0.4 =
+
+fixed bottom bulk-action on multisite network admin, localisation text domain changed to delete-expired-transients
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
 =======
 = 2.0.4 =
 
@@ -186,11 +216,14 @@ fixed bottom bulk-action on multisite network admin, localisation text domain ch
 The full changelog can be found [on GitHub](https://github.com/webaware/delete-expired-transients/blob/master/changelog.md). Recent entries:
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 ### 2.0.5, 2016-10-09
 
 * added: Hungarian translation (thanks, [Tom Vicces](https://profiles.wordpress.org/theguitarlesson/)!)
 * added: manual deletion of obsolete sessions from WooCommerce version 2.4 and earlier
 =======
+=======
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
 ### 2.0.4.1, 2015-12-02
 
 * fixed: "Class 'DelxtransCleaners' not found" when deleting expired transients
@@ -212,4 +245,7 @@ The full changelog can be found [on GitHub](https://github.com/webaware/delete-e
 ### 2.0.1, 2014-08-31
 
 * added: Norwegian translations (thanks, [neonnero](http://www.neonnero.com/)!)
+<<<<<<< HEAD
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
+=======
 >>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6

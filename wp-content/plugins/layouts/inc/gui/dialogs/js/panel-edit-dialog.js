@@ -87,7 +87,11 @@ DDLayout.PanelDialog = function($, row_view)
 
             jQuery('input[name="ddl-panel-edit-panel-name"]').val(row_view.model.get('name'));
 <<<<<<< HEAD
+<<<<<<< HEAD
 	        jQuery('select.js-edit-css-class', jQuery('#ddl-panel-edit') ).val(row_view.model.get('additionalCssClasses'));
+=======
+	        jQuery('input.js-edit-css-class', jQuery('#ddl-panel-edit') ).val(row_view.model.get('additionalCssClasses'));
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
 =======
 	        jQuery('input.js-edit-css-class', jQuery('#ddl-panel-edit') ).val(row_view.model.get('additionalCssClasses'));
 >>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
@@ -138,7 +142,11 @@ DDLayout.PanelDialog = function($, row_view)
 
             target_row.set('name', jQuery('input[name="ddl-panel-edit-panel-name"]').val() );
 <<<<<<< HEAD
+<<<<<<< HEAD
             target_row.set('additionalCssClasses', jQuery('select.js-edit-css-class', jQuery('#ddl-panel-edit') ).val() );
+=======
+            target_row.set('additionalCssClasses', jQuery('input.js-edit-css-class', jQuery('#ddl-panel-edit') ).val() );
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
 =======
             target_row.set('additionalCssClasses', jQuery('input.js-edit-css-class', jQuery('#ddl-panel-edit') ).val() );
 >>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6

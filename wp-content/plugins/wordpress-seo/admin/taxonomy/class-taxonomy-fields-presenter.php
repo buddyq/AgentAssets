@@ -57,10 +57,13 @@ class WPSEO_Taxonomy_Fields_Presenter {
 		$help             = new WPSEO_Admin_Help_Panel( $field_name, $help_button_text, $help_content );
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 		if ( in_array( $field_configuration['type'], array( 'focuskeyword', 'pageanalysis', 'snippetpreview' ) ) ) {
 			return $this->parse_section_row( $field, $field_configuration['type'], $help );
 		}
 
+=======
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
 =======
 >>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
 		return $this->parse_row( $label, $help, $field );
@@ -89,6 +92,7 @@ class WPSEO_Taxonomy_Fields_Presenter {
 		switch ( $field_type ) {
 			case 'div' :
 <<<<<<< HEAD
+<<<<<<< HEAD
 				$field .= '<div id="' . $field_name . '"></div>';
 				break;
 
@@ -111,6 +115,9 @@ class WPSEO_Taxonomy_Fields_Presenter {
 				$field .= '<input type="text" id="' . $field_name . '" autocomplete="off" name="' . $field_name . '" value="' . esc_attr( $field_value ) . '" class="large-text' . $class . '"/><br />';
 				$field .= '</section>';
 				$field .= '</div>';
+=======
+				$field .= '<div id="' . $field_name . '"' . $aria_describedby . '></div>';
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
 =======
 				$field .= '<div id="' . $field_name . '"' . $aria_describedby . '></div>';
 >>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
@@ -218,6 +225,7 @@ class WPSEO_Taxonomy_Fields_Presenter {
 		return $field;
 	}
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 	/**
 	 * Creates a sections specific row.
@@ -235,6 +243,8 @@ class WPSEO_Taxonomy_Fields_Presenter {
 		$html .= '</td></tr>';
 		return $html;
 	}
+=======
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
 =======
 >>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
 }

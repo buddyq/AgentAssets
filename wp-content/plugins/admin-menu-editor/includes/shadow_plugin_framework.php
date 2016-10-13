@@ -1,4 +1,5 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 <?php
 
 /**
@@ -373,6 +374,8 @@ class MenuEd_ShadowPluginFramework {
 	}
 	
 =======
+=======
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
 <?php
 
 /**
@@ -746,5 +749,8 @@ class MenuEd_ShadowPluginFramework {
 		return in_array( $plugin, (array) get_option('active_plugins', array()) ) || $this->is_plugin_active_for_network($plugin);
 	}
 	
+<<<<<<< HEAD
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
+=======
 >>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
 }

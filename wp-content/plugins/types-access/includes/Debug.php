@@ -1,4 +1,5 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 <?php
 final class Access_Debug
 {
@@ -100,6 +101,8 @@ public static function wpcf_access_debug($plain = false)
 }
 
 =======
+=======
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
 <?php
 final class Access_Debug
 {
@@ -200,5 +203,8 @@ public static function wpcf_access_debug($plain = false)
     }
 }
 
+<<<<<<< HEAD
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
+=======
 >>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
 }

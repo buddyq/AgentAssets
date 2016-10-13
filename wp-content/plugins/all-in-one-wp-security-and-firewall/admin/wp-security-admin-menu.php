@@ -1,4 +1,5 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 <?php
 
 /* Parent class for all admin menu classes */
@@ -92,6 +93,8 @@ abstract class AIOWPSecurity_Admin_Menu
         return $output;
     }
 =======
+=======
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
 <?php
 
 /* Parent class for all admin menu classes */
@@ -184,5 +187,8 @@ abstract class AIOWPSecurity_Admin_Menu
         ob_end_clean();
         return $output;
     }
+<<<<<<< HEAD
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
+=======
 >>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
 }

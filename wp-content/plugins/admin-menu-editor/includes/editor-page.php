@@ -1,4 +1,5 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 <?php
 /**
  * @var array $editor_data Various pieces of data passed by the plugin.
@@ -577,6 +578,8 @@ var defaultMenu = <?php echo $editor_data['default_menu_js']; ?>;
 var customMenu = <?php echo $editor_data['custom_menu_js']; ?>;
 </script>
 =======
+=======
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
 <?php
 /**
  * @var array $editor_data Various pieces of data passed by the plugin.
@@ -1154,4 +1157,7 @@ if ( $is_pro_version ) {
 var defaultMenu = <?php echo $editor_data['default_menu_js']; ?>;
 var customMenu = <?php echo $editor_data['custom_menu_js']; ?>;
 </script>
+<<<<<<< HEAD
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
+=======
 >>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6

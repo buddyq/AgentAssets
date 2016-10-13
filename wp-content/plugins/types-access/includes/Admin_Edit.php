@@ -1,4 +1,5 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 <?php
 /** {ENCRYPTION PATCH HERE} **/
 final class Access_Admin_Edit
@@ -1857,6 +1858,8 @@ public static function toolset_access_order_wp_roles( $invalidate = false ){
 
 }
 =======
+=======
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
 <?php
 /** {ENCRYPTION PATCH HERE} **/
 final class Access_Admin_Edit
@@ -3714,4 +3717,7 @@ public static function toolset_access_order_wp_roles( $invalidate = false ){
 
 
 }
+<<<<<<< HEAD
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
+=======
 >>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6

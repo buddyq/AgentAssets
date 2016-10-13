@@ -1,4 +1,5 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 <?php
 function login_widget_afo_shortcode( $atts ) {
      global $post;
@@ -35,6 +36,8 @@ function forgot_password_afo_shortcode( $atts ) {
 	return $ret;
 }
 =======
+=======
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
 <?php
 function login_widget_afo_shortcode( $atts ) {
      global $post;
@@ -70,5 +73,8 @@ function forgot_password_afo_shortcode( $atts ) {
 	ob_end_clean();
 	return $ret;
 }
+<<<<<<< HEAD
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
+=======
 >>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
 add_shortcode( 'forgot_password', 'forgot_password_afo_shortcode' );

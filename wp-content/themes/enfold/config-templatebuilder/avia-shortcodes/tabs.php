@@ -1,4 +1,5 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 <?php
 /**
  * Sidebar
@@ -270,6 +271,8 @@ if ( !class_exists( 'avia_sc_tab' ) )
     }
 }
 =======
+=======
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
 <?php
 /**
  * Sidebar
@@ -540,4 +543,7 @@ if ( !class_exists( 'avia_sc_tab' ) )
 
     }
 }
+<<<<<<< HEAD
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
+=======
 >>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6

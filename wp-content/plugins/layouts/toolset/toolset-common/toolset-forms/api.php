@@ -1,10 +1,13 @@
 <?php
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 function wptoolset_form( $form_id, $config = array() ){
 	/** @var WPToolset_Forms_Bootstrap $wptoolset_forms */
 	global $wptoolset_forms;
 =======
+=======
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
 /**
  *
  *
@@ -12,6 +15,9 @@ function wptoolset_form( $form_id, $config = array() ){
 
 function wptoolset_form( $form_id, $config = array() ){
     global $wptoolset_forms;
+<<<<<<< HEAD
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
+=======
 >>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
     $html = $wptoolset_forms->form( $form_id, $config );
     return apply_filters( 'wptoolset_form', $html, $config );
@@ -19,8 +25,12 @@ function wptoolset_form( $form_id, $config = array() ){
 
 function wptoolset_form_field( $form_id, $config, $value = array() ){
 <<<<<<< HEAD
+<<<<<<< HEAD
     /** @var WPToolset_Forms_Bootstrap $wptoolset_forms */
 	global $wptoolset_forms;
+=======
+    global $wptoolset_forms;
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
 =======
     global $wptoolset_forms;
 >>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
@@ -36,8 +46,12 @@ function wptoolset_form_field( $form_id, $config, $value = array() ){
 
 function wptoolset_form_validate_field( $form_id, $config, $value ){
 <<<<<<< HEAD
+<<<<<<< HEAD
 	/** @var WPToolset_Forms_Bootstrap $wptoolset_forms */
 	global $wptoolset_forms;
+=======
+    global $wptoolset_forms;
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
 =======
     global $wptoolset_forms;
 >>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
@@ -46,8 +60,12 @@ function wptoolset_form_validate_field( $form_id, $config, $value ){
 
 function wptoolset_form_conditional_check( $config ){
 <<<<<<< HEAD
+<<<<<<< HEAD
 	/** @var WPToolset_Forms_Bootstrap $wptoolset_forms */
 	global $wptoolset_forms;
+=======
+    global $wptoolset_forms;
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
 =======
     global $wptoolset_forms;
 >>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
@@ -55,6 +73,7 @@ function wptoolset_form_conditional_check( $config ){
 }
 
 function wptoolset_form_add_conditional( $form_id, $config ){
+<<<<<<< HEAD
 <<<<<<< HEAD
 	/** @var WPToolset_Forms_Bootstrap $wptoolset_forms */
 	global $wptoolset_forms;
@@ -65,20 +84,29 @@ function wptoolset_form_filter_types_field( $field, $post_id = null, $_post_wpcf
 	/** @var WPToolset_Forms_Bootstrap $wptoolset_forms */
 	global $wptoolset_forms;
 =======
+=======
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
     global $wptoolset_forms;
     return $wptoolset_forms->addConditional( $form_id, $config );
 }
 
 function wptoolset_form_filter_types_field( $field, $post_id = null, $_post_wpcf = array() ){
     global $wptoolset_forms;
+<<<<<<< HEAD
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
+=======
 >>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
     return $wptoolset_forms->filterTypesField( $field, $post_id, $_post_wpcf );
 }
 
 function wptoolset_form_field_add_filters( $type ){
 <<<<<<< HEAD
+<<<<<<< HEAD
 	/** @var WPToolset_Forms_Bootstrap $wptoolset_forms */
 	global $wptoolset_forms;
+=======
+    global $wptoolset_forms;
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
 =======
     global $wptoolset_forms;
 >>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
@@ -87,8 +115,12 @@ function wptoolset_form_field_add_filters( $type ){
 
 function wptoolset_form_get_conditional_data( $post_id ){
 <<<<<<< HEAD
+<<<<<<< HEAD
 	/** @var WPToolset_Forms_Bootstrap $wptoolset_forms */
 	global $wptoolset_forms;
+=======
+    global $wptoolset_forms;
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
 =======
     global $wptoolset_forms;
 >>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
@@ -97,8 +129,12 @@ function wptoolset_form_get_conditional_data( $post_id ){
 
 function wptoolset_strtotime( $date, $format = null ){
 <<<<<<< HEAD
+<<<<<<< HEAD
 	/** @var WPToolset_Forms_Bootstrap $wptoolset_forms */
 	global $wptoolset_forms;
+=======
+    global $wptoolset_forms;
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
 =======
     global $wptoolset_forms;
 >>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
@@ -107,8 +143,12 @@ function wptoolset_strtotime( $date, $format = null ){
 
 function wptoolset_timetodate( $timestamp, $format = null ){
 <<<<<<< HEAD
+<<<<<<< HEAD
 	/** @var WPToolset_Forms_Bootstrap $wptoolset_forms */
 	global $wptoolset_forms;
+=======
+    global $wptoolset_forms;
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
 =======
     global $wptoolset_forms;
 >>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
@@ -128,7 +168,11 @@ function wptoolset_timetodate( $timestamp, $format = null ){
  * @global object $wpdb
  *
 <<<<<<< HEAD
+<<<<<<< HEAD
  * @param string $like The raw text to be escaped.
+=======
+ * @param string $text The raw text to be escaped.
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
 =======
  * @param string $text The raw text to be escaped.
 >>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6

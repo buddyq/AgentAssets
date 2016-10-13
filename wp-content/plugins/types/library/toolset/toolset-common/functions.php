@@ -1,4 +1,5 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 <?php
 
 _doing_it_wrong(
@@ -8,6 +9,8 @@ _doing_it_wrong(
 );
 
 =======
+=======
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
 <?php
 
 _doing_it_wrong(
@@ -16,5 +19,8 @@ _doing_it_wrong(
 	'Toolset Common Library 2.1'
 );
 
+<<<<<<< HEAD
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
+=======
 >>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
 require_once dirname( __FILE__ ) . '/inc/toolset.function.helpers.php';

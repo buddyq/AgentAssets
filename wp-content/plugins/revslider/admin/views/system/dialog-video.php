@@ -1,4 +1,5 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 <?php if( !defined( 'ABSPATH') ) exit(); ?>
 
 <!-- //Youtube dialog: -->
@@ -346,6 +347,8 @@
 		</div>
 	</form>
 =======
+=======
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
 <?php if( !defined( 'ABSPATH') ) exit(); ?>
 
 <!-- //Youtube dialog: -->
@@ -692,5 +695,8 @@
 			<a href="javascript:void(0)" class="button-primary revblue" style="display: none;" id="button-audio-add" data-textadd="<?php _e('Add This Audio', 'revslider'); ?>" data-textupdate="<?php _e('Update Audio', 'revslider'); ?>" ><?php _e('Add This Audio', 'revslider'); ?></a>
 		</div>
 	</form>
+<<<<<<< HEAD
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
+=======
 >>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
 </div>

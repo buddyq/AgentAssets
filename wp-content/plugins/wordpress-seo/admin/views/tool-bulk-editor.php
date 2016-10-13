@@ -29,6 +29,7 @@ if ( ! empty( $_REQUEST['_wp_http_referer'] ) ) {
 	exit;
 }
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 /**
  * Outputs a help center.
@@ -62,6 +63,8 @@ function get_rendered_tab( $table, $id ) {
 
 =======
 >>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
+=======
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
 ?>
 <script>
 	var wpseo_bulk_editor_nonce = '<?php echo wp_create_nonce( 'wpseo-bulk-editor' ); ?>';
@@ -77,9 +80,12 @@ function get_rendered_tab( $table, $id ) {
 
 	<div class="tabwrapper">
 <<<<<<< HEAD
+<<<<<<< HEAD
 		<?php get_rendered_tab( $wpseo_bulk_titles_table, 'title' )?>
 		<?php get_rendered_tab( $wpseo_bulk_description_table, 'description' )?>
 =======
+=======
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
 		<div id="title" class="wpseotab">
 			<?php
 
@@ -101,6 +107,9 @@ function get_rendered_tab( $table, $id ) {
 			?>
 		</div>
 
+<<<<<<< HEAD
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
+=======
 >>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
 	</div>
 </div>

@@ -1,4 +1,5 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 <?php
 if ( file_exists( dirname(__FILE__) . '/editor-addon-generic.class.php') && !class_exists( 'WPV_Editor_addon' )  ) {
 
@@ -327,6 +328,8 @@ if ( file_exists( dirname(__FILE__) . '/editor-addon-generic.class.php') && !cla
 }
 
 =======
+=======
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
 <?php
 if ( file_exists( dirname(__FILE__) . '/editor-addon-generic.class.php') && !class_exists( 'WPV_Editor_addon' )  ) {
 
@@ -654,4 +657,7 @@ if ( file_exists( dirname(__FILE__) . '/editor-addon-generic.class.php') && !cla
 
 }
 
+<<<<<<< HEAD
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
+=======
 >>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6

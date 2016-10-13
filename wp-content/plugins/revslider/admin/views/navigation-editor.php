@@ -1,4 +1,5 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 <?php
 /**
  * @package   Revolution Slider
@@ -1939,6 +1940,8 @@ $font_families = $rsopr->getArrFontFamilys();
 		</li>
 	</ul>
 =======
+=======
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
 <?php
 /**
  * @package   Revolution Slider
@@ -3878,5 +3881,8 @@ $font_families = $rsopr->getArrFontFamilys();
 			<input type="text" name="ph-custom" value="">
 		</li>
 	</ul>
+<<<<<<< HEAD
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
+=======
 >>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
 </div>

@@ -1,4 +1,5 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 <?php
 if (!defined('ABSPATH'))  die('Security check');
 if(!current_user_can(CRED_CAPABILITY)) {
@@ -58,6 +59,8 @@ if($doaction)
     jQuery(".row-actions").remove();
 </script>
 =======
+=======
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
 <?php
 if (!defined('ABSPATH'))  die('Security check');
 if(!current_user_can(CRED_CAPABILITY)) {
@@ -116,4 +119,7 @@ if($doaction)
     jQuery(".check-column").remove();
     jQuery(".row-actions").remove();
 </script>
+<<<<<<< HEAD
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
+=======
 >>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6

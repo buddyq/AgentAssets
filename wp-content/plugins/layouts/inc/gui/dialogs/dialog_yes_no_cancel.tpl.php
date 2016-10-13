@@ -1,4 +1,5 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 <div class="ddl-dialogs-container">
 
     <div class="ddl-dialog" id="ddl-yes-no-cancel">
@@ -17,6 +18,8 @@
 	</div>
 
 =======
+=======
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
 <div class="ddl-dialogs-container">
 
     <div class="ddl-dialog" id="ddl-yes-no-cancel">
@@ -34,5 +37,8 @@
 		<button class="button button-primary js-dialog-close"><?php _e('Cancel','ddl-layouts') ?></button>
 	</div>
 
+<<<<<<< HEAD
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
+=======
 >>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
 </div>

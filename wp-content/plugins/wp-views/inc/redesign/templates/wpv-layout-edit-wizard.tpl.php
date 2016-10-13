@@ -1,4 +1,5 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 <div class="wpv-dialog wpv-dialog-layout-wizard js-wpv-dialog-layout-wizard">
     <div class="wpv-dialog-header">
         <h2><?php _e( 'Loop Wizard','wpv-views' ); ?></h2>
@@ -182,6 +183,8 @@
 
 </div>
 =======
+=======
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
 <div class="wpv-dialog wpv-dialog-layout-wizard js-wpv-dialog-layout-wizard">
     <div class="wpv-dialog-header">
         <h2><?php _e( 'Loop Wizard','wpv-views' ); ?></h2>
@@ -364,4 +367,7 @@
     </div>
 
 </div>
+<<<<<<< HEAD
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
+=======
 >>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6

@@ -1,8 +1,14 @@
 		<?php
 <<<<<<< HEAD
+<<<<<<< HEAD
 			
 		do_action( 'ava_before_footer' );	
 			
+=======
+
+		do_action( 'ava_before_footer' );
+
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
 =======
 
 		do_action( 'ava_before_footer' );
@@ -39,7 +45,11 @@
 						//create the footer columns by iterating
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 						
+=======
+
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
 =======
 
 >>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
@@ -53,7 +63,11 @@
 				        	case 6: $class = 'av_one_sixth'; break;
 				        }
 <<<<<<< HEAD
+<<<<<<< HEAD
 				        
+=======
+
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
 =======
 
 >>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
@@ -87,7 +101,11 @@
 
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 			
+=======
+
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
 =======
 
 >>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
@@ -127,8 +145,13 @@
 								echo avia_social_media_icons($social_args, false);
                             }
 <<<<<<< HEAD
+<<<<<<< HEAD
                         
                             
+=======
+
+
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
 =======
 
 
@@ -148,8 +171,13 @@
 
                             $menu = wp_nav_menu($args);
 <<<<<<< HEAD
+<<<<<<< HEAD
                             
                             if($menu){ 
+=======
+
+                            if($menu){
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
 =======
 
                             if($menu){
@@ -171,8 +199,13 @@
 
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 		
 		
+=======
+
+
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
 =======
 
 
@@ -182,7 +215,11 @@
 		<!-- end main -->
 		</div>
 <<<<<<< HEAD
+<<<<<<< HEAD
 		
+=======
+
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
 =======
 
 >>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6

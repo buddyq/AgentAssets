@@ -1,4 +1,5 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 <?php
 require_once 'class.textfield.php';
 
@@ -25,6 +26,8 @@ class WPToolset_Field_Button extends WPToolset_Field_Textfield
     }
 }
 =======
+=======
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
 <?php
 require_once 'class.textfield.php';
 
@@ -50,4 +53,7 @@ class WPToolset_Field_Button extends WPToolset_Field_Textfield
         return $metaform;
     }
 }
+<<<<<<< HEAD
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
+=======
 >>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6

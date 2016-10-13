@@ -380,6 +380,7 @@ class WPSEO_Options {
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	/**
 	 * Saves the option to the database.
 	 *
@@ -398,6 +399,8 @@ class WPSEO_Options {
 		$saved_option = self::get_option( $wpseo_options_group_name );
 		return $saved_option[ $option_name ] === $options[ $option_name ];
 	}
+=======
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
 =======
 >>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
 

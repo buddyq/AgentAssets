@@ -1,4 +1,5 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 <?php
 /*
 Plugin Name: Toolset Views
@@ -390,6 +391,8 @@ if( did_action( 'inline_doc_help_viewtemplate' )== 0){
 	do_action('inline_doc_help_viewtemplate', 'admin_screen_view_template_init');
 }
 =======
+=======
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
 <?php
 /*
 Plugin Name: Toolset Views
@@ -780,4 +783,7 @@ if( did_action( 'inline_doc_help_viewlayoutmetahtml' )== 0){
 if( did_action( 'inline_doc_help_viewtemplate' )== 0){
 	do_action('inline_doc_help_viewtemplate', 'admin_screen_view_template_init');
 }
+<<<<<<< HEAD
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
+=======
 >>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6

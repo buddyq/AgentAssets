@@ -1,4 +1,5 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 <?php
 class AIOWPSecurity_User_Registration
 {
@@ -83,6 +84,8 @@ class AIOWPSecurity_User_Registration
     }
     
 =======
+=======
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
 <?php
 class AIOWPSecurity_User_Registration
 {
@@ -166,5 +169,8 @@ class AIOWPSecurity_User_Registration
         return $errors;
     }
     
+<<<<<<< HEAD
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
+=======
 >>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
 }

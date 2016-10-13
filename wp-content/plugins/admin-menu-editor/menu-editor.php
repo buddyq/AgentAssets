@@ -1,4 +1,5 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 <?php
 /*
 Plugin Name: Admin Menu Editor
@@ -25,6 +26,8 @@ if ( is_admin() ) {
     $wp_menu_editor = new WPMenuEditor(__FILE__, 'ws_menu_editor');
 
 =======
+=======
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
 <?php
 /*
 Plugin Name: Admin Menu Editor
@@ -50,5 +53,8 @@ if ( is_admin() ) {
     require 'includes/menu-editor-core.php';
     $wp_menu_editor = new WPMenuEditor(__FILE__, 'ws_menu_editor');
 
+<<<<<<< HEAD
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
+=======
 >>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
 }//is_admin()

@@ -6,7 +6,11 @@
 /**
  * Plugin Name: Yoast SEO
 <<<<<<< HEAD
+<<<<<<< HEAD
  * Version: 3.7.0
+=======
+ * Version: 3.6.1
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
 =======
  * Version: 3.6.1
 >>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6

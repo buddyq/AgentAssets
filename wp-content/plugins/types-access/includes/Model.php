@@ -1,4 +1,5 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 <?php
 
 /*
@@ -266,6 +267,8 @@ final class Access_Model implements TAccess_Singleton
         return get_taxonomies($args, 'names');
     }
 =======
+=======
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
 <?php
 
 /*
@@ -532,5 +535,8 @@ final class Access_Model implements TAccess_Singleton
 		}
         return get_taxonomies($args, 'names');
     }
+<<<<<<< HEAD
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
+=======
 >>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
 }

@@ -1,4 +1,5 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 <?php
 
 if( !defined( 'ABSPATH') ) exit();
@@ -1300,6 +1301,8 @@ require self::getPathTemplate("../system/dialog-copy-move");
 <?php
 require self::getPathTemplate('template-selector');
 =======
+=======
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
 <?php
 
 if( !defined( 'ABSPATH') ) exit();
@@ -2600,5 +2603,8 @@ require self::getPathTemplate("../system/dialog-copy-move");
 
 <?php
 require self::getPathTemplate('template-selector');
+<<<<<<< HEAD
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
+=======
 >>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
 ?>

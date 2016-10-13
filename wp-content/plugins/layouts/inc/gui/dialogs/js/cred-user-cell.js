@@ -451,7 +451,11 @@ DDLayout.CredUserInIfame = function ($)
             css = cred_user_iframe.get_css_settings();
 
 <<<<<<< HEAD
+<<<<<<< HEAD
         jQuery('select[name="ddl-default-edit-class-name"]').val(css.css).trigger("change");
+=======
+        jQuery('input[name="ddl-default-edit-class-name"]').val(css.css);
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
 =======
         jQuery('input[name="ddl-default-edit-class-name"]').val(css.css);
 >>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6

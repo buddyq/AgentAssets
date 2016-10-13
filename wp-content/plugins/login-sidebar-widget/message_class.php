@@ -1,4 +1,5 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 <?php
 if(!class_exists('login_message_class')){
 	class login_message_class {
@@ -22,6 +23,8 @@ if(!class_exists('login_message_class')){
 		}
 	}
 =======
+=======
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
 <?php
 if(!class_exists('login_message_class')){
 	class login_message_class {
@@ -44,5 +47,8 @@ if(!class_exists('login_message_class')){
 			$_SESSION['login_message_class'] = $class;		
 		}
 	}
+<<<<<<< HEAD
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
+=======
 >>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
 }

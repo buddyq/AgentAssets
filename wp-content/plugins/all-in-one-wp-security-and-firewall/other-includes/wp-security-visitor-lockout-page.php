@@ -1,4 +1,5 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 <?php
 global $aio_wp_security;
 $aiowps_site_lockout_msg_raw = $aio_wp_security->configs->get_value('aiowps_site_lockout_msg');
@@ -30,6 +31,8 @@ $maintenance_msg = apply_filters('the_content', $maintenance_msg);
 </div> <!-- end .aiowps-site-lockout-body -->
 </body>
 =======
+=======
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
 <?php
 global $aio_wp_security;
 $aiowps_site_lockout_msg_raw = $aio_wp_security->configs->get_value('aiowps_site_lockout_msg');
@@ -60,5 +63,8 @@ $maintenance_msg = apply_filters('the_content', $maintenance_msg);
     </div> <!-- end .aiowps-site-lockout-body-content -->
 </div> <!-- end .aiowps-site-lockout-body -->
 </body>
+<<<<<<< HEAD
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
+=======
 >>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
 </html>

@@ -1,4 +1,5 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 <?php
 class WPDD_Layouts {
     private static $instance;
@@ -1541,6 +1542,8 @@ class WPDD_Layouts {
     }
 
 =======
+=======
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
 <?php
 class WPDD_Layouts {
     private static $instance;
@@ -3082,5 +3085,8 @@ class WPDD_Layouts {
         $this->enqueue_styles( array( 'toolset-common' ) );
     }
 
+<<<<<<< HEAD
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
+=======
 >>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
 }

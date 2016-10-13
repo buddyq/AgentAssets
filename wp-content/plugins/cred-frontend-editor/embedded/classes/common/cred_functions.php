@@ -1,4 +1,5 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 <?php
 if (!function_exists("cred_wrap_esc_like")) {
 
@@ -515,6 +516,8 @@ function cred_user_form_checkout_change($checkout) {
     }
 }
 =======
+=======
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
 <?php
 if (!function_exists("cred_wrap_esc_like")) {
 
@@ -1030,4 +1033,7 @@ function cred_user_form_checkout_change($checkout) {
         }
     }
 }
+<<<<<<< HEAD
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
+=======
 >>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6

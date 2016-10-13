@@ -1,4 +1,5 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 <?php
 
 class login_wid extends WP_Widget {
@@ -215,6 +216,8 @@ function login_validate(){
 
 add_action( 'widgets_init', create_function( '', 'register_widget( "login_wid" );' ) );
 =======
+=======
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
 <?php
 
 class login_wid extends WP_Widget {
@@ -430,5 +433,8 @@ function login_validate(){
 }
 
 add_action( 'widgets_init', create_function( '', 'register_widget( "login_wid" );' ) );
+<<<<<<< HEAD
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
+=======
 >>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
 add_action( 'init', 'login_validate' );

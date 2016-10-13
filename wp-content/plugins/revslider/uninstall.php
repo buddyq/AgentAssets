@@ -1,4 +1,5 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 <?php 
 if( !defined( 'ABSPATH') && !defined('WP_UNINSTALL_PLUGIN') )
 	exit();
@@ -42,6 +43,8 @@ delete_option('revslider_table_version');
 delete_option('revslider_checktables');
 delete_option('rs_public_version');
 =======
+=======
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
 <?php 
 if( !defined( 'ABSPATH') && !defined('WP_UNINSTALL_PLUGIN') )
 	exit();
@@ -84,5 +87,8 @@ delete_option('revslider-valid-notice');
 delete_option('revslider_table_version');
 delete_option('revslider_checktables');
 delete_option('rs_public_version');
+<<<<<<< HEAD
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
+=======
 >>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
 ?>

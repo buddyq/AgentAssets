@@ -1,4 +1,5 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 <?php
 /*
 Whois.php        PHP classes to conduct whois queries
@@ -594,6 +595,8 @@ class WhoisClient {
 		}
 }
 =======
+=======
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
 <?php
 /*
 Whois.php        PHP classes to conduct whois queries
@@ -1188,5 +1191,8 @@ class WhoisClient {
 		return $dns;
 		}
 }
+<<<<<<< HEAD
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
+=======
 >>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
 ?>

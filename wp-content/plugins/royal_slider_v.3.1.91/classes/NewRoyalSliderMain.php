@@ -1,4 +1,5 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 <?php 
 if( !defined('WPINC') ) exit('No direct access permitted');
 
@@ -604,6 +605,8 @@ page</a>.', 'new_royalslider'), $slider_id ,get_admin_url() . "admin.php?page=ne
 	}
 
 =======
+=======
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
 <?php 
 if( !defined('WPINC') ) exit('No direct access permitted');
 
@@ -1208,5 +1211,8 @@ page</a>.', 'new_royalslider'), $slider_id ,get_admin_url() . "admin.php?page=ne
 		<?php
 	}
 
+<<<<<<< HEAD
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
+=======
 >>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
 }

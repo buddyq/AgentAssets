@@ -1,4 +1,5 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 <?php
 if (defined('WPDDL_VERSION')) return;
 
@@ -154,6 +155,8 @@ if( !function_exists('init_layouts_plugin') ){
         $wpddlayout = WPDD_Layouts::getInstance();
     }
 =======
+=======
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
 <?php
 if (defined('WPDDL_VERSION')) return;
 
@@ -308,5 +311,8 @@ if( !function_exists('init_layouts_plugin') ){
         global $wpddlayout;
         $wpddlayout = WPDD_Layouts::getInstance();
     }
+<<<<<<< HEAD
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
+=======
 >>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
 }

@@ -1,4 +1,5 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 <?php
 
 function register_dd_layout_cell_type($cell_type, $args) {
@@ -326,6 +327,8 @@ class WPDD_registered_cell extends WPDD_layout_cell {
 	}
 }
 =======
+=======
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
 <?php
 
 function register_dd_layout_cell_type($cell_type, $args) {
@@ -652,4 +655,7 @@ class WPDD_registered_cell extends WPDD_layout_cell {
 		return $content;
 	}
 }
+<<<<<<< HEAD
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
+=======
 >>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6

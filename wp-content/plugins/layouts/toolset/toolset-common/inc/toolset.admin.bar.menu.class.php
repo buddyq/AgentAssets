@@ -1,4 +1,5 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 <?php
 
 /**
@@ -810,6 +811,8 @@ if ( ! class_exists( 'Toolset_Admin_Bar_Menu' ) ) {
     
 }
 =======
+=======
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
 <?php
 
 /**
@@ -1620,4 +1623,7 @@ if ( ! class_exists( 'Toolset_Admin_Bar_Menu' ) ) {
     }
     
 }
+<<<<<<< HEAD
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
+=======
 >>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6

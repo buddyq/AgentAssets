@@ -1,4 +1,5 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 <?php
 
 /*
@@ -37,6 +38,8 @@ class AIOWPSecurity_Fake_Bot_Protection
     }
     
 =======
+=======
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
 <?php
 
 /*
@@ -74,5 +77,8 @@ class AIOWPSecurity_Fake_Bot_Protection
         }
     }
     
+<<<<<<< HEAD
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
+=======
 >>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
 }

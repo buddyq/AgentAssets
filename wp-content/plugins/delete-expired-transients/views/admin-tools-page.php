@@ -8,12 +8,15 @@ if (!defined('ABSPATH')) {
 
 <div class='wrap'>
 <<<<<<< HEAD
+<<<<<<< HEAD
 <h1><?php _e('Delete Expired Transients', 'delete-expired-transients'); ?></h1>
 
 <?php if ($msg): ?>
 <div class='updated'>
 	<p><?php echo esc_html($msg); ?></p>
 =======
+=======
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
 <h2><?php _e('Delete Expired Transients', 'delete-expired-transients'); ?></h2>
 
 <?php if ($action == 'delete-expired'): ?>
@@ -25,12 +28,16 @@ if (!defined('ABSPATH')) {
 <?php if ($action == 'delete-all'): ?>
 <div class='updated fade'>
 	<p><?php _e('All transients deleted.', 'delete-expired-transients'); ?></p>
+<<<<<<< HEAD
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
+=======
 >>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
 </div>
 <?php endif; ?>
 
 <p><?php printf(__('Expired transients: %s', 'delete-expired-transients'), number_format_i18n($counts->expired)); ?></p>
 <p><?php printf(__('Total transients: %s', 'delete-expired-transients'), number_format_i18n($counts->total + $counts->never_expire)); ?></p>
+<<<<<<< HEAD
 <<<<<<< HEAD
 <?php if ($counts->woocommerce_sessions): ?>
 <p><?php printf(__('Obsolete WooCommerce sessions: %s', 'delete-expired-transients'), number_format_i18n($counts->woocommerce_sessions)); ?></p>
@@ -66,6 +73,8 @@ if (!defined('ABSPATH')) {
 		<input type="submit" name="Submit" class="button-primary" value="<?php echo esc_html_x('Delete', 'tools page submit button', 'delete-expired-transients'); ?>" />
 	</p>
 =======
+=======
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
 
 <form action="<?php echo admin_url('tools.php'); ?>?page=delxtrans" method="post">
 
@@ -90,6 +99,9 @@ if (!defined('ABSPATH')) {
 	</tr>
 
 	</table>
+<<<<<<< HEAD
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
+=======
 >>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
 
 </form>

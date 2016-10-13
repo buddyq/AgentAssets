@@ -92,8 +92,13 @@ class nz_handler
 			$r['regrinfo']['registered']='unknown';
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 		if (!strncmp($data_str['rawdata'][0], 'WHOIS LIMIT EXCEEDED', 20))
 			$r['regrinfo']['registered'] = 'unknown';
+=======
+		if (!strncmp($data_str['rawdata'][0], 'WHOIS LIMIT EXCEEDED', 20))
+			$r['regrinfo']['registered'] = 'unknown';
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
 =======
 		if (!strncmp($data_str['rawdata'][0], 'WHOIS LIMIT EXCEEDED', 20))
 			$r['regrinfo']['registered'] = 'unknown';

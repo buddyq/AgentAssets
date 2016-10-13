@@ -1,4 +1,5 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 <?php
 if( !defined( 'ABSPATH' ) )
 	die( 'Cheatin\' uh?' );
@@ -122,6 +123,8 @@ function bawllm_shortcode_register( $atts, $content = null ) {
 	$link = '<a href="' . $href. '">' . $content . '</a>';
 	return $link;
 =======
+=======
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
 <?php
 if( !defined( 'ABSPATH' ) )
 	die( 'Cheatin\' uh?' );
@@ -244,5 +247,8 @@ function bawllm_shortcode_register( $atts, $content = null ) {
 	$content = $content != '' ? $content : __( 'Register' );
 	$link = '<a href="' . $href. '">' . $content . '</a>';
 	return $link;
+<<<<<<< HEAD
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
+=======
 >>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
 }

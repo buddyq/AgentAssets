@@ -1,4 +1,5 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 .printomatic {
 	cursor: pointer;
 }
@@ -45,6 +46,8 @@
 .printomatictext:hover {
 	text-decoration: underline;
 =======
+=======
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
 .printomatic {
 	cursor: pointer;
 }
@@ -90,5 +93,8 @@
 
 .printomatictext:hover {
 	text-decoration: underline;
+<<<<<<< HEAD
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
+=======
 >>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
 }

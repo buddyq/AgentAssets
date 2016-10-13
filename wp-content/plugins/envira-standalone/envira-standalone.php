@@ -1,4 +1,5 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 <?php
 /**
  * Plugin Name: Envira Gallery - Standalone Addon
@@ -643,6 +644,8 @@ function envira_standalone_insert_album_shortcode( $content ) {
     return $shortcode . $content;
 
 =======
+=======
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
 <?php
 /**
  * Plugin Name: Envira Gallery - Standalone Addon
@@ -1286,5 +1289,8 @@ function envira_standalone_insert_album_shortcode( $content ) {
 
     return $shortcode . $content;
 
+<<<<<<< HEAD
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
+=======
 >>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
 }

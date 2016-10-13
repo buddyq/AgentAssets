@@ -1,4 +1,5 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 <?php
 
 class WPDD_GUI_EDITOR{
@@ -1483,6 +1484,8 @@ class WPDDL_EditorDialogs extends Toolset_DialogBoxes{
         echo ob_get_clean();
     }
 =======
+=======
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
 <?php
 
 class WPDD_GUI_EDITOR{
@@ -2966,5 +2969,8 @@ class WPDDL_EditorDialogs extends Toolset_DialogBoxes{
         wp_nonce_field('ddl_remove_all_layout_association_nonce', 'ddl_remove_all_layout_association_nonce');
         echo ob_get_clean();
     }
+<<<<<<< HEAD
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
+=======
 >>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
 }

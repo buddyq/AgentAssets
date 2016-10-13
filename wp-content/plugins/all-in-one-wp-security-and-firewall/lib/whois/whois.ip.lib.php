@@ -1,4 +1,5 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 <?php
 /*
 Whois.php        PHP classes to conduct whois queries
@@ -90,6 +91,8 @@ function phpwhois_getclientip()
 //-----------------------------------------------------------------
 // Convert from CIDR to net range
 =======
+=======
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
 <?php
 /*
 Whois.php        PHP classes to conduct whois queries
@@ -180,6 +183,9 @@ function phpwhois_getclientip()
 
 //-----------------------------------------------------------------
 // Convert from CIDR to net range
+<<<<<<< HEAD
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
+=======
 >>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
 
 function phpwhois_cidr_conv($net)
@@ -187,7 +193,11 @@ function phpwhois_cidr_conv($net)
 	$start = strtok($net, '/');
 	$n = 3-substr_count($net, '.');
 <<<<<<< HEAD
+<<<<<<< HEAD
 
+=======
+
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
 =======
 
 >>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
@@ -212,9 +222,15 @@ function phpwhois_cidr_conv($net)
 			$final.= $bits2[$i];
 		}
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 	return $start." - ".long2ip(bindec($final));
 }
+=======
+
+	return $start." - ".long2ip(bindec($final));
+}
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
 =======
 
 	return $start." - ".long2ip(bindec($final));

@@ -35,9 +35,14 @@ class WPSEO_Taxonomy {
 		add_action( 'init', array( $this, 'custom_category_descriptions_allow_html' ) );
 		add_action( 'admin_init', array( $this, 'admin_init' ) );
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 		$this->insert_description_field_editor();
 
+=======
+		// Needs a hook that runs before the description field.
+		add_action( "{$this->taxonomy}_term_edit_form_top", array( $this, 'custom_category_description_editor' ) );
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
 =======
 		// Needs a hook that runs before the description field.
 		add_action( "{$this->taxonomy}_term_edit_form_top", array( $this, 'custom_category_description_editor' ) );
@@ -48,6 +53,10 @@ class WPSEO_Taxonomy {
 			new WPSEO_Taxonomy_Columns();
 		}
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
 =======
 
 >>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
@@ -96,7 +105,10 @@ class WPSEO_Taxonomy {
 		$asset_manager->enqueue_style( 'scoring' );
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 
+=======
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
 =======
 >>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
 		$tag_id = filter_input( INPUT_GET, 'tag_ID' );
@@ -112,7 +124,10 @@ class WPSEO_Taxonomy {
 			$asset_manager->enqueue_script( 'metabox' );
 			$asset_manager->enqueue_script( 'term-scraper' );
 <<<<<<< HEAD
+<<<<<<< HEAD
 			$asset_manager->enqueue_style( 'kb-search' );
+=======
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
 =======
 >>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
 
@@ -120,7 +135,10 @@ class WPSEO_Taxonomy {
 			wp_localize_script( WPSEO_Admin_Asset_Manager::PREFIX . 'replacevar-plugin', 'wpseoReplaceVarsL10n', $this->localize_replace_vars_script() );
 			wp_localize_script( WPSEO_Admin_Asset_Manager::PREFIX . 'metabox', 'wpseoSelect2Locale', WPSEO_Utils::get_language( get_locale() ) );
 <<<<<<< HEAD
+<<<<<<< HEAD
 			wp_localize_script( WPSEO_Admin_Asset_Manager::PREFIX . 'metabox', 'wpseoAdminL10n', WPSEO_Help_Center::get_translated_texts() );
+=======
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
 =======
 >>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
 
@@ -347,6 +365,7 @@ class WPSEO_Taxonomy {
 	}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 	/**
 	 * Adds custom category description editor.
 	 * Needs a hook that runs before the description field. Prior to WP version 4.5 we need to use edit_form as
@@ -363,6 +382,8 @@ class WPSEO_Taxonomy {
 		add_action( "{$this->taxonomy}_term_edit_form_top", array( $this, 'custom_category_description_editor' ) );
 	}
 
+=======
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
 =======
 >>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
 	/********************** DEPRECATED METHODS **********************/

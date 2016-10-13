@@ -1,4 +1,5 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 <?php
 
 //Can't have two different versions of the plugin active at the same time. It would be incredibly buggy.
@@ -3580,6 +3581,8 @@ class ameMenuTemplateBuilder {
 		return $this->templateOrder;
 	}
 =======
+=======
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
 <?php
 
 //Can't have two different versions of the plugin active at the same time. It would be incredibly buggy.
@@ -7160,5 +7163,8 @@ class ameMenuTemplateBuilder {
 	public function getRelativeTemplateOrder() {
 		return $this->templateOrder;
 	}
+<<<<<<< HEAD
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
+=======
 >>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
 }

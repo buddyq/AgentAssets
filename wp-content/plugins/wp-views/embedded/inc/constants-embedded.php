@@ -1,4 +1,5 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 <?php 
 
 /**
@@ -62,6 +63,8 @@ if ( ! defined( 'WPV_LINK_WORDPRESS_ARCHIVE_DOCUMENTATION') ) {
 if ( ! defined( 'WPV_LINK_FRAMEWORK_INTEGRATION_DOCUMENTATION') ) {
 	define( 'WPV_LINK_FRAMEWORK_INTEGRATION_DOCUMENTATION', 'http://wp-types.com/documentation/user-guides/theme-frameworks-integration/?utm_source=viewsplugin&utm_campaign=views&utm_medium=theme-framework-integration-page&utm_term=theme framework integration documentation page' );
 =======
+=======
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
 <?php 
 
 /**
@@ -124,5 +127,8 @@ if ( ! defined( 'WPV_LINK_WORDPRESS_ARCHIVE_DOCUMENTATION') ) {
 
 if ( ! defined( 'WPV_LINK_FRAMEWORK_INTEGRATION_DOCUMENTATION') ) {
 	define( 'WPV_LINK_FRAMEWORK_INTEGRATION_DOCUMENTATION', 'http://wp-types.com/documentation/user-guides/theme-frameworks-integration/?utm_source=viewsplugin&utm_campaign=views&utm_medium=theme-framework-integration-page&utm_term=theme framework integration documentation page' );
+<<<<<<< HEAD
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
+=======
 >>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
 }

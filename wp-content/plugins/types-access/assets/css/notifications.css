@@ -1,4 +1,5 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 /* Globals */
 .toolset-help,
 .toolset-alert {
@@ -193,6 +194,8 @@ span.toolset-alert {
 		color: #333;
 		font-size: 22px;
 =======
+=======
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
 /* Globals */
 .toolset-help,
 .toolset-alert {
@@ -386,5 +389,8 @@ span.toolset-alert {
 		right: -8px;
 		color: #333;
 		font-size: 22px;
+<<<<<<< HEAD
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
+=======
 >>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
 	}

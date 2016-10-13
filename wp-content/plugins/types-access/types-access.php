@@ -1,4 +1,5 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 <?php
 /*
 Plugin Name: Toolset Access
@@ -404,6 +405,8 @@ add_filter( 'toolset_access_version_installed', 'toolset_access_return_installed
 function toolset_access_return_installed_version( $version ) {
 	return TACCESS_VERSION;
 =======
+=======
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
 <?php
 /*
 Plugin Name: Toolset Access
@@ -808,5 +811,8 @@ add_filter( 'toolset_access_version_installed', 'toolset_access_return_installed
 
 function toolset_access_return_installed_version( $version ) {
 	return TACCESS_VERSION;
+<<<<<<< HEAD
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
+=======
 >>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
 };

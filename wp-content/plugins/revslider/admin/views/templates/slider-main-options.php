@@ -1,4 +1,5 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 <?php
 /**
  * @author    ThemePunch <info@themepunch.com>
@@ -5940,6 +5941,8 @@ THE INFO ABOUT EMBEDING OF THE SLIDER
 		<div class="tp-clearfix"></div>
 	</div>
 =======
+=======
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
 <?php
 /**
  * @author    ThemePunch <info@themepunch.com>
@@ -11880,5 +11883,8 @@ THE INFO ABOUT EMBEDING OF THE SLIDER
 		<a class="button-primary revred rs-google-remove-field" original-title=""><i class="revicon-trash"></i></a>
 		<div class="tp-clearfix"></div>
 	</div>
+<<<<<<< HEAD
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
+=======
 >>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
 </script>

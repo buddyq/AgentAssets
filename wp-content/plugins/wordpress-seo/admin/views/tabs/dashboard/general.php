@@ -11,7 +11,11 @@ if ( ! defined( 'WPSEO_VERSION' ) ) {
 
 if ( WPSEO_Utils::is_api_available() ) :
 <<<<<<< HEAD
+<<<<<<< HEAD
 	echo '<h2>' . esc_html__( 'Configuration wizard', 'wordpress-seo' ) . '</h2>';
+=======
+	echo '<h2>' . esc_html__( 'Installation wizard', 'wordpress-seo' ) . '</h2>';
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
 =======
 	echo '<h2>' . esc_html__( 'Installation wizard', 'wordpress-seo' ) . '</h2>';
 >>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
@@ -25,7 +29,11 @@ if ( WPSEO_Utils::is_api_available() ) :
 <p>
 	<a class="button"
 <<<<<<< HEAD
+<<<<<<< HEAD
 	   href="<?php echo esc_url( admin_url( 'admin.php?page=' . WPSEO_Configuration_Page::PAGE_IDENTIFIER ) ); ?>"><?php _e( 'Open the configuration wizard', 'wordpress-seo' ); ?></a>
+=======
+	   href="<?php echo esc_url( admin_url( 'admin.php?page=' . WPSEO_Configuration_Page::PAGE_IDENTIFIER ) ); ?>"><?php _e( 'Open the installation wizard', 'wordpress-seo' ); ?></a>
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
 =======
 	   href="<?php echo esc_url( admin_url( 'admin.php?page=' . WPSEO_Configuration_Page::PAGE_IDENTIFIER ) ); ?>"><?php _e( 'Open the installation wizard', 'wordpress-seo' ); ?></a>
 >>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6

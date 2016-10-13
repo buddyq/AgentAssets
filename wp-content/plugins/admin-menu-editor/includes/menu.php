@@ -1,4 +1,5 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 <?php
 abstract class ameMenu {
 	const format_name = 'Admin Menu Editor menu';
@@ -482,6 +483,8 @@ class ameGrantedCapabilityFilter {
 class InvalidMenuException extends Exception {}
 
 =======
+=======
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
 <?php
 abstract class ameMenu {
 	const format_name = 'Admin Menu Editor menu';
@@ -964,5 +967,8 @@ class ameGrantedCapabilityFilter {
 
 class InvalidMenuException extends Exception {}
 
+<<<<<<< HEAD
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
+=======
 >>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
 class ameInvalidJsonException extends RuntimeException {};

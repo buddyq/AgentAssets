@@ -1,4 +1,5 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 <?php
 /*
 Whois.php        PHP classes to conduct whois queries
@@ -38,6 +39,8 @@ class si_handler
 		$translate = array(
 			'nic-hdl' => 'handle',
 =======
+=======
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
 <?php
 /*
 Whois.php        PHP classes to conduct whois queries
@@ -76,6 +79,9 @@ class si_handler
         {
 		$translate = array(
 			'nic-hdl' => 'handle',
+<<<<<<< HEAD
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
+=======
 >>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
 			'nameserver' => 'nserver'
 			);
@@ -85,6 +91,7 @@ class si_handler
                     'tech-c' => 'tech'
                         );
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 		$r['regrinfo'] = generic_parser_a($data_str['rawdata'], $translate, $contacts, 'domain', 'Ymd');		
 		$r['regyinfo'] = array(
@@ -96,6 +103,8 @@ class si_handler
     }
 ?>
 =======
+=======
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
 		$r['regrinfo'] = generic_parser_a($data_str['rawdata'], $translate, $contacts, 'domain', 'Ymd');		
 		$r['regyinfo'] = array(
                   'referrer' => 'http://www.arnes.si',
@@ -105,4 +114,7 @@ class si_handler
         }
     }
 ?>
+<<<<<<< HEAD
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
+=======
 >>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6

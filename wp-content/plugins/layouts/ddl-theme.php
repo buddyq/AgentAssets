@@ -1,4 +1,5 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 <?php
 if(defined('WPDDL_VERSION')) return;
 
@@ -21,6 +22,8 @@ function ddl_update_theme_layouts( $layouts_dir, $import_args ){
 }
 
 =======
+=======
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
 <?php
 if(defined('WPDDL_VERSION')) return;
 
@@ -42,5 +45,8 @@ function ddl_update_theme_layouts( $layouts_dir, $import_args ){
     WPDD_Layouts_Theme::getInstance()->update_layouts( $layouts_dir, $import_args );
 }
 
+<<<<<<< HEAD
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
+=======
 >>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
 require_once dirname(__FILE__) . '/theme/wpddl.theme-support.class.php';

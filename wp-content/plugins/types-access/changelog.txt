@@ -1,4 +1,5 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 2.2.1
 * Improved Access control table when there are more than 8 CRED forms
 * Fixed issue with custom post type permissions in Types relationship tables
@@ -152,6 +153,8 @@
 * add warning if entity (post type/taxonomy) capabilities conflict with default WP capabilities
 * add full notices when saving Access settings via ajax, in admin screen
 =======
+=======
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
 2.2.1
 * Improved Access control table when there are more than 8 CRED forms
 * Fixed issue with custom post type permissions in Types relationship tables
@@ -304,5 +307,8 @@
 * default mode of (shared) taxonomies is 'not_managed' for uniform handling of imported capabilities
 * add warning if entity (post type/taxonomy) capabilities conflict with default WP capabilities
 * add full notices when saving Access settings via ajax, in admin screen
+<<<<<<< HEAD
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
+=======
 >>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
 * use jQuery.on instead of jQuery.live in Access admin scripts

@@ -333,6 +333,7 @@ class Toolset_Assets_Manager
 																				true
 																			);
 <<<<<<< HEAD
+<<<<<<< HEAD
 
         $this->scripts['toolset-select2-compatibility']											= new Toolset_Script(
 																				'toolset-select2-compatibility', 
@@ -348,11 +349,16 @@ class Toolset_Assets_Manager
 																				array( 'jquery', "toolset-select2-compatibility" ), 
 																				'4.0.3', 
 =======
+=======
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
 		$this->scripts['select2']											= new Toolset_Script(
 																				'select2', 
 																				$this->assets_url . "/res/lib/select2/select2.min.js", 
 																				array( 'jquery' ), 
 																				'3.4.5', 
+<<<<<<< HEAD
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
+=======
 >>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
 																				true
 																			);

@@ -1,4 +1,5 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 <?php
 
 /**
@@ -1084,6 +1085,8 @@ class WPV_Views_Conditional {
 
 global $WPV_Views_Conditional;
 =======
+=======
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
 <?php
 
 /**
@@ -2168,5 +2171,8 @@ class WPV_Views_Conditional {
 }
 
 global $WPV_Views_Conditional;
+<<<<<<< HEAD
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
+=======
 >>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
 $WPV_Views_Conditional = new WPV_Views_Conditional();

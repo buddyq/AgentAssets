@@ -1,4 +1,5 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 <?php
 
 class WPDD_Layouts_IndividualAssignmentManager
@@ -437,6 +438,8 @@ AND  (mt1.meta_key = '_layouts_template' AND CAST(mt1.meta_value AS CHAR) = %s) 
         return get_post_meta($post_id, '_wp_page_template', true);
     }
 =======
+=======
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
 <?php
 
 class WPDD_Layouts_IndividualAssignmentManager
@@ -874,5 +877,8 @@ AND  (mt1.meta_key = '_layouts_template' AND CAST(mt1.meta_value AS CHAR) = %s) 
     {
         return get_post_meta($post_id, '_wp_page_template', true);
     }
+<<<<<<< HEAD
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
+=======
 >>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
 }

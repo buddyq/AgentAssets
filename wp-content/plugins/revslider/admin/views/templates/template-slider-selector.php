@@ -1,4 +1,5 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 <?php
 if( !defined( 'ABSPATH') ) exit();
 
@@ -403,6 +404,8 @@ $all_slider = $tmp_slider->getArrSliders();
 		<input type="hidden" name="package" class="rs-package" value="false">
 	</form>
 =======
+=======
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
 <?php
 if( !defined( 'ABSPATH') ) exit();
 
@@ -806,5 +809,8 @@ $all_slider = $tmp_slider->getArrSliders();
 		<input type="hidden" name="uid" class="rs-uid" value="">
 		<input type="hidden" name="package" class="rs-package" value="false">
 	</form>
+<<<<<<< HEAD
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
+=======
 >>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
 </div>

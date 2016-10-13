@@ -1,4 +1,5 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 <?php defined('WYSIJA') or die('Restricted access'); ?>
 <?php
 /**
@@ -654,6 +655,8 @@ class Net_Socket extends PEAR
 
 }
 =======
+=======
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
 <?php defined('WYSIJA') or die('Restricted access'); ?>
 <?php
 /**
@@ -1308,4 +1311,7 @@ class Net_Socket extends PEAR
     }
 
 }
+<<<<<<< HEAD
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
+=======
 >>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6

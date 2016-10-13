@@ -1,4 +1,5 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 <?php
 
 class AIOWPSecurity_Blacklist_Menu extends AIOWPSecurity_Admin_Menu
@@ -263,6 +264,8 @@ class AIOWPSecurity_Blacklist_Menu extends AIOWPSecurity_Admin_Menu
         return 1;
     }
 =======
+=======
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
 <?php
 
 class AIOWPSecurity_Blacklist_Menu extends AIOWPSecurity_Admin_Menu
@@ -526,5 +529,8 @@ class AIOWPSecurity_Blacklist_Menu extends AIOWPSecurity_Admin_Menu
         $_POST['aiowps_banned_user_agents'] = ''; //Clear the post variable for the banned address list
         return 1;
     }
+<<<<<<< HEAD
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
+=======
 >>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
 } //end class

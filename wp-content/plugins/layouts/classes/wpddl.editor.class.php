@@ -1,4 +1,5 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 <?php
 class WPDD_EDITOR{
     function __construct($inline = false){
@@ -26,6 +27,8 @@ class WPDD_EDITOR{
 		do_action('wpddl_after_render_editor');
     }
 =======
+=======
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
 <?php
 class WPDD_EDITOR{
     function __construct($inline = false){
@@ -52,5 +55,8 @@ class WPDD_EDITOR{
 		
 		do_action('wpddl_after_render_editor');
     }
+<<<<<<< HEAD
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
+=======
 >>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
 }

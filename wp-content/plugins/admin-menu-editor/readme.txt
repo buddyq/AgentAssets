@@ -1,4 +1,5 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 === Admin Menu Editor ===
 Contributors: whiteshadow
 Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=A6P9S6CE3SRSW
@@ -356,6 +357,8 @@ This version fixes several minor bugs and layout problems.
 
 = 1.1.9 =
 =======
+=======
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
 === Admin Menu Editor ===
 Contributors: whiteshadow
 Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=A6P9S6CE3SRSW
@@ -712,5 +715,8 @@ Plugins installed in the `mu-plugins` directory are treated as "always on", so y
 This version fixes several minor bugs and layout problems.
 
 = 1.1.9 =
+<<<<<<< HEAD
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
+=======
 >>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
 Optional upgrade. Just adds a couple of screenshots for the WordPress.org plugin description.

@@ -114,7 +114,6 @@ DDLayout.RowDialog = function($, row_view)
             jQuery('#ddl-row-edit').data('row_view', row_view);
 
             jQuery('input[name="ddl-row-edit-row-name"]').val(row_view.model.get('name'));
-	        jQuery('input.js-edit-css-class', jQuery('#ddl-row-edit') ).val(row_view.model.get('additionalCssClasses'));
 	        jQuery('input.js-edit-css-id', jQuery('#ddl-row-edit') ).val( row_view.model.get('cssId') );
             jQuery('#ddl-row-edit select[name="ddl_tag_name"]').val( row_view.model.get('tag') );
             
@@ -132,6 +131,11 @@ DDLayout.RowDialog = function($, row_view)
 
 	        jQuery('#ddl-row-edit #ddl-row-edit-layout-type').parent().hide();
 
+            _.delay(function(){
+                var saved_css_classes = row_view.model.get('additionalCssClasses');
+                jQuery('select.js-edit-css-class', jQuery('#ddl-row-edit') ).val('');
+                jQuery('select.js-edit-css-class', jQuery('#ddl-row-edit') ).val( (saved_css_classes != null ? saved_css_classes.split(",") : saved_css_classes) ).trigger("change");
+            }, 200);
 
 			self._set_row_mode(row_view.model.get('mode'));
 
@@ -170,6 +174,9 @@ DDLayout.RowDialog = function($, row_view)
         jQuery.colorbox({
             href: '#ddl-row-edit',
             closeButton:false,
+            onLoad:function(){
+
+            },
             onComplete: function() {
                 Toolset.hooks.doAction(self.row_view.model.get('kind') +'.dialog_open', self.row_view.model);
             },
@@ -204,7 +211,8 @@ DDLayout.RowDialog = function($, row_view)
             var target_row = target_row_view.model;
             
             target_row.set('name', jQuery('input[name="ddl-row-edit-row-name"]').val());
-            target_row.set('additionalCssClasses', jQuery('input.js-edit-css-class', jQuery('#ddl-row-edit') ).val() );
+            var css_classes_tosave = ( jQuery('select.js-edit-css-class', jQuery('#ddl-row-edit') ).val());
+            target_row.set('additionalCssClasses', (css_classes_tosave != null ? css_classes_tosave.join(",") : "") );
             target_row.set('cssId', jQuery('input.js-edit-css-id', jQuery('#ddl-row-edit') ).val() );
             target_row.set('tag', jQuery('#ddl-row-edit select[name="ddl_tag_name"]').val() );
             target_row.set('containerPadding', jQuery('#ddl-row-edit input[name="ddl_container_padding"]').prop('checked') );

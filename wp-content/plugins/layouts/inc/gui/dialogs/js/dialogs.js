@@ -179,15 +179,17 @@ DDLayout.Dialogs.Prototype.prototype.is_new_cell = function () {
 DDLayout.Dialogs.Prototype.setUpAdditionalClassInput = function( $input ){
 
         var $el = typeof $input !== 'undefined' ? $input : jQuery('.js-toolset_select2-tokenizer'),
-            classes = typeof DDLayout_settings !== 'undefined' && DDLayout_settings.DDL_JS && DDLayout_settings.DDL_JS.layouts_css_properties ? DDLayout_settings.DDL_JS.layouts_css_properties.additionalCssClasses : [];
+            classes = typeof DDLayout_settings !== 'undefined' && DDLayout_settings.DDL_JS && DDLayout_settings.DDL_JS.layouts_css_properties ? DDLayout_settings.DDL_JS.layouts_css_properties.additionalCssClasses : '';
 
         if( $el.length ){
-            return $el.toolset_select2({
-                selectOnBlur:false,
-                tags:  _.isEmpty( classes ) ? [] : classes,
+            $el.toolset_select2({
+                tags:  true,
                 tokenSeparators: [",", " "],
+                multiple : 'multiple',
+                data:classes,
                 'width': "555px"
             });
+            return $el;
         }
 
     return null;
@@ -232,7 +234,7 @@ DDLayout.Dialogs.DDL_Dialog = function($){
         jQuery(document).on('tabsbeforeactivate', function(event, ui){
             jQuery( event.target ).trigger( 'before-activate_tab', {
                 tabIndex: ui.newTab.index(),
-                cssClassEl: jQuery('input.js-edit-css-class', event.target),
+                cssClassEl: jQuery('select.js-edit-css-class', event.target),
                 cssIdEl: jQuery('input.js-edit-css-id', event.target),
                 textArea: jQuery('.js-ddl-css-editor-area', event.target)
             });
@@ -368,8 +370,6 @@ DDLayout.Dialogs.DDL_Dialog = function($){
 
                 }
 
-            DDLayout.Dialogs.Prototype.setUpAdditionalClassInput();
-
                 if( jQuery('.js-ddl-create-edit-view').length > 0 ){
                     jQuery('.js-ddl-create-edit-view').hide();
                 }
@@ -377,6 +377,8 @@ DDLayout.Dialogs.DDL_Dialog = function($){
 
         jQuery(document).on('cbox_complete', function(event) {
             overrides_visibility();
+
+            DDLayout.Dialogs.Prototype.setUpAdditionalClassInput( jQuery('select.js-edit-css-class', jQuery('#cboxWrapper') ) );
 
             _.defer( fix_cancel_button_helper );
 
@@ -394,11 +396,11 @@ DDLayout.Dialogs.DDL_Dialog = function($){
             // Fix for toolset_select2 and Colorbox incopatibility issue
             jQuery(document).on('mousedown.colorbox','#cboxLoadedContent, #cboxOverlay', function(e){
                 if ( jQuery(e.target).parents('.js-toolset_select2').length === 0 ) {
-                    jQuery('select.js-toolset_select2').toolset_select2('close');
+                 //   jQuery('select.js-toolset_select2').toolset_select2('close');
                 }
                 if( jQuery(e.target).parents('.js-toolset_select2-tokenizer').length === 0 )
                 {
-                    jQuery('input.js-toolset_select2-tokenizer').toolset_select2('close');
+                 //   jQuery('input.js-toolset_select2-tokenizer').toolset_select2('close');
                 }
             });
 
@@ -420,8 +422,13 @@ DDLayout.Dialogs.DDL_Dialog = function($){
             jQuery(document).off('mousedown.colorbox');
 
             // Destroy toolset_select2 obj
-            jQuery('.js-toolset_select2').toolset_select2('destroy');
-            jQuery('.js-toolset_select2-tokenizer').toolset_select2('destroy');
+            jQuery('.js-toolset_select2').each(function(){
+                jQuery(this).toolset_select2('destroy');
+            });
+
+            jQuery('.js-toolset_select2-tokenizer').each(function(){
+                jQuery(this).toolset_select2('destroy');
+            });
 
             self.disable_enable_editing_elements_in_css_tab(false);
             jQuery('#js-row-edit-mode').show();

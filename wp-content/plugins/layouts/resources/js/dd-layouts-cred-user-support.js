@@ -72,7 +72,7 @@ DDLayout.layouts_cred_user_support = function($)
 		return {
 			'tag' : $('#cred-layouts-div .js-ddl-tag-name').val(),
 			'id' : $('#cred-layouts-div .js-edit-css-id').val(),
-			'css' : $('#cred-layouts-div input[name="ddl-default-edit-class-name"]').val(),
+			'css' : $('#cred-layouts-div select[name="ddl-default-edit-class-name"]').val(),
 			'name' : $('#cred-layouts-div #ddl-default-edit-cell-name').val()
 		};
 	};

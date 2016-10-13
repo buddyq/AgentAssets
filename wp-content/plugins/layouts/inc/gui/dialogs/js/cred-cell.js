@@ -416,7 +416,7 @@ DDLayout.CredInIfame = function($)
 			form_name = cred_iframe.get_form_name(),
 			css = cred_iframe.get_css_settings();
 		
-		jQuery('input[name="ddl-default-edit-class-name"]').val( css.css);
+		jQuery('select[name="ddl-default-edit-class-name"]').val( css.css).trigger("change");
 		jQuery('input[name="ddl-default-edit-css-id"]').val( css.id );
 		jQuery('#ddl-default-edit').find('select[name="ddl_tag_name"]').val( css.tag );
 		jQuery('#ddl-default-edit #ddl-default-edit-cell-name').val( form_name );

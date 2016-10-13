@@ -1,7 +1,7 @@
 <?php
 if (defined('WPDDL_VERSION')) return;
 
-define('WPDDL_VERSION', '1.8.5');
+define('WPDDL_VERSION', '1.8.6');
 
 define('LAYOUTS_PLUGIN_NAME', 'Toolset Layouts');
 

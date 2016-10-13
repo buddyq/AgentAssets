@@ -1,6 +1,3 @@
-SetEnv PHPRC /home/austin43/public_html/php.ini
-
-
 RewriteEngine On
 RewriteBase /
 RewriteRule ^index\.php$ - [L]
@@ -15,19 +12,4 @@ RewriteRule ^(wp-(content|admin|includes).*) $1 [L]
 RewriteRule ^(.*\.php)$ $1 [L]
 RewriteRule . index.php [L]
 
-# AddHandler application/x-httpd-php56 .php .php5 .php4 .php3
-
-
-
-# Protect backup file
-<Files backup-2016-05-20.zip>
-order allow,deny
-deny from all
-</Files>
-
-# Protect dump file
-<Files dump-2016-05-20.sql>
-order allow,deny
-deny from all
-</Files>
-
+#AddHandler application/x-httpd-php56 .php .php5 .php4 .php3

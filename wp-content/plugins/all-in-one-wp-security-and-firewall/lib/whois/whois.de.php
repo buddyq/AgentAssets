@@ -64,9 +64,15 @@ class de_handler
                   );
 
 		 if (!isset($r['regrinfo']['domain']['status']) || $r['regrinfo']['domain']['status'] == "free")
+<<<<<<< HEAD
 			{
             $r['regrinfo']['registered'] = 'no';
             }
+=======
+			{
+            $r['regrinfo']['registered'] = 'no';
+            }
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
          else
 			{
 			$r['regrinfo']['domain']['changed'] = substr($r['regrinfo']['domain']['changed'], 0, 10);

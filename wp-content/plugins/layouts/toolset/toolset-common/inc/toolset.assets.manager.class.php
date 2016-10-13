@@ -332,6 +332,7 @@ class Toolset_Assets_Manager
 																				TOOLSET_COMMON_VERSION, 
 																				true
 																			);
+<<<<<<< HEAD
 
         $this->scripts['toolset-select2-compatibility']											= new Toolset_Script(
 																				'toolset-select2-compatibility', 
@@ -346,6 +347,13 @@ class Toolset_Assets_Manager
 																				$this->assets_url . "/res/lib/select2/select2.js",
 																				array( 'jquery', "toolset-select2-compatibility" ), 
 																				'4.0.3', 
+=======
+		$this->scripts['select2']											= new Toolset_Script(
+																				'select2', 
+																				$this->assets_url . "/res/lib/select2/select2.min.js", 
+																				array( 'jquery' ), 
+																				'3.4.5', 
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
 																				true
 																			);
 		$this->scripts['toolset-colorbox']									= new Toolset_Script(

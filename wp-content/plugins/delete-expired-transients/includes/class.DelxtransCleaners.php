@@ -44,6 +44,7 @@ class DelxtransCleaners {
 		";
 		$counts->never_expire = $wpdb->get_var($sql);
 
+<<<<<<< HEAD
 		// count obsolete sessions from WooCommerce version 2.4 and earlier
 		$sql = "
 			select count(*)
@@ -52,6 +53,8 @@ class DelxtransCleaners {
 		";
 		$counts->woocommerce_sessions = $wpdb->get_var($sql);
 
+=======
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
 		return $counts;
 	}
 
@@ -128,6 +131,7 @@ class DelxtransCleaners {
 	}
 
 	/**
+<<<<<<< HEAD
 	* clear obsolete WooCommerce sessions for blog
 	* @param int $blog_id
 	*/
@@ -152,6 +156,8 @@ class DelxtransCleaners {
 	}
 
 	/**
+=======
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
 	* count the site transients (including orphaned expirations) for current site (network)
 	* @param int $site_id
 	* @return int

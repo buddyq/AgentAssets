@@ -50,6 +50,7 @@ class WPSEO_Taxonomy_Metabox {
 			$product_title .= ' Premium';
 		}
 
+<<<<<<< HEAD
 		printf( '<div id="wpseo_meta" class="postbox wpseo-taxonomy-metabox-postbox"><h2><span>%1$s</span></h2>', $product_title );
 
 		echo '<div class="inside">';
@@ -73,6 +74,20 @@ class WPSEO_Taxonomy_Metabox {
 				continue;
 			}
 
+=======
+		printf( '<div id="poststuff" class="postbox wpseo-taxonomy-metabox-postbox"><h2><span>%1$s</span></h2>', $product_title );
+
+		// Add Help Center to the taxonomy metabox see #4701.
+		echo '<div class="inside">';
+		$tab_video_url = 'https://yoa.st/metabox-taxonomy-screencast';
+		include WPSEO_PATH . 'admin/views/partial-settings-tab-video.php';
+
+
+		echo '<div id="taxonomy_overall"></div>';
+		echo '<div class="wpseo-metabox-sidebar"><ul>';
+
+		foreach ( $content_sections as $content_section ) {
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
 			$content_section->display_link();
 		}
 
@@ -203,6 +218,7 @@ class WPSEO_Taxonomy_Metabox {
 	}
 
 	/**
+<<<<<<< HEAD
 	 * Returns a link to activate the Buy Premium tab.
 	 *
 	 * @return string
@@ -216,6 +232,9 @@ class WPSEO_Taxonomy_Metabox {
 
 	/**
 	 * Returns the metabox section for the Premium section..
+=======
+	 * Returns the metabox section for the Premium section.
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
 	 *
 	 * @return WPSEO_Metabox_Section
 	 */

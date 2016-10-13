@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # Apache < 2.3
  <IfModule !mod_authz_core.c>
 Order allow,deny
@@ -8,4 +9,16 @@ Satisfy All
 # Apache >= 2.3
 <IfModule mod_authz_core.c>
 Require all denied
+=======
+# Apache < 2.3
+ <IfModule !mod_authz_core.c>
+Order allow,deny
+Deny from all
+Satisfy All
+</IfModule>
+
+# Apache >= 2.3
+<IfModule mod_authz_core.c>
+Require all denied
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
 </IfModule>

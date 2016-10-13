@@ -79,7 +79,11 @@ if ( isset( $import ) ) {
 
 		$status = ( $import->success ) ? 'updated' : 'error';
 
+<<<<<<< HEAD
 		echo '<div id="message" class="message ', $status, '"><p>', $msg, '</p></div>';
+=======
+		echo '<div id="message" class="message ', $status, '" style="width:94%;"><p>', $msg, '</p></div>';
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
 	}
 }
 
@@ -121,12 +125,16 @@ foreach ( $tabs as $identifier => $tab ) {
 
 	if ( ! empty( $tab['screencast_video_url'] ) ) {
 		$tab_video_url = $tab['screencast_video_url'];
+<<<<<<< HEAD
 
 		$helpcenter_tab = new WPSEO_Option_Tab( $identifier, $tab['label'],
 			array( 'video_url' => $tab['screencast_video_url'] ) );
 
 		$helpcenter = new WPSEO_Help_Center( $identifier, $helpcenter_tab );
 		$helpcenter->output_help_center();
+=======
+		include WPSEO_PATH . 'admin/views/partial-settings-tab-video.php';
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
 	}
 
 	require_once WPSEO_PATH . 'admin/views/tabs/tool/' . $identifier . '.php';

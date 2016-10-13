@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 Version 1.8.6
 
   - Bug-fix: Fixes select2 edge cases when methods are called on non-select2 initialised element
@@ -7,6 +8,13 @@ Version 1.8.5
 
   - Bug-fix: Fixes Type error when user creates new row with given columns in Grid cell
   
+=======
+Version 1.8.5
+
+  - Bug-fix: Fixes Type error when user creates new row with given columns in Grid cell
+
+    
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
 Version 1.8.4
 
   - Feature: Added control to add / remove 15px left and right padding from containers elements

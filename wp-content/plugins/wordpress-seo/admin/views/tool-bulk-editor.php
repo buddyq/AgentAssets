@@ -28,6 +28,7 @@ if ( ! empty( $_REQUEST['_wp_http_referer'] ) ) {
 	wp_redirect( remove_query_arg( array( '_wp_http_referer', '_wpnonce' ), stripslashes( $_SERVER['REQUEST_URI'] ) ) );
 	exit;
 }
+<<<<<<< HEAD
 
 /**
  * Outputs a help center.
@@ -59,6 +60,8 @@ function get_rendered_tab( $table, $id ) {
 	<?php
 }
 
+=======
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
 ?>
 <script>
 	var wpseo_bulk_editor_nonce = '<?php echo wp_create_nonce( 'wpseo-bulk-editor' ); ?>';
@@ -73,7 +76,31 @@ function get_rendered_tab( $table, $id ) {
 	</h2>
 
 	<div class="tabwrapper">
+<<<<<<< HEAD
 		<?php get_rendered_tab( $wpseo_bulk_titles_table, 'title' )?>
 		<?php get_rendered_tab( $wpseo_bulk_description_table, 'description' )?>
+=======
+		<div id="title" class="wpseotab">
+			<?php
+
+			$tab_video_url = 'https://yoa.st/screencast-tools-bulk-editor';
+			include WPSEO_PATH . 'admin/views/partial-settings-tab-video.php';
+
+			$wpseo_bulk_titles_table->show_page();
+
+			?>
+		</div>
+		<div id="description" class="wpseotab">
+			<?php
+
+			$tab_video_url = 'https://yoa.st/screencast-tools-bulk-editor';
+			include WPSEO_PATH . 'admin/views/partial-settings-tab-video.php';
+
+			$wpseo_bulk_description_table->show_page();
+
+			?>
+		</div>
+
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
 	</div>
 </div>

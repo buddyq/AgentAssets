@@ -1,7 +1,11 @@
 .broker_logo_edit_view, .edit_form_profile_pic{
     width: auto !important;
     height: 100px;
+<<<<<<< HEAD
 
+=======
+    
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
 }
 
 .edit_form_profile_pic_file{
@@ -12,7 +16,11 @@
 .edit_form_broker_pic{
     width: auto !important;
     height: 100px;
+<<<<<<< HEAD
 
+=======
+    
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
 }
 
 .edit_form_broker_pic_file{
@@ -30,8 +38,11 @@
 	text-align: center;
 }
 
+<<<<<<< HEAD
 .actions .button{ font-size: 11px;}
 
 .actions .btn-primary{ padding: 8px 24px;}
 
 td.days-left{ text-align: center;}
+=======
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6

@@ -2,11 +2,14 @@
 
 ## Changelog
 
+<<<<<<< HEAD
 ### 2.0.5, 2016-10-09
 
 * added: Hungarian translation (thanks, [Tom Vicces](https://profiles.wordpress.org/theguitarlesson/)!)
 * added: manual deletion of obsolete sessions from WooCommerce version 2.4 and earlier
 
+=======
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
 ### 2.0.4.1, 2015-12-02
 
 * fixed: "Class 'DelxtransCleaners' not found" when deleting expired transients

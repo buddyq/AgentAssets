@@ -1,7 +1,13 @@
 		<?php
+<<<<<<< HEAD
 			
 		do_action( 'ava_before_footer' );	
 			
+=======
+
+		do_action( 'ava_before_footer' );
+
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
 		global $avia_config;
 		$blank = isset($avia_config['template']) ? $avia_config['template'] : "";
 
@@ -32,7 +38,11 @@
 
 						//create the footer columns by iterating
 
+<<<<<<< HEAD
 						
+=======
+
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
 				        switch($columns)
 				        {
 				        	case 1: $class = ''; break;
@@ -42,7 +52,11 @@
 				        	case 5: $class = 'av_one_fifth'; break;
 				        	case 6: $class = 'av_one_sixth'; break;
 				        }
+<<<<<<< HEAD
 				        
+=======
+
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
 				        $firstCol = "first el_before_{$class}";
 
 						//display the footer widget that was defined at appearenace->widgets in the wordpress backend
@@ -72,7 +86,11 @@
 
 
 
+<<<<<<< HEAD
 			
+=======
+
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
 
 			<?php
 
@@ -108,8 +126,13 @@
                             	$social_args 	= array('outside'=>'ul', 'inside'=>'li', 'append' => '');
 								echo avia_social_media_icons($social_args, false);
                             }
+<<<<<<< HEAD
                         
                             
+=======
+
+
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
                                 $avia_theme_location = 'avia3';
                                 $avia_menu_class = $avia_theme_location . '-menu';
 
@@ -124,8 +147,13 @@
                                 );
 
                             $menu = wp_nav_menu($args);
+<<<<<<< HEAD
                             
                             if($menu){ 
+=======
+
+                            if($menu){
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
                             echo "<nav class='sub_menu_socket' ".avia_markup_helper(array('context' => 'nav', 'echo' => false)).">";
                             echo $menu;
                             echo "</nav>";
@@ -142,13 +170,22 @@
 			} //end nosocket check
 
 
+<<<<<<< HEAD
 		
 		
+=======
+
+
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
 		} //end blank & nofooterarea check
 		?>
 		<!-- end main -->
 		</div>
+<<<<<<< HEAD
 		
+=======
+
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
 		<?php
 		//display link to previeous and next portfolio entry
 		echo avia_post_nav();

@@ -1375,7 +1375,11 @@ if(!function_exists('kriesi_backlink'))
 		if($random_number % 3 == 2) $theme_string = "powered by ".THEMENAME." AgentAssets Theme";
 		if(!empty($frontpage_only) && !is_front_page()) $no = "rel='nofollow'";
 
+<<<<<<< HEAD
 		$link = " - <a {$no} href='http://www.AgentAssets.com'>{$theme_string}</a>";
+=======
+		$link = " - <a {$no} href='http://www.agentassets.com'>{$theme_string}</a>";
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
 
 		$link = apply_filters("kriesi_backlink", $link);
 		return $link;

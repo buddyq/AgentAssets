@@ -86,11 +86,19 @@ DDLayout.ToolsetInIfame = function ($, child)
     };
 
     self.dialog_clean_up = function(){
+<<<<<<< HEAD
         var iFrameValClass = jQuery('select[name="ddl-default-edit-class-name"]', jQuery(iFrameDocument) ).val(),
             iFrameTagVal = jQuery('select[name="ddl_tag_name"]', jQuery(iFrameDocument) ).val();
 
         if( typeof iFrameValClass !== 'undefined'){
             jQuery('select[name="ddl-default-edit-class-name"]').val( iFrameValClass );
+=======
+        var iFrameValClass = jQuery('input[name="ddl-default-edit-class-name"]', jQuery(iFrameDocument) ).val(),
+            iFrameTagVal = jQuery('select[name="ddl_tag_name"]', jQuery(iFrameDocument) ).val();
+
+        if( typeof iFrameValClass !== 'undefined'){
+            jQuery('input[name="ddl-default-edit-class-name"]').val( iFrameValClass );
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
         }
         if( typeof iFrameTagVal !== 'undefined'){
             jQuery( 'select[name="ddl_tag_name"]', jQuery('#ddl-default-edit') ).val( iFrameTagVal );

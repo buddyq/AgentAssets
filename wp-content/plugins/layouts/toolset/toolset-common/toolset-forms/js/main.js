@@ -564,6 +564,7 @@ toolsetForms.CRED_taxonomy = function () {
             jQuery('<input name="' + taxonomy + '_hierarchy" style="display:none" type="hidden">').insertAfter(jQuery('[name="new_tax_text_' + taxonomy + '"]', form));
             new_taxonomy_input = jQuery('input[name="' + taxonomy + '_hierarchy"]', form);
         }
+<<<<<<< HEAD
         
         if (typeof self._new_taxonomy[taxonomy] == 'undefined')
             self._new_taxonomy[taxonomy] = new Array();
@@ -576,6 +577,18 @@ toolsetForms.CRED_taxonomy = function () {
             value += '{' + self._new_taxonomy[taxonomy][i] + '}';
         }
         new_taxonomy_input.val(value);
+=======
+
+        var parent = jQuery('[name="new_tax_select_' + taxonomy + '"]', form).val();
+        self._new_taxonomy.push(parent + ',' + new_taxonomy);
+
+        var value = '';
+        for (var i = 0; i < self._new_taxonomy.length; i++) {
+            value += '{' + self._new_taxonomy[i] + '}';
+        }
+        new_taxonomy_input.val(value);
+
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
     }
 
     self._flash_it = function (element) {

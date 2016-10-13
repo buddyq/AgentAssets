@@ -78,8 +78,11 @@ function custom_mi_agentassets_set_content_type( $content_type ) {
 	return 'text/html';
 }
 
+<<<<<<< HEAD
 add_filter('show_admin_bar', '__return_false');
 
+=======
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
 function add_aa_custom_scripts_to_footer(){
 ?>
 <script type="text/javascript">

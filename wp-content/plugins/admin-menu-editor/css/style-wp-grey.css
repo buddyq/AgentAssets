@@ -1,5 +1,3 @@
-<<<<<<< HEAD
-<<<<<<< HEAD
 .ws_container {
 	padding: 0;
 	width: 296px;
@@ -244,9 +242,7 @@ a.ws_button:hover {
 .ui-dialog-titlebar-close:hover {
 	background: transparent none;
 	color: #2ea2cc;
-=======
-=======
->>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
+}
 .ws_container {
 	padding: 0;
 	width: 296px;
@@ -491,8 +487,4 @@ a.ws_button:hover {
 .ui-dialog-titlebar-close:hover {
 	background: transparent none;
 	color: #2ea2cc;
-<<<<<<< HEAD
->>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
-=======
->>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
 }

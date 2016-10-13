@@ -1,5 +1,3 @@
-<<<<<<< HEAD
-<<<<<<< HEAD
 <?php
 /*
 Plugin Name: Admin Menu Editor [Multisite module]
@@ -14,12 +12,12 @@ To install Admin Menu Editor as a global plugin in WPMU :
 	1) Place the "admin-menu-editor" directory into your "mu-plugins" directory.
 	2) Move this file, admin-menu-editor-mu.php, from the "admin-menu-editor" directory
 	   to your "mu-plugins" directory.
-	   
-The resulting directory structure should look like this : 
+
+The resulting directory structure should look like this :
 
 mu-plugins/
 	admin-menu-editor-mu.php
-	admin-menu-editor/ 
+	admin-menu-editor/
 		menu-editor.php
 		menu-editor-core.php
 		...and other Admin Menu Editor files
@@ -44,10 +42,10 @@ function ws_ame_installation_error(){
 		<strong>Admin Menu Editor is installed incorrectly!</strong>
 		</p>
 		<p>
-		Please copy the entire <code>admin-menu-editor</code> directory to your <code>mu-plugins</code> 
+		Please copy the entire <code>admin-menu-editor</code> directory to your <code>mu-plugins</code>
 		directory, then move only the admin-menu-editor-mu.php file from
 		<code>admin-menu-editor/includes</code> to <code>mu-plugins</code>.
-		</p> 
+		</p>
 </div>
 <?php
 }
@@ -61,9 +59,7 @@ function ws_ame_add_mu_license_link($actions) {
 	return $actions;
 }
 add_filter('network_admin_plugin_action_links_' . basename(__FILE__), 'ws_ame_add_mu_license_link');
-=======
-=======
->>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
+
 <?php
 /*
 Plugin Name: Admin Menu Editor [Multisite module]
@@ -78,12 +74,12 @@ To install Admin Menu Editor as a global plugin in WPMU :
 	1) Place the "admin-menu-editor" directory into your "mu-plugins" directory.
 	2) Move this file, admin-menu-editor-mu.php, from the "admin-menu-editor" directory
 	   to your "mu-plugins" directory.
-	   
-The resulting directory structure should look like this : 
+
+The resulting directory structure should look like this :
 
 mu-plugins/
 	admin-menu-editor-mu.php
-	admin-menu-editor/ 
+	admin-menu-editor/
 		menu-editor.php
 		menu-editor-core.php
 		...and other Admin Menu Editor files
@@ -108,10 +104,10 @@ function ws_ame_installation_error(){
 		<strong>Admin Menu Editor is installed incorrectly!</strong>
 		</p>
 		<p>
-		Please copy the entire <code>admin-menu-editor</code> directory to your <code>mu-plugins</code> 
+		Please copy the entire <code>admin-menu-editor</code> directory to your <code>mu-plugins</code>
 		directory, then move only the admin-menu-editor-mu.php file from
 		<code>admin-menu-editor/includes</code> to <code>mu-plugins</code>.
-		</p> 
+		</p>
 </div>
 <?php
 }
@@ -125,7 +121,3 @@ function ws_ame_add_mu_license_link($actions) {
 	return $actions;
 }
 add_filter('network_admin_plugin_action_links_' . basename(__FILE__), 'ws_ame_add_mu_license_link');
-<<<<<<< HEAD
->>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
-=======
->>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6

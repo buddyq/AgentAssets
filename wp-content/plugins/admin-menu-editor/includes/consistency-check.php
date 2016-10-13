@@ -1,5 +1,3 @@
-<<<<<<< HEAD
-<<<<<<< HEAD
 <?php
 if ( !defined('ABSPATH') ) {
 	die();
@@ -159,9 +157,7 @@ function ame_test_url_access($url, $filename) {
 }
 
 echo $divider;
-=======
-=======
->>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
+
 <?php
 if ( !defined('ABSPATH') ) {
 	die();
@@ -321,8 +317,5 @@ function ame_test_url_access($url, $filename) {
 }
 
 echo $divider;
-<<<<<<< HEAD
->>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
-=======
->>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
+
 echo '</pre>';

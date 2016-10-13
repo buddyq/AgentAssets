@@ -1,5 +1,3 @@
-<<<<<<< HEAD
-<<<<<<< HEAD
 /* Admin Menu Editor CSS file */
 #ws_menu_editor {
   min-width: 780px; }
@@ -352,7 +350,7 @@
   display: block;
   float: left; }
 
-/* 
+/*
 The appearance and size of combo-box fields need to be changed
 to accommodate the drop-down button.
 */
@@ -380,7 +378,7 @@ to accommodate the drop-down button.
   height: 16px; }
 
 /*
- * "Show/hide advanced fields" 
+ * "Show/hide advanced fields"
  */
 .ws_toggle_container {
   text-align: right;
@@ -1748,7 +1746,7 @@ a#ws-ame-delete-color-preset:hover {
   display: block;
   float: left; }
 
-/* 
+/*
 The appearance and size of combo-box fields need to be changed
 to accommodate the drop-down button.
 */
@@ -1776,7 +1774,7 @@ to accommodate the drop-down button.
   height: 16px; }
 
 /*
- * "Show/hide advanced fields" 
+ * "Show/hide advanced fields"
  */
 .ws_toggle_container {
   text-align: right;
@@ -2789,7 +2787,3 @@ a#ws-ame-delete-color-preset:hover {
   padding: 8px; }
 
 /*# sourceMappingURL=menu-editor.css.map */
-<<<<<<< HEAD
->>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
-=======
->>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6

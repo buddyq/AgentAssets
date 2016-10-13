@@ -1,5 +1,3 @@
-<<<<<<< HEAD
-<<<<<<< HEAD
 <?php
 
 if ( !class_exists('AutoVersioning') ) {
@@ -135,9 +133,7 @@ if ( !function_exists('wp_enqueue_auto_versioned_style') ) {
 	function wp_enqueue_auto_versioned_style( $handle, $src, $deps = array(), $media = 'all', $add_ver_to_filename = false ) {
 		AutoVersioning::add_dependency('wp_enqueue_style', $handle, $src, $deps, $media, $add_ver_to_filename);
 	}
-=======
-=======
->>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
+
 <?php
 
 if ( !class_exists('AutoVersioning') ) {
@@ -273,8 +269,4 @@ if ( !function_exists('wp_enqueue_auto_versioned_style') ) {
 	function wp_enqueue_auto_versioned_style( $handle, $src, $deps = array(), $media = 'all', $add_ver_to_filename = false ) {
 		AutoVersioning::add_dependency('wp_enqueue_style', $handle, $src, $deps, $media, $add_ver_to_filename);
 	}
-<<<<<<< HEAD
->>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
-=======
->>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
 }

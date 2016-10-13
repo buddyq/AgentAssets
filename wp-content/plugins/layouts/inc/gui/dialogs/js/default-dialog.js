@@ -183,7 +183,7 @@ DDLayout.DefaultDialog = function($)
 		$editWindow.find('.js-dialog-title').html(dialog_title);
 
 		jQuery('input[name="ddl-default-edit-cell-name"]').val(cell_name);
-		jQuery('input[name="ddl-default-edit-class-name"]').val("");
+		jQuery('select[name="ddl-default-edit-class-name"]').val("").trigger("change");
 		jQuery('input[name="ddl-default-edit-css-id"]').val("");
 		$editWindow.find('select[name="ddl_tag_name"]').val( 'div' );
 
@@ -391,7 +391,6 @@ DDLayout.DefaultDialog = function($)
 
 			jQuery('input[name="ddl-default-edit-cell-name"]').val( cellName );
             var css_classes = cell_view.model.get('additionalCssClasses');
-			jQuery('input[name="ddl-default-edit-class-name"]').val( css_classes.replace(/ /g, ',') );
 			jQuery('input[name="ddl-default-edit-css-id"]').val( cell_view.model.get('cssId') );
 			$editWindow.find('select[name="ddl_tag_name"]').val( cell_view.model.get('tag') );
 			$editWindow.find('.js-dialog-title').html(dialog_title);
@@ -406,7 +405,7 @@ DDLayout.DefaultDialog = function($)
 			_.delay(function(){
 				var $save_and_close_button = $editWindow.find('.js-save-dialog-settings-and-close');
 
-				//console.log(cell_view.model.get('cell_type'));
+				jQuery('select[name="ddl-default-edit-class-name"]', $editWindow).val( css_classes.split(",") ).trigger("change", {values : css_classes.split(",") });
 
 				if( has_child_layout_alone ) {
 					$save_and_close_button.removeClass('button-primary').prop('disabled', true);
@@ -455,7 +454,8 @@ DDLayout.DefaultDialog = function($)
                 target_cell.set('editorVisualTemplateID', cell_type + '-template');
 
                 target_cell.set('name', jQuery('input[name="ddl-default-edit-cell-name"]').val());
-                target_cell.set('additionalCssClasses', jQuery('input[name="ddl-default-edit-class-name"]').val());
+                var css_classes_tosave = (jQuery('select[name="ddl-default-edit-class-name"]', jQuery("#ddl-default-edit")).val());
+                target_cell.set('additionalCssClasses', (css_classes_tosave != null ? css_classes_tosave.join(",") : ""));
                 target_cell.set('cssId', jQuery('input[name="ddl-default-edit-css-id"]').val());
                 target_cell.set('tag', jQuery('#ddl-default-edit select[name="ddl_tag_name"]').val());
                 target_cell.set('row_divider', target_cell_view.model.get('row_divider'));
@@ -690,7 +690,7 @@ DDLayout.DefaultDialog = function($)
 		}
 
 		container.addRows(number_of_rows, container_columns, layout_type, row_divider);
-		container.set('additionalCssClasses', jQuery('input[name="ddl-default-edit-class-name"]').val());
+		container.set('additionalCssClasses', jQuery('select[name="ddl-default-edit-class-name"]', jQuery("#ddl-default-edit")).val());
 		container.set('cssId', jQuery('input[name="ddl-default-edit-css-id"]').val());
 		container.set('tag', jQuery('#ddl-default-edit select[name="ddl_tag_name"]').val());
 		container.set('row_divider', target_cell_view.model.get('row_divider'));

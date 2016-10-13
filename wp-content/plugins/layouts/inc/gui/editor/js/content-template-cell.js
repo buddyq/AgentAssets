@@ -359,22 +359,23 @@ DDLayout.ContentTemplateCell = function($)
     };
 
     self.load_more_paginated_options = function (post_type, nonce) {
-        self.toolset_select2_element.onSelect = (function(fn) {
-            var me = this;
-            return function(data, event) {
-                var target;
-                if (event != null) {
-                    target = jQuery(event.target);
-                }
+        jQuery( '#ddl-layout-selected_post' ).on('toolset_select2:select', {post_type:post_type, nonce:nonce}, self.toolset_select2_onSelect);
+    };
 
-                if (target && target.parent().hasClass('js-show-more-posts-options')) {
-                    event.preventDefault();
-                    do_select_pagination_call( event, post_type, nonce );
-                } else {
-                    return fn.apply(this, arguments);
-                }
-            }
-        })(self.toolset_select2_element.onSelect);
+    self.toolset_select2_onSelect = function(event) {
+        var target = this.selectedOptions.length ? this.selectedOptions[0] : null,
+            post_type=event.data.post_type, nonce=event.data.nonce;
+        if ( target != null && event != null ) {
+            event.target = target;
+            target = jQuery(event.target);
+        }
+
+        if (target && target.hasClass('js-show-more-posts-options')) {
+            event.preventDefault();
+            do_select_pagination_call(event, post_type, nonce);
+        } else {
+            //return self.toolset_select2_onSelect.apply(this, arguments);
+        }
     };
 
     var do_select_pagination_call = function ( event ) {
@@ -456,10 +457,11 @@ DDLayout.ContentTemplateCell = function($)
     };
 
     self._handle_post_select_change = function (event) {
-
+        
         if (self.get_display_mode() == 'this_page') {
             if( self._dialog.get_cell_type() == 'cell-content-template' )
             {
+                self.get_selected_post_title();
                 self._dialog.disable_save_button(self.get_selected_post() == '' ||
                 !DDLayout.content_template_cell.is_save_ok());
             }
@@ -500,7 +502,6 @@ DDLayout.ContentTemplateCell = function($)
                         }
                     });
                 }
-
                 self.load_more_paginated_options( );
             }
 
@@ -1001,6 +1002,11 @@ DDLayout.ContentTemplateCell = function($)
 
     self.get_selected_post = function () {
         return jQuery('#ddl-default-edit #ddl-layout-selected_post').val();
+    };
+    
+    self.get_selected_post_title = function(){
+        var post_value = jQuery('#ddl-default-edit #ddl-layout-selected_post :selected').text();
+        jQuery('#toolset_select2-ddl-layout-selected_post-container').text(post_value);
     };
 
     self.get_post_select_empty = function(){

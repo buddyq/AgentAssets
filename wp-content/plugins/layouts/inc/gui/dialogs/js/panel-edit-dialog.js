@@ -86,7 +86,7 @@ DDLayout.PanelDialog = function($, row_view)
             jQuery('#ddl-panel-edit').data('row_view', row_view);
 
             jQuery('input[name="ddl-panel-edit-panel-name"]').val(row_view.model.get('name'));
-	        jQuery('input.js-edit-css-class', jQuery('#ddl-panel-edit') ).val(row_view.model.get('additionalCssClasses'));
+	        jQuery('select.js-edit-css-class', jQuery('#ddl-panel-edit') ).val(row_view.model.get('additionalCssClasses'));
 	        jQuery('input.js-edit-css-id', jQuery('#ddl-panel-edit') ).val( row_view.model.get('cssId') );
             jQuery('#ddl-panel-edit select[name="ddl_tag_name"]').val( row_view.model.get('tag') );
 
@@ -133,7 +133,7 @@ DDLayout.PanelDialog = function($, row_view)
             var target_row = target_row_view.model;
 
             target_row.set('name', jQuery('input[name="ddl-panel-edit-panel-name"]').val() );
-            target_row.set('additionalCssClasses', jQuery('input.js-edit-css-class', jQuery('#ddl-panel-edit') ).val() );
+            target_row.set('additionalCssClasses', jQuery('select.js-edit-css-class', jQuery('#ddl-panel-edit') ).val() );
             target_row.set('cssId', jQuery('input.js-edit-css-id', jQuery('#ddl-panel-edit') ).val() );
             target_row.set('tag', jQuery('#ddl-panel-edit select[name="ddl_tag_name"]').val() );
             

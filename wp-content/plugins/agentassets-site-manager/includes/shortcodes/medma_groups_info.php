@@ -13,6 +13,5 @@ function aa_groups_info_shortcode(/*$atts*/) {
     if (false !== $groups) foreach($groups as $group) {
         $result[] = $group->name;
     }
-
     return count($result) ? (implode(', ',$result)) : 'You don\'t belong to any groups! :)';
 }

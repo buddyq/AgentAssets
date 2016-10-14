@@ -3,7 +3,15 @@ Contributors: ash.matadeen
 Donate link: http://ashmatadeen.com/donate
 Tags: security, bots, recaptcha, nocaptcha, google, login
 Requires at least: 4.2.2
+<<<<<<< HEAD
+<<<<<<< HEAD
 Tested up to: 4.6.1
+=======
+Tested up to: 4.4.2
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
+=======
+Tested up to: 4.4.2
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
 Stable tag: trunk
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -31,9 +39,15 @@ This plugin prevents brute force logins on your WordPress website by adding Goog
 
 == Changelog ==
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 = 1.4.1 =
 * Support for WooCommerce's login form
 
+=======
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
+=======
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
 = 1.4 =
 * Bug fix for when JavaScript is disabled/not available
 

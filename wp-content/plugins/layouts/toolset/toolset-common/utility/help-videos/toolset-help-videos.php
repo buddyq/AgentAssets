@@ -54,13 +54,29 @@ if( !class_exists('Toolset_HelpVideo') ) {
 
         public function add_register_scripts($scripts)
         {
+<<<<<<< HEAD
+<<<<<<< HEAD
             $scripts['toolset-help-video'] = new Toolset_Script('toolset-help-video', TOOLSET_COMMON_URL . '/utility/help-videos/res/js/toolset-help-videos.js', array('jquery', 'underscore', 'backbone', 'wp-mediaelement', 'toolset-utils'), '1.0', true);
+=======
+            $scripts[] = new Toolset_Script('toolset-help-video', TOOLSET_COMMON_URL . '/utility/help-videos/res/js/toolset-help-videos.js', array('jquery', 'underscore', 'backbone', 'wp-mediaelement', 'toolset-utils'), '1.0', true);
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
+=======
+            $scripts[] = new Toolset_Script('toolset-help-video', TOOLSET_COMMON_URL . '/utility/help-videos/res/js/toolset-help-videos.js', array('jquery', 'underscore', 'backbone', 'wp-mediaelement', 'toolset-utils'), '1.0', true);
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
             return $scripts;
         }
 
         public function add_register_styles($styles)
         {
+<<<<<<< HEAD
+<<<<<<< HEAD
             $styles['toolset-help-video'] = new Toolset_Style('toolset-help-video', TOOLSET_COMMON_URL . '/utility/help-videos/res/css/toolset-help-videos.css');
+=======
+            $styles[] = new Toolset_Style('toolset-help-video', TOOLSET_COMMON_URL . '/utility/help-videos/res/css/toolset-help-videos.css');
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
+=======
+            $styles[] = new Toolset_Style('toolset-help-video', TOOLSET_COMMON_URL . '/utility/help-videos/res/css/toolset-help-videos.css');
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
             return $styles;
         }
 

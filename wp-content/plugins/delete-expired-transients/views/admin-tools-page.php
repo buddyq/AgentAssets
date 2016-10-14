@@ -7,16 +7,38 @@ if (!defined('ABSPATH')) {
 ?>
 
 <div class='wrap'>
+<<<<<<< HEAD
+<<<<<<< HEAD
 <h1><?php _e('Delete Expired Transients', 'delete-expired-transients'); ?></h1>
 
 <?php if ($msg): ?>
 <div class='updated'>
 	<p><?php echo esc_html($msg); ?></p>
+=======
+=======
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
+<h2><?php _e('Delete Expired Transients', 'delete-expired-transients'); ?></h2>
+
+<?php if ($action == 'delete-expired'): ?>
+<div class='updated fade'>
+	<p><?php _e('Expired transients deleted.', 'delete-expired-transients'); ?></p>
+</div>
+<?php endif; ?>
+
+<?php if ($action == 'delete-all'): ?>
+<div class='updated fade'>
+	<p><?php _e('All transients deleted.', 'delete-expired-transients'); ?></p>
+<<<<<<< HEAD
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
+=======
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
 </div>
 <?php endif; ?>
 
 <p><?php printf(__('Expired transients: %s', 'delete-expired-transients'), number_format_i18n($counts->expired)); ?></p>
 <p><?php printf(__('Total transients: %s', 'delete-expired-transients'), number_format_i18n($counts->total + $counts->never_expire)); ?></p>
+<<<<<<< HEAD
+<<<<<<< HEAD
 <?php if ($counts->woocommerce_sessions): ?>
 <p><?php printf(__('Obsolete WooCommerce sessions: %s', 'delete-expired-transients'), number_format_i18n($counts->woocommerce_sessions)); ?></p>
 <?php endif; ?>
@@ -50,5 +72,36 @@ if (!defined('ABSPATH')) {
 	<p>
 		<input type="submit" name="Submit" class="button-primary" value="<?php echo esc_html_x('Delete', 'tools page submit button', 'delete-expired-transients'); ?>" />
 	</p>
+=======
+=======
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
+
+<form action="<?php echo admin_url('tools.php'); ?>?page=delxtrans" method="post">
+
+	<table class="form-table">
+
+	<tr valign='top'>
+		<th><strong><?php _e('Delete transients', 'delete-expired-transients'); ?></strong></th>
+		<td>
+			<label><input type="radio" name="delxtrans-action" value="delete-expired" checked="checked" />
+				<?php _e('expired transients', 'delete-expired-transients'); ?></label><br />
+			<label><input type="radio" name="delxtrans-action" value="delete-all" />
+				<?php _e('all transients -- use with caution!', 'delete-expired-transients'); ?></label>
+		</td>
+	</tr>
+
+	<tr>
+		<th>&nbsp;</th>
+		<td>
+			<input type="submit" name="Submit" class="button-primary" value="<?php _e('Delete', 'delete-expired-transients'); ?>" />
+			<?php wp_nonce_field('delete', 'delxtrans_wpnonce', false); ?>
+		</td>
+	</tr>
+
+	</table>
+<<<<<<< HEAD
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
+=======
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
 
 </form>

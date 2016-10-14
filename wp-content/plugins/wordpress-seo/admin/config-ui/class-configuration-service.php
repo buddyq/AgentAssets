@@ -34,6 +34,20 @@ class WPSEO_Configuration_Service {
 	 * Register the service and boot handlers
 	 */
 	public function initialize() {
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
+		$this->storage->set_adapter( $this->adapter );
+		$this->storage->add_default_fields();
+
+		$this->components->set_storage( $this->storage );
+
+<<<<<<< HEAD
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
+=======
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
 		$this->endpoint->register();
 	}
 
@@ -95,6 +109,8 @@ class WPSEO_Configuration_Service {
 	}
 
 	/**
+<<<<<<< HEAD
+<<<<<<< HEAD
 	 * Populate the configuration
 	 */
 	protected function populate_configuration() {
@@ -106,13 +122,23 @@ class WPSEO_Configuration_Service {
 	}
 
 	/**
+=======
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
+=======
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
 	 * Used by endpoint to retrieve configuration
 	 *
 	 * @return array List of settings.
 	 */
 	public function get_configuration() {
+<<<<<<< HEAD
+<<<<<<< HEAD
 		$this->populate_configuration();
 
+=======
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
+=======
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
 		$fields = $this->storage->retrieve();
 		$steps  = $this->structure->retrieve();
 
@@ -130,8 +156,14 @@ class WPSEO_Configuration_Service {
 	 * @return array List of feedback per option if saving succeeded.
 	 */
 	public function set_configuration( WP_REST_Request $request ) {
+<<<<<<< HEAD
+<<<<<<< HEAD
 		$this->populate_configuration();
 
+=======
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
+=======
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
 		return $this->storage->store( $request->get_json_params() );
 	}
 }

@@ -15,7 +15,15 @@ var DDLayout = DDLayout || {};
             this._trigger('refresh');
         },
         _allowInteraction: function( event ) {
+<<<<<<< HEAD
+<<<<<<< HEAD
             return !!$( event.target ).is( ".toolset_select2-input" ) || this._super( event );
+=======
+            return !!$( event.target ).is( ".select2-input" ) || this._super( event );
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
+=======
+            return !!$( event.target ).is( ".select2-input" ) || this._super( event );
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
         },
         _create:function( ){
             this._super("_create");

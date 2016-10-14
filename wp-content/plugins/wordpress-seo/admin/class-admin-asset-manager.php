@@ -130,7 +130,15 @@ class WPSEO_Admin_Asset_Manager {
 		return array(
 			array(
 				'name' => 'admin-script',
+<<<<<<< HEAD
+<<<<<<< HEAD
 				'src'  => 'wp-seo-admin-370',
+=======
+				'src'  => 'wp-seo-admin-360',
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
+=======
+				'src'  => 'wp-seo-admin-360',
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
 				'deps' => array(
 					'jquery',
 					'jquery-ui-core',
@@ -164,7 +172,15 @@ class WPSEO_Admin_Asset_Manager {
 			),
 			array(
 				'name' => 'metabox',
+<<<<<<< HEAD
+<<<<<<< HEAD
 				'src'  => 'wp-seo-metabox-370',
+=======
+				'src'  => 'wp-seo-metabox-350',
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
+=======
+				'src'  => 'wp-seo-metabox-350',
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
 				'deps' => array(
 					'jquery',
 					'jquery-ui-core',
@@ -189,7 +205,15 @@ class WPSEO_Admin_Asset_Manager {
 			),
 			array(
 				'name' => 'post-scraper',
+<<<<<<< HEAD
+<<<<<<< HEAD
 				'src'  => 'wp-seo-post-scraper-370',
+=======
+				'src'  => 'wp-seo-post-scraper-360',
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
+=======
+				'src'  => 'wp-seo-post-scraper-360',
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
 				'deps' => array(
 					self::PREFIX . 'replacevar-plugin',
 					self::PREFIX . 'shortcode-plugin',
@@ -198,14 +222,30 @@ class WPSEO_Admin_Asset_Manager {
 			),
 			array(
 				'name' => 'term-scraper',
+<<<<<<< HEAD
+<<<<<<< HEAD
 				'src'  => 'wp-seo-term-scraper-370',
+=======
+				'src'  => 'wp-seo-term-scraper-360',
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
+=======
+				'src'  => 'wp-seo-term-scraper-360',
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
 				'deps' => array(
 					self::PREFIX . 'replacevar-plugin',
 				),
 			),
 			array(
 				'name' => 'replacevar-plugin',
+<<<<<<< HEAD
+<<<<<<< HEAD
 				'src'  => 'wp-seo-replacevar-plugin-370',
+=======
+				'src'  => 'wp-seo-replacevar-plugin-360',
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
+=======
+				'src'  => 'wp-seo-replacevar-plugin-360',
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
 			),
 			array(
 				'name' => 'shortcode-plugin',
@@ -213,7 +253,15 @@ class WPSEO_Admin_Asset_Manager {
 			),
 			array(
 				'name' => 'recalculate',
+<<<<<<< HEAD
+<<<<<<< HEAD
 				'src'  => 'wp-seo-recalculate-370',
+=======
+				'src'  => 'wp-seo-recalculate-360',
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
+=======
+				'src'  => 'wp-seo-recalculate-360',
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
 				'deps' => array(
 					'jquery',
 					'jquery-ui-core',
@@ -249,7 +297,15 @@ class WPSEO_Admin_Asset_Manager {
 			),
 			array(
 				'name' => 'configuration-wizard',
+<<<<<<< HEAD
+<<<<<<< HEAD
 				'src'  => 'configuration-wizard-370',
+=======
+				'src'  => 'configuration-wizard-360',
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
+=======
+				'src'  => 'configuration-wizard-360',
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
 				'deps' => array(
 					'jquery',
 				),
@@ -268,7 +324,15 @@ class WPSEO_Admin_Asset_Manager {
 		return array(
 			array(
 				'name' => 'admin-css',
+<<<<<<< HEAD
+<<<<<<< HEAD
 				'src'  => 'yst_plugin_tools-370',
+=======
+				'src'  => 'yst_plugin_tools-350',
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
+=======
+				'src'  => 'yst_plugin_tools-350',
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
 				'deps' => array( self::PREFIX . 'toggle-switch' ),
 			),
 			array(
@@ -299,7 +363,15 @@ class WPSEO_Admin_Asset_Manager {
 			),
 			array(
 				'name' => 'metabox-css',
+<<<<<<< HEAD
+<<<<<<< HEAD
 				'src'  => 'metabox-370',
+=======
+				'src'  => 'metabox-360',
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
+=======
+				'src'  => 'metabox-360',
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
 				'deps' => array(
 					self::PREFIX . 'select2',
 				),
@@ -341,7 +413,15 @@ class WPSEO_Admin_Asset_Manager {
 			),
 			array(
 				'name' => 'admin-global',
+<<<<<<< HEAD
+<<<<<<< HEAD
 				'src'  => 'admin-global-370',
+=======
+				'src'  => 'admin-global-350',
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
+=======
+				'src'  => 'admin-global-350',
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
 			),
 			array(
 				'name' => 'yoast-components',

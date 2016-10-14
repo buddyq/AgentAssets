@@ -117,7 +117,13 @@ return array(
     'WPSEO_Configuration_Structure' => $baseDir . '/admin/config-ui/class-configuration-structure.php',
     'WPSEO_Customizer' => $baseDir . '/admin/class-customizer.php',
     'WPSEO_Export' => $baseDir . '/admin/class-export.php',
+<<<<<<< HEAD
+<<<<<<< HEAD
     'WPSEO_Features' => $baseDir . '/inc/class-wpseo-features.php',
+=======
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
+=======
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
     'WPSEO_Frontend' => $baseDir . '/frontend/class-frontend.php',
     'WPSEO_Frontend_Primary_Category' => $baseDir . '/frontend/class-primary-category.php',
     'WPSEO_GSC' => $baseDir . '/admin/google_search_console/class-gsc.php',
@@ -189,7 +195,13 @@ return array(
     'WPSEO_Premium_Popup' => $baseDir . '/admin/class-premium-popup.php',
     'WPSEO_Primary_Term' => $baseDir . '/inc/class-wpseo-primary-term.php',
     'WPSEO_Primary_Term_Admin' => $baseDir . '/admin/class-primary-term-admin.php',
+<<<<<<< HEAD
+<<<<<<< HEAD
     'WPSEO_Product_Upsell_Notice' => $baseDir . '/admin/class-product-upsell-notice.php',
+=======
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
+=======
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
     'WPSEO_Rank' => $baseDir . '/inc/class-wpseo-rank.php',
     'WPSEO_Recalculate' => $baseDir . '/admin/recalculate/class-recalculate.php',
     'WPSEO_Recalculate_Posts' => $baseDir . '/admin/recalculate/class-recalculate-posts.php',

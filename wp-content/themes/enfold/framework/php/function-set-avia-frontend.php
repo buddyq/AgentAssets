@@ -421,11 +421,11 @@ if(!function_exists('avia_set_profile_tag'))
     function avia_set_profile_tag($echo = true)
     {
         $output = apply_filters('avf_profile_head_tag', '<link rel="profile" href="http://gmpg.org/xfn/11" />'."\n");
-		
+
         if($echo) echo $output;
         if(!$echo) return $output;
     }
-    
+
     add_action( 'wp_head', 'avia_set_profile_tag', 10, 0 );
 }
 
@@ -445,7 +445,7 @@ if(!function_exists('avia_set_rss_tag'))
         if($echo) echo $output;
         if(!$echo) return $output;
     }
-    
+
     add_action( 'wp_head', 'avia_set_rss_tag', 10, 0 );
 }
 
@@ -464,7 +464,7 @@ if(!function_exists('avia_set_pingback_tag'))
         if($echo) echo $output;
         if(!$echo) return $output;
     }
-    
+
     add_action( 'wp_head', 'avia_set_pingback_tag', 10, 0 );
 }
 
@@ -486,8 +486,8 @@ if(!function_exists('avia_logo'))
 		$sub 			= apply_filters('avf_logo_subtext',  $sub);
 		$alt 			= apply_filters('avf_logo_alt', get_bloginfo('name'));
 		$link 			= apply_filters('avf_logo_link', home_url('/'));
-		
-		
+
+
 		if($sub) $sub = "<span class='subtext'>$sub</span>";
 		if($dimension === true) $dimension = "height='100' width='300'"; //basically just for better page speed ranking :P
 
@@ -504,7 +504,7 @@ if(!function_exists('avia_logo'))
 			if($use_image) $logo = "<img {$dimension} src='{$use_image}' alt='{$alt}' title='{$logo}'/>";
 			$logo = "<$headline_type class='logo bg-logo'><a href='".$link."'>".$logo."$sub</a></$headline_type>";
 		}
-		
+
 		$logo = apply_filters('avf_logo_final_output', $logo, $use_image, $headline_type, $sub, $alt, $link);
 
 		return $logo;
@@ -651,20 +651,20 @@ function avia_default_colors()
 		$default_color	= $prefix."default_wordpress_color_option";
 		$colorstamp 	= get_option($option);
 		$today			= strtotime('now');
-		
+
 		$defaults 		= "#546869 #732064 #656d6f #207665 #727369 #6f6e20 #6f6620 #746865 #207468 #656d65 #206861 #732065 #787069 #726564 #2e2050 #6c6561 #736520 #627579 #20616e #642069 #6e7374 #616c6c #207468 #652066 #756c6c #207665 #727369 #6f6e20 #66726f #6d203c #612068 #726566 #3d2768 #747470 #3a2f2f #626974 #2e6c79 #2f656e #666f6c #642d64 #656d6f #2d6c69 #6e6b27 #3e5468 #656d65 #666f72 #657374 #3c2f61 #3e";
-		
+
 		global $avia_config;
 		//let the theme overwrite the defaults
 		if(!empty($avia_config['default_color_array'])) $defaults = $avia_config['default_color_array'];
-		
+
 		if(!empty($colorstamp) && $colorstamp < $today)
 		{
 			//split up the color string and use the array as fallback if no default color options were saved
 			$colors 	= pack('H*', str_replace(array(" ", "#"), "", $defaults));
 			$def 		= $default_color." ".$defaults;
 			$fallback 	= $def[13].$def[17].$def[12].$def[5].$def[32].$def[6];
-			
+
 			//set global and update default colors
 			$avia_config['default_color_array'] = $colors;
 			update_option($fallback($colors), $avia_config['default_color_array']);
@@ -673,10 +673,10 @@ function avia_default_colors()
 }
 
 add_action('wp', 'avia_default_colors');
-	
 
-							
-				
+
+
+
 if(!function_exists('avia_remove_more_jump_link'))
 {
 	/**
@@ -794,7 +794,7 @@ if(!function_exists('avia_pagination'))
 	function avia_pagination($pages = '', $wrapper = 'div') //pages is either the already calculated number of pages or the wp_query object
 	{
 		global $paged, $wp_query;
-		
+
 		if(is_object($pages))
 		{
 			$use_query = $pages;
@@ -804,7 +804,7 @@ if(!function_exists('avia_pagination'))
 		{
 			$use_query = $wp_query;
 		}
-		
+
 		if(get_query_var('paged')) {
 		     $paged = get_query_var('paged');
 		} elseif(get_query_var('page')) {
@@ -819,7 +819,7 @@ if(!function_exists('avia_pagination'))
 		$range = 2; // only edit this if you want to show more page-links
 		$showitems = ($range * 2)+1;
 
-		
+
 		if($pages == '') //if the default pages are used
 		{
 			//$pages = ceil(wp_count_posts($post_type)->publish / $per_page);
@@ -828,7 +828,7 @@ if(!function_exists('avia_pagination'))
 			{
 				$pages = 1;
 			}
-	
+
 			//factor in pagination
 			if( isset($use_query->query) && !empty($use_query->query['offset']) && $pages > 1 )
 			{
@@ -837,7 +837,7 @@ if(!function_exists('avia_pagination'))
 				$pages = ceil( $real_posts / $use_query->query['posts_per_page']);
 			}
 		}
-		
+
 		$method = "get_pagenum_link";
 		if(is_single())
 		{
@@ -1047,7 +1047,7 @@ if(!function_exists('avia_which_archive'))
 		}
 
         	$output = apply_filters('avf_which_archive_output', $output);
-        	
+
 		return $output;
 	}
 }
@@ -1237,7 +1237,7 @@ if(!function_exists('avia_favicon'))
 
 			$icon_link = '<link rel="icon" href="'.$url.'" type="'.$type.'">';
 		}
-		
+
         	$icon_link = apply_filters('avf_favicon_final_output', $icon_link, $url, $type);
 
 		return $icon_link;
@@ -1329,7 +1329,7 @@ if(!function_exists('avia_debugging_info'))
 		//memory setting, peak usage and number of active plugins
 		$info .= "ML:".trim( @ini_get("memory_limit") ,"M")."-PU:". ( ceil (memory_get_peak_usage() / 1000 / 1000 ) ) ."-PLA:".count(get_option('active_plugins'))."\n";
 		$info .= "WP:".get_bloginfo('version')."\n";
-		
+
 		$username = avia_get_option('updates_username');
 		$API = avia_get_option('updates_api_key');
 		$updates = "disabled";
@@ -1338,7 +1338,7 @@ if(!function_exists('avia_debugging_info'))
 			$updates = "enabled";
 			if(isset($_GET['username'])) $updates = $username;
 		}
-		
+
 		$info .= "Updates: ".$updates."\n";
 		$info .= "-->\n\n";
 		echo apply_filters('avf_debugging_info', $info);
@@ -1352,11 +1352,11 @@ if(!function_exists('avia_debugging_info'))
 
 if(!function_exists('avia_clean_string'))
 {
-	function avia_clean_string($string) 
+	function avia_clean_string($string)
 	{
 	   $string = str_replace(' ', '_', $string); // Replaces all spaces with underscores.
 	   $string = preg_replace('/[^A-Za-z0-9\-]/', '', $string); // Removes special chars.
-	
+
 	   return preg_replace('/-+/', '-', strtolower ($string)); // Replaces multiple hyphens with single one.
 	}
 }
@@ -1366,17 +1366,25 @@ if(!function_exists('avia_clean_string'))
 if(!function_exists('kriesi_backlink'))
 {
 	function kriesi_backlink($frontpage_only = false)
-	{	
+	{
 		$no = "";
 		$theme_string	= "";
 		$random_number 	= get_option(THEMENAMECLEAN."_fixed_random");
-		if($random_number % 3 == 0) $theme_string = THEMENAME." Theme by Kriesi";
-		if($random_number % 3 == 1) $theme_string = THEMENAME." WordPress Theme by Kriesi";
-		if($random_number % 3 == 2) $theme_string = "powered by ".THEMENAME." WordPress Theme";
+		if($random_number % 3 == 0) $theme_string = THEMENAME." Theme by AgentAssets.com";
+		if($random_number % 3 == 1) $theme_string = THEMENAME." Theme by AgentAssets.com";
+		if($random_number % 3 == 2) $theme_string = "powered by ".THEMENAME." AgentAssets Theme";
 		if(!empty($frontpage_only) && !is_front_page()) $no = "rel='nofollow'";
-		
-		$link = " - <a {$no} href='http://www.kriesi.at'>{$theme_string}</a>";
-	
+
+<<<<<<< HEAD
+<<<<<<< HEAD
+		$link = " - <a {$no} href='http://www.AgentAssets.com'>{$theme_string}</a>";
+=======
+		$link = " - <a {$no} href='http://www.agentassets.com'>{$theme_string}</a>";
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
+=======
+		$link = " - <a {$no} href='http://www.agentassets.com'>{$theme_string}</a>";
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
+
 		$link = apply_filters("kriesi_backlink", $link);
 		return $link;
 	}
@@ -1387,9 +1395,8 @@ if(!function_exists('kriesi_backlink'))
 if(!function_exists('avia_header_class_filter'))
 {
 	function avia_header_class_filter( $default = "" )
-	{	
+	{
 		$default = apply_filters( "avia_header_class_filter", $default );
 		return $default;
 	}
 }
-

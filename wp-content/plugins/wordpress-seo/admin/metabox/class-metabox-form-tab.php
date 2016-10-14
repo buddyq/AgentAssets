@@ -34,11 +34,17 @@ class WPSEO_Metabox_Form_Tab implements WPSEO_Metabox_Tab {
 	private $link_title;
 
 	/**
+<<<<<<< HEAD
+<<<<<<< HEAD
 	 * @var boolean
 	 */
 	private $single;
 
 	/**
+=======
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
+=======
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
 	 * Constructor.
 	 *
 	 * @param string $name         The name of the tab, used as an identifier in the html.
@@ -52,7 +58,13 @@ class WPSEO_Metabox_Form_Tab implements WPSEO_Metabox_Tab {
 		$this->link_content = $link_content;
 		$this->link_class	= isset( $options['link_class'] ) ? $options['link_class'] : '';
 		$this->link_title   = isset( $options['link_title'] ) ? $options['link_title'] : '';
+<<<<<<< HEAD
+<<<<<<< HEAD
 		$this->single       = isset( $options['single'] ) ? true : false;
+=======
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
+=======
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
 	}
 
 	/**
@@ -61,6 +73,8 @@ class WPSEO_Metabox_Form_Tab implements WPSEO_Metabox_Tab {
 	 * @return string
 	 */
 	public function link() {
+<<<<<<< HEAD
+<<<<<<< HEAD
 
 		$html = '<li class="%1$s %2$s"><a class="wpseo_tablink" href="#wpseo_%1$s"%3$s>%4$s</a></li>';
 
@@ -70,6 +84,14 @@ class WPSEO_Metabox_Form_Tab implements WPSEO_Metabox_Tab {
 
 		return sprintf(
 			$html,
+=======
+		return sprintf(
+			'<li class="%1$s %2$s"><a class="wpseo_tablink" href="#wpseo_%1$s"%3$s>%4$s</a></li>',
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
+=======
+		return sprintf(
+			'<li class="%1$s %2$s"><a class="wpseo_tablink" href="#wpseo_%1$s"%3$s>%4$s</a></li>',
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
 			esc_attr( $this->name ),
 			esc_attr( $this->link_class ),
 			( '' !== $this->link_title ) ? ' title="' . esc_attr( $this->link_title ) . '"' : '',

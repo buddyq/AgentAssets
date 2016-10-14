@@ -1,8 +1,9 @@
 <?php
 
-add_shortcode('aa_groups_info', 'medma_groups_info_shortcode');
+add_shortcode('aa_groups_info', 'aa_groups_info_shortcode');
 
-function medma_groups_info_shortcode(/*$atts*/) {
+function aa_groups_info_shortcode(/*$atts*/) {
+
     //if (isset($_GET['form'])) return;
     global $wpdb;
     $groups = $wpdb->get_results('SELECT * FROM `'.MedmaGroupModel::tableName().'` mg INNER JOIN `'
@@ -12,6 +13,6 @@ function medma_groups_info_shortcode(/*$atts*/) {
     if (false !== $groups) foreach($groups as $group) {
         $result[] = $group->name;
     }
-
-    return count($result) ? 'You are a member of following groups: ' . (implode(', ',$result)).'<br/>' : '';
+    return count($result) ? (implode(', ',$result)) : 'You don\'t belong to any groups! :)';
+    
 }

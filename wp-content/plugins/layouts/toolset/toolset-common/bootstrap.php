@@ -180,10 +180,16 @@ class Toolset_Common_Bootstrap {
 				global $toolset_admin_bar_menu;
 				$toolset_admin_bar_menu = Toolset_Admin_Bar_Menu::get_instance();
 			}
+<<<<<<< HEAD
+<<<<<<< HEAD
 			if ( ! class_exists( 'Toolset_Internal_Compatibility' ) ) {
 				require_once( TOOLSET_COMMON_PATH . '/inc/toolset.internal.compatibility.class.php' );
 				$this->internal_compatibility = new Toolset_Internal_Compatibility();
 			}
+=======
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
+=======
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
 			if ( ! class_exists( 'Toolset_WPML_Compatibility' ) ) {
 				require_once( TOOLSET_COMMON_PATH . '/inc/toolset.wpml.compatibility.class.php' );
 				$this->wpml_compatibility = new Toolset_WPML_Compatibility();

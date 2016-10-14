@@ -1,17 +1,39 @@
 <?php
 /*
 Plugin Name: Delete Expired Transients
+<<<<<<< HEAD
+<<<<<<< HEAD
 Plugin URI: https://shop.webaware.com.au/downloads/delete-expired-transients/
 Description: delete old, expired transients from WordPress wp_options table
 Version: 2.0.5
 Author: WebAware
 Author URI: https://webaware.com.au/
+=======
+=======
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
+Plugin URI: http://shop.webaware.com.au/downloads/delete-expired-transients/
+Description: delete old, expired transients from WordPress wp_options table
+Version: 2.0.4.1
+Author: WebAware
+Author URI: http://webaware.com.au/
+<<<<<<< HEAD
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
+=======
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
 Text Domain: delete-expired-transients
 Domain Path: /languages/
 */
 
 /*
+<<<<<<< HEAD
+<<<<<<< HEAD
 copyright (c) 2013-2016 WebAware Pty Ltd (email : support@webaware.com.au)
+=======
+copyright (c) 2013-2015 WebAware Pty Ltd (email : support@webaware.com.au)
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
+=======
+copyright (c) 2013-2015 WebAware Pty Ltd (email : support@webaware.com.au)
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
 
 This program is free software; you can redistribute it and/or modify
 it under the terms of the GNU General Public License, version 2, as
@@ -35,7 +57,15 @@ if (!defined('ABSPATH')) {
 define('DELXTRANS_PLUGIN_FILE', __FILE__);
 define('DELXTRANS_PLUGIN_ROOT', dirname(__FILE__) . '/');
 define('DELXTRANS_PLUGIN_NAME', basename(dirname(__FILE__)) . '/' . basename(__FILE__));
+<<<<<<< HEAD
+<<<<<<< HEAD
 define('DELXTRANS_PLUGIN_VERSION', '2.0.5');
+=======
+define('DELXTRANS_PLUGIN_VERSION', '2.0.4.1');
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
+=======
+define('DELXTRANS_PLUGIN_VERSION', '2.0.4.1');
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
 
 // scheduled tasks
 define('DELXTRANS_TASK_CLEAR_TRANSIENTS', 'delxtrans_cleartransients');

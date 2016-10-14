@@ -748,6 +748,8 @@ class Enlimbo_Forms {
             $value = $element['#default_value'];
         }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
         // Decide whether we should use the default value from field definition
 	    // or the current value this checkbox has (from database, presumably)
 	    //
@@ -759,6 +761,12 @@ class Enlimbo_Forms {
         $value_output = ( $use_default_value ? $value : esc_attr( $element['#value'] ) );
 	    $element['_render']['element'] .= $value_output;
 
+=======
+        $element['_render']['element'] .= ( empty($element['#value']) && !preg_match('/^0$/', $element['#value']) ) ? $value : esc_attr($element['#value']);
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
+=======
+        $element['_render']['element'] .= ( empty($element['#value']) && !preg_match('/^0$/', $element['#value']) ) ? $value : esc_attr($element['#value']);
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
         $element['_render']['element'] .= '"' . $element['_attributes_string'];
         if (
                 (

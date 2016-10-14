@@ -22,6 +22,7 @@ wp-content/plugins/hello.php
 /austinportfoliorealestate.com
 /eflyers
 /adminer
+/github.php
 
 /.htaccess
 /license.txt
@@ -128,6 +129,10 @@ Temporary Items
 # User-specific stuff:
 .idea/workspace.xml
 .idea/tasks.xml
+
+
+/buddy.php
+
 
 # Sensitive or high-churn files:
 .idea/dataSources.ids

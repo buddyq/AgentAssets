@@ -135,6 +135,24 @@ class WPToolset_Field_Credfile extends WPToolset_Field_Textfield {
             $preview_span_input_showhide = ' style="display:none"';
         }
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+=======
+=======
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
+//        if ($name == '_featured_image') {
+//            $title = __('Featured Image', 'wpv-views');
+//            if (!$is_empty) {
+//                if (preg_match('/src="([\w\d\:\/\._-]*)"/', $value, $_v)) {
+//                    $value = $_v[1];
+//                }
+//            }
+//        }
+
+<<<<<<< HEAD
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
+=======
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
         if (!$is_empty) {
             $pathinfo = pathinfo($value);
             // TODO we should check against the allowed mime types, not file extensions
@@ -175,6 +193,8 @@ class WPToolset_Field_Credfile extends WPToolset_Field_Textfield {
             '#type' => 'markup',
             '#markup' => '<input type="button" style="display:none" data-action="undo" class="js-wpt-credfile-undo wpt-credfile-undo' . $button_extra_classnames . '" value="' . esc_attr(__('Restore original', 'wpv-views')) . '" />',
         );
+<<<<<<< HEAD
+<<<<<<< HEAD
 
         //Attachment id for _featured_image if exists
         //if it does not exists file_upload.js will handle it after file is uploaded
@@ -189,6 +209,17 @@ class WPToolset_Field_Credfile extends WPToolset_Field_Textfield {
                 ); 
         }
         
+=======
+=======
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
+//        $form[] = array(
+//            '#type' => 'markup',
+//            '#markup' => '<input type="button"' . $delete_input_showhide . ' data-action="delete" class="js-wpt-credfile-delete wpt-credfile-delete' . $button_extra_classnames . '" value="' . esc_attr(__('Clear', 'wpv-views')) . '" />',
+//        );
+<<<<<<< HEAD
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
+=======
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
         $form[] = array(
             '#type' => 'hidden',
             '#name' => $name,

@@ -12,8 +12,18 @@ if ( defined( 'WP_DEBUG' ) && WP_DEBUG && WPSEO_GSC_Settings::get_profile() !== 
 	?>
 		<form action="" method="post">
 			<input type='hidden' name='reload-crawl-issues-nonce' value='<?php echo wp_create_nonce( 'reload-crawl-issues' ); ?>' />
+<<<<<<< HEAD
+<<<<<<< HEAD
 			<input type="submit" name="reload-crawl-issues" id="reload-crawl-issue" class="button button-primary alignright"
 				   value="<?php _e( 'Reload crawl issues', 'wordpress-seo' ); ?>">
+=======
+			<input type="submit" name="reload-crawl-issues" id="reload-crawl-issue" class="button button-primary"
+				   style="float: right;" value="<?php _e( 'Reload crawl issues', 'wordpress-seo' ); ?>">
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
+=======
+			<input type="submit" name="reload-crawl-issues" id="reload-crawl-issue" class="button button-primary"
+				   style="float: right;" value="<?php _e( 'Reload crawl issues', 'wordpress-seo' ); ?>">
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
 		</form>
 <?php } ?>
 		<?php echo $platform_tabs = new WPSEO_GSC_Platform_Tabs; ?>
@@ -23,6 +33,8 @@ if ( defined( 'WP_DEBUG' ) && WP_DEBUG && WPSEO_GSC_Settings::get_profile() !== 
 
 // Video explains about the options when connected only.
 if ( null !== $this->service->get_client()->getAccessToken() ) {
+<<<<<<< HEAD
+<<<<<<< HEAD
 	$video_url = 'https://yoa.st/screencast-search-console';
 }
 else {
@@ -33,6 +45,21 @@ $tab = new WPSEO_Option_Tab( 'GSC', __( 'Google Search Console' ), array( 'video
 $GSCHelpCenter = new WPSEO_Help_Center( 'google-search-console', $tab );
 $GSCHelpCenter->output_help_center();
 
+=======
+=======
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
+	$tab_video_url = 'https://yoa.st/screencast-search-console';
+	include WPSEO_PATH . 'admin/views/partial-settings-tab-video.php';
+}
+else {
+	$tab_video_url = 'https://yoa.st/screencast-connect-search-console';
+	include WPSEO_PATH . 'admin/views/partial-settings-tab-video.php';
+}
+
+<<<<<<< HEAD
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
+=======
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
 switch ( $platform_tabs->current_tab() ) {
 	case 'settings' :
 		// Check if there is an access token.

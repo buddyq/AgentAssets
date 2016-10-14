@@ -132,7 +132,15 @@ class ip_handler extends WhoisClient
 
 		unset($this->Query['args']);
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 		while (count($this->more_data) > 0)
+=======
+		while (count($this->more_data) > 0)
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
+=======
+		while (count($this->more_data) > 0)
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
 			{
 			$srv_data = array_shift($this->more_data);
 			$this->Query['server'] = $srv_data['server'];

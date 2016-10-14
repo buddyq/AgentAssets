@@ -67,6 +67,8 @@ class WPSEO_Config_Field_Multiple_Authors extends WPSEO_Config_Field_Choice {
 	public function set_data( $data ) {
 		$value = ( $data === 'yes' );
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 		// Set multiple authors option.
 		$result_multiple_authors = WPSEO_Options::save_option( 'wpseo', 'has_multiple_authors', $value );
 
@@ -77,5 +79,21 @@ class WPSEO_Config_Field_Multiple_Authors extends WPSEO_Config_Field_Choice {
 		$result_author_archives = WPSEO_Options::save_option( 'wpseo_titles', 'disable-author', ! $value );
 
 		return ( $result_multiple_authors === true && $result_author_archives === true );
+=======
+=======
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
+		$option                           = WPSEO_Options::get_option( 'wpseo' );
+		$option['has_multiple_authors'] = $value;
+
+		update_option( 'wpseo', $option );
+
+		// Check if everything got saved properly.
+		$saved_option = WPSEO_Options::get_option( 'wpseo' );
+
+		return ( $saved_option['has_multiple_authors'] === $option['has_multiple_authors'] );
+<<<<<<< HEAD
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
+=======
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
 	}
 }

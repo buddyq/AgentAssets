@@ -106,7 +106,15 @@ class WPSEO_Meta {
 				'help-button'  => '', // Translation added later.
 			),
 			'focuskw_text_input' => array(
+<<<<<<< HEAD
+<<<<<<< HEAD
 				'type'          => 'focuskeyword',
+=======
+				'type'          => 'text',
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
+=======
+				'type'          => 'text',
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
 				'title'         => '', // Translation added later.
 				'default_value' => '',
 				'autocomplete'  => false,
@@ -147,7 +155,15 @@ class WPSEO_Meta {
 				'description'   => '',
 			),
 			'metakeywords'   => array(
+<<<<<<< HEAD
+<<<<<<< HEAD
 				'type'          => 'metakeywords',
+=======
+				'type'          => 'text',
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
+=======
+				'type'          => 'text',
+>>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
 				'title'         => '', // Translation added later.
 				'default_value' => '',
 				'class'         => 'metakeywords',

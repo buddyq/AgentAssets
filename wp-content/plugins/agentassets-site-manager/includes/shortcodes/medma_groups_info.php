@@ -14,5 +14,4 @@ function aa_groups_info_shortcode(/*$atts*/) {
         $result[] = $group->name;
     }
     return count($result) ? (implode(', ',$result)) : 'You don\'t belong to any groups! :)';
-    
 }

@@ -56,7 +56,6 @@ class WPSEO_Upgrade {
 			$this->upgrade_36();
 		}
 
-<<<<<<< HEAD
 		// Since 3.7.
 		$features = new WPSEO_Features();
 		if ( ! $features->is_premium() ) {
@@ -64,8 +63,6 @@ class WPSEO_Upgrade {
 			$upsell_notice->set_upgrade_notice();
 		}
 
-=======
->>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
 		/**
 		 * Filter: 'wpseo_run_upgrade' - Runs the upgrade hook which are dependent on Yoast SEO
 		 *

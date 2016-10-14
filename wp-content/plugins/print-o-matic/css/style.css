@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 .printomatic {
 	cursor: pointer;
 }
@@ -44,51 +43,4 @@
 
 .printomatictext:hover {
 	text-decoration: underline;
-=======
-.printomatic {
-	cursor: pointer;
-}
-
-.pom-default {
-	background-image: url('print-icon.png');
-   	background-repeat: no-repeat;
-	width: 32px;
-	height: 32px;
-}
-
-.pom-small {
-	background-image: url('print-icon-small.png');
-   	background-repeat: no-repeat;
-	width: 17px;
-	height: 16px;
-}
-
-.pom-small-black {
-	background-image: url('print-icon-small-black.png');
-   	background-repeat: no-repeat;
-	width: 17px;
-	height: 16px;
-}
-
-.pom-small-grey {
-	background-image: url('print-icon-small-grey.png');
-   	background-repeat: no-repeat;
-	width: 17px;
-	height: 16px;
-}
-
-.pom-small-white {
-	background-image: url('print-icon-small-white.png');
-   	background-repeat: no-repeat;
-	width: 17px;
-	height: 16px;
-}
-
-.printomatictext {
-	cursor: pointer;
-}
-
-.printomatictext:hover {
-	text-decoration: underline;
->>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
 }

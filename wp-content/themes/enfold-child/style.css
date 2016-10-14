@@ -20,7 +20,6 @@ Version: 1.0
     display: block;
 }
 
-<<<<<<< HEAD
 #log_forms{
   width: 30%;
   margin: 0 auto;
@@ -28,8 +27,6 @@ Version: 1.0
   border: 1px solid;
 }
 
-=======
->>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
 .coupon-applied.success{
   background: #E0F1B5;
   padding: 5px;

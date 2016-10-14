@@ -68,7 +68,6 @@ class WPSEO_Premium_Popup {
 
 		/* translators: %s expands to Yoast SEO Premium */
 		$cta_text = sprintf( __( 'Buy %s', 'wordpress-seo' ), 'Yoast SEO Premium' );
-<<<<<<< HEAD
 		$classes = '';
 		if ( $popup ) {
 			$classes = ' hidden';
@@ -77,16 +76,6 @@ class WPSEO_Premium_Popup {
 		$popup = <<<EO_POPUP
 <div id="wpseo-{$this->identifier}-popup" class="wpseo-premium-popup$classes">
 	<img class="alignright wpseo-premium-popup-icon" src="{$assets_uri}images/Yoast_SEO_Icon.svg" width="150" height="150" alt="Yoast SEO"/>
-=======
-		$display = '';
-		if ( $popup ) {
-			$display = 'display:none;';
-		}
-
-		$popup = <<<EO_POPUP
-<div id="wpseo-{$this->identifier}-popup" class="wpseo-premium-popup" style="{$display}">
-	<img class="alignright" style="margin: 10px;" src="{$assets_uri}images/Yoast_SEO_Icon.svg" width="150" height="150" alt="Yoast SEO"/>
->>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
 	<{$this->heading_level} id="wpseo-contact-support-popup-title" class="wpseo-premium-popup-title">{$this->title}</{$this->heading_level}>
 	<p>{$this->content}</p>
 	<a id="wpseo-{$this->identifier}-popup-button" class="button button-primary" href="{$premium_uri}">{$cta_text}</a>

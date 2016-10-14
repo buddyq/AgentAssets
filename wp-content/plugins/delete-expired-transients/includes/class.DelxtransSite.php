@@ -18,10 +18,7 @@ class DelxtransSite {
 		$this->plugin = $plugin;
 
 		add_action('admin_menu', array($this, 'adminMenu'));
-<<<<<<< HEAD
 		add_action('admin_print_styles-tools_page_delxtrans', array($this, 'adminStyles'));
-=======
->>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
 	}
 
 	/**
@@ -33,7 +30,6 @@ class DelxtransSite {
 	}
 
 	/**
-<<<<<<< HEAD
 	* custom CSS for page
 	*/
 	public function adminStyles() {
@@ -42,16 +38,11 @@ class DelxtransSite {
 	}
 
 	/**
-=======
->>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
 	* process menu item call
 	*/
 	public function toolsDelete() {
 		$blog_id = get_current_blog_id();
-<<<<<<< HEAD
 		$msg = '';
-=======
->>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
 
 		// check whether user has asked for deletions
 		$action = '';
@@ -60,7 +51,6 @@ class DelxtransSite {
 
 			$action = $_POST['delxtrans-action'];
 			switch ($action) {
-<<<<<<< HEAD
 
 				case 'delete-expired':
 					DelxtransCleaners::clearBlogExpired($blog_id);
@@ -77,14 +67,6 @@ class DelxtransSite {
 					$msg = __('All obsolete WooCommerce sessions deleted.', 'delete-expired-transients');
 					break;
 
-=======
-				case 'delete-expired':
-					DelxtransCleaners::clearBlogExpired($blog_id);
-					break;
-				case 'delete-all':
-					DelxtransCleaners::clearBlogAll($blog_id);
-					break;
->>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
 			}
 		}
 

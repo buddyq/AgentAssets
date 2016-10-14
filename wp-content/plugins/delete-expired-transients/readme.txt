@@ -1,7 +1,6 @@
 === Delete Expired Transients ===
 Contributors: webaware
 Plugin Name: Delete Expired Transients
-<<<<<<< HEAD
 Plugin URI: https://shop.webaware.com.au/downloads/delete-expired-transients/
 Author URI: https://webaware.com.au/
 Donate link: https://shop.webaware.com.au/donations/?donation_for=Delete+Expired+Transients
@@ -11,17 +10,6 @@ Tested up to: 4.6.1
 Stable tag: 2.0.5
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
-=======
-Plugin URI: http://shop.webaware.com.au/downloads/delete-expired-transients/
-Author URI: http://webaware.com.au/
-Donate link: http://shop.webaware.com.au/donations/?donation_for=Delete+Expired+Transients
-Tags: cache, clean, database, expired, transient, transients, wp_options
-Requires at least: 3.7
-Tested up to: 4.4
-Stable tag: 2.0.4.1
-License: GPLv2 or later
-License URI: http://www.gnu.org/licenses/gpl-2.0.html
->>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
 
 delete old, expired transients from WordPress wp_options table
 
@@ -41,7 +29,6 @@ Now optimised for WordPress Multisite.
 
 Many thanks to the generous efforts of our translators:
 
-<<<<<<< HEAD
 * English (en_CA) -- [the English (Canadian) translation team](https://translate.wordpress.org/locale/en-ca/default/wp-plugins/delete-expired-transients)
 * French (fr_FR) -- [the French translation team](https://translate.wordpress.org/locale/fr/default/wp-plugins/delete-expired-transients)
 * Hungarian (hu_HU) -- [the Hungarian translation team](https://translate.wordpress.org/locale/hu/default/wp-plugins/delete-expired-transients)
@@ -51,14 +38,6 @@ Many thanks to the generous efforts of our translators:
 * Spanish (es_ES) -- [the Spanish translation team](https://translate.wordpress.org/locale/es/default/wp-plugins/delete-expired-transients)
 
 If you'd like to help out by translating this plugin, please [sign up for an account and dig in](https://translate.wordpress.org/projects/wp-plugins/delete-expired-transients).
-=======
-* French (fr_FR) -- [Mathieu Hays](http://mathieuhays.co.uk/)
-* Norwegian: Bokmål (nb_NO) -- [neonnero](http://www.neonnero.com/)
-* Norwegian: Nynorsk (nn_NO) -- [neonnero](http://www.neonnero.com/)
-* Spanish (es_ES) -- [David Sandoval](http://BieberNoticias.com)
-
-If you'd like to help out by translating this plugin, please [sign up for an account and dig in](https://translate.webaware.com.au/projects/delete-expired-transients).
->>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
 
 == Installation ==
 
@@ -71,11 +50,7 @@ That's it! Expired transients will be deleted the next time you visit your websi
 
 = What is a "transient" anyway? =
 
-<<<<<<< HEAD
 According to [Codex](https://codex.wordpress.org/Transients_API), transients are:
-=======
-According to [Codex](http://codex.wordpress.org/Transients_API), transients are:
->>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
 
 > a simple and standardized way of storing cached data in the database temporarily by giving it a custom name and a timeframe after which it will expire and be deleted.
 
@@ -103,11 +78,7 @@ NB: after you install and activate this plugin, the first thing it does is sched
 
 = Do I need this if I'm running an object cache? =
 
-<<<<<<< HEAD
 No. Object caches like memcached are limited pools of data, and they already purge old data periodically so that they can fit newer data. This means that old transients will be removed from the cache automatically. It also means that new, fresh transients can be removed at any time too, which is why you should never store anything in a transient that can't be rebuilt easily. See this article on the WPEngine blog for more details: [A Technical Transients Treatise](https://wpengine.com/2013/02/wordpress-transient-api/).
-=======
-No. Object caches like memcached are limited pools of data, and they already purge old data periodically so that they can fit newer data. This means that old transients will be removed from the cache automatically. It also means that new, fresh transients can be removed at any time too, which is why you should never store anything in a transient that can't be rebuilt easily. See this article on the WPEngine blog for more details: [A Technical Transients Treatise](http://wpengine.com/2013/02/wordpress-transient-api/).
->>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
 
 = Can I change the schedule to run more often? =
 
@@ -125,11 +96,7 @@ NB: if your website has multiple networks (e.g. if you're running [WP Multi Netw
 
 == Contributions ==
 
-<<<<<<< HEAD
 * [Translate into your preferred language](https://translate.wordpress.org/projects/wp-plugins/delete-expired-transients)
-=======
-* [Translate into your preferred language](https://translate.webaware.com.au/projects/delete-expired-transients)
->>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
 * [Fork me on GitHub](https://github.com/webaware/delete-expired-transients)
 
 == Useful SQL queries ==
@@ -171,45 +138,15 @@ order by t1.option_value desc;`
 
 == Upgrade Notice ==
 
-<<<<<<< HEAD
 = 2.0.5 =
 
 added manual deletion of obsolete sessions from WooCommerce version 2.4 and earlier
-=======
-= 2.0.4 =
-
-fixed bottom bulk-action on multisite network admin, localisation text domain changed to delete-expired-transients
->>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
 
 == Changelog ==
 
 The full changelog can be found [on GitHub](https://github.com/webaware/delete-expired-transients/blob/master/changelog.md). Recent entries:
 
-<<<<<<< HEAD
 ### 2.0.5, 2016-10-09
 
 * added: Hungarian translation (thanks, [Tom Vicces](https://profiles.wordpress.org/theguitarlesson/)!)
 * added: manual deletion of obsolete sessions from WooCommerce version 2.4 and earlier
-=======
-### 2.0.4.1, 2015-12-02
-
-* fixed: "Class 'DelxtransCleaners' not found" when deleting expired transients
-
-### 2.0.4, 2015-12-02
-
-* fixed: bottom bulk-action doesn't work on multisite network admin
-* changed: localisation text domain now delete-expired-transients
-
-### 2.0.3, 2015-02-28
-
-* fixed: can delete site transients when there are only never-expire site transients
-* added: French translation (thanks, [Mathieu Hays](http://mathieuhays.co.uk/)!)
-
-### 2.0.2, 2014-10-10
-
-* added: Spanish translation (thanks, [David Sandoval](http://BieberNoticias.com/)!)
-
-### 2.0.1, 2014-08-31
-
-* added: Norwegian translations (thanks, [neonnero](http://www.neonnero.com/)!)
->>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6

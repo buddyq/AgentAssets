@@ -5,11 +5,7 @@ Plugin URI: http://wp-types.com/
 Description: Design entire WordPress sites using a drag-and-drop interface.
 Author: OnTheGoSystems
 Author URI: http://www.onthegosystems.com
-<<<<<<< HEAD
 Version: 1.8.6
-=======
-Version: 1.8.5
->>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
 */
 
 /**

@@ -9,11 +9,7 @@ if ( ! defined( 'WPSEO_VERSION' ) ) {
 	exit();
 }
 
-<<<<<<< HEAD
 $feature_toggles = array(
-=======
-$features = array(
->>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
 	(object) array(
 		'name'    => __( 'Advanced settings pages', 'wordpress-seo' ),
 		'setting' => 'enable_setting_pages',
@@ -33,7 +29,6 @@ $features = array(
 	),
 );
 
-<<<<<<< HEAD
 /**
  * Filter to add feature toggles from add-ons.
  *
@@ -41,8 +36,6 @@ $features = array(
  */
 $feature_toggles = apply_filters( 'wpseo_feature_toggles', $feature_toggles );
 
-=======
->>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
 ?>
 <h2>Features</h2>
 
@@ -50,11 +43,7 @@ $feature_toggles = apply_filters( 'wpseo_feature_toggles', $feature_toggles );
 	__( '%1$s comes with a lot of features. You can enable / disable some of them below.', 'wordpress-seo' ),
 	'Yoast SEO'
 ) ) ?>
-<<<<<<< HEAD
 <?php foreach ( $feature_toggles as $feature ) : ?>
-=======
-<?php foreach ( $features as $feature ) : ?>
->>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
 <h3><?php echo esc_html( $feature->name ); ?></h3>
 <p>
 	<?php

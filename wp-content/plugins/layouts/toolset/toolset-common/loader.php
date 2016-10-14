@@ -28,13 +28,8 @@
  * Now that we have a unique version for all plugins
  * we define the version here
  */
-<<<<<<< HEAD
 $toolset_common_version = 222004;
 
-=======
-
-$toolset_common_version = 220000;
->>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
 
 // ----------------------------------------------------------------------//
 // WARNING * WARNING * WARNING

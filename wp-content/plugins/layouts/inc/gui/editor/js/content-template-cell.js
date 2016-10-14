@@ -359,7 +359,6 @@ DDLayout.ContentTemplateCell = function($)
     };
 
     self.load_more_paginated_options = function (post_type, nonce) {
-<<<<<<< HEAD
         jQuery( '#ddl-layout-selected_post' ).on('toolset_select2:select', {post_type:post_type, nonce:nonce}, self.toolset_select2_onSelect);
     };
 
@@ -377,24 +376,6 @@ DDLayout.ContentTemplateCell = function($)
         } else {
             //return self.toolset_select2_onSelect.apply(this, arguments);
         }
-=======
-        self.toolset_select2_element.onSelect = (function(fn) {
-            var me = this;
-            return function(data, event) {
-                var target;
-                if (event != null) {
-                    target = jQuery(event.target);
-                }
-
-                if (target && target.parent().hasClass('js-show-more-posts-options')) {
-                    event.preventDefault();
-                    do_select_pagination_call( event, post_type, nonce );
-                } else {
-                    return fn.apply(this, arguments);
-                }
-            }
-        })(self.toolset_select2_element.onSelect);
->>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
     };
 
     var do_select_pagination_call = function ( event ) {
@@ -476,18 +457,11 @@ DDLayout.ContentTemplateCell = function($)
     };
 
     self._handle_post_select_change = function (event) {
-<<<<<<< HEAD
         
         if (self.get_display_mode() == 'this_page') {
             if( self._dialog.get_cell_type() == 'cell-content-template' )
             {
                 self.get_selected_post_title();
-=======
-
-        if (self.get_display_mode() == 'this_page') {
-            if( self._dialog.get_cell_type() == 'cell-content-template' )
-            {
->>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
                 self._dialog.disable_save_button(self.get_selected_post() == '' ||
                 !DDLayout.content_template_cell.is_save_ok());
             }
@@ -528,10 +502,6 @@ DDLayout.ContentTemplateCell = function($)
                         }
                     });
                 }
-<<<<<<< HEAD
-=======
-
->>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
                 self.load_more_paginated_options( );
             }
 
@@ -1033,14 +1003,11 @@ DDLayout.ContentTemplateCell = function($)
     self.get_selected_post = function () {
         return jQuery('#ddl-default-edit #ddl-layout-selected_post').val();
     };
-<<<<<<< HEAD
     
     self.get_selected_post_title = function(){
         var post_value = jQuery('#ddl-default-edit #ddl-layout-selected_post :selected').text();
         jQuery('#toolset_select2-ddl-layout-selected_post-container').text(post_value);
     };
-=======
->>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
 
     self.get_post_select_empty = function(){
         return jQuery('#ddl-default-edit select[name="ddl-layout-selected_post"] option').length === 0;

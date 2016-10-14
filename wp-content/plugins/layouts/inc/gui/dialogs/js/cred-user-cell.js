@@ -450,11 +450,7 @@ DDLayout.CredUserInIfame = function ($)
             form_name = cred_user_iframe.get_form_name(),
             css = cred_user_iframe.get_css_settings();
 
-<<<<<<< HEAD
         jQuery('select[name="ddl-default-edit-class-name"]').val(css.css).trigger("change");
-=======
-        jQuery('input[name="ddl-default-edit-class-name"]').val(css.css);
->>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
         jQuery('input[name="ddl-default-edit-css-id"]').val(css.id);
         jQuery('#ddl-default-edit').find('select[name="ddl_tag_name"]').val(css.tag);
         jQuery('#ddl-default-edit #ddl-default-edit-cell-name').val(form_name);

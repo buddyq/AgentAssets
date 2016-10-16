@@ -1388,7 +1388,7 @@ class Envira_Gallery_Metaboxes {
                                     <label for="envira-config-thumbnails"><?php _e( 'Enable Gallery Thumbnails?', 'envira-gallery' ); ?></label>
                                 </th>
                                 <td>
-                                    <input id="envira-config-thumbnails" type="checkbox" name="_envira_gallery[thumbnails]" value="<?php echo $this->get_config( 'thumbnails', $this->get_config_default( 'thumbnails' ) ); ?>" <?php checked( $this->get_config( 'thumbnails', $this->get_config_default( 'thumbnails' ) ), 1 ); ?> data-envira-conditional="envira-config-thumbnails-width-box,envira-config-thumbnails-height-box,envira-config-thumbnails-position-box" />
+                                    <input id="envira-config-thumbnails" type="checkbox" name="_envira_gallery[thumbnails]" value="<?php echo $this->get_config( 'thumbnails', $this->get_config_default( 'thumbnails' ) ); ?>" <?php checked( $this->get_config( 'thumbnails', $this->get_config_default( 'thumbnails' ) ), 1 ); ?> />
                                     <span class="description"><?php _e( 'Enables or disables the gallery lightbox thumbnails.', 'envira-gallery' ); ?></span>
                                 </td>
                             </tr>
@@ -1527,7 +1527,7 @@ class Envira_Gallery_Metaboxes {
                             <label for="envira-config-mobile-lightbox"><?php _e( 'Enable Lightbox?', 'envira-gallery' ); ?></label>
                         </th>
                         <td>
-                            <input id="envira-config-mobile-lightbox" type="checkbox" name="_envira_gallery[mobile_lightbox]" value="<?php echo $this->get_config( 'mobile_lightbox', $this->get_config_default( 'mobile_lightbox' ) ); ?>" <?php checked( $this->get_config( 'mobile_lightbox', $this->get_config_default( 'mobile_lightbox' ) ), 1 ); ?> data-envira-conditional="envira-config-mobile-touchwipe-box,envira-config-mobile-touchwipe-close-box,envira-config-mobile-arrows-box,envira-config-mobile-toolbar-box,envira-config-mobile-thumbnails-box,envira-config-exif-mobile-box" />
+                            <input id="envira-config-mobile-lightbox" type="checkbox" name="_envira_gallery[mobile_lightbox]" value="<?php echo $this->get_config( 'mobile_lightbox', $this->get_config_default( 'mobile_lightbox' ) ); ?>" <?php checked( $this->get_config( 'mobile_lightbox', $this->get_config_default( 'mobile_lightbox' ) ), 1 ); ?> />
                             <span class="description"><?php _e( 'Enables or disables the gallery lightbox on mobile devices.', 'envira-gallery' ); ?></span>
                         </td>
                     </tr>
@@ -1911,6 +1911,14 @@ class Envira_Gallery_Metaboxes {
             $settings = array();
         }
 
+        // Check if the lightbox theme has changed
+        $new_lb_theme = preg_replace( '#[^a-z0-9-_]#', '', $_POST['_envira_gallery']['lightbox_theme'] );
+        $old_lb_theme = ( isset( $settings['config']['lightbox_theme'] ) ) ? $settings['config']['lightbox_theme'] : false;
+
+        // Check if the lightbox thumbnails state changed
+        $new_thumbnail_setting = isset( $_POST['_envira_gallery']['thumbnails'] ) ? 1 : 0;
+        $old_thumbnail_setting = isset( $settings['config']['thumbnails']) ? $settings['config']['thumbnails'] : false;
+
         // Force slider ID to match Post ID. This is deliberate; if a gallery is duplicated (either using a duplication)
         // plugin or WPML, the ID remains as the original gallery ID, which breaks things for translations etc.
         $settings['id'] = $post_id;
@@ -2008,6 +2016,19 @@ class Envira_Gallery_Metaboxes {
         // Provide a filter to override settings.
         $settings = apply_filters( 'envira_gallery_save_settings', $settings, $post_id, $post );
 
+
+        // Generate additional image sizes based on the lightbox theme
+        if ( !empty( $settings['gallery'] ) ) {
+            $common = Envira_Gallery_Common::get_instance();
+            foreach ( $settings['gallery'] as $image_id => $image ) {
+                $attachment_url     = wp_get_attachment_url( $image_id );
+                $thumbnail_width    = apply_filters( 'envira_gallery_lightbox_thumbnail_width', $settings['config']['thumbnails_width'], $settings['config']['lightbox_theme'] );
+                $thumbnail_height   = apply_filters( 'envira_gallery_lightbox_thumbnail_height', $settings['config']['thumbnails_height'], $settings['config']['lightbox_theme'] );
+
+                $src = $common->resize_image( $attachment_url, $thumbnail_width, $thumbnail_height, false );
+            }
+        } 
+
         // Update the post meta.
         update_post_meta( $post_id, '_eg_gallery_data', $settings );
 
@@ -2016,10 +2037,17 @@ class Envira_Gallery_Metaboxes {
 
         // If the thumbnails option is checked, crop images accordingly.
         if ( isset( $settings['config']['thumbnails'] ) && $settings['config']['thumbnails'] ) {
+
+            // get the proper size of thumbnails, to make sure we have the thumbnails created upon save and NOT generated on the front-end
+            // this will override width and height
+
+            $thumbnail_width    = apply_filters( 'envira_gallery_lightbox_thumbnail_width', $settings['config']['thumbnails_width'], $settings );
+            $thumbnail_height   = apply_filters( 'envira_gallery_lightbox_thumbnail_height', $settings['config']['thumbnails_height'], $settings );
+
             $args = array(
                 'position' => 'c',
-                'width'    => $this->get_config( 'thumbnails_width', $this->get_config_default( 'thumbnails_width' ) ),
-                'height'   => $this->get_config( 'thumbnails_height', $this->get_config_default( 'thumbnails_height' ) ),
+                'width'    => $thumbnail_width, // $this->get_config( 'thumbnails_width', $this->get_config_default( 'thumbnails_width' ) ),
+                'height'   => $thumbnail_height, // $this->get_config( 'thumbnails_height', $this->get_config_default( 'thumbnails_height' ) ),
                 'quality'  => 100,
                 'retina'   => false
             );

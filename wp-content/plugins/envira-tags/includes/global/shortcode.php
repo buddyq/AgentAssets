@@ -513,7 +513,7 @@ class Envira_Tags_Shortcode {
 
             // Store the tags and set our flag to true.
             foreach ( $terms as $term ) {
-                $tags[ $term->slug ] = $term->name;
+                $tags[ $term->slug ] = str_replace( '&amp;', '&', $term->name );
             }
 
             $has_tags = true;
@@ -1111,7 +1111,7 @@ class Envira_Tags_Shortcode {
 
             // Store the tags and set our flag to true.
             foreach ( $terms as $term ) {
-                $tags[ $term->slug ] = $term->name;
+                $tags[ $term->slug ] = str_replace( '&amp;', '&', $term->name );
             }
 
             $has_tags = true;

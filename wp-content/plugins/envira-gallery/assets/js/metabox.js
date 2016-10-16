@@ -1,19 +1,17 @@
 /**
 * You'll need to use CodeKit or similar, as this file is a placeholder to combine
 * the following JS files into min/metabox-min.js:
-*
-* - conditional-fields.js
-* - gallery-preview.js
-* - gallery-types.js
-* - gallery-help.js
-* - media-bulk-edit.js
-* - media-delete.js
-* - media-edit.js
-* - media-insert.js
-* - media-manage.js
-* - media-move.js
-* - media-upload.js
 */
+// @codekit-append "gallery-preview.js";
+// @codekit-append "gallery-types.js";
+// @codekit-append "gallery-help.js";
+// @codekit-append "media-bulk-edit.js";
+// @codekit-append "media-delete.js";
+// @codekit-append "media-edit.js";
+// @codekit-append "media-insert.js";
+// @codekit-append "media-manage.js";
+// @codekit-append "media-move.js";
+// @codekit-append "media-upload.js";
 
 jQuery( document ).ready( function( $ ) {
 

@@ -5,7 +5,7 @@
  * Description: Enables unique URL access points for Envira galleries.
  * Author:      Envira Gallery Team
  * Author URI:  http://enviragallery.com
- * Version:     1.1.2
+ * Version:     1.1.3.1
  * Text Domain: envira-standalone
  * Domain Path: languages
  *
@@ -30,7 +30,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 // Define necessary addon constants.
 define( 'ENVIRA_STANDALONE_PLUGIN_NAME', 'Envira Gallery - Standalone Addon' );
-define( 'ENVIRA_STANDALONE_PLUGIN_VERSION', '1.1.2' );
+define( 'ENVIRA_STANDALONE_PLUGIN_VERSION', '1.1.3.1' );
 define( 'ENVIRA_STANDALONE_PLUGIN_SLUG', 'envira-standalone' );
 
 register_deactivation_hook( __FILE__, 'envira_standalone_deactivation' );
@@ -124,11 +124,11 @@ function envira_standalone_version_notice() {
  * @since 1.0.0
  */
 function envira_standalone_plugin_init() {
-	
+
 	// Admin CSS
 	add_action( 'envira_albums_admin_styles', 'envira_standalone_admin_css' );
 	add_action( 'envira_gallery_admin_styles', 'envira_standalone_admin_css' );
-	
+
 	// Tab in Settings
 	add_filter( 'envira_gallery_settings_tab_nav', 'envira_standalone_settings_tabs');
 	add_action( 'envira_gallery_tab_settings_standalone', 'envira_standalone_settings_standalone_tab' );
@@ -140,9 +140,179 @@ function envira_standalone_plugin_init() {
     add_filter( 'envira_gallery_metabox_ids', 'envira_standalone_slug_box' );
     add_filter( 'envira_albums_metabox_ids', 'envira_standalone_slug_box' );
     add_action( 'admin_head', 'envira_standalone_hide_slug_box' );
-    
+
     add_action( 'pre_get_posts', 'envira_standalone_pre_get_posts' );
     add_action( 'wp_head', 'envira_standalone_maybe_insert_shortcode' );
+
+    add_filter( 'envira_gallery_tab_nav', 'standalone_register_tabs' );
+    add_action( 'envira_gallery_tab_standalone', 'standalone_tab' );
+    add_filter( 'envira_gallery_save_settings', 'standalone_gallery_settings_save', 10, 2 );
+    add_filter( 'single_template', 'standalone_get_custom_template', 99 );
+
+}
+
+/**
+ * Loads all global files into scope.
+ *
+ * @since 1.0.0
+ */
+function require_global() {
+
+	require plugin_dir_path( __FILE__ ) . 'includes/global/shortcode.php';
+
+}
+
+/**
+ * Overrides the template for the 'envira' custom post type if user has requested a different template in settings
+ *
+ * @since 1.1.2
+ *
+ * @param object $post The current post object.
+ */
+function standalone_get_custom_template( $single_template ) {
+
+    global $post;
+
+    if ($post->post_type != 'envira') { return $single_template; }
+
+	// check settings, if the user hasn't selected a custom template to override single.php, then go no further
+
+	// $instance = Envira_Gallery_Metaboxes::get_instance();
+	// $template = $instance->get_config( 'standalone_template', $instance->get_config_default( 'standalone_template' ) );
+
+    $data = get_post_meta( $post->ID, '_eg_gallery_data', true );
+
+    if ( !$data ) { return $single_template; }
+
+    if ( !empty( $data['config']['standalone_template'] ) ) {
+    	$user_template = $data['config']['standalone_template'];
+		// get path to current folder
+	    $new_template = locate_template( $user_template );
+	    if ( !file_exists( $new_template ) ) :
+	    	// if it does not exist, then let's keep the default
+	    	return $single_template;
+	    endif;
+    } else {
+    	return $single_template;
+    }
+
+    return $new_template;
+
+ 	// print_r ( $single_template );
+	// print_r ( $new_template ); exit;
+
+}
+
+/**
+ * Add A Tab For Standalone Settings For A Gallery
+ *
+ * @since 1.1.2
+ *
+ * @param object $post The current post object.
+ */
+function standalone_register_tabs( $tabs ) {
+
+    $tabs['standalone'] = __( 'Standalone', 'envira-standalone' );
+    return $tabs;
+
+}
+
+/**
+ * Adds addon settings UI to the Standalone tab
+ *
+ * @since 1.1.2
+ *
+ * @param object $post The current post object.
+ */
+function standalone_tab( $post ) {
+
+    // Get post type so we load the correct metabox instance and define the input field names
+    // Input field names vary depending on whether we are editing a Gallery or Album
+    $post_type = get_post_type( $post );
+    switch ( $post_type ) {
+        /**
+        * Gallery
+        */
+        case 'envira':
+            $instance = Envira_Gallery_Metaboxes::get_instance();
+            $key = '_envira_gallery';
+            break;
+
+    }
+
+    // Gallery options only apply to Galleries, not Albums
+    if ( 'envira' == $post_type ) {
+
+		/* Get list of templates */
+
+		$templates = get_page_templates();
+
+        ?>
+        <p class="envira-intro">
+            <?php _e( 'The settings below adjust the Standalone settings.', 'envira-standalone' ); ?>
+            <small>
+                <?php _e( 'Need some help?', 'envira-standalone' ); ?>
+                <a href="http://enviragallery.com/docs/standalone/" class="envira-doc" target="_blank">
+                    <?php _e( 'Read the Documentation', 'envira-standalone' ); ?>
+                </a>
+                or
+                <a href="https://www.youtube.com/embed/dJ2t7uplFkw?autoplay=1&rel=0" class="envira-video" target="_blank">
+                    <?php _e( 'Watch a Video', 'envira-standalone' ); ?>
+                </a>
+            </small>
+        </p>
+        <table class="form-table">
+            <tbody>
+                <tr id="envira-config-standalone-box">
+                        <th scope="row">
+                            <label for="envira-config-standalone-template"><?php _e( 'Template', 'envira-standalone' ); ?></label>
+                        </th>
+                        <td>
+                        	<?php
+
+                        		if ( !empty($templates) ) :
+
+
+
+                        	?>
+                            <select id="envira-config-standalone-template" name="<?php echo $key; ?>[standalone_template]">
+                                <option value="">(Default)</option>
+                                <?php foreach ( (array) $templates as $name => $filename ) : ?>
+
+                                <option value="<?php echo $filename; ?>"<?php selected( $filename, $instance->get_config( 'standalone_template', $instance->get_config_default( 'standalone_template' ) ) ); ?>><?php echo $name; ?></option>
+                                <?php endforeach; ?>
+                            </select>
+                            <p class="description"><?php _e( 'By default we use single.php, which is the default template of the single blog post in your theme.', 'envira-zoom' ); ?></p>
+
+                        	<?php else: ?>
+
+                        	<p class="description"><?php _e( 'Your current theme does not have any custom templates. If you want to use a template besides the default, you need to add a custom template to your theme.', 'envira-zoom' ); ?></p>
+
+                        	<?php endif; ?>
+
+                        </td>
+                </tr>
+            </tbody>
+        </table>
+        <?php
+    }
+
+}
+
+/**
+ * Saves the addon's settings for Galleries.
+ *
+ * @since 1.0.0
+ *
+ * @param array $settings  Array of settings to be saved.
+ * @param int $pos_tid     The current post ID.
+ * @return array $settings Amended array of settings to be saved.
+ */
+function standalone_gallery_settings_save( $settings, $post_id ) {
+
+    $settings['config']['standalone_template'] = ( isset( $_POST['_envira_gallery']['standalone_template'] ) ? str_replace('-php','.php',sanitize_title($_POST['_envira_gallery']['standalone_template'])) : '' );
+
+    return $settings;
 
 }
 
@@ -155,8 +325,8 @@ function envira_standalone_admin_css() {
 
     // Load necessary admin styles.
     wp_register_style( ENVIRA_STANDALONE_PLUGIN_SLUG . '-admin-style', plugins_url( 'assets/css/admin.css', __FILE__ ), array(), ENVIRA_STANDALONE_PLUGIN_VERSION );
-    wp_enqueue_style( ENVIRA_STANDALONE_PLUGIN_SLUG . '-admin-style' );	
-    
+    wp_enqueue_style( ENVIRA_STANDALONE_PLUGIN_SLUG . '-admin-style' );
+
 }
 
 /**
@@ -192,7 +362,7 @@ function envira_standalone_settings_standalone_tab() {
     	// Output notices
     	do_action( 'envira_gallery_settings_standalone_tab_notice' );
     	?>
-    	
+
         <table class="form-table">
             <tbody>
             	<form action="edit.php?post_type=envira&page=envira-gallery-settings#!envira-tab-standalone" method="post">
@@ -503,7 +673,7 @@ function envira_standalone_slug_box( $ids ) {
     $ids[] = 'slugdiv';
     $ids[] = 'authordiv';
     $ids[] = 'wpseo_meta';
-   
+
     return $ids;
 
 }

@@ -5,7 +5,7 @@
  * Description: Populate Envira Galleries with Instagram images.
  * Author:      Envira Gallery Team
  * Author URI:  http://enviragallery.com
- * Version:     1.1.0
+ * Version:     1.1.1
  * Text Domain: envira-instagram
  * Domain Path: languages
  *
@@ -54,7 +54,7 @@ class Envira_Instagram {
      *
      * @var string
      */
-    public $version = '1.1.0';
+    public $version = '1.1.1';
 
     /**
      * The name of the plugin.

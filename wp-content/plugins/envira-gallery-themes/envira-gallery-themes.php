@@ -5,7 +5,7 @@
  * Description: Enables custom themes for the grid display of Envira galleries.
  * Author:      Envira Gallery Team
  * Author URI:  http://enviragallery.com
- * Version:     1.1.0
+ * Version:     1.2.2
  * Text Domain: envira-gallery-themes
  * Domain Path: languages
  *
@@ -30,7 +30,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 // Define necessary addon constants.
 define( 'ENVIRA_GALLERY_THEMES_PLUGIN_NAME', 'Envira Gallery - Gallery Themes Addon' );
-define( 'ENVIRA_GALLERY_THEMES_PLUGIN_VERSION', '1.1.0' );
+define( 'ENVIRA_GALLERY_THEMES_PLUGIN_VERSION', '1.2.2' );
 define( 'ENVIRA_GALLERY_THEMES_PLUGIN_SLUG', 'envira-gallery-themes' );
 
 add_action( 'plugins_loaded', 'envira_gallery_themes_plugins_loaded' );
@@ -65,6 +65,7 @@ function envira_gallery_themes_plugin_init() {
 
     add_action( 'envira_gallery_updater', 'envira_gallery_themes_updater' );
     add_filter( 'envira_gallery_gallery_themes', 'envira_gallery_themes_gallery_themes' );
+    add_filter( 'envira_gallery_justified_gallery_themes', 'envira_gallery_themes_justified_gallery_themes' );
     add_filter( 'envira_gallery_lightbox_themes', 'envira_gallery_themes_lightbox_themes' );
     add_filter( 'envira_gallery_output_after_link', 'envira_gallery_themes_output', 10, 5 );
 
@@ -139,6 +140,44 @@ function envira_gallery_themes_gallery_themes( $themes ) {
 }
 
 /**
+ * Adds custom gallery "themes" to the available list of gallery themes for automatic/justified layout only.
+ *
+ * @since 1.2
+ *
+ * @param array $themes  Array of gallery themes.
+ * @return array $themes Amended array of gallery themes.
+ */
+function envira_gallery_themes_justified_gallery_themes( $themes ) {
+
+    $themes[] = array(
+        'value' => 'js-blur',
+        'name'  => __( 'Blur', 'envira-gallery-themes' ),
+        'file'  => __FILE__
+    );
+
+    $themes[] = array(
+        'value' => 'js-desaturate',
+        'name'  => __( 'Desaturate', 'envira-gallery-themes' ),
+        'file'  => __FILE__
+    );
+
+    $themes[] = array(
+        'value' => 'js-threshold',
+        'name'  => __( 'Threshold', 'envira-gallery-themes' ),
+        'file'  => __FILE__
+    );
+
+    $themes[] = array(
+        'value' => 'js-vintage',
+        'name'  => __( 'Vintage', 'envira-gallery-themes' ),
+        'file'  => __FILE__
+    );    
+
+    return $themes;
+
+}
+
+/**
  * Adds custom lightbox themes to the available list of lightbox themes.
  *
  * @since 1.0.0
@@ -199,6 +238,12 @@ function envira_gallery_themes_output( $output, $id, $item, $data, $i ) {
 
     // Get gallery theme
     $instance = Envira_Gallery_Shortcode::get_instance();
+
+    // Check the columns - if it's zero, then it's the automatic layout which means we don't add the HTML because it's a justified gallery
+    if ( $instance->get_config( 'columns', $data ) == 0 ) {
+        return $output;
+    }
+
     $gallery_theme = $instance->get_config( 'gallery_theme', $data );
 
     switch ( $gallery_theme ) {
@@ -213,6 +258,9 @@ function envira_gallery_themes_output( $output, $id, $item, $data, $i ) {
             $caption  = '<div class="envira-gallery-captioned-data">';
                 $caption .= '<p class="envira-gallery-captioned-text">';
                     $output_caption = ! empty( $item['caption'] ) ? $item['caption'] : $item['title'];
+                    // add a <br> if there's a line break
+                    $output_caption = str_replace( '
+', '<br/>', ( $output_caption ) );
                     $caption .= $output_caption;
                 $caption .= '</p>';
             $caption .= '</div>';

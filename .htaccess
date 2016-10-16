@@ -1,4 +1,4 @@
-SetEnv PHPRC /home/austin43/public_html/php.ini
+#SetEnv PHPRC /home/austin43/public_html/php.ini
 
 
 RewriteEngine On
@@ -30,4 +30,3 @@ deny from all
 order allow,deny
 deny from all
 </Files>
-

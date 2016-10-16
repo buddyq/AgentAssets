@@ -5,8 +5,9 @@ wp-config.php
 /wp-admin/network/wp_trace.log
 /.ftpquota
 /wp-content/debug.log
-/wp-content/plugins/wp-paypal-ipn/ipn_errors.log 
+/wp-content/plugins/wp-paypal-ipn/ipn_errors.log
 /local-tools
 /www
 /.well-known
 /db-dumps
+db_backups

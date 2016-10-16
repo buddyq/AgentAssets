@@ -2,7 +2,8 @@
 
 add_shortcode('if_aa_admin_has_groups', 'medma_admin_has_groups_shortcode');
 
-function medma_admin_has_groups_shortcode($atts, $content) {
+function medma_admin_has_groups_shortcode($atts, $content)
+{
     $current_user_id = get_current_user_id();
     if (!$current_user_id) return '';
 
@@ -13,7 +14,8 @@ function medma_admin_has_groups_shortcode($atts, $content) {
 
 add_shortcode('aa_groups_admin', 'medma_groups_admin_shortcode');
 
-function medma_groups_admin_shortcode(/*$atts*/) {
+function medma_groups_admin_shortcode(/*$atts*/)
+{
     if (isset($_GET['form'])) return;
 
     $current_user_id = get_current_user_id();
@@ -157,7 +159,7 @@ function medma_groups_admin_shortcode_view($data) {
             <fieldset>
                 <input type="hidden" value="<?php echo $group->id;?>" name="MedmaAdminGroup[id]" >
                 <p id="element_medma_email" class="first_form form_element form_element_half">
-                    <label for="medma-admin-group-email">Email for sending invite</label>
+                    <label for="medma-admin-group-email">Send an email to invie someone.</label>
                     <input id="medma-admin-group-email" class="text_input is_empty" type="text" name="Invitation[email]"  placeholder="Email">
                 </p>
                 <p id="element_medma_send_invite" class="form_element form_element_half">
@@ -222,7 +224,7 @@ function medma_groups_admin_shortcode_view($data) {
                     <?php } ?>
                     <?php else: ?>
                         <tr>
-                            <td>You've got no members in your group yet.</td>
+                            <td>There are no members in your group yet.</td>
                         </tr>
                     <?php endif; ?>
                     </tbody>

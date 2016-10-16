@@ -21,6 +21,8 @@ jQuery(document).ready(function($) {
 	// Most Popular Tags
 	$( 'tr#envira-config-tags-filtering-box .the-tagcloud a' ).on( 'click', function( e ) {
 
+		e.preventDefault();
+		
 		var container 		= $( this ).closest( 'td' ),
 			tag_input 		= $( 'input.newtag', $( container ) ),
 			tag_input_val 	= $( tag_input ).val(),
@@ -34,13 +36,13 @@ jQuery(document).ready(function($) {
 
 	/**
 	* Settings: Manual Sorting Order
-	*/
+	*/ 
     var envira_tags_sortable = $( 'ul#envira-tags-order' );
 	envira_tags_sortable.sortable( {
-        update: function( event, ui ) {
+        update: function( event ) {
             // Get the new sort order and update the hidden field
             var sort_order = envira_tags_sortable.sortable('toArray').toString();
-            $( 'input[name="_envira_gallery[tags_manual_sorting]"' ).val( sort_order );
+            $( 'input[name="_envira_gallery[tags_manual_sorting]"], input[name="_eg_album_data[config][tags_manual_sorting]"]' ).val( sort_order );
         }
 	} ).disableSelection();
 
@@ -55,6 +57,8 @@ jQuery(document).ready(function($) {
 
 	// Most Popular Tags
 	$( '.envira-gallery-media-frame .the-tagcloud a' ).on( 'click', function( e ) {
+
+		e.preventDefault();
 
 		var container 		= $( this ).closest( 'label.envira-tags' ),
 			tag_input 		= $( 'input.newtag', $( container ) ),

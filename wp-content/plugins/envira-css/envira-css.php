@@ -5,7 +5,7 @@
  * Description: Enables custom CSS output for Envira galleries.
  * Author:      Envira Gallery Team
  * Author URI:  http://enviragallery.com
- * Version:     1.0.8
+ * Version:     1.0.9
  * Text Domain: envira-css
  * Domain Path: languages
  *
@@ -30,7 +30,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 // Define necessary addon constants.
 define( 'ENVIRA_CUSTOM_CSS_PLUGIN_NAME', 'Envira Gallery - CSS Addon' );
-define( 'ENVIRA_CUSTOM_CSS_PLUGIN_VERSION', '1.0.8' );
+define( 'ENVIRA_CUSTOM_CSS_PLUGIN_VERSION', '1.0.9' );
 define( 'ENVIRA_CUSTOM_CSS_PLUGIN_SLUG', 'envira-css' );
 
 add_action( 'plugins_loaded', 'envira_custom_css_plugins_loaded' );
@@ -174,7 +174,8 @@ function envira_custom_css_setting_album( $post ) {
  */
 function envira_custom_css_save( $settings, $post_id ) {
 
-    $settings['config']['custom_css'] = isset( $_POST['_envira_gallery']['custom_css'] ) ? trim( esc_html( $_POST['_envira_gallery']['custom_css'] ) ) : '';
+    // wp_slash it twice to make sure any backslashes in the CSS remain
+    $settings['config']['custom_css'] = isset( $_POST['_envira_gallery']['custom_css'] ) ? trim( wp_slash( wp_slash( esc_html( $_POST['_envira_gallery']['custom_css'] ) ) ) ) : '';
     return $settings;
 
 }
@@ -190,7 +191,8 @@ function envira_custom_css_save( $settings, $post_id ) {
  */
 function envira_custom_css_save_album( $settings, $post_id ) {
 	
-	$settings['config']['custom_css'] = isset( $_POST['_eg_album_data']['config']['custom_css'] ) ? trim( esc_html( $_POST['_eg_album_data']['config']['custom_css'] ) ) : '';
+    // wp_slash it twice to make sure any backslashes in the CSS remain
+	$settings['config']['custom_css'] = isset( $_POST['_eg_album_data']['config']['custom_css'] ) ? trim( wp_slash( wp_slash( esc_html( $_POST['_eg_album_data']['config']['custom_css'] ) ) ) ) : '';
     return $settings;
 
 }
@@ -212,12 +214,8 @@ function envira_custom_css_output( $gallery, $data ) {
         return $gallery;
     }
 
-    // Minify the CSS.
-    $minify = preg_replace( '/((?:\/\*(?:[^*]|(?:\*+[^*\/]))*\*+\/)|(?:\/\/.*))/', '', $data['config']['custom_css'] );
-    $minify = str_replace( array( "\r\n","\r","\t","\n",'  ','    ','     ' ), '', $data['config']['custom_css'] );
-
     // Build out the custom CSS.
-    $style = '<style type="text/css">' . html_entity_decode( $minify, ENT_QUOTES ) . '</style>';
+    $style = '<style type="text/css">' . $instance->minify( html_entity_decode( $data['config']['custom_css'], ENT_QUOTES ), false ) . '</style>';
 
     // Return the style prepended to the gallery.
     return $style . $gallery;
@@ -241,12 +239,8 @@ function envira_custom_css_output_album( $gallery, $data ) {
         return $gallery;
     }
 
-    // Minify the CSS.
-    $minify = preg_replace( '/((?:\/\*(?:[^*]|(?:\*+[^*\/]))*\*+\/)|(?:\/\/.*))/', '', $data['config']['custom_css'] );
-    $minify = str_replace( array( "\r\n","\r","\t","\n",'  ','    ','     ' ), '', $data['config']['custom_css'] );
-
     // Build out the custom CSS.
-    $style = '<style type="text/css">' . html_entity_decode( $minify, ENT_QUOTES ) . '</style>';
+    $style = '<style type="text/css">' . $instance->minify( html_entity_decode( $data['config']['custom_css'], ENT_QUOTES ), false ) . '</style>';
 
     // Return the style prepended to the gallery.
     return $style . $gallery;

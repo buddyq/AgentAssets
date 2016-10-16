@@ -75,7 +75,7 @@ class Envira_Dynamic_Metaboxes {
         // Actions and Filters: Galleries
         add_filter( 'envira_gallery_types', array( $this, 'add_dynamic_type' ), 9999, 2 );
         add_action( 'envira_gallery_display_dynamic', array( $this, 'images_display' ) );
-        add_action( 'envira_gallery_config_box', array( $this, 'config_box' ) );
+        add_action( 'envira_gallery_include_justified_config_box', array( $this, 'config_box' ) );
         add_filter( 'envira_gallery_save_settings', array( $this, 'save' ), 10, 2 );
         
         // Actions and Filters: Albums
@@ -203,7 +203,12 @@ class Envira_Dynamic_Metaboxes {
      */
     public function config_box( $post ) {
 
+        if ( $post->ID !== Envira_Dynamic_Common::get_instance()->get_gallery_dynamic_id() ) {
+            return;
+        }
+
         $instance = Envira_Gallery_Metaboxes::get_instance();
+
         ?>
         <tr id="envira-config-dynamic-gallery-override-box">
             <th scope="row">

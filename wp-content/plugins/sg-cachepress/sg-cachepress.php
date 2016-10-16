@@ -9,7 +9,7 @@
  * @wordpress-plugin
  * Plugin Name:       SG CachePress
  * Description:       Through the settings of this plugin you can manage how your Wordpress interracts with NGINX and Memcached.
- * Version:           2.3.10
+ * Version:           2.3.11
  * Author:            SiteGround
  * Text Domain:       sg-cachepress
  * Domain Path:       /languages
@@ -87,4 +87,14 @@ function sg_cachepress_start() {
 	if ( $sg_cachepress_environment->memcached_is_enabled() ){
 		$sg_cachepress_memcache->run();
 	}
+}
+
+/**
+ * Public function to purge cache
+ */
+function sg_cachepress_purge_cache()
+{
+    global $sg_cachepress_supercacher;
+    
+    return $sg_cachepress_supercacher->purge_cache();
 }

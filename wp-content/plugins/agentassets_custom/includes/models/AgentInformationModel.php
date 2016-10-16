@@ -42,13 +42,15 @@ class AgentInformationModel extends SiteSettingsModel {
         $blogOwner = OrderMap::getBlogOwner(get_current_blog_id());
         $user_meta = array();
         $user_data = false;
+        $admin_email = get_option('admin_email');
         if ((!is_null($blogOwner) && 1 != $blogOwner)) {
             $user_meta = get_user_meta($blogOwner);
             $user_data = WP_User::get_data_by('id', $blogOwner );
         }
-        //var_dump($user_meta);
+
         $agent_name = (isset($user_meta['first_name']) ? $user_meta['first_name'][0] : '')
             . (isset($user_meta['last_name']) ? ' ' . $user_meta['last_name'][0] : '');
+
         return array(
             'agent_name' => array(
                 'label'      => 'Agent Name',
@@ -63,7 +65,7 @@ class AgentInformationModel extends SiteSettingsModel {
             'agent_email' => array(
                 'label'      => 'Agent Email',
                 'type'       => 'string',
-                'default'   => $user_data->user_email,
+                'default'   => $admin_email,
                 'rules' => array(
                     //array('validate_email'),
                 ),

@@ -166,7 +166,7 @@ class Envira_Instagram_Metaboxes {
                                 <p class="description"><?php _e( 'The type of images to pull from Instagram.', 'envira-instagram' ); ?></p>
                             </td>
                         </tr>
-                        <tr id="envira-config-instagram-tag-box">
+                        <?php /* <tr id="envira-config-instagram-tag-box">
                             <th scope="row">
                                 <label for="envira-config-instagram-tag"><?php _e( 'Tag', 'envira-instagram' ); ?></label>
                             </th>
@@ -174,7 +174,7 @@ class Envira_Instagram_Metaboxes {
                                 <input id="envira-config-instagram-tag" type="text" name="_envira_gallery[instagram_tag]" value="<?php echo $instance->get_config( 'instagram_tag', $instance->get_config_default( 'instagram_tag' ) ); ?>" />
                                 <p class="description"><?php _e( 'Pulls images that match the given tag.', 'envira-instagram' ); ?></p>
                             </td>
-                        </tr>
+                        </tr> */ ?>
                         <tr id="envira-config-instagram-number-box">
                             <th scope="row">
                                 <label for="envira-config-instagram-number"><?php _e( 'Number of Instagram Photos', 'envira-instagram' ); ?></label>

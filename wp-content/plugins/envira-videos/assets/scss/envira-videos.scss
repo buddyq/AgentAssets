@@ -30,26 +30,30 @@ a.envirabox-nav {
 /**
 * Lightbox
 */
-div.envirabox-outer {
-	div.envirabox-inner {
-		overflow: hidden !important;
+div.envirabox-overlay.overlay-video {
+	div.envirabox-outer {
 
-		/**
-		* Force iFrame based videos (YouTube, Vimeo) to fill the lightbox
-		*/
-		iframe.envirabox-iframe {
-		    display: block;
-		    width: 100% !important;
-		    height: 100% !important;
-		}
+		div.envirabox-inner {
+/*			overflow: hidden !important; */
+			position: initial;
 
-		/**
-		* Force self-hosted videos to fill the lightbox as best as possible
-		*/
-		div.envira-video-container {
-			display: block;
-			width: 100%;
-			height: 100%;
+			/**
+			* Force iFrame based videos (YouTube, Vimeo) to fill the lightbox
+			*/
+			iframe.envirabox-iframe {
+			    display: block;
+			    width: 100% !important;
+			    height: 100% !important;
+			}
+
+			/**
+			* Force self-hosted videos to fill the lightbox as best as possible
+			*/
+			div.envira-video-container {
+				display: block;
+				width: 100%;
+				height: 100%;
+			}
 		}
 	}
 }

@@ -17,7 +17,14 @@ Version: 1.0
 }
 
 .avia_message_box_content p {
-    display: block;
+    /*display: block;*/
+}
+
+#log_forms{
+  width: 30%;
+  margin: 0 auto;
+  padding: 8px;
+  border: 1px solid;
 }
 
 .coupon-applied.success{

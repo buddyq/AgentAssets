@@ -443,7 +443,7 @@ class Envira_Gallery_Settings {
         ?>
 
         <!-- Tabs -->
-        <h1 id="envira-tabs-nav" class="envira-tabs-nav" data-container="#envira-gallery-settings" data-update-hashbang="1">
+        <h2 id="envira-tabs-nav" class="envira-tabs-nav" data-container="#envira-gallery-settings" data-update-hashbang="1">
             <?php 
             $i = 0; 
             foreach ( (array) $this->get_envira_settings_tab_nav() as $id => $title ) {
@@ -454,7 +454,7 @@ class Envira_Gallery_Settings {
                 $i++; 
             }
             ?>
-        </h1>
+        </h2>
 
         <!-- Tab Panels -->
         <div id="envira-gallery-settings" class="wrap">

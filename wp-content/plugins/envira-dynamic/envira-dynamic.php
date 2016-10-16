@@ -5,7 +5,7 @@
  * Description: Enables dynamic gallery generation for Envira galleries and albums.
  * Author:      Envira Gallery Team
  * Author URI:  http://enviragallery.com
- * Version:     1.1.8
+ * Version:     1.2.1
  * Text Domain: envira-dynamic
  * Domain Path: languages
  *
@@ -54,7 +54,7 @@ class Envira_Dynamic {
      *
      * @var string
      */
-    public $version = '1.1.8';
+    public $version = '1.2.1';
 
     /**
      * The name of the plugin.

@@ -214,6 +214,12 @@ function envira_gallery_ajax_insert_images() {
 
     // Loop through the images and add them to the gallery.
     foreach ( (array) $images as $i => $image ) {
+
+        // If the image is already in the gallery, lets skip it since we don't want to override the image metadata settings
+        if ( in_array( $image['id'], $in_gallery ) ) {
+            continue;
+        }
+
         // Update the attachment image post meta first.
         $has_gallery = get_post_meta( $image['id'], '_eg_has_gallery', true );
         if ( empty( $has_gallery ) ) {
@@ -839,6 +845,7 @@ function envira_gallery_editor_get_galleries() {
     $search         = (bool) $_POST['search'];
     $search_terms   = sanitize_text_field( $_POST['search_terms'] );
     $prepend_ids    = stripslashes_deep( $_POST['prepend_ids'] );
+    $results        = array();
 
     // Get galleries
     $instance = ( class_exists( 'Envira_Gallery' ) ? Envira_Gallery::get_instance() : Envira_Gallery_Lite::get_instance() );

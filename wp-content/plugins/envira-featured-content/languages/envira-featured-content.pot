@@ -2,10 +2,9 @@
 # This file is distributed under the same license as the Envira Gallery - Featured Content Addon package.
 msgid ""
 msgstr ""
-"Project-Id-Version: Envira Gallery - Featured Content Addon 1.0.0\n"
-"Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/envira-featured-"
-"content\n"
-"POT-Creation-Date: 2016-06-03 19:42:23+00:00\n"
+"Project-Id-Version: Envira Gallery - Featured Content Addon 1.0.1\n"
+"Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/envira-featured-content\n"
+"POT-Creation-Date: 2016-09-22 17:42:57+00:00\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -22,9 +21,7 @@ msgid "Gallery Settings"
 msgstr ""
 
 #: includes/admin/metaboxes.php:140
-msgid ""
-"The settings below adjust the featured content options on your Gallery "
-"output."
+msgid "The settings below adjust the featured content options on your Gallery output."
 msgstr ""
 
 #: includes/admin/metaboxes.php:142
@@ -64,9 +61,7 @@ msgid "Select taxonomy terms(s) to query (defaults to none)..."
 msgstr ""
 
 #: includes/admin/metaboxes.php:201
-msgid ""
-"Determines the taxonomy terms that should be queried based on post type "
-"selection."
+msgid "Determines the taxonomy terms that should be queried based on post type selection."
 msgstr ""
 
 #: includes/admin/metaboxes.php:206
@@ -74,9 +69,7 @@ msgid "Taxonomy Term(s) Relation"
 msgstr ""
 
 #: includes/admin/metaboxes.php:218
-msgid ""
-"Determines whether all or any taxonomy terms must be present in the above "
-"Posts."
+msgid "Determines whether all or any taxonomy terms must be present in the above Posts."
 msgstr ""
 
 #: includes/admin/metaboxes.php:223
@@ -104,10 +97,7 @@ msgid "Include Sticky Posts"
 msgstr ""
 
 #: includes/admin/metaboxes.php:280
-msgid ""
-"If enabled, forces any Posts that are marked as Sticky to be at the start of "
-"the resultset. If disabled, Sticky Posts are treated as ordinary Posts, and "
-"will only appear if they meet the other criteria set above and below."
+msgid "If enabled, forces any Posts that are marked as Sticky to be at the start of the resultset. If disabled, Sticky Posts are treated as ordinary Posts, and will only appear if they meet the other criteria set above and below."
 msgstr ""
 
 #: includes/admin/metaboxes.php:285
@@ -123,8 +113,7 @@ msgid "Meta Key"
 msgstr ""
 
 #: includes/admin/metaboxes.php:303
-msgid ""
-"The meta key to use when ordering Posts. Used when Sort Posts By = Meta Value"
+msgid "The meta key to use when ordering Posts. Used when Sort Posts By = Meta Value"
 msgstr ""
 
 #: includes/admin/metaboxes.php:308
@@ -254,15 +243,11 @@ msgstr ""
 #: includes/global/common.php:264
 msgid "Post Excerpt"
 msgstr ""
-
 #. Plugin Name of the plugin/theme
 msgid "Envira Gallery - Featured Content Addon"
 msgstr ""
 
-#. #-#-#-#-#  envira-featured-content.pot (Envira Gallery - Featured Content Addon 1.0.0)  #-#-#-#-#
 #. Plugin URI of the plugin/theme
-#. #-#-#-#-#  envira-featured-content.pot (Envira Gallery - Featured Content Addon 1.0.0)  #-#-#-#-#
-#. Author URI of the plugin/theme
 msgid "http://enviragallery.com"
 msgstr ""
 
@@ -272,4 +257,8 @@ msgstr ""
 
 #. Author of the plugin/theme
 msgid "Envira Gallery Team"
+msgstr ""
+
+#. Author URI of the plugin/theme
+msgid "http://enviragallery.com"
 msgstr ""

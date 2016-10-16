@@ -300,7 +300,7 @@ class Envira_Videos_Shortcode {
 
             // Check if the video exists in the Media Library
             $attachment = $wpdb->get_col( $wpdb->prepare( "SELECT ID FROM " . $wpdb->posts . " WHERE guid='%s';", $item['link'] ) );
-            if ( is_array( $attachment ) ) {
+            if ( is_array( $attachment ) && !empty( $attachment ) ) {
                 // Attachment found
                 $attachment_id = absint( $attachment[0] );
 
@@ -386,12 +386,14 @@ class Envira_Videos_Shortcode {
         $instance = Envira_Gallery_Shortcode::get_instance();
         ?>
         video: {
-            autoplay: <?php echo $instance->get_config( 'videos_autoplay', $data ); ?>,
-            playpause: <?php echo $instance->get_config( 'videos_playpause', $data ); ?>,
-            progress: <?php echo $instance->get_config( 'videos_progress', $data ); ?>,
-            current: <?php echo $instance->get_config( 'videos_current', $data ); ?>,
-            duration: <?php echo $instance->get_config( 'videos_duration', $data ); ?>,
-            volume: <?php echo $instance->get_config( 'videos_volume', $data ); ?>
+
+            autoplay: <?php echo $instance->get_config( 'videos_autoplay', $data ) ? $instance->get_config( 'videos_autoplay', $data ) : 0 ?>,
+            playpause: <?php echo $instance->get_config( 'videos_playpause', $data ) ? $instance->get_config( 'videos_playpause', $data ) : 1 ?>,
+            progress: <?php echo $instance->get_config( 'videos_progress', $data ) ? $instance->get_config( 'videos_progress', $data ) : 1 ?>,
+            current: <?php echo $instance->get_config( 'videos_current', $data ) ? $instance->get_config( 'videos_current', $data ) : 1 ?>,
+            duration: <?php echo $instance->get_config( 'videos_duration', $data ) ? $instance->get_config( 'videos_duration', $data ) : 1 ?>,
+            volume: <?php echo $instance->get_config( 'videos_volume', $data ) ? $instance->get_config( 'videos_volume', $data ) : 1 ?>,
+
         },
         <?php
     }
@@ -491,12 +493,12 @@ class Envira_Videos_Shortcode {
         $instance = Envira_Gallery_Shortcode::get_instance();
         ?>
         video: {
-            autoplay: <?php echo $instance->get_config( 'videos_autoplay', $data ); ?>,
-            playpause: <?php echo $instance->get_config( 'videos_playpause', $data ); ?>,
-            progress: <?php echo $instance->get_config( 'videos_progress', $data ); ?>,
-            current: <?php echo $instance->get_config( 'videos_current', $data ); ?>,
-            duration: <?php echo $instance->get_config( 'videos_duration', $data ); ?>,
-            volume: <?php echo $instance->get_config( 'videos_volume', $data ); ?>
+            autoplay: <?php echo $instance->get_config( 'videos_autoplay', $data ) ? $instance->get_config( 'videos_autoplay', $data ) : 0 ?>,
+            playpause: <?php echo $instance->get_config( 'videos_playpause', $data ) ? $instance->get_config( 'videos_playpause', $data ) : 1 ?>,
+            progress: <?php echo $instance->get_config( 'videos_progress', $data ) ? $instance->get_config( 'videos_progress', $data ) : 1 ?>,
+            current: <?php echo $instance->get_config( 'videos_current', $data ) ? $instance->get_config( 'videos_current', $data ) : 1 ?>,
+            duration: <?php echo $instance->get_config( 'videos_duration', $data ) ? $instance->get_config( 'videos_duration', $data ) : 1 ?>,
+            volume: <?php echo $instance->get_config( 'videos_volume', $data ) ? $instance->get_config( 'videos_volume', $data ) : 1 ?>,
         },
         <?php
     }

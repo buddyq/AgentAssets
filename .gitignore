@@ -102,6 +102,7 @@ Thumbs.db
 # add your own entries here
 !wp-content/mu-plugins/example-mu-plugin/
 !wp-content/plugins/agentassets_custom/
+!wp-content/plugins/random-quotes/
 !wp-content/plugins/agentassets-site-manager/
 !wp-content/plugins/agentassets/
 !wp-content/themes/agentassets-athena/

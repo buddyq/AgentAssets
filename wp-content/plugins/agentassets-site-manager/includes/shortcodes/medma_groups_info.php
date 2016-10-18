@@ -20,7 +20,7 @@ function medma_groups_info_shortcode(/*$atts*/) {
       $mygroups .= "<p><strong>You belong to: <em>".implode(', ',$result)."</em></strong></p>";
     }else
     {
-      $mygroups .= "<p>You do not belong to any groups. You can only use the public themes.</p>";
+      $mygroups .= "<p>You do not belong to any groups, but you can still use all public themes.</p>";
     }
     return $mygroups;
 

@@ -234,8 +234,8 @@ div#supersized-navbar-collapse {
 }
 
 .itemAttachments li {
-    /*border: 1px solid #333;*/
-    background-color: rgba(0,0,0,0.5);
+    border: 1px solid #666;
+    background-color: rgba(220,220,220,1);
     padding: 10px;
     margin-bottom: 10px;
 }
@@ -536,7 +536,7 @@ input#contact-us-submit {
     left: -420px;
     background-color: rgba(20,20,20,0.85);
     border: 1px solid rgba(0,0,0,0.85);
-    text-shadow: 1px 1px 1px #000;
+    /*text-shadow: 1px 1px 1px #000;*/
     color: #fff;
     border-radius: 5px 5px 0 0;
     transition-duration: 1s;
@@ -602,4 +602,21 @@ footer.hide-footer > .toggle-footer-button {
 
 .pdf-size-details{
   font-size: xx-small;
+}
+#directions-panel{
+  clear: both;
+  margin: 10px 0;
+}
+#direction_from_address{
+  width: 75%;
+  padding: 4px;
+}
+#direction_from_init.button{
+  padding: 4px;
+}
+.center-marker-button{
+  text-align: right;
+}
+#aa_google_map_focus{
+  padding: 4px;
 }

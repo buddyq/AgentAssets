@@ -2,7 +2,7 @@
 <div class="row property-details">
     <div class="col-sm-12">
         <div class="col-sm-6">
-            <?php echo do_shortcode(empty($content) ? $model->contact_form_shortcode : $content) ?>
+            <?php echo do_shortcode(empty($content) ? $model->contact_form_shortcode : preg_replace("/<br[ ]?\/\>/",'',$content)) ?>
         </div>
         <div class="col-sm-6">
             <?php the_post_thumbnail(array(400,600)); ?>

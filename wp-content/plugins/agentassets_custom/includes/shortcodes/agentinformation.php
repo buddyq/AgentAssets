@@ -12,26 +12,33 @@ add_shortcode('agentinformation_facebook', 'agentinformation_facebook_shortcode'
 add_shortcode('agentinformation_twitter', 'agentinformation_twitter_shortcode');
 add_shortcode('agentinformation_googleplus', 'agentinformation_googleplus_shortcode');
 add_shortcode('agentinformation_bloginfo', 'agentinformation_bloginfo_shortcode');
+add_shortcode('agentinformation_email', 'agentinformation_email_shortcode');
 add_shortcode('agentinformation_contact_page_image', 'agentinformation_contact_page_image_shortcode');
 
 function agentinformation_shortcode($atts)
 {
     $value = null;
     if (isset($atts['key'])) {
+        $blog_id = get_current_blog_id();
+        $user_id = OrderMap::getBlogOwner($blog_id);
+        if (!$user_id) $user_id = 1;
+        $user_info = get_userdata($user_id);
+
         $defaults = array(
             'profile_picture' => plugins_url('agentassets-site-manager') . '/images/dummy_agent_pic.png',
             'broker_logo' => plugins_url('agentassets-site-manager') . '/images/placeholder_wide.jpg',
             'contact_page_image' => 'error',
+            'email' => 'buddy'.$user_info->user_email,
         );
 
         $blog_id = get_current_blog_id();
         $user_id = OrderMap::getBlogOwner($blog_id);
-        if (!$user_id) $user_id = 1;
 
         $value = get_user_meta($user_id, $atts['key'], true);
         if (empty($value)) {
             $value = get_option($atts['key']);
         }
+
 
         if (in_array($atts['key'], array('profile_picture', 'broker_logo', 'contact_page_image'))) {
             if (!empty($value)) {
@@ -104,6 +111,12 @@ function showVar($var, $die, $label = '')
 function agentinformation_first_name_shortcode($attr = array())
 {
     $attr['key'] = 'first_name';
+    return agentinformation_shortcode($attr);
+}
+
+function agentinformation_email_shortcode($attr = array())
+{
+    $attr['key'] = 'email';
     return agentinformation_shortcode($attr);
 }
 

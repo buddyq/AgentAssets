@@ -6,8 +6,6 @@ add_action('admin_menu', 'custom_theme_options_menu');
 
 function custom_theme_options_menu()
 {
-
-
     // add_menu_page('Agent Information', 'Customize Microsite', 'manage_options', 'mi-top-level-handle', 'mi_sub_agent_information');
     add_menu_page('Agent Information', 'Agent Information', 'manage_options', 'mi-sub-agent-information', 'mi_sub_agent_information','dashicons-businessman');
 
@@ -18,8 +16,82 @@ function custom_theme_options_menu()
 
     add_menu_page('Property Details', 'Property Details', 'manage_options', 'mi-sub-property-details', 'mi_sub_property_details','dashicons-admin-home');
     add_menu_page('Printable Info', 'Printable Info', 'manage_options', 'mi-sub-printable-info', 'mi_sub_printable_info', 'dashicons-media-document');
-    add_menu_page('Contact Info', 'Contact Info', 'manage_options', 'mi-sub-contact-details', 'mi_sub_contact_details', 'dashicons-email-alt');
-    //add_menu_page('Meta Info', 'Meta Info', 'manage_options', 'mi-sub-meta-info', 'mi_sub_meta_information', 'dashicons-chart-area');
+    // add_menu_page('Contact Info', 'Contact Info', 'manage_options', 'mi-sub-contact-details', 'mi_sub_contact_details', 'dashicons-email-alt');
+    add_menu_page('Meta Info', 'Meta Info', 'manage_options', 'mi-sub-meta-info', 'mi_sub_meta_information', 'dashicons-chart-area');
+}
+function mi_sub_meta_information()
+{
+
+    if (isset($_POST['submit'])) {
+        $input_meta_keywords = $_POST['meta_keywords'];
+        update_option('meta_keywords', $input_meta_keywords);
+        $meta_keywords = stripslashes(get_option('meta_keywords', true));
+
+        $input_meta_description = $_POST['meta_description'];
+        update_option('meta_description', $input_meta_description);
+        $meta_description = stripslashes(get_option('meta_description', true));
+
+        $input_google_analytics = $_POST['google_analytics'];
+        update_option('google_analytics', $input_google_analytics);
+        $google_analytics = get_option('google_analytics', true);
+
+    }
+    $meta_keywords = stripslashes(get_option('meta_keywords', true));
+    $meta_description = stripslashes(get_option('meta_description', true));
+    $google_analytics = get_option('google_analytics', true);
+    $aa_logo = '<img src="' . plugins_url( '../../images/logo.png', __FILE__ ) . '" height="50" style="vertical-align:middle;" > ';
+
+    ?>
+    <div class="wrap">
+        <h1><?php echo $aa_logo ?> Meta Information</h1>
+
+        <form method="post" action="" novalidate="novalidate">
+
+            <table class="form-table">
+                <tbody>
+
+                <tr>
+                    <th scope="row">
+                        <label for="meta_keywords">Meta Keywords</label>
+                    </th>
+                    <td>
+                        <textarea name="meta_keywords" cols="50" rows="10"><?php if (isset($meta_keywords)) {
+                                echo $meta_keywords;
+                            } ?></textarea>
+                    </td>
+                </tr>
+
+                <tr>
+                    <th scope="row">
+                        <label for="meta_description">Meta Description</label>
+                    </th>
+                    <td>
+                        <textarea name="meta_description" cols="50"
+                                  rows="10"><?php echo stripslashes($meta_description); ?></textarea>
+                    </td>
+                </tr>
+
+                <tr>
+                    <th scope="row">
+                        <label for="google_analytics">Google Analytics ID</label>
+                    </th>
+                    <td>
+                        <input name="google_analytics" type="text" id="google_analytics"
+                               value="<?php if (isset($google_analytics)) {
+                                   echo $google_analytics;
+                               } ?>" class="regular-text">
+                    </td>
+                </tr>
+
+                </tbody>
+            </table>
+            <p class="submit">
+                <input type="submit" name="submit" id="submit" class="button button-primary" value="Save Changes">
+            </p>
+        </form>
+    </div>
+    <?php
+
 }
 
 function mi_sub_agent_information() {
@@ -160,6 +232,7 @@ function mi_sub_contact_details() {
         <h1><img height="50" style="vertical-align:middle;" src="http://aveone.agentassets.com/wp-content/plugins/agentassets_custom/includes/shortcodes/../../images/logo.png">
             Contact Info
         </h1>
+
         <?php
 
         // render notices
@@ -170,7 +243,7 @@ function mi_sub_contact_details() {
         <?php }
 
         // render form
-        AAAdminFormHelper::beginForm('','post', array(), 'ContactInfo');
+        AAAdminFormHelper::beginForm('','post', array(), 'Contactinfo');
         $fieldsConfig = AAAdminFormConfig::build($model);
         $locationHeader = new AAAdminFormHtml();
         $locationHeader->beginContent();?>
@@ -184,23 +257,8 @@ function mi_sub_contact_details() {
         $fieldsConfig->appendItem($locationHeader, 2);
         AAAdminFormHelper::renderFields($fieldsConfig);
         AAAdminFormHelper::endForm('Save Changes');
+
         ?>
     </div>
     <?php
 }
-/*
-function wp_gear_manager_admin_scripts()
-{
-    wp_enqueue_script('media-upload');
-    wp_enqueue_script('thickbox');
-    wp_enqueue_script('jquery');
-}
-
-function wp_gear_manager_admin_styles()
-{
-    wp_enqueue_style('thickbox');
-}
-
-add_action('admin_print_scripts', 'wp_gear_manager_admin_scripts');
-add_action('admin_print_styles', 'wp_gear_manager_admin_styles');
-*/

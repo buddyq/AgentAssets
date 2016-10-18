@@ -4,12 +4,12 @@
 <head>
 	<meta charset="<?php bloginfo( 'charset' ); ?>">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <?php
-         $meta_keywords = get_option('meta_keywords',true);
-         $meta_description = get_option('meta_description',true);
-        ?>
-        <meta name="keywords" content="<?php echo $meta_keywords;?>" />
-        <meta name="description" content="<?php echo $meta_description;?>" />
+  <?php
+   $meta_keywords = get_option('meta_keywords',true);
+   $meta_description = get_option('meta_description',true);
+  ?>
+  <meta name="keywords" content="<?php echo $meta_keywords;?>" />
+  <meta name="description" content="<?php echo $meta_description;?>" />
 	<link rel="profile" href="http://gmpg.org/xfn/11">
 	<link rel="pingback" href="<?php bloginfo( 'pingback_url' ); ?>">
 	<link href='https://fonts.googleapis.com/css?family=Titillium+Web:400,200,200italic,300,300italic,400italic,600,600italic,700,700italic,900&subset=latin,latin-ext' rel='stylesheet' type='text/css'>
@@ -38,6 +38,10 @@
 			/*position: absolute;*/
 			/*width: 100%;*/
 			text-align: center;
+		}
+		.button.medium.white.download a,
+		#aa_google_map_focus{
+			border: 1px solid <?php echo $alloptions['evl_accent_text_color_font']['color'] ?>
 		}
 		<?php
 		// echo ".itemAttachments li, ul.details, .btn-primary{ background-color: lighten(".$model->highlighted_accent_color .", 80%)};";

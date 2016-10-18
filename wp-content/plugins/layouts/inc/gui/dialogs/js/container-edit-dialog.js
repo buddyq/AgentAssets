@@ -24,7 +24,7 @@ DDLayout.ContainerDialog = function($)
 			var target_container = target_container_view.model;
 
 			target_container.set('name', jQuery('input[name="ddl-container-edit-container-name"]').val());
-			target_container.set( 'additionalCssClasses', jQuery('input.js-edit-css-class', jQuery('#ddl-container-edit')).val() );
+			target_container.set( 'additionalCssClasses', jQuery('select.js-edit-css-class', jQuery('#ddl-container-edit')).val() );
 			target_container.set('cssId', jQuery('input.js-edit-css-id', jQuery('#ddl-container-edit') ).val());
 			target_container.set('tag', jQuery('select.js-ddl-tag-name', jQuery('#ddl-container-edit') ).val());
 
@@ -48,7 +48,7 @@ DDLayout.ContainerDialog = function($)
 			//console.log( container_view.model );
 
 			jQuery('input[name="ddl-container-edit-container-name"]').val( container_view.model.get('name') );
-			jQuery('input.js-edit-css-class', jQuery('#ddl-container-edit')).val( container_view.model.get('additionalCssClasses') );
+			//jQuery('select.js-edit-css-class', jQuery('#ddl-container-edit')).val( container_view.model.get('additionalCssClasses') );
 			jQuery('input.js-edit-css-id', jQuery('#ddl-container-edit') ).val( container_view.model.get('cssId') );
 			jQuery('select.js-ddl-tag-name', jQuery('#ddl-container-edit') ).val( container_view.model.get('tag') )
 

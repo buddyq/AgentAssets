@@ -64,15 +64,7 @@ if ( isset( $_POST['submithtaccess'] ) ) {
 }
 
 if ( isset( $msg ) && ! empty( $msg ) ) {
-<<<<<<< HEAD
-<<<<<<< HEAD
 	echo '<div id="message" class="updated fade"><p>', esc_html( $msg ), '</p></div>';
-=======
-	echo '<div id="message" style="width:94%;" class="updated fade"><p>', esc_html( $msg ), '</p></div>';
->>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
-=======
-	echo '<div id="message" style="width:94%;" class="updated fade"><p>', esc_html( $msg ), '</p></div>';
->>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
 }
 
 if ( is_multisite() ) {
@@ -83,24 +75,11 @@ else {
 }
 
 echo '<br><br>';
-<<<<<<< HEAD
-<<<<<<< HEAD
 $helpcenter_tab = new WPSEO_Option_Tab( 'bulk-editor', 'Bulk editor',
 	array( 'video_url' => 'https://yoa.st/screencast-tools-file-editor' ) );
 
 $helpcenter = new WPSEO_Help_Center( 'bulk-editor', $helpcenter_tab );
 $helpcenter->output_help_center();
-=======
-=======
->>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
-
-$tab_video_url = 'https://yoa.st/screencast-tools-file-editor';
-include WPSEO_PATH . 'admin/views/partial-settings-tab-video.php';
-
-<<<<<<< HEAD
->>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
-=======
->>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
 
 echo '<h2>', __( 'Robots.txt', 'wordpress-seo' ), '</h2>';
 
@@ -133,18 +112,8 @@ else {
 	else {
 		echo '<form action="', esc_url( $action_url ), '" method="post" id="robotstxtform">';
 		wp_nonce_field( 'wpseo-robotstxt', '_wpnonce', true, true );
-<<<<<<< HEAD
-<<<<<<< HEAD
 		echo '<p><label for="robotsnew" class="yoast-inline-label">', __( 'Edit the content of your robots.txt:', 'wordpress-seo' ), '</label></p>';
 		echo '<textarea class="large-text code" rows="15" name="robotsnew" id="robotsnew">', $robots_txt_content, '</textarea><br/>';
-=======
-		echo '<p>', __( 'Edit the content of your robots.txt:', 'wordpress-seo' ), '</p>';
-		echo '<textarea class="large-text code" rows="15" name="robotsnew">', $robots_txt_content, '</textarea><br/>';
->>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
-=======
-		echo '<p>', __( 'Edit the content of your robots.txt:', 'wordpress-seo' ), '</p>';
-		echo '<textarea class="large-text code" rows="15" name="robotsnew">', $robots_txt_content, '</textarea><br/>';
->>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
 		echo '<div class="submit"><input class="button" type="submit" name="submitrobots" value="', __( 'Save changes to Robots.txt', 'wordpress-seo' ), '" /></div>';
 		echo '</form>';
 	}
@@ -169,18 +138,8 @@ if ( ( isset( $_SERVER['SERVER_SOFTWARE'] ) && stristr( $_SERVER['SERVER_SOFTWAR
 		else {
 			echo '<form action="', esc_url( $action_url ), '" method="post" id="htaccessform">';
 			wp_nonce_field( 'wpseo-htaccess', '_wpnonce', true, true );
-<<<<<<< HEAD
-<<<<<<< HEAD
 			echo '<p><label for="htaccessnew" class="yoast-inline-label">', __( 'Edit the content of your .htaccess:', 'wordpress-seo' ), '</label></p>';
 			echo '<textarea class="large-text code" rows="15" name="htaccessnew" id="htaccessnew">', $contentht, '</textarea><br/>';
-=======
-			echo '<p>', __( 'Edit the content of your .htaccess:', 'wordpress-seo' ), '</p>';
-			echo '<textarea class="large-text code" rows="15" name="htaccessnew">', $contentht, '</textarea><br/>';
->>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
-=======
-			echo '<p>', __( 'Edit the content of your .htaccess:', 'wordpress-seo' ), '</p>';
-			echo '<textarea class="large-text code" rows="15" name="htaccessnew">', $contentht, '</textarea><br/>';
->>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
 			echo '<div class="submit"><input class="button" type="submit" name="submithtaccess" value="', __( 'Save changes to .htaccess', 'wordpress-seo' ), '" /></div>';
 			echo '</form>';
 		}

@@ -179,8 +179,6 @@ DDLayout.Dialogs.Prototype.prototype.is_new_cell = function () {
 DDLayout.Dialogs.Prototype.setUpAdditionalClassInput = function( $input ){
 
         var $el = typeof $input !== 'undefined' ? $input : jQuery('.js-toolset_select2-tokenizer'),
-<<<<<<< HEAD
-<<<<<<< HEAD
             classes = typeof DDLayout_settings !== 'undefined' && DDLayout_settings.DDL_JS && DDLayout_settings.DDL_JS.layouts_css_properties ? DDLayout_settings.DDL_JS.layouts_css_properties.additionalCssClasses : '';
 
         if( $el.length ){
@@ -192,22 +190,6 @@ DDLayout.Dialogs.Prototype.setUpAdditionalClassInput = function( $input ){
                 'width': "555px"
             });
             return $el;
-=======
-=======
->>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
-            classes = typeof DDLayout_settings !== 'undefined' && DDLayout_settings.DDL_JS && DDLayout_settings.DDL_JS.layouts_css_properties ? DDLayout_settings.DDL_JS.layouts_css_properties.additionalCssClasses : [];
-
-        if( $el.length ){
-            return $el.toolset_select2({
-                selectOnBlur:false,
-                tags:  _.isEmpty( classes ) ? [] : classes,
-                tokenSeparators: [",", " "],
-                'width': "555px"
-            });
-<<<<<<< HEAD
->>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
-=======
->>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
         }
 
     return null;
@@ -252,15 +234,7 @@ DDLayout.Dialogs.DDL_Dialog = function($){
         jQuery(document).on('tabsbeforeactivate', function(event, ui){
             jQuery( event.target ).trigger( 'before-activate_tab', {
                 tabIndex: ui.newTab.index(),
-<<<<<<< HEAD
-<<<<<<< HEAD
                 cssClassEl: jQuery('select.js-edit-css-class', event.target),
-=======
-                cssClassEl: jQuery('input.js-edit-css-class', event.target),
->>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
-=======
-                cssClassEl: jQuery('input.js-edit-css-class', event.target),
->>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
                 cssIdEl: jQuery('input.js-edit-css-id', event.target),
                 textArea: jQuery('.js-ddl-css-editor-area', event.target)
             });
@@ -396,16 +370,6 @@ DDLayout.Dialogs.DDL_Dialog = function($){
 
                 }
 
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
-            DDLayout.Dialogs.Prototype.setUpAdditionalClassInput();
-
->>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
-=======
-            DDLayout.Dialogs.Prototype.setUpAdditionalClassInput();
-
->>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
                 if( jQuery('.js-ddl-create-edit-view').length > 0 ){
                     jQuery('.js-ddl-create-edit-view').hide();
                 }
@@ -414,14 +378,8 @@ DDLayout.Dialogs.DDL_Dialog = function($){
         jQuery(document).on('cbox_complete', function(event) {
             overrides_visibility();
 
-<<<<<<< HEAD
-<<<<<<< HEAD
             DDLayout.Dialogs.Prototype.setUpAdditionalClassInput( jQuery('select.js-edit-css-class', jQuery('#cboxWrapper') ) );
 
-=======
->>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
-=======
->>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
             _.defer( fix_cancel_button_helper );
 
             if( DDLayout.ddl_admin_page !== undefined )
@@ -438,25 +396,11 @@ DDLayout.Dialogs.DDL_Dialog = function($){
             // Fix for toolset_select2 and Colorbox incopatibility issue
             jQuery(document).on('mousedown.colorbox','#cboxLoadedContent, #cboxOverlay', function(e){
                 if ( jQuery(e.target).parents('.js-toolset_select2').length === 0 ) {
-<<<<<<< HEAD
-<<<<<<< HEAD
                  //   jQuery('select.js-toolset_select2').toolset_select2('close');
                 }
                 if( jQuery(e.target).parents('.js-toolset_select2-tokenizer').length === 0 )
                 {
                  //   jQuery('input.js-toolset_select2-tokenizer').toolset_select2('close');
-=======
-=======
->>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
-                    jQuery('select.js-toolset_select2').toolset_select2('close');
-                }
-                if( jQuery(e.target).parents('.js-toolset_select2-tokenizer').length === 0 )
-                {
-                    jQuery('input.js-toolset_select2-tokenizer').toolset_select2('close');
-<<<<<<< HEAD
->>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
-=======
->>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
                 }
             });
 
@@ -478,8 +422,6 @@ DDLayout.Dialogs.DDL_Dialog = function($){
             jQuery(document).off('mousedown.colorbox');
 
             // Destroy toolset_select2 obj
-<<<<<<< HEAD
-<<<<<<< HEAD
             jQuery('.js-toolset_select2').each(function(){
                 jQuery(this).toolset_select2('destroy');
             });
@@ -487,14 +429,6 @@ DDLayout.Dialogs.DDL_Dialog = function($){
             jQuery('.js-toolset_select2-tokenizer').each(function(){
                 jQuery(this).toolset_select2('destroy');
             });
-=======
-            jQuery('.js-toolset_select2').toolset_select2('destroy');
-            jQuery('.js-toolset_select2-tokenizer').toolset_select2('destroy');
->>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
-=======
-            jQuery('.js-toolset_select2').toolset_select2('destroy');
-            jQuery('.js-toolset_select2-tokenizer').toolset_select2('destroy');
->>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
 
             self.disable_enable_editing_elements_in_css_tab(false);
             jQuery('#js-row-edit-mode').show();

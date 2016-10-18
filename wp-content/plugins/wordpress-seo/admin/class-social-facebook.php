@@ -110,8 +110,6 @@ class Yoast_Social_Facebook {
 	private function get_response_body( $type ) {
 		switch ( $type ) {
 			case 'not_present':
-<<<<<<< HEAD
-<<<<<<< HEAD
 				$return = "<p class='notice-error notice'><span>" . __( 'Please make sure both fields are filled.', 'wordpress-seo' ) . '</span></p>';
 				break;
 			case 'invalid_format':
@@ -119,20 +117,6 @@ class Yoast_Social_Facebook {
 				break;
 			case 'already_exists':
 				$return = "<p class='notice-error notice'><span>" . __( 'This Facebook user has already been added as an admin.', 'wordpress-seo' ) . '</span></p>';
-=======
-=======
->>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
-				$return = "<p class='notice-error notice'><span style='margin-left: 5px'>" . __( 'Please make sure both fields are filled.', 'wordpress-seo' ) . '</span></p>';
-				break;
-			case 'invalid_format':
-				$return = "<p class='notice-error notice'><span style='margin-left: 5px'>" . __( 'Your input contains invalid characters. Please make sure both fields are filled in correctly.', 'wordpress-seo' ) . '</span></p>';
-				break;
-			case 'already_exists':
-				$return = "<p class='notice-error notice'><span style='margin-left: 5px'>" . __( 'This Facebook user has already been added as an admin.', 'wordpress-seo' ) . '</span></p>';
-<<<<<<< HEAD
->>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
-=======
->>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
 				break;
 			default:
 				$return = '';
@@ -324,18 +308,8 @@ class Yoast_Social_Facebook_Form {
 		// Adding the thickbox.
 		add_thickbox();
 
-<<<<<<< HEAD
-<<<<<<< HEAD
 		echo '<div id="add_facebook_admin" class="hidden">';
 		echo "<div class='form-wrap wpseo_content_wrapper wpseo-add-fb-admin-form-wrap'>";
-=======
-		echo '<div id="add_facebook_admin" style="display:none;">';
-		echo "<div class='form-wrap wpseo_content_wrapper'>";
->>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
-=======
-		echo '<div id="add_facebook_admin" style="display:none;">';
-		echo "<div class='form-wrap wpseo_content_wrapper'>";
->>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
 		echo '<p>';
 		/* translators: %1$s and %2$s expand to a link to Facebook Insights */
 		printf( __( 'To be able to access %1$sFacebook Insights%2$s, you need to add a user here. The name is used for reference only, the ID is used for verification.', 'wordpress-seo' ), '<a target="_blank" href="https://www.facebook.com/insights">', '</a>' );
@@ -370,36 +344,15 @@ class Yoast_Social_Facebook_Form {
 	private function manage_user_admin() {
 		$button_text = __( 'Add Facebook admin', 'wordpress-seo' );
 		$nonce       = false;
-<<<<<<< HEAD
-<<<<<<< HEAD
 		$class_attr  = ' class="hidden"';
-=======
-		$style       = 'style="display:none"';
->>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
-=======
-		$style       = 'style="display:none"';
->>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
 
 		if ( is_array( $this->options['fb_admins'] ) && $this->options['fb_admins'] !== array() ) {
 			$nonce       = $this->get_delete_nonce();
 			$button_text = __( 'Add Another Facebook Admin', 'wordpress-seo' );
-<<<<<<< HEAD
-<<<<<<< HEAD
 			$class_attr  = '';
 		}
 
 		echo "<div id='connected_fb_admins'{$class_attr}>";
-=======
-=======
->>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
-			$style       = '';
-		}
-
-		echo "<div id='connected_fb_admins' {$style}>";
-<<<<<<< HEAD
->>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
-=======
->>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
 		echo '<p>' . __( 'Currently connected Facebook admins:', 'wordpress-seo' ) . '</p>';
 		echo '<ul id="user_admin">';
 		$this->show_user_admins( $nonce );

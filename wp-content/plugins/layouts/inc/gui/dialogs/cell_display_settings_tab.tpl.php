@@ -37,15 +37,7 @@
 	</p>
 	<p>
 		<label class="label-tag-classes" for="ddl-<?php echo $dialog_type; ?>-edit-class-name"><?php _e('Tag classes', 'ddl-layouts'); ?> <span class="opt">(<?php _e('optional', 'ddl-layouts'); ?>):</span></label>
-<<<<<<< HEAD
-<<<<<<< HEAD
 		<select name="ddl-<?php echo $dialog_type; ?>-edit-class-name" id="ddl-<?php echo $dialog_type; ?>-edit-class-name" class="js-toolset_select2-tokenizer js-edit-css-class"></select>
-=======
-		<input type="text" name="ddl-<?php echo $dialog_type; ?>-edit-class-name" id="ddl-<?php echo $dialog_type; ?>-edit-class-name" class="js-toolset_select2-tokenizer js-edit-css-class">
->>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
-=======
-		<input type="text" name="ddl-<?php echo $dialog_type; ?>-edit-class-name" id="ddl-<?php echo $dialog_type; ?>-edit-class-name" class="js-toolset_select2-tokenizer js-edit-css-class">
->>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
 		<span class="desc" style="display:none"><?php _e('Separated class names by a single space.','ddl-layouts') ?></span>
 	</p>
 
@@ -94,15 +86,7 @@
 		</p>
 		<p>
 			<label for="ddl-default-edit-class-name"><?php _e('Tag classes:', 'ddl-layouts'); ?> <span class="opt">(<?php _e('optional', 'ddl-layouts'); ?>)</span></label>
-<<<<<<< HEAD
-<<<<<<< HEAD
 			<select name="ddl-default-edit-class-name" id="ddl-default-edit-class-name" class="js-toolset_select2-tokenizer js-edit-css-class" value="{{{css}}}"></select>
-=======
-			<input type="text" name="ddl-default-edit-class-name" id="ddl-default-edit-class-name" class="js-toolset_select2-tokenizer js-edit-css-class" value="{{{css}}}">
->>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
-=======
-			<input type="text" name="ddl-default-edit-class-name" id="ddl-default-edit-class-name" class="js-toolset_select2-tokenizer js-edit-css-class" value="{{{css}}}">
->>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
 			<span class="desc" style="display:none"><?php _e('Separated class names by a single space.','ddl-layouts') ?></span>
 		</p>
 

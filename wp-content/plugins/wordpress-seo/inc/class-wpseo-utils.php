@@ -867,8 +867,6 @@ class WPSEO_Utils {
 	}
 
 	/**
-<<<<<<< HEAD
-<<<<<<< HEAD
 	 * Checks if the WP-REST-API is available.
 	 *
 	 * @since 3.6
@@ -880,22 +878,6 @@ class WPSEO_Utils {
 	public static function is_api_available( $minimum_version = '2.0' ) {
 		return ( defined( 'REST_API_VERSION' )
 		         && version_compare( REST_API_VERSION, $minimum_version, '>=' ) );
-=======
-=======
->>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
-	 * Checks if the WP-REST-API with at least version 2.0 is available.
-	 *
-	 * @since 3.6
-	 *
-	 * @return bool
-	 */
-	public static function is_api_available() {
-		return ( defined( 'REST_API_VERSION' )
-		         && version_compare( REST_API_VERSION, '2.0', '>=' ) );
-<<<<<<< HEAD
->>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
-=======
->>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
 	}
 
 	/**

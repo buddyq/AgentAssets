@@ -26,8 +26,6 @@ var wptCredfile = (function ($) {
                 } else {
                     thiz_undo_button.hide();
                 }
-<<<<<<< HEAD
-<<<<<<< HEAD
                 if (myid == '_featured_image') {
                     $('#attachid_' + myid).val('');                    
                 } else {
@@ -35,19 +33,6 @@ var wptCredfile = (function ($) {
                     } else
                         $('#' + myid).prop('disabled', false);
                         //$("<input type='hidden' id='" + myid + "' name='" + myid + "' value=''>").insertAfter('#' + thiz_hidden_input.attr('id'));
-=======
-=======
->>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
-                if (myid == '_featured_image')
-                    $("<input type='hidden' id='attachid_" + myid + "' name='attachid_" + myid + "' value=''>").insertAfter('#' + thiz_hidden_input.attr('id'));
-                else {
-                    if (thiz.closest('.js-wpt-repetitive').length>0) {                        
-                    } else
-                        $("<input type='hidden' id='" + myid + "' name='" + myid + "' value=''>").insertAfter('#' + thiz_hidden_input.attr('id'));
-<<<<<<< HEAD
->>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
-=======
->>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
                 }
                 thiz_file_input.trigger('change');
             } else if (credfile_action == 'undo') {
@@ -58,24 +43,12 @@ var wptCredfile = (function ($) {
                 //thiz_delete_button.show();
                 thiz_undo_button.hide();
                 if (myid == '_featured_image')
-<<<<<<< HEAD
-<<<<<<< HEAD
                     $('#attachid_' + myid).val($("input[name='_cred_cred_prefix_post_id']").val());
                 else {
                     if (thiz.closest('.js-wpt-repetitive').length > 0) {
                     } else
                         $('#' + myid).prop('disabled', false);
                 }
-=======
-                    $('#attachid_' + myid).remove();
-                else
-                    $('#' + myid).remove();
->>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
-=======
-                    $('#attachid_' + myid).remove();
-                else
-                    $('#' + myid).remove();
->>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
             }
         });
 

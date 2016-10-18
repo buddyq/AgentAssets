@@ -20,15 +20,7 @@ class DelxtransNetwork {
 
 		add_action('load-settings_page_delxtrans', array($this, 'processActions'));
 		add_action('network_admin_menu', array($this, 'adminMenu'));
-<<<<<<< HEAD
-<<<<<<< HEAD
 		add_action('admin_print_styles-settings_page_delxtrans', array($this, 'adminStyles'));
-=======
-		add_action('admin_enqueue_scripts', array($this, 'adminStyles'));
->>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
-=======
-		add_action('admin_enqueue_scripts', array($this, 'adminStyles'));
->>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
 	}
 
 	/**
@@ -44,24 +36,9 @@ class DelxtransNetwork {
 	/**
 	* custom CSS for page
 	*/
-<<<<<<< HEAD
-<<<<<<< HEAD
 	public function adminStyles($hook) {
 		$ver = SCRIPT_DEBUG ? time() : DELXTRANS_PLUGIN_VERSION;
 		wp_enqueue_style('delxtran-admin', plugins_url('/css/admin.css', DELXTRANS_PLUGIN_FILE), false, $ver);
-=======
-=======
->>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
-	public function adminStyles() {
-		$screen = get_current_screen();
-
-		if (!empty($screen->id) && $screen->id == 'settings_page_delxtrans-network') {
-			wp_enqueue_style('delxtran-admin', plugins_url('/css/admin.css', DELXTRANS_PLUGIN_FILE), false, DELXTRANS_PLUGIN_VERSION);
-		}
-<<<<<<< HEAD
->>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
-=======
->>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
 	}
 
 	/**

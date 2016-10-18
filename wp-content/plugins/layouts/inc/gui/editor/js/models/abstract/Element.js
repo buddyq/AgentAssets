@@ -107,28 +107,12 @@ DDLayout.models.abstract.Element = Backbone.Model.extend({
                 options = this instanceof DDLayout.models.cells.Layout ? _.escape(options) : DDLayout.models.abstract.Element._strip_tags_and_preserve_text( options );
             }
         }
-<<<<<<< HEAD
-<<<<<<< HEAD
         else if( attributes === 'additionalCssClasses' && options && _.isString( options )  )
         {
                 options = jQuery.trim( options.replace(/,/g, ' ') );
                 options = WPV_Toolset.Utils._strip_scripts( options );
                 options = WPV_Toolset.Utils._strip_tags_and_preserve_text( options );
 
-=======
-=======
->>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
-        else if( attributes === 'additionalCssClasses' )
-        {
-            if( options ){
-                options = jQuery.trim( options.replace(/,/g, ' ') );
-                options = WPV_Toolset.Utils._strip_scripts( options );
-                options = WPV_Toolset.Utils._strip_tags_and_preserve_text( options );
-            }
-<<<<<<< HEAD
->>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
-=======
->>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
         } else if( attributes === 'cssId' ){
             if( options ){
                 options = WPV_Toolset.Utils._strip_scripts( options );
@@ -164,15 +148,7 @@ DDLayout.models.abstract.Element = Backbone.Model.extend({
 
         }
         if( attribute === 'additionalCssClasses' ){
-<<<<<<< HEAD
-<<<<<<< HEAD
             this.attributes[attribute] = null !== this.attributes[attribute] ? jQuery.trim( this.attributes[attribute].replace(/[ ]/g, ',') ) : '';
-=======
-            this.attributes[attribute] = jQuery.trim( this.attributes[attribute].replace(/[ ]/g, ',') )
->>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
-=======
-            this.attributes[attribute] = jQuery.trim( this.attributes[attribute].replace(/[ ]/g, ',') )
->>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
         }
         return Backbone.Model.prototype.get.call(this, attribute );
     },

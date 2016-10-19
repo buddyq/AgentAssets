@@ -20,9 +20,10 @@
     vertical-align: bottom;
 }
 
-.site-list-container th{
+.site-list-container th,
+thead th{
 	background: #5d9e8d !important;
-	text-align: center;
+	/*text-align: center;*/
 	color: white;
 }
 

@@ -28,6 +28,7 @@ require_once 'includes/metaboxes.php';
 require_once 'includes/medmaclonefactory.php';
 
 require_once 'includes/shortcodes/create_new_site.php';
+require_once 'includes/shortcodes/my_purchases.php';
 require_once 'includes/shortcodes/list_sites.php';
 require_once 'includes/shortcodes/list_packages.php';
 require_once 'includes/shortcodes/package_status.php';

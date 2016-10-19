@@ -5,6 +5,8 @@ wp_enqueue_script('jquery');
 wp_enqueue_script('tablesorter', plugins_url('agentassets-site-manager').'/js/tablesorter/jquery.tablesorter.min.js','','1.7.1');
 wp_enqueue_script('purchases_script', plugins_url('agentassets-site-manager').'/js/general.js','','1.7.1');
 
+echo "<h1>My Purchases</h1>";
+
 function aa_my_packages($atts)
 {
   global $wpdb;
@@ -30,7 +32,7 @@ function aa_my_packages($atts)
         echo '<td>$'. number_format_i18n($purchase->package_price, 2) . '</td>';
         echo '<td>$'. number_format_i18n($purchase->discount, 2) . '</td>';
         echo '<td>$'. number_format_i18n($purchase->total_price, 2) . '</td>';
-        echo '<td>'. date("M-t-Y", strtotime($purchase->purchased_date)).'</td>'; 
+        echo '<td>'. date("M-t-Y", strtotime($purchase->purchased_date)).'</td>';
       echo '</tr>';
     }
       echo '</tbody>';

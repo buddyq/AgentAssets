@@ -17,18 +17,20 @@ function aa_my_packages($atts)
       echo '<thead>';
         echo '<tr>';
           echo '<th>Package Name</th>';
+          echo '<th>Package Price</th>';
+          echo '<th>Discount</th>';
           echo '<th>Total Price</th>';
           echo '<th>Purchased Date</th>';
-          echo '<th>Expiration Date</th>';
         echo '</tr>';
       echo '</thead>';
       echo '<tbody>';
     foreach ($purchases as $purchase) {
       echo '<tr>';
         echo '<td>'. $purchase->package_name . '</td>';
+        echo '<td>$'. number_format_i18n($purchase->package_price, 2) . '</td>';
+        echo '<td>$'. number_format_i18n($purchase->discount, 2) . '</td>';
         echo '<td>$'. number_format_i18n($purchase->total_price, 2) . '</td>';
-        echo '<td>'. $purchase->purchased_date . '</td>';
-        echo '<td>'. $purchase->expiry_date . '</td>';
+        echo '<td>'. date("M-t-Y", strtotime($purchase->purchased_date)).'</td>'; 
       echo '</tr>';
     }
       echo '</tbody>';

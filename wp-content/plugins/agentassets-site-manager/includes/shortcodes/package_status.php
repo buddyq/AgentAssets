@@ -1,6 +1,6 @@
 <?php
 
-//add_shortcode('package_status','mism_package_status_display');
+add_shortcode('package_status','mism_package_status_display');
 
 function mism_package_status_display($atts)
 {
@@ -14,7 +14,7 @@ function mism_package_status_display($atts)
     {
         $package_status = get_the_title($assigned_package);
     }
-    else 
+    else
     {
         $package_status = __('No Current Package found','mism').", ".  sprintf('<a href="%s">Click here</a> to purchase new package.','#');
     }
@@ -22,7 +22,7 @@ function mism_package_status_display($atts)
     <div class="mism-package-status av_promobox">
        <div class="avia-promocontent">
            <p><span><?php _e('Current Package ','mism');?></span><?php echo $package_status;?></p>
-       </div> 
+       </div>
     </div>
     <?php
 }

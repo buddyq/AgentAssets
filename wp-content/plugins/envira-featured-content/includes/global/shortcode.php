@@ -46,10 +46,6 @@ class Envira_Featured_Content_Shortcode {
     	// Get base instance
     	$this->base = Envira_Featured_Content::get_instance();
 
-    	// Dynamic Addon Support
-        add_filter( 'soliloquy_dynamic_get_dynamic_slider_types', array( $this, 'register_dynamic_slider_types' ) );
-        add_filter( 'soliloquy_dynamic_queried_data', array( $this, 'change_slider_type' ), 10, 3 );
-
         // Inject Images into Albums Admin
         // This allows the user to choose a cover image
         add_filter( 'envira_albums_metaboxes_get_gallery_data', array( $this, 'inject_images' ), 10, 2 );

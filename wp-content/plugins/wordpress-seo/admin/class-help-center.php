@@ -180,8 +180,6 @@ class WPSEO_Help_Center {
 	private function is_a_help_center_item( $item ) {
 		return is_a( $item, 'WPSEO_Help_Center_Item' );
 	}
-<<<<<<< HEAD
-<<<<<<< HEAD
 
 	/**
 	 * Pass text variables to js for the help center JS module.
@@ -211,8 +209,4 @@ class WPSEO_Help_Center {
 			'kb_iframe_title' => __( 'Knowledge base article', 'wordpress-seo' ),
 		);
 	}
-=======
->>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
-=======
->>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
 }

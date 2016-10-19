@@ -5,7 +5,7 @@
  * Description: Enables defaults to be set and inherited by new Envira galleries and albums.
  * Author:      Envira Gallery Team
  * Author URI:  http://enviragallery.com
- * Version:     1.1.3
+ * Version:     1.1.4
  * Text Domain: envira-defaults
  * Domain Path: languages
  *
@@ -54,7 +54,7 @@ class Envira_Defaults {
      *
      * @var string
      */
-    public $version = '1.1.3';
+    public $version = '1.1.4';
 
     /**
      * The name of the plugin.
@@ -187,17 +187,13 @@ class Envira_Defaults {
                 $fields['config'][$key] = $default;
             }
 
-            // Update some default post meta fields.
-            $fields = array(
-                'id'     => $default_id,
-                'config' => array(
-                    'title'   => __( 'Envira Default Settings', 'envira-default' ),
-                    'slug'    => 'envira-default-gallery',
-                    'classes' => array( 'envira-default-gallery' ),
-                    'type'    => 'defaults'
-                ),
-                'gallery' => array(),
-            );
+             // Update Fields 
+            $fields['id'] = $default_id;
+            $fields['config']['title'] = __( 'Envira Default Settings', 'envira-default' );
+            $fields['config']['slug'] = 'envira-default-gallery';
+            $fields['config']['classes'] = array( 'envira-default-gallery' );
+            $fields['config']['type'] = 'defaults';
+            $fields['gallery']  = array();
 
             // Update the meta field.
             update_post_meta( $default_id, '_eg_gallery_data', $fields );

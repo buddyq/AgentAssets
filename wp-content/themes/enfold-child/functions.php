@@ -8,7 +8,7 @@ add_theme_support('deactivate_layerslider');
 $avia_config['imgSize']['slider_post_img'] = array('width'=>500,  'height'=>375); // for homepage slider using post image
 
 add_action( 'admin_enqueue_scripts', 'load_admin_style' );
-
+add_filter('show_admin_bar', '__return_false');
 
 function load_admin_style() {
   // wp_register_style( 'admin_css', get_template_directory_uri() . '/admin-style.css', false, '1.0.0' );
@@ -303,11 +303,11 @@ function tgm_envira_whitelabel( $translated_text, $source_text, $domain ) {
 
 }
 
-add_action( 'admin_init', 'tgm_envira_remove_header' );
-function tgm_envira_remove_header() {
-
-    // Remove the Envira banner
-    remove_action( 'in_admin_header', array( Envira_Gallery_Posttype_Admin::get_instance(), 'admin_header' ), 100 );
-
-}
+// add_action( 'admin_init', 'tgm_envira_remove_header' );
+// function tgm_envira_remove_header() {
+//
+//     // Remove the Envira banner
+//     remove_action( 'in_admin_header', array( Envira_Gallery_Posttype_Admin::get_instance(), 'admin_header' ), 100 );
+//
+// }
 ?>

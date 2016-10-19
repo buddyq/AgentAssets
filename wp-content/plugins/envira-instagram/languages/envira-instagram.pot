@@ -2,9 +2,9 @@
 # This file is distributed under the same license as the Envira Gallery - Instagram Addon package.
 msgid ""
 msgstr ""
-"Project-Id-Version: Envira Gallery - Instagram Addon 1.1.0\n"
+"Project-Id-Version: Envira Gallery - Instagram Addon 1.1.1\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/envira-instagram\n"
-"POT-Creation-Date: 2016-06-30 23:35:23+00:00\n"
+"POT-Creation-Date: 2016-09-16 16:50:22+00:00\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -54,14 +54,6 @@ msgstr ""
 
 #: includes/admin/metaboxes.php:166
 msgid "The type of images to pull from Instagram."
-msgstr ""
-
-#: includes/admin/metaboxes.php:171
-msgid "Tag"
-msgstr ""
-
-#: includes/admin/metaboxes.php:175
-msgid "Pulls images that match the given tag."
 msgstr ""
 
 #: includes/admin/metaboxes.php:180

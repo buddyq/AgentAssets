@@ -52,14 +52,7 @@ function mism_list_sites($atts)
                 $html .= '<th class="numeric">'.__('Site Name','mism').'</th>';
                 $html .= '<th class="numeric">'.__('Site URL','mism').'</th>';
                 $html .= '<th class="numeric">'.__('Days Left','mism').'</th>';
-
                 $html .= '<th class="numeric">'.__('Actions','mism').'</th>';
-            $html .= '</thead>';
-
-                $html .= '<th class="numeric">'.__('Action','mism').'</th>';
-            $html .= '</thead>';
-
-                $html .= '<th class="numeric">'.__('Action','mism').'</th>';
             $html .= '</thead>';
 
             $html .= '<tbody>';
@@ -77,7 +70,6 @@ function mism_list_sites($atts)
                     {
                         $html .= '<li><a href="http://'.$externalDomain.'" title="'.$blog->blogname.'" target="_blank">http://'.$externalDomain.'</a></li>';
                     }
-
                     $html .= '</ol>';
                     $html .= '</td>';
                     $html .= '<td data-title="Days Left" class="days-left">'.$blog->days_left.'</td>';
@@ -93,19 +85,6 @@ function mism_list_sites($atts)
                         // $html .= '<input class="listblog_edit" type="submit" name="edit_site" value="Edit"/>';
                         $html .= '<input data-site-name="' . $blog->blogname . '" data-id="' . $blog->userblog_id . '" class="listblog_delete button" data-sending-label="Deleting..." type="submit" name="delete_site" value="Delete"/>';
                         $html .= '&nbsp;<a class="btn btn-primary button" href="'.$blog->siteurl.'/wp-admin/admin.php?page=mi-sub-agent-information">Edit</a>';
-
-                    $html .= '</td>';
-                    $html .= '<td data-title="Days Left">'.$blog->days_left.'</td>';
-                    $html .= '<td data-title="Action">';
-                    if (0 != $blog->deleted) {
-                        $time = getNextRemovingSitesTime('Y-m-d H:i');
-                        $html .= 'This site was deleted. You can restore it <br/>until the end of the next day ('.$time['string'].')<br/> before it is removed completely.<br/>';
-                        $html .= '<input data-site-name="' . $blog->blogname . '" data-id="' . $blog->userblog_id . '" class="listblog_restore button" data-sending-label="Rstoring..." type="submit" name="restore_site" value="Restore"/>';
-                    } else {
-                        // $html .= '<input class="listblog_edit" type="submit" name="edit_site" value="Edit"/>';
-                        $html .= '<input data-site-name="' . $blog->blogname . '" data-id="' . $blog->userblog_id . '" class="listblog_delete button" data-sending-label="Deleting..." type="submit" name="delete_site" value="Delete"/>';
-
-
                         if ($blog->days_left < 7) {
                             if ($duration) {
                                 $html .= '&nbsp;<input data-duration="' . $duration . '" data-site-name="' . $blog->blogname . '" data-id="' . $blog->userblog_id . '" class="listblog_extend button" data-sending-label="Extending..." type="submit" name="extend_site" value="Extend"/>';
@@ -123,6 +102,7 @@ function mism_list_sites($atts)
             $html .= '</table>';
             $html .= '</div>';
             $html .= '</div>';
+
 
 		 }
 		 else
@@ -169,13 +149,6 @@ function mism_list_sites($atts)
                     }
                 }
             $html .= '</tbody>';
-
-             $html .= '</table>';
-        }
-
-             $html .= '</table>';
-        }
-
              $html .= '</table>';
         }
 
@@ -193,6 +166,7 @@ function mism_list_sites($atts)
     {
         //$blogs = get_blogs_of_user(get_current_user_id(),false);
         $blogs = OrderMap::getUserBlogsDetailed(get_current_user_id());
+
 
         if(count($blogs)>0)
         {
@@ -220,15 +194,6 @@ function mism_list_sites($atts)
                     $active_count++;
                 }
             $html .= '</tbody>';
-
-           $html .= '</table>';
-        }
-
-
-           $html .= '</table>';
-        }
-
-
            $html .= '</table>';
         }
 

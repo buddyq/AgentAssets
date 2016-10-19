@@ -1,5 +1,3 @@
-<<<<<<< HEAD
-<<<<<<< HEAD
 Common 2.2.3 (October 10, 2016)
   - Fixes select2 edge cases when methods are called on non-select2 initialised element
   - Refines special handling of old inputs by making sure target is only a select and not the hidden relative element
@@ -28,23 +26,13 @@ Common 2.2 (August 24, 2016)
 
 -------------------------------------------------------------------------------------------------------------------
 
-=======
->>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
-=======
->>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
 Common 2.1 (June 13, 2016)
   - Refactored event-manager library to toolset-event manager to namespace it and avoid conficts with ACF Plugin
   - Added a new class for promotional and help videos management
   - Improved compatibility with PHP 5.2
   - Improved compatibility with WPML, including admin language switchers and loading times
   - Improved compatibility for CRED file uploads and bundled scripts
-<<<<<<< HEAD
-<<<<<<< HEAD
   - Fixed double slashes on assets URLs
-=======
->>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
-=======
->>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
 
 -------------------------------------------------------------------------------------------------------------------
 

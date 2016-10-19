@@ -2,9 +2,9 @@
 # This file is distributed under the same license as the Envira Gallery - Dynamic Addon package.
 msgid ""
 msgstr ""
-"Project-Id-Version: Envira Gallery - Dynamic Addon 1.1.8\n"
+"Project-Id-Version: Envira Gallery - Dynamic Addon 1.2.1\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/envira-dynamic\n"
-"POT-Creation-Date: 2016-06-03 19:42:22+00:00\n"
+"POT-Creation-Date: 2016-10-04 20:12:19+00:00\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -33,42 +33,29 @@ msgid "Dynamic Album Settings"
 msgstr ""
 
 #: includes/admin/metaboxes.php:174
-msgid ""
-"This gallery and its settings will be used as defaults for any dynamic "
-"gallery you create on this site. Any of these settings can be overwritten on "
-"an individual gallery basis via template tag arguments or shortcode "
-"parameters."
+msgid "This gallery and its settings will be used as defaults for any dynamic gallery you create on this site. Any of these settings can be overwritten on an individual gallery basis via template tag arguments or shortcode parameters."
 msgstr ""
 
 #: includes/admin/metaboxes.php:177
-msgid ""
-"This album and its settings will be used as defaults for any dynamic album "
-"you create on this site. Any of these settings can be overwritten on an "
-"individual album basis via template tag arguments or shortcode parameters."
+msgid "This album and its settings will be used as defaults for any dynamic album you create on this site. Any of these settings can be overwritten on an individual album basis via template tag arguments or shortcode parameters."
 msgstr ""
 
 #: includes/admin/metaboxes.php:189
 msgid "Click here for Dynamic Addon Documentation"
 msgstr ""
 
-#: includes/admin/metaboxes.php:210
+#: includes/admin/metaboxes.php:215
 msgid "Render all WordPress Galleries using Envira?"
 msgstr ""
 
-#: includes/admin/metaboxes.php:214
-msgid ""
-"If enabled, every WordPress Gallery which uses the [gallery] shortcode will "
-"be rendered using Envira Gallery."
+#: includes/admin/metaboxes.php:219
+msgid "If enabled, every WordPress Gallery which uses the [gallery] shortcode will be rendered using Envira Gallery."
 msgstr ""
-
 #. Plugin Name of the plugin/theme
 msgid "Envira Gallery - Dynamic Addon"
 msgstr ""
 
-#. #-#-#-#-#  envira-dynamic.pot (Envira Gallery - Dynamic Addon 1.1.8)  #-#-#-#-#
 #. Plugin URI of the plugin/theme
-#. #-#-#-#-#  envira-dynamic.pot (Envira Gallery - Dynamic Addon 1.1.8)  #-#-#-#-#
-#. Author URI of the plugin/theme
 msgid "http://enviragallery.com"
 msgstr ""
 
@@ -78,4 +65,8 @@ msgstr ""
 
 #. Author of the plugin/theme
 msgid "Envira Gallery Team"
+msgstr ""
+
+#. Author URI of the plugin/theme
+msgid "http://enviragallery.com"
 msgstr ""

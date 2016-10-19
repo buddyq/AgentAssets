@@ -13,15 +13,7 @@
 
 $unique_id = md5( $url );
 ?>
-<<<<<<< HEAD
-<<<<<<< HEAD
 <div id='redirect-<?php echo $unique_id; ?>' class="hidden">
-=======
-<div id='redirect-<?php echo $unique_id; ?>' style='display: none;'>
->>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
-=======
-<div id='redirect-<?php echo $unique_id; ?>' style='display: none;'>
->>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
 	<div class='form-wrap wpseo_content_wrapper'>
 	<?php
 	switch ( $view_type ) {

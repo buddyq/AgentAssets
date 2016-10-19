@@ -73,13 +73,7 @@ class WPSEO_Metabox extends WPSEO_Meta {
 		self::$meta_fields['general']['pageanalysis']['help-button'] = __( 'Show information about the content analysis', 'wordpress-seo' );
 
 		self::$meta_fields['general']['focuskw_text_input']['title']       = __( 'Focus keyword', 'wordpress-seo' );
-<<<<<<< HEAD
-<<<<<<< HEAD
 		self::$meta_fields['general']['focuskw_text_input']['label']       = __( 'Enter a focus keyword', 'wordpress-seo' );
-=======
->>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
-=======
->>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
 		self::$meta_fields['general']['focuskw_text_input']['help']        = sprintf( __( 'Pick the main keyword or keyphrase that this post/page is about. %sLearn more about the Focus Keyword%s.', 'wordpress-seo' ), '<a target="_blank" href="https://yoa.st/focus-keyword">', '</a>' );
 		self::$meta_fields['general']['focuskw_text_input']['help-button'] = __( 'Show information about the focus keyword', 'wordpress-seo' );
 
@@ -88,13 +82,7 @@ class WPSEO_Metabox extends WPSEO_Meta {
 		self::$meta_fields['general']['metadesc']['title']       = __( 'Meta description', 'wordpress-seo' );
 
 		self::$meta_fields['general']['metakeywords']['title']       = __( 'Meta keywords', 'wordpress-seo' );
-<<<<<<< HEAD
-<<<<<<< HEAD
 		self::$meta_fields['general']['metakeywords']['label']       = __( 'Enter the meta keywords', 'wordpress-seo' );
-=======
->>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
-=======
->>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
 		self::$meta_fields['general']['metakeywords']['description'] = __( 'If you type something above it will override your %smeta keywords template%s.', 'wordpress-seo' );
 
 
@@ -303,8 +291,6 @@ class WPSEO_Metabox extends WPSEO_Meta {
 	public function meta_box() {
 		$content_sections = $this->get_content_sections();
 
-<<<<<<< HEAD
-<<<<<<< HEAD
 		$helpcenter_tab = new WPSEO_Option_Tab( 'metabox', 'Meta box',
 			array( 'video_url' => 'https://yoa.st/metabox-screencast' ) );
 
@@ -314,30 +300,14 @@ class WPSEO_Metabox extends WPSEO_Meta {
 		if ( ! defined( 'WPSEO_PREMIUM_FILE' ) ) {
 			echo $this->get_buy_premium_link();
 		}
-=======
-		// Add Help Center to the metabox see #4701.
-		$tab_video_url = 'https://yoa.st/metabox-screencast';
-		include WPSEO_PATH . 'admin/views/partial-settings-tab-video.php';
->>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
-=======
-		// Add Help Center to the metabox see #4701.
-		$tab_video_url = 'https://yoa.st/metabox-screencast';
-		include WPSEO_PATH . 'admin/views/partial-settings-tab-video.php';
->>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
 
 		echo '<div class="wpseo-metabox-sidebar"><ul>';
 
 		foreach ( $content_sections as $content_section ) {
-<<<<<<< HEAD
-<<<<<<< HEAD
 			if ( $content_section->name === 'premium' ) {
 				continue;
 			}
 
-=======
->>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
-=======
->>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
 			$content_section->display_link();
 		}
 
@@ -418,18 +388,10 @@ class WPSEO_Metabox extends WPSEO_Meta {
 		$tab = new WPSEO_Metabox_Form_Tab(
 			'advanced',
 			$content,
-<<<<<<< HEAD
-<<<<<<< HEAD
 			__( 'Advanced', 'wordpress-seo' ),
 			array(
 				'single' => true,
 			)
-=======
-			__( 'Advanced', 'wordpress-seo' )
->>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
-=======
-			__( 'Advanced', 'wordpress-seo' )
->>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
 		);
 
 		return new WPSEO_Metabox_Tab_Section(
@@ -443,8 +405,6 @@ class WPSEO_Metabox extends WPSEO_Meta {
 	}
 
 	/**
-<<<<<<< HEAD
-<<<<<<< HEAD
 	 * Returns a link to activate the Buy Premium tab.
 	 *
 	 * @return string
@@ -457,10 +417,6 @@ class WPSEO_Metabox extends WPSEO_Meta {
 	}
 
 	/**
-=======
->>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
-=======
->>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
 	 * Returns the metabox section for the Premium section.
 	 *
 	 * @return WPSEO_Metabox_Section
@@ -482,25 +438,11 @@ class WPSEO_Metabox extends WPSEO_Meta {
 					<strong>%s</strong> - %s
 				</li>
 			</ul>
-<<<<<<< HEAD
-<<<<<<< HEAD
 
 			<a target='_blank' id='wpseo-buy-premium-popup-button' class='button button-buy-premium wpseo-metabox-go-to' href='%s'>
 				%s
 			</a>
 
-=======
-=======
->>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
-			
-			<a target='_blank' id='wpseo-buy-premium-popup-button' class='button button-buy-premium wpseo-metabox-go-to' href='%s'>
-				%s
-			</a>
-			
-<<<<<<< HEAD
->>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
-=======
->>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
 			<p><a target='_blank' class='wpseo-metabox-go-to' href='%s'>%s</a></p>
 		</div>",
 			__( 'You\'re not getting the benefits of Yoast SEO Premium yet. If you had Yoast SEO Premium, you could use its awesome features:', 'wordpress-seo' ),
@@ -521,18 +463,10 @@ class WPSEO_Metabox extends WPSEO_Meta {
 		$tab = new WPSEO_Metabox_Form_Tab(
 			'premium',
 			$content,
-<<<<<<< HEAD
-<<<<<<< HEAD
 			__( 'Yoast SEO Premium', 'wordpress-seo' ),
 			array(
 				'single' => true,
 			)
-=======
-			__( 'Yoast SEO Premium', 'wordpress-seo' )
->>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
-=======
-			__( 'Yoast SEO Premium', 'wordpress-seo' )
->>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
 		);
 
 		return new WPSEO_Metabox_Tab_Section(
@@ -612,8 +546,6 @@ class WPSEO_Metabox extends WPSEO_Meta {
 
 		switch ( $meta_field_def['type'] ) {
 			case 'pageanalysis':
-<<<<<<< HEAD
-<<<<<<< HEAD
 				$content .= '<div id="pageanalysis">';
 				$content .= '<section class="yoast-section" id="wpseo-pageanalysis-section">';
 				$content .= '<h3 class="yoast-section__heading yoast-section__heading-icon yoast-section__heading-icon-list">'. __( 'Analysis', 'wordpress-seo' ) .'</h3>';
@@ -621,20 +553,10 @@ class WPSEO_Metabox extends WPSEO_Meta {
 				$content .= '<div id="yoast-seo-content-analysis"></div>';
 				$content .= '</section>';
 				$content .= '</div>';
-=======
-				$content .= '<div id="wpseo-pageanalysis"></div>';
-				$content .= '<div id="yoast-seo-content-analysis"></div>';
->>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
-=======
-				$content .= '<div id="wpseo-pageanalysis"></div>';
-				$content .= '<div id="yoast-seo-content-analysis"></div>';
->>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
 				break;
 			case 'snippetpreview':
 				$content .= '<div id="wpseosnippet" class="wpseosnippet"></div>';
 				break;
-<<<<<<< HEAD
-<<<<<<< HEAD
 			case 'focuskeyword':
 				if ( $placeholder !== '' ) {
 					$placeholder = ' placeholder="' . esc_attr( $placeholder ) . '"';
@@ -658,12 +580,6 @@ class WPSEO_Metabox extends WPSEO_Meta {
 				$content .= '</section>';
 				$content .= '</div>';
 				break;
-=======
-
->>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
-=======
-
->>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
 			case 'text':
 				$ac = '';
 				if ( isset( $meta_field_def['autocomplete'] ) && $meta_field_def['autocomplete'] === false ) {
@@ -672,15 +588,7 @@ class WPSEO_Metabox extends WPSEO_Meta {
 				if ( $placeholder !== '' ) {
 					$placeholder = ' placeholder="' . esc_attr( $placeholder ) . '"';
 				}
-<<<<<<< HEAD
-<<<<<<< HEAD
 				$content .= '<input type="text"' . $placeholder . 'id="' . $esc_form_key . '" ' . $ac . 'name="' . $esc_form_key . '" value="' . esc_attr( $meta_value ) . '" class="large-text' . $class . '"' . $aria_describedby . '/><br />';
-=======
-				$content .= '<input type="text"' . $placeholder . ' id="' . $esc_form_key . '" ' . $ac . 'name="' . $esc_form_key . '" value="' . esc_attr( $meta_value ) . '" class="large-text' . $class . '"' . $aria_describedby . '/><br />';
->>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
-=======
-				$content .= '<input type="text"' . $placeholder . ' id="' . $esc_form_key . '" ' . $ac . 'name="' . $esc_form_key . '" value="' . esc_attr( $meta_value ) . '" class="large-text' . $class . '"' . $aria_describedby . '/><br />';
->>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
 				break;
 
 			case 'textarea':
@@ -723,18 +631,8 @@ class WPSEO_Metabox extends WPSEO_Meta {
 
 					$options_count = count( $meta_field_def['options'] );
 
-<<<<<<< HEAD
-<<<<<<< HEAD
 					// This select now uses Select2.
 					$content .= '<select multiple="multiple" size="' . esc_attr( $options_count ) . '" name="' . $esc_form_key . '[]" id="' . $esc_form_key . '" class="yoast' . $class . '"' . $aria_describedby . '>';
-=======
-					// @todo [JRF => whomever] verify height calculation for older WP versions, was 16x, for WP3.8 20x is more appropriate.
-					$content .= '<select multiple="multiple" size="' . esc_attr( $options_count ) . '" style="height: ' . esc_attr( ( $options_count * 20 ) + 4 ) . 'px;" name="' . $esc_form_key . '[]" id="' . $esc_form_key . '" class="yoast' . $class . '"' . $aria_describedby . '>';
->>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
-=======
-					// @todo [JRF => whomever] verify height calculation for older WP versions, was 16x, for WP3.8 20x is more appropriate.
-					$content .= '<select multiple="multiple" size="' . esc_attr( $options_count ) . '" style="height: ' . esc_attr( ( $options_count * 20 ) + 4 ) . 'px;" name="' . $esc_form_key . '[]" id="' . $esc_form_key . '" class="yoast' . $class . '"' . $aria_describedby . '>';
->>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
 					foreach ( $meta_field_def['options'] as $val => $option ) {
 						$selected = '';
 						if ( in_array( $val, $selected_arr ) ) {
@@ -780,16 +678,6 @@ class WPSEO_Metabox extends WPSEO_Meta {
 
 			$label = esc_html( $meta_field_def['title'] );
 			if ( in_array( $meta_field_def['type'], array(
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
-					'snippetpreview',
-					'pageanalysis',
->>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
-=======
-					'snippetpreview',
-					'pageanalysis',
->>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
 					'radio',
 					'checkbox',
 				), true ) === false
@@ -803,8 +691,6 @@ class WPSEO_Metabox extends WPSEO_Meta {
 				$help_button = $help->get_button_html();
 				$help_panel  = $help->get_panel_html();
 			}
-<<<<<<< HEAD
-<<<<<<< HEAD
 			if ( in_array( $meta_field_def['type'], array(
 					'snippetpreview',
 					'pageanalysis',
@@ -814,10 +700,6 @@ class WPSEO_Metabox extends WPSEO_Meta {
 			) {
 				return $this->create_content_box( $content, $meta_field_def['type'], $help_button, $help_panel );
 			}
-=======
->>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
-=======
->>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
 
 			if ( $meta_field_def['type'] === 'hidden' ) {
 				$html = '<tr class="wpseo_hidden"><td colspan="2">' . $content . '</td></tr>';
@@ -840,8 +722,6 @@ class WPSEO_Metabox extends WPSEO_Meta {
 	}
 
 	/**
-<<<<<<< HEAD
-<<<<<<< HEAD
 	 * Creates a sections specific row.
 	 *
 	 * @param string $content          The content to show.
@@ -860,10 +740,6 @@ class WPSEO_Metabox extends WPSEO_Meta {
 	}
 
 	/**
-=======
->>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
-=======
->>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
 	 * Save the WP SEO metadata for posts.
 	 *
 	 * @internal $_POST parameters are validated via sanitize_post_meta()
@@ -981,13 +857,7 @@ class WPSEO_Metabox extends WPSEO_Meta {
 			$asset_manager->enqueue_style( 'scoring' );
 			$asset_manager->enqueue_style( 'snippet' );
 			$asset_manager->enqueue_style( 'select2' );
-<<<<<<< HEAD
-<<<<<<< HEAD
 			$asset_manager->enqueue_style( 'kb-search' );
-=======
->>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
-=======
->>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
 
 			$asset_manager->enqueue_script( 'metabox' );
 			$asset_manager->enqueue_script( 'admin-media' );
@@ -1003,13 +873,7 @@ class WPSEO_Metabox extends WPSEO_Meta {
 			wp_localize_script( WPSEO_Admin_Asset_Manager::PREFIX . 'replacevar-plugin', 'wpseoReplaceVarsL10n', $this->localize_replace_vars_script() );
 			wp_localize_script( WPSEO_Admin_Asset_Manager::PREFIX . 'shortcode-plugin', 'wpseoShortcodePluginL10n', $this->localize_shortcode_plugin_script() );
 
-<<<<<<< HEAD
-<<<<<<< HEAD
 			wp_localize_script( WPSEO_Admin_Asset_Manager::PREFIX . 'metabox', 'wpseoAdminL10n', WPSEO_Help_Center::get_translated_texts() );
-=======
->>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
-=======
->>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
 			wp_localize_script( WPSEO_Admin_Asset_Manager::PREFIX . 'metabox', 'wpseoSelect2Locale', WPSEO_Utils::get_language( get_locale() ) );
 
 			if ( post_type_supports( get_post_type(), 'thumbnail' ) ) {

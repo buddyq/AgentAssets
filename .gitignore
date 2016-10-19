@@ -1,184 +1,111 @@
-# Created by https://www.gitignore.io/api/wordpress,images
+# -----------------------------------------------------------------
+# .gitignore for WordPress @salcode
+# ver 20160309
+#
+# From the root of your project run
+# curl -O https://gist.githubusercontent.com/salcode/b515f520d3f8207ecd04/raw/.gitignore
+# to download this file
+#
+# By default all files are ignored.  You'll need to whitelist
+# any mu-plugins, plugins, or themes you want to include in the repo.
+#
+# To ignore uncommitted changes in a file that is already tracked, use
+# git update-index --assume-unchanged
+#
+# To stop tracking a file that is currently tracked, use
+# git rm --cached
+#
+# Change Log:
+# 20160309 Added favicon files as whitelisted files
+# 20150302 Added composer.json as a whitelisted file
+# 20150227 Created as fork of https://gist.github.com/salcode/9940509,
+#   this version ignores all files by default
+# -----------------------------------------------------------------
 
-### WordPress ###
+# ignore everything in the root except the "wp-content" directory.
+/*
+!wp-content/
+
+# ignore everything in the "wp-content" directory, except:
+# mu-plugins, plugins, and themes directories
+wp-content/*
+!wp-content/plugins/
+!wp-content/themes/
+
+# ignore all mu-plugins, plugins, and themes
+# unless explicitly whitelisted at the end of this file
+wp-content/mu-plugins/*
+wp-content/plugins/*
+wp-content/themes/*
+
+# ignore all files starting with . or ~
+.*
+~*
+
+# ignore node dependency directories (used by grunt)
+node_modules/
+
+# ignore OS generated files
+ehthumbs.db
+Thumbs.db
+
+# ignore Editor files
+*.sublime-project
+*.sublime-workspace
+*.komodoproject
+
+# ignore log files and databases
 *.log
-wp-config.php
-wp-content/advanced-cache.php
-wp-content/backup-db/
-wp-content/backups/
-wp-content/blogs.dir/
-wp-content/cache/
-wp-content/upgrade/
-wp-content/uploads/
-wp-content/wp-cache-config.php
-wp-content/plugins/hello.php
+*.sql
+*.sqlite
 
-/.idea
-/.ftpquota
-/local-tools
-/www
-/.well-known
-/db-dumps
-/austinportfoliorealestate.com
-/eflyers
-/adminer
-/github.php
+# ignore compiled files
+*.com
+*.class
+*.dll
+*.exe
+*.o
+*.so
 
-/.htaccess
-/license.txt
-/readme.html
-/sitemap.xml
-/sitemap.xml.gz
+# ignore packaged files
+*.7z
+*.dmg
+*.gz
+*.iso
+*.jar
+*.rar
+*.tar
+*.zip
 
+# -------------------------
+# BEGIN Whitelisted Files
+# -------------------------
 
+# track these files, if they exist
+!.gitignore
+!.editorconfig
+!README.md
+!CHANGELOG.md
+!composer.json
 
-### Images ###
-# JPEG
-.jpg
-.jpeg
-.jpe
-.jif
-.jfif
-.jfi
+# track favicon files, if they exist
+!android-chrome-*.png
+!apple-touch-icon*.png
+!browserconfig.xml
+!favicon*.png
+!favicon*.ico
+!manifest.json
+!mstile-*.png
+!safari-pinned-tab.svg
 
-# JPEG 2000
-.jp2
-.j2k
-.jpf
-.jpx
-.jpm
-.mj2
-
-# JPEG XR
-.jxr
-.hdp
-.wdp
-
-# Graphics Interchange Format
-.gif
-
-# RAW
-.raw
-
-# Web P
-.webp
-
-# Portable Network Graphics
-.png
-
-# Animated Portable Network Graphics
-.apng
-
-# Multiple-image Network Graphics
-.mng
-
-# Tagged Image File Format
-.tiff
-.tif
-
-# Scalable Vector Graphics
-.svg
-.svgz
-
-# Portable Document Format
-.pdf
-
-# X BitMap
-.xbm
-
-# BMP
-.bmp
-.dib
-
-# ICO
-.ico
-
-### OSX ###
-*.DS_Store
-.AppleDouble
-.LSOverride
-
-# Icon must end with two \r
-Icon
-
-
-# Thumbnails
-._*
-
-# Files that might appear in the root of a volume
-.DocumentRevisions-V100
-.fseventsd
-.Spotlight-V100
-.TemporaryItems
-.Trashes
-.VolumeIcon.icns
-.com.apple.timemachine.donotpresent
-
-# Directories potentially created on remote AFP share
-.AppleDB
-.AppleDesktop
-Network Trash Folder
-Temporary Items
-.apdisk
-
-
-### PhpStorm ###
-# Covers JetBrains IDEs: IntelliJ, RubyMine, PhpStorm, AppCode, PyCharm, CLion, Android Studio and Webstorm
-# Reference: https://intellij-support.jetbrains.com/hc/en-us/articles/206544839
-
-# User-specific stuff:
-.idea/workspace.xml
-.idea/tasks.xml
-
-
-/buddy.php
-
-
-# Sensitive or high-churn files:
-.idea/dataSources.ids
-.idea/dataSources.xml
-.idea/dataSources.local.xml
-.idea/sqlDataSources.xml
-.idea/dynamic.xml
-.idea/uiDesigner.xml
-
-# Gradle:
-.idea/gradle.xml
-.idea/libraries
-
-# Mongo Explorer plugin:
-.idea/mongoSettings.xml
-
-## File-based project format:
-*.iws
-
-## Plugin-specific files:
-
-# IntelliJ
-/out/
-
-# mpeltonen/sbt-idea plugin
-.idea_modules/
-
-# JIRA plugin
-atlassian-ide-plugin.xml
-
-# Crashlytics plugin (for Android Studio and IntelliJ)
-com_crashlytics_export_strings.xml
-crashlytics.properties
-crashlytics-build.properties
-fabric.properties
-
-### PhpStorm Patch ###
-# Comment Reason: https://github.com/joeblau/gitignore.io/issues/186#issuecomment-215987721
-
-# *.iml
-# modules.xml
-# .idea/misc.xml
-# *.ipr
-
-
-### CodeKit ###
-# General CodeKit files to ignore
-config.codekit
-/min
+# track these mu-plugins, plugins, and themes
+# add your own entries here
+!wp-content/mu-plugins/example-mu-plugin/
+!wp-content/plugins/agentassets_custom/
+!wp-content/plugins/random-quotes/
+!wp-content/plugins/agentassets-site-manager/
+!wp-content/plugins/agentassets/
+!wp-content/themes/agentassets-athena/
+!wp-content/themes/aveone/
+!wp-content/themes/enfold-child/
+!wp-content/themes/supersized/

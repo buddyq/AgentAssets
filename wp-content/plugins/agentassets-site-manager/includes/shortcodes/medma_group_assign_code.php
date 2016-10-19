@@ -35,7 +35,8 @@ function medma_group_assign_code_shortcode() {
     <form id="medma_group_assign_code_form" class="micu_ajax_form el_after_av_heading avia-builder-el-last "
           novalidate="novalidate" method="post">
         <div class="av-special-heading av-special-heading-h3 meta-heading el_after_av_textblock el_before_av_contact ">
-            <h3>Use groups access code</h3><br/>
+            <h3>Have a Group Access Code?</h3>
+            <h6>Enter a code to join a group below.</h6>
             <fieldset>
                 <p id="element_medma_code" class="first_form form_element form_element_half">
                     <input id="medma-group-assign-code" class="text_input is_empty" type="text" name="MedmaAssignGroupCode[code]"
@@ -46,6 +47,7 @@ function medma_group_assign_code_shortcode() {
                            name="MedmaAssignGroupCode[action]">
                 </p>
             </fieldset>
+        </div>
     </form>
 
     <?php

@@ -159,10 +159,20 @@ class Envira_Dynamic_Gallery_Shortcode {
 	 */
 	function inject_images( $data, $id ) {
 
+		// Return early if not a Dynamic gallery.
+	    $instance = Envira_Gallery_Shortcode::get_instance();
+	    if ( !$instance->get_config( 'dynamic', $data ) ) {
+	        return $data;
+	    }
+
 	    // $id should be false, so we need to set it now.
 	    $instance = Envira_Gallery_Shortcode::get_instance();
 	    if ( ! $id ) {
 	        $id = $instance->get_config( 'dynamic', $data );
+	        if ( is_array($id) ) { 
+	        	$id = $id[0];
+	        	// TODO: Allow multiple tags for dynamic
+	        }
 	    }
 	    
 	    /**
@@ -176,7 +186,7 @@ class Envira_Dynamic_Gallery_Shortcode {
 	    $rule_matched = false;
 	    $types = $this->get_dynamic_gallery_types();
 	    foreach ( $types as $filter_to_execute => $preg_match ) {
-	    	if ( preg_match( $preg_match, $id ) ) {
+	    	if ( !is_array($id) && preg_match( $preg_match, $id ) ) {
 	    		// Run action for this preg_match
 	    		$rule_matched = true;
 	    		$dynamic_data = apply_filters( $filter_to_execute, $dynamic_data, $id, $data );
@@ -225,6 +235,10 @@ class Envira_Dynamic_Gallery_Shortcode {
 	 * @return array Gallery Images w/ thumbnail attribute
 	 */
 	public function maybe_generate_thumbnails( $data, $dynamic_data ) {
+
+		if ( ! $dynamic_data ) {
+			return $dynamic_data; 
+		}
 
 		// If the thumbnails option is checked for the Dynamic Gallery, generate thumbnails accordingly.
         if ( ! isset( $data['config']['thumbnails'] ) || ! $data['config']['thumbnails'] ) {
@@ -431,6 +445,8 @@ class Envira_Dynamic_Gallery_Shortcode {
 			return false;
 		}
 		
+		$counter = 0;
+		
 		// Build gallery
 	    foreach ( (array) $images as $i => $image_filename ) {
 		    
@@ -443,7 +459,7 @@ class Envira_Dynamic_Gallery_Shortcode {
 			$ext  = $info['extension'];
 			$name = wp_basename( $file_path, ".$ext" );
 			
-		    // If the current file we are on is a resized file, don't include it in the 
+		    // If the current file we are on is a resized file, don't include it in the gallery
 		    // Check for different retina image sizes, which are x2
 
 			// Gallery
@@ -467,7 +483,7 @@ class Envira_Dynamic_Gallery_Shortcode {
 				continue;
 			}
 
-		    $dynamic_data[ $i ] = array(
+		    $dynamic_data[ $counter ] = array(
 				'status' 			=> 'published',
 				'src' 				=> $file_url,
 				'title' 			=> '',
@@ -477,6 +493,8 @@ class Envira_Dynamic_Gallery_Shortcode {
 				'thumb' 			=> '',
 				'link_new_window' 	=> 0,
 		    ); 
+
+		    $counter++; 
 	    }
     
 	    return apply_filters( 'envira_gallery_dynamic_folder_images', $dynamic_data, $files, $folder, $data );

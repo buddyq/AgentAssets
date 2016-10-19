@@ -5,7 +5,7 @@
  * Description: Enables featured content galleries in Envira.
  * Author:      Envira Gallery Team
  * Author URI:  http://enviragallery.com
- * Version:     1.0.0
+ * Version:     1.0.1
  * Text Domain: envira-featured-content
  * Domain Path: languages
  *
@@ -54,7 +54,7 @@ class Envira_Featured_Content {
      *
      * @var string
      */
-    public $version = '1.0.0';
+    public $version = '1.0.1';
 
     /**
      * The name of the plugin.

@@ -47,11 +47,11 @@ var EnviraTagsView = Backbone.View.extend( {
     insertTag: function( event ) {
 
         // Get the chosen tag and the current tags
-        var tag = jQuery( event.target ).text(),
+        var tag = jQuery( event.target ).text().replace('&amp;', '&'),
             tags = this.$el.find( 'input[name=tags]' ).val();
 
         // Update the tags field
-        this.$el.find( 'input[name=tags]' ).val( tags + ', ' + tag );
+        this.$el.find( 'input[name=tags]' ).val( tags === '' ? tag : tags + ', ' + tag );
 
         // Trigger a change event on the input field so the mode updates
         this.$el.find( 'input[name=tags]' ).trigger( 'change' );

@@ -4,15 +4,15 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Envira Gallery - Dynamic Addon 1.0.8\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/envira-dynamic\n"
-"POT-Creation-Date: 2016-04-22 10:56+0200\n"
-"PO-Revision-Date: 2016-04-22 11:04+0200\n"
+"POT-Creation-Date: 2016-06-26 11:54+0200\n"
+"PO-Revision-Date: 2016-06-26 11:54+0200\n"
 "Last-Translator: José Luis Pérez-Lozana <joseluis.perez.lozana@gmail.com>\n"
 "Language-Team: \n"
 "Language: es_ES\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Poedit 1.8.7\n"
+"X-Generator: Poedit 1.8.8\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
 #: envira-dynamic.php:175 envira-dynamic.php:194
@@ -79,6 +79,7 @@ msgid "Envira Gallery - Dynamic Addon"
 msgstr "Envira Gallery - Complemento Dynamic"
 
 #. Plugin URI of the plugin/theme
+#. Author URI of the plugin/theme
 msgid "http://enviragallery.com"
 msgstr "http://enviragallery.com"
 
@@ -88,9 +89,11 @@ msgstr ""
 "Permite la generación dinámica de una galería para galerías y álbumes Envira."
 
 #. Author of the plugin/theme
-msgid "Thomas Griffin"
-msgstr "Thomas Griffin"
+msgid "Envira Gallery Team"
+msgstr "El equipo de Envira Gallery"
 
-#. Author URI of the plugin/theme
-msgid "http://thomasgriffinmedia.com"
-msgstr "http://thomasgriffinmedia.com"
+#~ msgid "Thomas Griffin"
+#~ msgstr "Thomas Griffin"
+
+#~ msgid "http://thomasgriffinmedia.com"
+#~ msgstr "http://thomasgriffinmedia.com"

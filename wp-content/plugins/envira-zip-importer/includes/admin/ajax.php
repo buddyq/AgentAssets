@@ -81,7 +81,7 @@ class Envira_ZIP_Importer_Ajax {
         WP_Filesystem();
 
         // Delete the envira-tmp directory, so we create a new empty one
-        $wp_filesystem->delete( $tmp_dir );
+        $wp_filesystem->delete( $tmp_dir, true );
 
         // Create an envira-tmp directory inside /uploads if it doesn't already exist
         if ( ! $wp_filesystem->is_dir( $tmp_dir ) ) {

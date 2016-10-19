@@ -4,15 +4,7 @@
  */
 
 /**
-<<<<<<< HEAD
-<<<<<<< HEAD
  * @class WPSEO_Configuration_Wizard Loads the Yoast configuration wizard.
-=======
- * @class WPSEO_Configuration_Wizard Loads the Yoast onboarding wizard.
->>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
-=======
- * @class WPSEO_Configuration_Wizard Loads the Yoast onboarding wizard.
->>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
  */
 class WPSEO_Configuration_Page {
 
@@ -41,18 +33,10 @@ class WPSEO_Configuration_Page {
 	 * Check if the configuration is finished. If so, just remove the notification.
 	 */
 	public function catch_configuration_request() {
-<<<<<<< HEAD
-<<<<<<< HEAD
 		$configuration_page = filter_input( INPUT_GET, 'configuration' );
 		$page          = filter_input( INPUT_GET, 'page' );
 
 		if ( ! ( $configuration_page === 'finished' && ( $page === WPSEO_Admin::PAGE_IDENTIFIER ) ) ) {
-=======
-		if ( filter_input( INPUT_GET, 'configuration' ) !== 'finished' ) {
->>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
-=======
-		if ( filter_input( INPUT_GET, 'configuration' ) !== 'finished' ) {
->>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
 			return;
 		}
 
@@ -117,15 +101,7 @@ class WPSEO_Configuration_Page {
 		<head>
 			<meta name="viewport" content="width=device-width"/>
 			<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
-<<<<<<< HEAD
-<<<<<<< HEAD
 			<title><?php _e( 'Yoast SEO &rsaquo; Configuration Wizard', 'wordpress-seo' ); ?></title>
-=======
-			<title><?php _e( 'Yoast SEO &rsaquo; Setup Wizard', 'wordpress-seo' ); ?></title>
->>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
-=======
-			<title><?php _e( 'Yoast SEO &rsaquo; Setup Wizard', 'wordpress-seo' ); ?></title>
->>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
 			<?php
 				do_action( 'admin_print_styles' );
 				do_action( 'admin_print_scripts' );
@@ -210,15 +186,7 @@ class WPSEO_Configuration_Page {
 	 *
 	 * @return Yoast_Notification
 	 */
-<<<<<<< HEAD
-<<<<<<< HEAD
 	private static function get_notification() {
-=======
-	private function get_notification() {
->>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
-=======
-	private function get_notification() {
->>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
 		$message = sprintf(
 			__( 'Since you are new to %1$s you can configure the %2$splugin%3$s', 'wordpress-seo' ),
 			'Yoast SEO',
@@ -251,15 +219,7 @@ class WPSEO_Configuration_Page {
 	}
 
 	/**
-<<<<<<< HEAD
-<<<<<<< HEAD
 	 * Remove the options that triggers the notice for the configuration wizard.
-=======
-	 * Remove the options that triggers the notice for the onboarding wizard.
->>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
-=======
-	 * Remove the options that triggers the notice for the onboarding wizard.
->>>>>>> cbca85a547a01e619731d4a6c8e5344390fa2dc6
 	 */
 	private function remove_notification_option() {
 		$options = $this->get_options();

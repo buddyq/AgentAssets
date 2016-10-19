@@ -5,7 +5,7 @@
  * Description: Enables ZIP file uploads directly into Envira Galleries
  * Author:      Envira Gallery Team
  * Author URI:  http://enviragallery.com
- * Version:     1.0.2
+ * Version:     1.0.3
  * Text Domain: envira-zip-importer
  * Domain Path: languages
  *
@@ -54,7 +54,7 @@ class Envira_ZIP_Importer {
      *
      * @var string
      */
-    public $version = '1.0.2';
+    public $version = '1.0.3';
 
     /**
      * The name of the plugin.

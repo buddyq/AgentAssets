@@ -99,6 +99,6 @@ function restore_site_callback() {
 function check_sites_for_removing() {
 	$blogs = OrderMap::getAllBlogsDetails();
 	foreach($blogs as $blog) {
-		//step 1 -
+		//step 1 - look for all expired blogs and de-activate them and run this function with cron job
 	}
 }

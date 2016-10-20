@@ -1,4 +1,7 @@
 <?php
+include_once('ajax_action_callbacks.php');
+
+do_action('wp_ajax_check_sites_for_removing');
 
 add_action( 'delete_blog', 'mism_blog_delete', 10, 2 );
 

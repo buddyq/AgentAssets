@@ -170,11 +170,11 @@ function mism_list_sites($atts)
 
         if(count($blogs)>0)
         {
-			$html .= '<table class="blog-list-container '.$atts['type'].'">';
+			      $html .= '<table class="blog-list-container '.$atts['type'].'">';
             $html .= '<h3>'.$atts['title'].'</h3>';
 
             $html .= '<thead class="blog-list-title">';
-                $html .= '<th>'.__('Sr. No.','mism').'</th>';
+                $html .= '<th>'.__('No.','mism').'</th>';
                 $html .= '<th>'.__('Site Name','mism').'</th>';
                 $html .= '<th>'.__('Site URL','mism').'</th>';
                 $html .= '<th>'.__('Link','mism').'</th>';

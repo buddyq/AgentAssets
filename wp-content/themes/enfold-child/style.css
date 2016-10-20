@@ -53,3 +53,9 @@ Version: 1.0
   color: #666 !important;
   border: 1px solid #ffdd4d !important;
 }
+
+.listblog_restore{
+  background-color: #ff7474 !important;
+  color: #fff !important;
+  border: 1px solid #940000 !important;
+}

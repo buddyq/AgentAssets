@@ -1,5 +1,7 @@
 <?php
-require_once($_SERVER['DOCUMENT_ROOT'] . "/wp-load.php");
+require_once($_SERVER['DOCUMENT_ROOT'] . "/wp-load.php"); //loads WP framework
+require_once($_SERVER['DOCUMENT_ROOT'] . "/wp-admin/includes/ms.php"); //loads WP framework
+
 add_action( 'delete_blog', 'mism_blog_delete', 10, 2 );
 
 //Detect from cronjob in cPanel to check for expired sanitize_comment_cookies

@@ -8,9 +8,6 @@ if (isset($_REQUEST['check_expired'])) {
     do_action('wp_ajax_check_sites_for_removing');
   }
 }
-include_once('ajax_action_callbacks.php');
-
-do_action('wp_ajax_check_sites_for_removing');
 
 /**
  * @param int $blog_id Blog ID

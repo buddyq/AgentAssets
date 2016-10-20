@@ -48,7 +48,7 @@ function mism_list_sites($atts)
             $html .= '<h3>'.$atts['title'].'</h3>';
 
             $html .= '<thead class="site-list-container">';
-                $html .= '<th class="numeric">'.__('Sr. No.','mism').'</th>';
+                $html .= '<th class="numeric">'.__('No.','mism').'</th>';
                 $html .= '<th class="numeric">'.__('Site Name','mism').'</th>';
                 $html .= '<th class="numeric">'.__('Site URL','mism').'</th>';
                 $html .= '<th class="numeric">'.__('Days Left','mism').'</th>';
@@ -61,7 +61,7 @@ function mism_list_sites($atts)
                 {
                     $externalDomain = getExternalDomainByBlogId($blog->userblog_id);
                     $html .= '<tr>';
-                    $html .= '<td data-title="Sr. No." class="srno">'.$active_count.'</td>';
+                    $html .= '<td data-title="No." class="srno">'.$active_count.'</td>';
                     $html .= '<td data-title="Site Name">'.$blog->blogname.'</td>';
                     $html .= '<td data-title="Site URL">';
                     $html .= '<ol>';

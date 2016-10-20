@@ -23,8 +23,8 @@ class MismCreateNewSiteNotify {
         self::$notifyOptions = array_merge(array(
             'color' => 'green',
             'size' => 'large',
-            'icon' => '',
-            'icon_font' => 'entypo-fontello',
+            'icon' => '',
+            'icon_font' => 'entypo',
             'title' => __('Success', 'mism'),
         ), $options);
 
@@ -135,9 +135,9 @@ function mism_create_new_site($atts)
             }
 
             # Patch | Local Sub Directory Version and LIVE Sub Domain Version compatibility change.
-            if ($_SERVER['HTTP_HOST'] == "ahd.medma.tv" || $_SERVER['HTTP_HOST'] == "192.168.0.210") { # HTTP HOST for Local Development Server
+            if ($_SERVER['HTTP_HOST'] == "aasg.com" || $_SERVER['HTTP_HOST'] == "192.168.0.210") { # HTTP HOST for Local Development Server
                 $domain = $_SERVER['HTTP_HOST'];
-                $path = "/Tangerinefiles/" . $blogname;
+                $path = "/" . $blogname;
             } else { # HTTP HOST automatically defined for LIVE server
                 $domain = $blogname . "." . $_SERVER['HTTP_HOST'];
                 $path = "/";

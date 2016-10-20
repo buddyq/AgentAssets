@@ -47,3 +47,9 @@ Version: 1.0
   padding: 5px;
   font-style:italic;
 }
+
+.listblog_extend{
+  background-color: #f9f18c !important;
+  color: #666 !important;
+  border: 1px solid #ffdd4d !important;
+}

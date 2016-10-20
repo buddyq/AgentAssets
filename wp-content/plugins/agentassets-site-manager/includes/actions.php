@@ -1,4 +1,5 @@
 <?php
+require('wp-blog-header.php');
 add_action( 'delete_blog', 'mism_blog_delete', 10, 2 );
 
 //Detect from cronjob in cPanel to check for expired sanitize_comment_cookies

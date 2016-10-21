@@ -80,17 +80,11 @@ function mism_list_sites($atts)
                       $html .= '<p>This Site has Expired!</p><br>';
                       $html .= '<p><input data-site-name="' . $blog->blogname . '" data-id="' . $blog->userblog_id . '" class="listblog_restore_and_purchase button" data-sending-label="Restoring..." type="submit" name="restore_site" value="Restore"/></p>';
                       // $sites_allowed = get_post_meta($package_id, 'wpcf-sites-allowed', true);
-                      $active_package = $wpdb->get_row("SELECT * FROM " . $wpdb->base_prefix . "orders WHERE user_id = " . $user_id . " AND status = 1");
-                      $order_id = $active_package->id;
-                      $package_details = $wpdb->get_row("SELECT * FROM " . $wpdb->base_prefix . "package_counter WHERE order_id = " . $order_id);
-                      $sites_allowed = $package_details->site_allowed;
-                      $sites_consumed = $package_details->site_consumed;
-                      $sites_remaining = $sites_allowed - $sites_consumed;
+                      $sites_remaining = PackageCounter::getRemainingSites();
                       /*
-                      > Need to get how many sites in the package are left.
                       > If there are any, present button to use site credit to purchase it.
                       > If not, they must go to purchase a new package. Once they purchase the new package,
-                      the can use this site. It has to be part of the new package I guess.
+                      the can use this site. It has to be part of the new package somehow.
                       */
                       $html .= '</div></div>';
                       $html .= 'You have ' . (($sites_remaining > 1) ? $sites_remaining . ' sites' : $sites_remaining) . ' site' . ' remaining';

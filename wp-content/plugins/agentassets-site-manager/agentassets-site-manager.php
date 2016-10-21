@@ -62,6 +62,7 @@ add_action('wp_head','add_style_to_head');
  */
 function add_scripts_to_footer()
 {
+  $sites_remaining = PackageCounter::getRemainingSites();
     ?>
     <script type="text/javascript">
         jQuery(document).ready(function($) {
@@ -121,12 +122,15 @@ function add_scripts_to_footer()
 
             // Restore expired site using a site credit (payment)
             jQuery('.listblog_restore_and_purchase').click(function(){
-              var msg = 'Clicking OK will use one of your remaining sites you have in your package to restore <strong>%s</strong> site.';
+              var msg = 'Clicking OK will use one of your <?=$sites_remaining;?> sites you have in your package to restore the <strong>%s</strong> site.';
               msg = msg.replace('%s', jQuery(this).attr('data-site-name'));
               var el = this;
               alertify.confirm(msg, function() {
                 var data = {
                     'action' : 'restore_site', //Probably need to change action to new action with purchase
+                    /* Action needs to restore the site and reset the counter according to the active package.
+                    If they have to purchase a new package it will reset to the new packages expiration time.
+                    */
                     'blog_id': jQuery(this).attr('data-id')
                 };
                 alertify.message('Processing request');

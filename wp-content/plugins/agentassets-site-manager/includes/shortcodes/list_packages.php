@@ -468,29 +468,25 @@ function cu_add_package_manually(){
     echo $html;
 }
 
+function cu_package_orders(){
 
- function cu_package_orders(){
+  if (!current_user_can('manage_options')) {
+      wp_die('You do not have sufficient permissions to access this page.');
+  }
 
-	 if (!current_user_can('manage_options')) {
-        wp_die('You do not have sufficient permissions to access this page.');
-    }
+  global $wpdb;
+  $current_user_id= get_current_user_id();
+  $sql= "SELECT * FROM `".$wpdb->base_prefix."orders`";
+  $result = $wpdb->get_results($sql);
+  $count_for_result = count($result);
+  $current_date = date('Y-m-d');
 
-     global $wpdb;
-     $current_user_id= get_current_user_id();
-     $sql= "SELECT * FROM `".$wpdb->base_prefix."orders`";
-     $result = $wpdb->get_results($sql);
-     $count_for_result = count($result);
-     $current_date = date('Y-m-d');
-   // echo "<pre>";
-   //   print_r($result);
-   //  echo "</pre>";
-
-    $html='';
-    $html.='<div class="cu-order-table" style="margin: 30px;">';
-    $html.='<h1>Orders</h1>';
-   $html.='<table class="wp-list-table widefat fixed posts">';
-	$html.='<thead>';
-	$html.='<tr>';
+  $html='';
+  $html.='<div class="cu-order-table" style="margin: 30px;">';
+  $html.='<h1>Orders</h1>';
+    $html.='<table class="wp-list-table widefat fixed posts">';
+    $html.='<thead>';
+    $html.='<tr>';
 
 		$html.='<th scope="col" id="thumb column-comments" class="manage-column column-thumb column-comments" style="">Order Id.</th>';
 		$html.='<th scope="col" id="tags" class="manage-column column-tags" style="">Username</th>';
@@ -548,10 +544,8 @@ function cu_add_package_manually(){
 	$html.='<tbody id="the-list">';
 
 
-
-		foreach($result as $data => $value)
-      {
-		  $user_first_name = get_the_author_meta('user_email', $value->user_id );
+	foreach($result as $data => $value) {
+    $user_first_name = get_the_author_meta('user_email', $value->user_id );
 
 		$html.='<tr class="no-items">';
 		$html.='<td class="colspanchange" >'.$value->id.'</td>';
@@ -566,17 +560,16 @@ function cu_add_package_manually(){
 
 		if($value->status == 1)
 		{
-		$html.='<td class="colspanchange" >Paid</td>';
+		    $html.='<td class="colspanchange" >Paid</td>';
 		}else{
-		$html.='<td class="colspanchange" >Pending</td>';
+		    $html.='<td class="colspanchange" >Pending</td>';
 		}
-		$html.='</tr>';
 
-		  }
+  	$html.='</tr>';
+	} //end foreach
 
-		$html.='</tbody>';
-$html.='</table>';
-$html.='</div>';
-echo $html;
-
+	   $html.='</tbody>';
+   $html.='</table>';
+  $html.='</div>';
+  echo $html;
 }

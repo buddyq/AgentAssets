@@ -102,6 +102,7 @@ function check_sites_for_removing() {
 		//step 1 - look for all expired blogs and de-activate them and run this function with cron job
 		if ($blog->days_left == 0) {
 			echo "<pre>";print_r($blog);"</pre>";
+			// update_blog_status( $blog->userblog_id, 'archived', 1);
 			wpmu_delete_blog( $blog->userblog_id, false );
 		}
 	}

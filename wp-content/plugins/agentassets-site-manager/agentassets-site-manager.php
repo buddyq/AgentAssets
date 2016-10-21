@@ -119,6 +119,31 @@ function add_scripts_to_footer()
                 alertify.alert(msg).set('title', 'Information');
             });
 
+            // Restore expired site using a site credit (payment)
+            jQuery('.listblog_restore_and_purchase').click(function(){
+              var msg = 'Clicking OK will use one of your remaining sites you have in your package to restore <strong>%s</strong> site.';
+              msg = msg.replace('%s', jQuery(this).attr('data-site-name'));
+              var el = this;
+              alertify.confirm(msg, function() {
+                var data = {
+                    'action' : 'restore_site', //Probably need to change action to new action with purchase
+                    'blog_id': jQuery(this).attr('data-id')
+                };
+                alertify.message('Processing request');
+                jQuery.post('<?php echo admin_url('admin-ajax.php')?>', data, function( response) {
+                    if (typeof(response.result) === 'undefined') {
+                        alertify.error('Bad response!');
+                    } else if ('error' == response.result) {
+                        alertify.error(response.message);
+                    } else {
+                        alertify.success('Site restored successfully!');
+                        location.reload();
+                    }
+                }, 'json');
+              }).set('title', 'Restoring site');
+            });
+
+            // Restore a site the user deactivated but is not expired
             jQuery('.listblog_restore').click(function(){
                 var data = {
                     'action' : 'restore_site',

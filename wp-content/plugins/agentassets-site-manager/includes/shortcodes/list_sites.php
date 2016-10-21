@@ -4,6 +4,7 @@ add_shortcode('list_sites', 'mism_list_sites');
 
 function mism_list_sites($atts)
 {
+  global $wpdb;
     $atts = shortcode_atts(
             array(
                 'type' => 'active',
@@ -74,7 +75,28 @@ function mism_list_sites($atts)
                     $html .= '</td>';
                     $html .= '<td data-title="Days Left" class="days-left">'.$blog->days_left.'</td>';
                     $html .= '<td data-title="Actions" class="actions">';
-                    if (0 != $blog->deleted) {
+                    if (0 != $blog->deleted && $blog->days_left <= 0) {
+                      $html .= '<div class="avia_message_box avia-color-red avia-size-normal avia-icon_select-no avia-border-dashed avia-builder-el-12 avia-builder-el-no-sibling "><div class="avia_message_box_content">';
+                      $html .= '<p>This Site has Expired!</p><br>';
+                      $html .= '<p><input data-site-name="' . $blog->blogname . '" data-id="' . $blog->userblog_id . '" class="listblog_restore_and_purchase button" data-sending-label="Restoring..." type="submit" name="restore_site" value="Restore"/></p>';
+                      // $sites_allowed = get_post_meta($package_id, 'wpcf-sites-allowed', true);
+                      $active_package = $wpdb->get_row("SELECT * FROM " . $wpdb->base_prefix . "orders WHERE user_id = " . $user_id . " AND status = 1");
+                      $order_id = $active_package->id;
+                      $package_details = $wpdb->get_row("SELECT * FROM " . $wpdb->base_prefix . "package_counter WHERE order_id = " . $order_id);
+                      $sites_allowed = $package_details->site_allowed;
+                      $sites_consumed = $package_details->site_consumed;
+                      $sites_remaining = $sites_allowed - $sites_consumed;
+                      /*
+                      > Need to get how many sites in the package are left.
+                      > If there are any, present button to use site credit to purchase it.
+                      > If not, they must go to purchase a new package. Once they purchase the new package,
+                      the can use this site. It has to be part of the new package I guess.
+                      */
+                      $html .= '</div></div>';
+                      $html .= 'You have ' . (($sites_remaining > 1) ? $sites_remaining . ' sites' : $sites_remaining) . ' site' . ' remaining';
+
+                    }
+                    elseif (0 != $blog->deleted) {
                         $date = getNextRemovingSitesTime('dS');
                         $tDay = getNextRemovingSitesTime('l');
                         $tMoYr = getNextRemovingSitesTime('F Y');

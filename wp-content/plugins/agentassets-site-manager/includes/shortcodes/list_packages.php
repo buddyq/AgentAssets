@@ -30,13 +30,12 @@ function list_packages_callback($atts) {
             $total_consumed = $total_consumed + $sites_stats[0]->site_consumed;
         }
     }
-   
+
     if ($total_consumed == $total_sites || empty($total_package)) {
         $packages = get_posts($args);
 
         if (count($packages) > 0) {
-            ?>
-            <?php
+
             $mism_package_settings = get_option('mism_package_settings');
 
             # Paypal URL (LIVE/Sandbox)
@@ -62,7 +61,7 @@ function list_packages_callback($atts) {
                         var paypal_url = jQuery(this).parent('form').children('#paypal_url').val();
                         var default_currency = jQuery(this).parent('form').children('#default_currency').val();
                         var user_id = jQuery(this).parent('form').children('#user_id').val();
-                                                        
+
                         var data = {
                             'action': 'purchase_package',
                             'cmd': '_xclick',
@@ -145,7 +144,7 @@ function list_packages_callback($atts) {
                                 }
                                 else{
 									$sites = $sites." Sites";
-								} 
+								}
                                 echo $sites;
                                 ?>
                             </li>
@@ -178,12 +177,12 @@ function list_packages_callback($atts) {
                                             <input type="hidden" name="amount" value="<?php echo $package_price; ?>"/>
                                             <input type="hidden" name="item_name" value="<?php echo $package->post_title; ?>"/>
                                             <input type="hidden" name="item_number" value="<?php echo $package->ID; ?>"/>
-                                            
+
 
 
                                             <input class="avia_iconbox_title buy_button avia-button  avia-color-green avia-size-medium" type="submit" name="buy_package" value="Buy"/>
                                         </form>
-                                    <?php } else { ?> 
+                                    <?php } else { ?>
                                         <a class="avia-button  avia-icon_select-yes-left-icon avia-color-theme-color avia-size-medium avia-position-center " href="<?php echo get_option('siteurl') . "/login"; ?>">
                                             <span data-av_iconfont="entypo-fontello" data-av_icon="" aria-hidden="true" class="avia_button_icon avia_button_icon_left "></span>
                                             <span class="avia_iconbox_title">Login</span>
@@ -244,7 +243,7 @@ function purchase_package_callback() {
     $purchased_date = date('Y-m-d H:i:s');  #Current Date
     $expiry_date = date('Y-m-d H:i:s', strtotime('+' . $months . 'months'));
     $status = 2; # payment pending status
-    
+
     if($total_amount==0)
     {
         $paypal_url = $return_url;
@@ -278,7 +277,7 @@ function purchase_package_callback() {
 
     $sql = "SELECT count(*) FROM `" . $wpdb->base_prefix . "orders` WHERE package_id='" . $package_id . "' AND user_id='" . $user_id . "'";
     $results = $wpdb->get_results($sql);
-	
+
     if ($results > 0) {
         $sql = "INSERT INTO `" . $wpdb->base_prefix . "orders`(package_id, user_id, package_name, package_price, discount, tax, total_price, purchased_date, expiry_date, status) VALUES('" . $package_id . "','" . $user_id . "','" . $package_name . "','" . $package_price . "', '" . $discount . "','" . $tax . "','" . $total_amount . "','" . $purchased_date . "','" . $expiry_date . "','" . $status . "')";
         $wpdb->query($wpdb->prepare($sql));
@@ -287,14 +286,14 @@ function purchase_package_callback() {
         $query = "INSERT INTO `" . $wpdb->base_prefix . "package_counter`(order_id, site_allowed, site_consumed)VALUES('" . $order_id . "','" . $site_allowed . "','" . $site_consumed . "')";
         $wpdb->query($wpdb->prepare($query));
     }
-    
+
     echo $paypal_url;
     wp_die();
 }
 
 /*---------------------   adding a new page under settings for admin to add manual package-------------------------------*/
-add_action('admin_menu' , 'cu_addpackage_page'); 
- 
+add_action('admin_menu' , 'cu_addpackage_page');
+
 function cu_addpackage_page() {
     add_submenu_page('edit.php?post_type=package', 'Assign Package Manually', 'Assign Package Manually', 'manage_options', 'add-package-manually', 'cu_add_package_manually');
     add_submenu_page('edit.php?post_type=package', 'Orders', 'Orders', 'manage_options', 'package-orders', 'cu_package_orders');
@@ -307,12 +306,12 @@ function cu_add_package_manually(){
     if (!current_user_can('manage_options')) {
         wp_die('You do not have sufficient permissions to access this page.');
     }
-    
+
     $html = '';
     $html .= '<div class="wrap">';
     $html .= '<div id="icon-tools" class="icon32"></div>';
     $html .= '<h2>Add Package Manually</h2>';
-    
+
     if(isset($_POST['save_settings']))
     {
         $user_id = $_POST['add_package_username'];
@@ -404,30 +403,30 @@ function cu_add_package_manually(){
         //echo $html;
     }
 
-    
-   
-    
+
+
+
     $html .= '<form method="POST" action="">';
     $html .= '<table class="form-table">';
      global $wpdb;
     $sql = "SELECT * FROM `{$wpdb->base_prefix}users` WHERE ID!='1'";
     $results = $wpdb->get_results($sql);
-   
+
     $html .= '<tr>';
     $html .= '<th scope="row"><label>User: </label></th>';
     $html .= '<td><select id="add_package_username" name="add_package_username">';
-   
+
     $html .= '<option value="0">Select User</option>';
     foreach($results as $username => $uservalue)
     {
         $user_first_name = get_the_author_meta('first_name', $uservalue->ID );
-	
+
         $html .= '<option value="'.$uservalue->ID.'"> '.$user_first_name .'  ('.$uservalue->user_email.')  ID='.$uservalue->ID.' </option>';
     }
     $html .='</select>';
     $html .= '</td>';
     $html .= '</tr>';
-   
+
     $args = array(
         'post_type' => 'package',
         'post_status' => 'publish',
@@ -438,22 +437,22 @@ function cu_add_package_manually(){
         'order' => 'ASC'
     );
     $packages = get_posts($args);
-  
+
     $html .= '<tr>';
     $html .= '<th scope="row"><label>Package:</label></th>';
     $html .= '<td><select id="add_packagename" name="add_packagename">';
-    
+
     $html .= '<option>Select Package</option>';
     $html .= '<option value="reset">No Package</option>';
     foreach($packages as $packagename => $packagevalue)
     {
       // echo "<pre>"; print_r (get_post_meta($packagevalue->ID)); die("</pre>");
-        $package_price = get_post_meta($packagevalue->ID, 'wpcf-price', true ); 
-        $package_sites_allowed = get_post_meta($packagevalue->ID, 'wpcf-sites-allowed', true ); 
-        $package_duration = get_post_meta($packagevalue->ID, 'wpcf-duration', true ); 
-		
+        $package_price = get_post_meta($packagevalue->ID, 'wpcf-price', true );
+        $package_sites_allowed = get_post_meta($packagevalue->ID, 'wpcf-sites-allowed', true );
+        $package_duration = get_post_meta($packagevalue->ID, 'wpcf-duration', true );
+
 	$html .= '<option value="'.$packagevalue->ID.'"> '.$packagevalue->post_title .' | $'.$package_price.' | '. $package_sites_allowed.' | '. $package_duration.')</option>';
-	
+
     }
     $html .= '</select>';
     $html .= '</td>';
@@ -465,34 +464,34 @@ function cu_add_package_manually(){
     $html .= '</form>';
     $html .= '</div>';
     $html .= '</div>';
-   
-    echo $html;				
+
+    echo $html;
 }
- 
- 
+
+
  function cu_package_orders(){
-	 
+
 	 if (!current_user_can('manage_options')) {
         wp_die('You do not have sufficient permissions to access this page.');
     }
-    
+
      global $wpdb;
      $current_user_id= get_current_user_id();
-     $sql= "SELECT * FROM `".$wpdb->base_prefix."orders`"; 
-     $result = $wpdb->get_results($sql); 
+     $sql= "SELECT * FROM `".$wpdb->base_prefix."orders`";
+     $result = $wpdb->get_results($sql);
      $count_for_result = count($result);
      $current_date = date('Y-m-d');
    // echo "<pre>";
-   //   print_r($result);    
-   //  echo "</pre>";                      
-  
+   //   print_r($result);
+   //  echo "</pre>";
+
     $html='';
     $html.='<div class="cu-order-table" style="margin: 30px;">';
     $html.='<h1>Orders</h1>';
    $html.='<table class="wp-list-table widefat fixed posts">';
 	$html.='<thead>';
 	$html.='<tr>';
-		
+
 		$html.='<th scope="col" id="thumb column-comments" class="manage-column column-thumb column-comments" style="">Order Id.</th>';
 		$html.='<th scope="col" id="tags" class="manage-column column-tags" style="">Username</th>';
 		$html.='<th scope="col" id="tags" class="manage-column column-tags" style="">Package Title</th>';
@@ -520,7 +519,7 @@ function cu_add_package_manually(){
 
 	$html.='<tfoot>';
 		$html.='<tr>';
-		
+
 		$html.='<th scope="col" id="thumb column-comments" class="manage-column column-thumb column-comments" style="">Order Id.</th>';
 		$html.='<th scope="col" id="tags" class="manage-column column-tags" style="">Username</th>';
 		$html.='<th scope="col" id="tags" class="manage-column column-tags" style="">Package Title</th>';
@@ -547,13 +546,13 @@ function cu_add_package_manually(){
 	$html.='</tfoot>';
 
 	$html.='<tbody id="the-list">';
-		
-		
-		
+
+
+
 		foreach($result as $data => $value)
       {
 		  $user_first_name = get_the_author_meta('user_email', $value->user_id );
-		 
+
 		$html.='<tr class="no-items">';
 		$html.='<td class="colspanchange" >'.$value->id.'</td>';
 		$html.='<td class="colspanchange" >'.$user_first_name.'</td>';
@@ -564,7 +563,7 @@ function cu_add_package_manually(){
 		$html.='<td class="colspanchange" >'.$value->total_price.'</td>';
 		$html.='<td class="colspanchange" >'.$value->purchased_date.'</td>';
 		$html.='<td class="colspanchange" >'.$value->expiry_date.'</td>';
-		
+
 		if($value->status == 1)
 		{
 		$html.='<td class="colspanchange" >Paid</td>';
@@ -572,12 +571,12 @@ function cu_add_package_manually(){
 		$html.='<td class="colspanchange" >Pending</td>';
 		}
 		$html.='</tr>';
-	
+
 		  }
-		
+
 		$html.='</tbody>';
 $html.='</table>';
 $html.='</div>';
 echo $html;
-	 
+
 }

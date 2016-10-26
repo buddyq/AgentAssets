@@ -39,11 +39,15 @@ class PackageCounter {
       global $wpdb;
       $user_id= get_current_user_id();
       $active_package = $wpdb->get_row("SELECT * FROM " . $wpdb->base_prefix . "orders WHERE user_id = " . $user_id . " AND status = 1");
-      $order_id = $active_package->id;
-      $package_details = $wpdb->get_row("SELECT * FROM " . self::tableName() . " WHERE order_id = " . $order_id);
-      $sites_allowed = $package_details->site_allowed;
-      $sites_consumed = $package_details->site_consumed;
-      $sites_remaining = $sites_allowed - $sites_consumed;
+      if($active_package){
+        $order_id = $active_package->id;
+        $package_details = $wpdb->get_row("SELECT * FROM " . self::tableName() . " WHERE order_id = " . $order_id);
+        $sites_allowed = $package_details->site_allowed;
+        $sites_consumed = $package_details->site_consumed;
+        $sites_remaining = $sites_allowed - $sites_consumed;
+      }else{
+        $sites_remaining = 0;
+      }
       return $sites_remaining;
     }
 

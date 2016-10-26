@@ -39,11 +39,9 @@ function mism_list_sites($atts)
                 switch_to_blog(1);
                 $duration = get_post_meta($order->package_id, 'wpcf-duration', true);
                 restore_current_blog();
+                $counter_details = PackageCounter::getCounterDetailsByOrderId($order->id);
+                $html .= MedmaHelper::getConsumedSitesMessageBox($counter_details);
             }
-
-            $counter_details = PackageCounter::getCounterDetailsByOrderId($order->id);
-
-            $html .= MedmaHelper::getConsumedSitesMessageBox($counter_details);
 
 			$html .= '<table>';
             $html .= '<h3>'.$atts['title'].'</h3>';

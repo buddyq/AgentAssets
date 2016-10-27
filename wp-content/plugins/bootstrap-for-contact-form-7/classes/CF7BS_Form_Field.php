@@ -1,8 +1,10 @@
 <?php
 /**
+ * CF7BS_Form_Field class
+ *
  * @package CF7BS
- * @version 1.3.1
  * @author Felix Arntz <felix-arntz@leaves-and-love.net>
+ * @since 1.0.0
  */
 
 class CF7BS_Form_Field extends CF7BS_Component {
@@ -18,11 +20,19 @@ class CF7BS_Form_Field extends CF7BS_Component {
 
 			$value = $this->validate_value( $value, $type, $options );
 
+			if ( is_numeric($tabindex) ) {
+				$tabindex = intval($tabindex);
+			}
+
 			if ( 'hidden' != $type ) {
-				$label_class = 'control-label';
+				if ( ! empty( $label_class ) ) {
+					$label_class .= ' ';
+				}
+
 				$input_div_class = '';
 				$input_class = $class;
 				if ( 'horizontal' == $form_layout ) {
+					$label_class .= ' control-label';
 					$classes = $this->get_column_width_classes( $form_label_width, $form_breakpoint, $grid_columns );
 					$label_class .= ' ' . $classes['label'];
 					$input_div_class = $classes['input'];
@@ -30,6 +40,7 @@ class CF7BS_Form_Field extends CF7BS_Component {
 						$input_div_class .= ' ' . $this->get_column_offset_class( $form_label_width, $form_breakpoint, $grid_columns );
 					}
 				} elseif( 'inline' == $form_layout ) {
+					$label_class .= ' sr-only';
 					if ( empty( $placeholder ) ) {
 						$placeholder = $label;
 					}
@@ -109,25 +120,27 @@ class CF7BS_Form_Field extends CF7BS_Component {
 					$append .= ' disabled';
 				}
 
-				if ( 'horizontal' == $form_layout ) {
-					$output .= '<div class="form-group' . $wrapper_class . $status . '">';
-					if ( ! empty( $label ) ) {
-						$output .= '<label class="' . esc_attr( $label_class ) . '"' . ( ! empty( $id ) ? ' for="' . esc_attr( $id ) . '"' : '' ) . '>' . esc_html( $label ) . $label_required . '</label>';
-					}
-					$output .= '<div class="' . esc_attr( $input_div_class ) . '">';
-				} elseif( 'inline' == $form_layout ) {
-					$output .= '<div class="form-group' . $wrapper_class . $status . '">';
-					if ( ! empty( $label ) ) {
-						$output .= '<label class="sr-only"' . ( ! empty( $id ) ? ' for="' . esc_attr( $id ) . '"' : '' ) . '>' . esc_html( $label ) . $label_required . '</label>';
-					}
-				} else {
-					$output .= '<div class="form-group' . $wrapper_class . $status . '">';
-					if ( ! empty( $label ) ) {
-						$rc_group_style = '';
-						if ( in_array( $type, array( 'radio', 'checkbox' ) ) ) {
-							$rc_group_style = ' style="display:block;"';
+				if ( 'none' != $form_layout ) {
+					if ( 'horizontal' == $form_layout ) {
+						$output .= '<div class="form-group' . $wrapper_class . $status . '">';
+						if ( ! empty( $label ) ) {
+							$output .= '<label class="' . esc_attr( $label_class ) . '"' . ( ! empty( $id ) ? ' for="' . esc_attr( $id ) . '"' : '' ) . '>' . esc_html( $label ) . $label_required . '</label>';
 						}
-						$output .= '<label' . ( ! empty( $id ) ? ' for="' . esc_attr( $id ) . '"' : '' ) . $rc_group_style . '>' . esc_html( $label ) . $label_required . '</label>';
+						$output .= '<div class="' . esc_attr( $input_div_class ) . '">';
+					} elseif( 'inline' == $form_layout ) {
+						$output .= '<div class="form-group' . $wrapper_class . $status . '">';
+						if ( ! empty( $label ) ) {
+							$output .= '<label class="' . esc_attr( $label_class ) . '"' . ( ! empty( $id ) ? ' for="' . esc_attr( $id ) . '"' : '' ) . '>' . esc_html( $label ) . $label_required . '</label>';
+						}
+					} else {
+						$output .= '<div class="form-group' . $wrapper_class . $status . '">';
+						if ( ! empty( $label ) ) {
+							$rc_group_style = '';
+							if ( in_array( $type, array( 'radio', 'checkbox' ) ) ) {
+								$rc_group_style = ' style="display:block;"';
+							}
+							$output .= '<label class="' . esc_attr( $label_class ) . '"' . ( ! empty( $id ) ? ' for="' . esc_attr( $id ) . '"' : '' ) . $rc_group_style . '>' . esc_html( $label ) . $label_required . '</label>';
+						}
 					}
 				}
 			}
@@ -369,7 +382,7 @@ class CF7BS_Form_Field extends CF7BS_Component {
 					break;
 			}
 
-			if ( 'hidden' != $type ) {
+			if ( 'hidden' != $type && 'none' != $form_layout ) {
 				if ( ! empty( $help_text ) && 'inline' != $form_layout ) {
 					$output .= '<span class="help-block">' . $help_text . '</span>';
 				}
@@ -414,7 +427,7 @@ class CF7BS_Form_Field extends CF7BS_Component {
 			'help_text'				=> '',
 			'size'					=> 'default', // default, large, small, mini
 			'grid_columns'			=> 12,
-			'form_layout'			=> 'default', // default, inline, horizontal
+			'form_layout'			=> 'default', // default, inline, horizontal, none
 			'form_label_width'		=> 2,
 			'form_breakpoint'		=> 'sm',
 			'mode'					=> 'default', // default, required, static, disabled
@@ -426,6 +439,7 @@ class CF7BS_Form_Field extends CF7BS_Component {
 			'group_layout'			=> 'default', // default, inline, buttons
 			'group_type'			=> 'default', // only if group_layout==buttons
 			'wrapper_class'			=> '',
+			'label_class'           => '',
 			'input_before'			=> '',
 			'input_after'			=> '',
 			'input_before_class'	=> 'input-group-addon',

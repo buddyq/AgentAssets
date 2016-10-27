@@ -1,8 +1,10 @@
 <?php
 /**
+ * Textarea module
+ *
  * @package CF7BS
- * @version 1.3.1
  * @author Felix Arntz <felix-arntz@leaves-and-love.net>
+ * @since 1.0.0
  */
 
 remove_action( 'wpcf7_init', 'wpcf7_add_shortcode_textarea' );
@@ -74,6 +76,24 @@ function cf7bs_textarea_shortcode_handler( $tag ) {
 		$input_after = '';
 	}
 
+	$content = $tag_obj->content;
+
+	$matches = array();
+	if ( preg_match( '/\{input_before\}(.*)\{\/input_before\}/imU', $content, $matches ) ) {
+		if ( ! empty( $matches[1] ) ) {
+			$input_before = $matches[1];
+		}
+		$content = str_replace( $matches[0], '', $content );
+	}
+
+	$matches = array();
+	if ( preg_match( '/\{input_after\}(.*)\{\/input_after\}/imU', $content, $matches ) ) {
+		if ( ! empty( $matches[1] ) ) {
+			$input_after = $matches[1];
+		}
+		$content = str_replace( $matches[0], '', $content );
+	}
+
 	if ( $tag_obj->has_option( 'include_count' ) ) {
 		$count_mode = 'input_after';
 		$count_down = false;
@@ -111,13 +131,13 @@ function cf7bs_textarea_shortcode_handler( $tag ) {
 		'type'				=> 'textarea',
 		'value'				=> $value,
 		'placeholder'		=> $placeholder,
-		'label'				=> $tag_obj->content,
+		'label'				=> $content,
 		'help_text'			=> $validation_error,
-		'size'				=> cf7bs_get_form_property( 'size' ),
-		'grid_columns'		=> cf7bs_get_form_property( 'grid_columns' ),
-		'form_layout'		=> cf7bs_get_form_property( 'layout' ),
-		'form_label_width'	=> cf7bs_get_form_property( 'label_width' ),
-		'form_breakpoint'	=> cf7bs_get_form_property( 'breakpoint' ),
+		'size'				=> cf7bs_get_form_property( 'size', 0, $tag_obj ),
+		'grid_columns'		=> cf7bs_get_form_property( 'grid_columns', 0, $tag_obj ),
+		'form_layout'		=> cf7bs_get_form_property( 'layout', 0, $tag_obj ),
+		'form_label_width'	=> cf7bs_get_form_property( 'label_width', 0, $tag_obj ),
+		'form_breakpoint'	=> cf7bs_get_form_property( 'breakpoint', 0, $tag_obj ),
 		'mode'				=> $mode,
 		'status'			=> $status,
 		'readonly'			=> $tag_obj->has_option( 'readonly' ) ? true : false,
@@ -125,6 +145,7 @@ function cf7bs_textarea_shortcode_handler( $tag ) {
 		'maxlength'			=> $tag_obj->get_maxlength_option(),
 		'tabindex'			=> $tag_obj->get_option( 'tabindex', 'int', true ),
 		'wrapper_class'		=> $tag_obj->name,
+		'label_class'       => $tag_obj->get_option( 'label_class', 'class', true ),
 		'rows' 				=> $rows,
 		'input_before'		=> $input_before,
 		'input_after'		=> $input_after,

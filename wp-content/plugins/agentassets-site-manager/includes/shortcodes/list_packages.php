@@ -157,10 +157,6 @@ function list_packages_callback($atts) {
                             <li class="avia-button-row">
                                 <div class="avia-button-wrap avia-button-center  avia-builder-el-6  el_before_av_button  avia-builder-el-first ">
                                     <?php if (is_user_logged_in()) { ?>
-                                        <?php /* <a class="avia-button  avia-icon_select-yes-left-icon avia-color-theme-color avia-size-medium avia-position-center " href="">
-                                          <span data-av_iconfont="entypo-fontello" data-av_icon="" aria-hidden="true" class="avia_button_icon avia_button_icon_left "></span>
-                                          <span class="avia_iconbox_title">Buy</span>
-                                          </a> */ ?>
 
                                         <form id="form_buy_package<?php echo $package->ID; ?>" method="POST" action="<?php echo get_option('siteurl') . '/checkout' ?>">
                                             <input id="package_id" type="hidden" name="package_id" value="<?php echo $package->ID; ?>"/>
@@ -216,14 +212,13 @@ function list_packages_callback($atts) {
 }
 
 add_action('wp_ajax_purchase_package', 'purchase_package_callback');
+add_action('wp_ajax_nopriv_purchase_package', 'purchase_package_callback');
 
 function purchase_package_callback() {
     global $wpdb;
-
     $package_id = $_POST['package_id'];
     $user_id = $_POST['userid'];
     $package_details = get_post($package_id);
-
     $package_name = $package_details->post_title;
     $package_price = get_post_meta($package_id, 'wpcf-price', true); # Package Price
     $site_allowed = get_post_meta($package_id, 'wpcf-sites-allowed', true);

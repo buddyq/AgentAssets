@@ -26,7 +26,7 @@ send_origin_headers();
 
 // Require an action parameter
 if ( empty( $_REQUEST['action'] ) )
-	die( '0' );
+	die( 'empty request action' );
 
 /** Load WordPress Administration APIs */
 require_once( ABSPATH . 'wp-admin/includes/admin.php' );

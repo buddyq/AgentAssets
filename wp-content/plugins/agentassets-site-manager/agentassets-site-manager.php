@@ -131,7 +131,8 @@ function add_scripts_to_footer()
                     'action' : 'restore_with_purchase', 
                     'extend_blog_id': jQuery(el).attr('data-id'),
                     'site_expired' : true,
-                    'user_id' : <?php echo $user_id; ?>
+                    'user_id' : <?php echo $user_id; ?>,
+                    'buy_package' : 'buy'
                 };
                 alertify.message('Saving some info...');
                 jQuery.post('<?php echo admin_url('admin-ajax.php')?>', data, function( response ) {
@@ -188,8 +189,6 @@ function add_blogOwner()
 }
 
 add_action( 'wpmu_new_blog', 'add_blogOwner' );
-
-
 add_action('network_admin_menu', 'add_custom_menu_to_admin');
 
 function add_custom_menu_to_admin() {

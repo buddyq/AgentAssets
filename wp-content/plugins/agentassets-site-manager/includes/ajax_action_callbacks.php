@@ -11,6 +11,7 @@ add_action( 'wp_ajax_check_sites_for_removing', 'check_sites_for_removing');
 add_action( 'wp_ajax_restore_with_purchase', 'restore_with_purchase');
 add_action( 'wp_ajax_nopriv_restore_with_purchase', 'restore_with_purchase');
 
+
 function restore_with_purchase(){
 	$status = array('result' => 'error', 'message' => '');
 	while (true){

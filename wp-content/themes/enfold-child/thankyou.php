@@ -4,7 +4,10 @@
  */
 
 get_header();
+print_r($_GET);
 
+echo "-======================-<br><br>";
+print_r($_SESSION);
 ?>
 <div class="container_wrap main_color">
     <div class="container">
@@ -19,9 +22,6 @@ get_header();
                     <div class=" flex_column_div   avia-builder-el-13  el_after_av_one_half  avia-builder-el-last  column-top-margin">
 
                         <div class="avia_message_box avia-color-green avia-size-normal avia-icon_select-yes avia-border-  avia-builder-el-14  avia-builder-el-no-sibling ">
-                            <!--<div class="thank-you-image">
-
-                            </div>-->
                             <div class="thank-you-text">
                                 <img src="<?php echo get_site_url(); ?>/wp-content/themes/enfold-child/images/green-check.png"/>
                                 <div class="avia_message_box_content">

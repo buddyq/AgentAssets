@@ -92,8 +92,8 @@ function add_scripts_to_footer()
             });
 
             jQuery('.listblog_extend').click(function(){
-                var msg = '<strong>%s</strong> will be renewed for <strong>%d</strong> using one of your remaining site credits.';
-                msg = msg.replace('%s', jQuery(this).attr('data-site-name')).replace('%d', jQuery(this).attr('data-duration'));
+                var msg = '<strong>%s</strong> will be renewed using one of your remaining site credits.';
+                msg = msg.replace('%s', jQuery(this).attr('data-site-name'));
                 var el = this;
                 alertify.confirm(msg, function() {
                     var data = {

@@ -47,11 +47,11 @@ function mism_list_sites($atts)
             $html .= '<h3>'.$atts['title'].'</h3>';
 
             $html .= '<thead class="site-list-container">';
-                $html .= '<th class="numeric">'.__('No.','mism').'</th>';
-                $html .= '<th class="numeric">'.__('Site Name','mism').'</th>';
-                $html .= '<th class="numeric">'.__('Site URL','mism').'</th>';
-                $html .= '<th class="numeric">'.__('Days Left','mism').'</th>';
-                $html .= '<th class="numeric">'.__('Actions','mism').'</th>';
+              $html .= '<th class="numeric">'.__('No.','mism').'</th>';
+              $html .= '<th class="numeric">'.__('Site Name','mism').'</th>';
+              $html .= '<th class="numeric">'.__('Site URL','mism').'</th>';
+              $html .= '<th class="numeric">'.__('Days Left','mism').'</th>';
+              $html .= '<th class="numeric">'.__('Actions','mism').'</th>';
             $html .= '</thead>';
 
             $html .= '<tbody>';
@@ -73,17 +73,24 @@ function mism_list_sites($atts)
                     $html .= '</td>';
                     $html .= '<td data-title="Days Left" class="days-left">'.$blog->days_left.'</td>';
                     $html .= '<td data-title="Actions" class="actions">';
+                    
+                    // Buddy
+                    $html .= "Session: ".$_SESSION['site_deleted'] ."<br>";
+                    foreach ($blog as $key => $value) {
+                      $html .= 'Key: ' . $key . "   |   Value: " . $value . '<br>';
+                    }
+                    // Decide which button to show user
                     if (0 != $blog->deleted && $blog->days_left <= 0) {
                       $html .= '<div class="avia_message_box avia-color-red avia-size-normal avia-icon_select-no avia-border-dashed avia-builder-el-12 avia-builder-el-no-sibling "><div class="avia_message_box_content">';
                       $html .= '<p>This Site has Expired!</p><br>';
-                      $html .= '<p><input data-site-name="' . $blog->blogname . '" data-id="' . $blog->userblog_id . '" class="restore_with_purchase button" data-sending-label="Restoring..." type="submit" name="restore_with_purchase" value="Restore"/></p>';
-                      // $sites_allowed = get_post_meta($package_id, 'wpcf-sites-allowed', true);
                       $sites_remaining = PackageCounter::getRemainingSites();
-                      /*
-                      > If there are any, present button to use site credit to purchase it.
-                      > If not, they must go to purchase a new package. Once they purchase the new package,
-                      the can use this site. It has to be part of the new package somehow.
-                      */
+                      
+                      if ($sites_remaining > 0) {
+                        $html .= '<p><input data-site-name="' . $blog->blogname . '" data-id="' . $blog->userblog_id . '" class="listblog_extend button" data-sending-label="Restoring..." type="submit" name="restore_site" value="Restore"/></p>';
+                      }else{
+                        $html .= '<p><input data-site-name="' . $blog->blogname . '" data-id="' . $blog->userblog_id . '" class="restore_with_purchase button" data-sending-label="Restoring..." type="submit" name="restore_with_purchase" value="Restore"/></p>';
+                      }
+                      
                       $html .= '</div></div>';
                       $html .= '<p style="text-align:center">You have ' . (($sites_remaining > 1) ? $sites_remaining . ' sites' : $sites_remaining) . ' site' . ' remaining</p>';
 
@@ -103,7 +110,8 @@ function mism_list_sites($atts)
                             if ($duration) {
                                 $html .= '&nbsp;<input data-duration="' . $duration . '" data-site-name="' . $blog->blogname . '" data-id="' . $blog->userblog_id . '" class="listblog_extend button" data-sending-label="Extending..." type="submit" name="extend_site" value="Extend"/>';
                             } else {
-                                $html .= '&nbsp;<input data-site-name="' . $blog->blogname . '" class="listblog_pricing button" type="button" value="Extend"/>';
+                                // $html .= '&nbsp;<input data-site-name="' . $blog->blogname . '" class="listblog_pricing button" type="button" value="Extend j"/>';
+                                $html .= '<p><input data-site-name="' . $blog->blogname . '" data-id="' . $blog->userblog_id . '" class="restore_with_purchase button" data-sending-label="Restoring..." type="submit" name="restore_with_purchase" value="Restore"/></p>';
                             }
                         }
                         //$html .= '<input id="listblog_id" type="hidden" name="blog_id" value="' . $blog->userblog_id . '"/>';
@@ -116,7 +124,6 @@ function mism_list_sites($atts)
             $html .= '</table>';
             $html .= '</div>';
             $html .= '</div>';
-
 
 		 }
 		 else

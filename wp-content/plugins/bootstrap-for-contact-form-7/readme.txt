@@ -2,17 +2,17 @@
 
 Plugin Name:       Bootstrap for Contact Form 7
 Plugin URI:        https://wordpress.org/plugins/bootstrap-for-contact-form-7/
-Author URI:        http://leaves-and-love.net
 Author:            Felix Arntz
-Donate link:       http://leaves-and-love.net/wordpress-plugins/
+Author URI:        https://leaves-and-love.net
 Contributors:      flixos90
-Requires at least: 3.6 
-Tested up to:      4.4.2
-Stable tag:        1.3.1
-Version:           1.3.1
-License:           GPL v3
+Donate link:       https://leaves-and-love.net/wordpress-plugins/
+Requires at least: 3.6
+Tested up to:      4.6
+Stable tag:        1.4.0
+Version:           1.4.0
+License:           GNU General Public License v3
 License URI:       http://www.gnu.org/licenses/gpl-3.0.html
-Tags:              wordpress, plugin, contact form 7, wpcf7, bootstrap, bootstrap 3, bootstrap framework, addon, contact form 7 addon, contact form, cf7bs, css
+Tags:              contact form 7, wpcf7, bootstrap, bootstrap 3, bootstrap framework, addon, contact form 7 addon, contact form, cf7bs
 
 This plugin modifies the output of the popular Contact Form 7 plugin to be styled in compliance with themes using the Bootstrap CSS framework.
 
@@ -101,6 +101,8 @@ I preferably take support requests as [issues on Github](https://github.com/feli
 
 If you're a developer and you have some ideas to improve the plugin or to solve a bug, feel free to raise an issue or submit a pull request in the [Github repository for the plugin](https://github.com/felixarntz/bootstrap-for-contact-form-7).
 
+You can also contribute to the plugin by translating it. Simply visit [translate.wordpress.org](https://translate.wordpress.org/projects/wp-plugins/bootstrap-for-contact-form-7) to get started.
+
 == Screenshots ==
 
 1. A general form by the Contact Form 7 plugin as rendered with Bootstrap for Contact Form 7
@@ -108,6 +110,13 @@ If you're a developer and you have some ideas to improve the plugin or to solve 
 3. A warning alert as displayed by Bootstrap for Contact Form 7
 
 == Changelog ==
+
+= 1.4.0 =
+* Enhanced: all form settings except `submit_size`, `submit_type` and `required_html` can now be overridden on a per-field basis by providing the setting name and its intended value as a shortcode attribute
+* Enhanced: a new value 'none' is now supported for the `layout` form setting which will prevent any wrapper from rendering; it is recommended to only use this for advanced field layouts
+* Enhanced: a new attribute `label_class` can now be added to shortcodes for additional label classes
+* Enhanced: `input_before` and `input_after` now support HTML by putting something like `{input_before}<span>Content before</span>{/input_before} into the content of a field shortcode (make sure to use curly braces); this method is now recommended and takes precedence over the old way
+* Fixed: the label of the `free_text` option in radio buttons / checkboxes is now displayed correctly
 
 = 1.3.1 =
 * Enhanced: alerts can now be made dismissible by defining the constant `CF7BS_ALERT_DISMISSIBLE`
@@ -192,7 +201,7 @@ You can adjust several form properties (properties that affect an entire form, n
 * `label_width` - adjusts the form's label width (applies only to horizontal layout); valid values: any integer between 1 and the value of `grid_columns` minus 1; default value: 3
 * `breakpoint` - adjusts the responsive breakpoint (applies only to horizontal layout); valid values: 'xs', 'sm', 'md', 'lg'; default value: 'sm'
 
-There are three methods to adjust the above properties: The easiest one is to use the "Additional Settings" tab when editing a form in Contact Form 7 and insert any property and its desired value there, one per line. For example:
+There are four methods to adjust the above properties: The easiest one is to use the "Additional Settings" tab when editing a form in Contact Form 7 and insert any property and its desired value there, one per line. For example:
 
 	layout:horizontal
 	size:large
@@ -210,17 +219,22 @@ Alternatively you can use the filter `cf7bs_form_{{FORM_ID}}_properties` where `
 
 The third way does something slightly different from the other two since it does not change a specific form's properties, but the default properties for all forms. To do that, you should use the filter `cf7bs_default_form_properties` which works exactly like the other filter mentioned above.
 
+The fourth method is different from the others as it allows to override the form settings on a per-field basis. You can add any of the setting names plus its intended value as a shortcode attribute for any field to make this field behave differently from the form's setting. This can be especially helpful if you need to create advanced form layouts like when you need multiple fields on the same line. For example, you could do the following to display two fields in one row, even though the form's `layout` is set to 'default':
+
+	<div class="form-group row">
+		<div class="col-md-6"><label for="user-first-name">First Name</label>[text user_first_name id:user-first-name layout:none][/text]</div>
+		<div class="col-md-6"><label for="user-last-name">Last Name</label>[text user_last_name id:user-last-name layout:none][/text]</div>
+	</div>
+
 Note that the custom form filter takes precedence over the properties defined in the admin, while the default filter is just used as fallback.
 
 = Input Groups =
 
-All textual input fields support the input group feature that Bootstrap provides. To use it, add an option `input_before` and/or `input_after` to any text / email / url / tel input. Example:
+All textual input fields support the input group feature that Bootstrap provides. To use it, add a shortcode-like construct (almost, but it has to use curly braces instead) into the content of any text / email / url / tel input shortcode. Example:
 
-	[text twitter-username input_before:@]Your Twitter Handle[/text]
+	[text twitter-username]{input_before}@{/input_before}Your Twitter Handle[/text]
 
-Note that the `input_before` and `input_after` options can also be added to textareas. In this case, the content will be displayed directly above or below the textarea respectively. To display content that contains one or more spaces, just enter it as the option value, replacing all spaces by three dashes. Example:
-
-	[textarea* your-text input_before:Please---enter---something]Your Text[/textarea*]
+Note that the `input_before` and `input_after` can also be added to textareas. In this case, the content will be displayed directly above or below the textarea respectively.
 
 = Submit Button Alignment =
 

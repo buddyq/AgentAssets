@@ -76,7 +76,7 @@ function mism_list_sites($atts)
                     if (0 != $blog->deleted && $blog->days_left <= 0) {
                       $html .= '<div class="avia_message_box avia-color-red avia-size-normal avia-icon_select-no avia-border-dashed avia-builder-el-12 avia-builder-el-no-sibling "><div class="avia_message_box_content">';
                       $html .= '<p>This Site has Expired!</p><br>';
-                      $html .= '<p><input data-site-name="' . $blog->blogname . '" data-id="' . $blog->userblog_id . '" class="listblog_restore_and_purchase button" data-sending-label="Restoring..." type="submit" name="restore_site" value="Restore"/></p>';
+                      $html .= '<p><input data-site-name="' . $blog->blogname . '" data-id="' . $blog->userblog_id . '" class="restore_with_purchase button" data-sending-label="Restoring..." type="submit" name="restore_with_purchase" value="Restore"/></p>';
                       // $sites_allowed = get_post_meta($package_id, 'wpcf-sites-allowed', true);
                       $sites_remaining = PackageCounter::getRemainingSites();
                       /*
@@ -85,7 +85,7 @@ function mism_list_sites($atts)
                       the can use this site. It has to be part of the new package somehow.
                       */
                       $html .= '</div></div>';
-                      $html .= 'You have ' . (($sites_remaining > 1) ? $sites_remaining . ' sites' : $sites_remaining) . ' site' . ' remaining';
+                      $html .= '<p style="text-align:center">You have ' . (($sites_remaining > 1) ? $sites_remaining . ' sites' : $sites_remaining) . ' site' . ' remaining</p>';
 
                     }
                     elseif (0 != $blog->deleted) {

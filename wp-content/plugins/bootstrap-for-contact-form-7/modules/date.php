@@ -1,8 +1,10 @@
 <?php
 /**
+ * Date module
+ *
  * @package CF7BS
- * @version 1.3.1
  * @author Felix Arntz <felix-arntz@leaves-and-love.net>
+ * @since 1.0.0
  */
 
 remove_action( 'wpcf7_init', 'wpcf7_add_shortcode_date' );
@@ -52,6 +54,15 @@ function cf7bs_date_shortcode_handler( $tag ) {
 		$value = stripslashes_deep( rawurldecode( $_GET[ $tag->name ] ) );
 	}
 
+	if ( is_callable( array( $tag, 'get_date_option' ) ) ) {
+		$min = $tag->get_date_option( 'min' );
+		$max = $tag->get_date_option( 'max' );
+	} else {
+		$min = $tag->get_option( 'min', 'date', true );
+		$max = $tag->get_option( 'max', 'date', true );
+	}
+	$step = $tag->get_option( 'step', 'int', true );
+
 	$field = new CF7BS_Form_Field( cf7bs_apply_field_args_filter( array(
 		'name'				=> $tag->name,
 		'id'				=> $tag->get_option( 'id', 'id', true ),
@@ -61,21 +72,22 @@ function cf7bs_date_shortcode_handler( $tag ) {
 		'placeholder'		=> $placeholder,
 		'label'				=> $tag->content,
 		'options'			=> array(
-		  'min'					=> $tag->get_option( 'min', 'date', true ),
-		  'max'					=> $tag->get_option( 'max', 'date', true ),
+		  'min'					=> $min,
+		  'max'					=> $max,
 		  'step'				=> $tag->get_option( 'step', 'int', true ),
 		),
 		'help_text'			=> $validation_error,
-		'size'				=> cf7bs_get_form_property( 'size' ),
-		'grid_columns'		=> cf7bs_get_form_property( 'grid_columns' ),
-		'form_layout'		=> cf7bs_get_form_property( 'layout' ),
-		'form_label_width'	=> cf7bs_get_form_property( 'label_width' ),
-		'form_breakpoint'	=> cf7bs_get_form_property( 'breakpoint' ),
+		'size'				=> cf7bs_get_form_property( 'size', 0, $tag ),
+		'grid_columns'		=> cf7bs_get_form_property( 'grid_columns', 0, $tag ),
+		'form_layout'		=> cf7bs_get_form_property( 'layout', 0, $tag ),
+		'form_label_width'	=> cf7bs_get_form_property( 'label_width', 0, $tag ),
+		'form_breakpoint'	=> cf7bs_get_form_property( 'breakpoint', 0, $tag ),
 		'mode'				=> $mode,
 		'status'			=> $status,
 		'readonly'			=> $tag->has_option( 'readonly' ) ? true : false,
 		'tabindex'			=> $tag->get_option( 'tabindex', 'int', true ),
 		'wrapper_class'		=> $tag->name,
+		'label_class'       => $tag->get_option( 'label_class', 'class', true ),
 	), $tag->basetype, $tag->name ) );
 
 	$html = $field->display( false );

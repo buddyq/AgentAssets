@@ -13,7 +13,7 @@ $mism_package_settings = get_option('mism_package_settings');
 if (isset($_POST['buy_package']) && $_POST['buy_package'] = "Buy") {
     $_SESSION['cart'] = $_POST;
 }
-
+print_r($_SESSION);
 $discount_flag = 0;
 $discount = $discount_amount = 0;
 $coupon_id = null;
@@ -99,11 +99,13 @@ else
                                 <th>Package Name</th>
                                 <th>Price</th>
                             </tr>
-								<?php if($_SESSION['cart']['currency_code'] == 'USD'){
-										$currency_symbol = "$";
-									}elseif($_SESSION['cart']['currency_code'] == 'EUR'){
-											$currency_symbol = "&euro;";
-										}?>
+								            <?php 
+                            if($_SESSION['cart']['currency_code'] == 'USD')
+                              {
+                                $currency_symbol = "$";
+                              }elseif($_SESSION['cart']['currency_code'] == 'EUR'){
+                                $currency_symbol = "&euro;";
+                              }?>
                             <tr>
                                 <td><?php echo $i; ?></td>
                                 <td><?php echo $_SESSION['cart']['item_name']; ?></td>
@@ -202,7 +204,7 @@ else
 //$bn = $_SESSION['cart']['bn'];
                                         $return = $_SESSION['cart']['return'];
                                         $notify_url = $_SESSION['cart']['notify_url'];
-                                        $cancel_return = $_SESSION['cart']['cancel_return'];
+                                        $cancel_return = $_SESSION['cart']['coupon_id'];
                                         $item_name = $_SESSION['cart']['item_name'];
                                         $item_number = $_SESSION['cart']['item_number'];
                                         $buy_package = $_SESSION['cart']['buy_package'];
@@ -278,7 +280,7 @@ else
             var default_currency = jQuery('#checkout-button').parent('form').children('#default_currency').val();
             var user_id = jQuery('#checkout-button').parent('form').children('#user_id').val();
 
-
+            
             var data = {
                 'action': 'purchase_package',
                 'cmd': '_xclick',
@@ -295,11 +297,15 @@ else
                 'userid': user_id,
                 'total_amount' : '<?php echo $total_amount;?>'
             };
+            
+            for (property in data) {
+              console.log(property, '= ', data[property]);
+            }
 
             // We can also pass the url value separately from ajaxurl for front end AJAX implementations
             jQuery.post('<?php echo get_option("siteurl") . "/wp-admin/admin-ajax.php"; ?>', data, function(response) {
-
                 jQuery('#form_checkout').attr('action',response);
+                // console.log("Response from admin-ajax: "+response);
                 jQuery('#form_checkout').submit();
             });
         });

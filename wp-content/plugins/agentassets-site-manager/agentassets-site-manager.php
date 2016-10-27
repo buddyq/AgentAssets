@@ -63,6 +63,7 @@ add_action('wp_head','add_style_to_head');
 function add_scripts_to_footer()
 {
   $sites_remaining = PackageCounter::getRemainingSites();
+  $user_id = get_current_user_id();
     ?>
     <script type="text/javascript">
         jQuery(document).ready(function($) {
@@ -121,30 +122,31 @@ function add_scripts_to_footer()
             });
 
             // Restore expired site using a site credit (payment)
-            jQuery('.listblog_restore_and_purchase').click(function(){
-              var msg = 'Clicking OK will use one of your <?=$sites_remaining;?> sites you have in your package to restore the <strong>%s</strong> site.';
+            jQuery('.restore_with_purchase').click(function(){
+              var msg = 'You\'re out of sites! We\'ll restore <strong>%s</strong> site as soon as you buy a new package. Clicking OK will take you to the packages.';
               msg = msg.replace('%s', jQuery(this).attr('data-site-name'));
               var el = this;
               alertify.confirm(msg, function() {
                 var data = {
-                    'action' : 'restore_site', //Probably need to change action to new action with purchase
-                    /* Action needs to restore the site and reset the counter according to the active package.
-                    If they have to purchase a new package it will reset to the new packages expiration time.
-                    */
-                    'blog_id': jQuery(this).attr('data-id')
+                    'action' : 'restore_with_purchase', 
+                    'extend_blog_id': jQuery(el).attr('data-id'),
+                    'site_expired' : true,
+                    'user_id' : <?php echo $user_id; ?>,
+                    'buy_package' : 'buy'
                 };
-                alertify.message('Processing request');
-                jQuery.post('<?php echo admin_url('admin-ajax.php')?>', data, function( response) {
+                alertify.message('Saving some info...');
+                jQuery.post('<?php echo admin_url('admin-ajax.php')?>', data, function( response ) {
                     if (typeof(response.result) === 'undefined') {
                         alertify.error('Bad response!');
                     } else if ('error' == response.result) {
                         alertify.error(response.message);
                     } else {
-                        alertify.success('Site restored successfully!');
-                        location.reload();
+                        alertify.success(response.message);
+                        // location.reload();
+                        location.replace("/pricing");
                     }
                 }, 'json');
-              }).set('title', 'Restoring site');
+              }).set('title', 'Purchase needed to restore this site');
             });
 
             // Restore a site the user deactivated but is not expired
@@ -187,8 +189,6 @@ function add_blogOwner()
 }
 
 add_action( 'wpmu_new_blog', 'add_blogOwner' );
-
-
 add_action('network_admin_menu', 'add_custom_menu_to_admin');
 
 function add_custom_menu_to_admin() {

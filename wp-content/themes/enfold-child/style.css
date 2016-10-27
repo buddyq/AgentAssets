@@ -55,7 +55,7 @@ Version: 1.0
 }
 
 .listblog_restore,
-.listblog_restore_and_purchase{
+.restore_with_purchase{
   background-color: #ff7474 !important;
   color: #fff !important;
   border: 1px solid #940000 !important;

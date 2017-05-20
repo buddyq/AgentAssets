@@ -113,6 +113,18 @@ function mism_create_new_site($atts)
             'title' => '',
         ), $atts, 'create_new_site');
 
+
+//    $plugin = Domainmap_Plugin::instance();
+//    /** @var Domainmap_Module_Mapping $module */
+//    $module = $plugin->get_module('Domainmap_Module_Mapping');
+//    //$dRes = $plugin->get_reseller()->check_domain('net', 'onlib');
+//
+//    var_dump($module);
+//
+//    return '';
+
+
+
     #   User Package Authentication Check
     $order = OrderModel::findOne('`user_id` = %d AND `status` = %d AND `expiry_date` >= %s',
         array(get_current_user_id(), OrderModel::STATUS_PAID, date('Y-m-d H:i:s')));
@@ -236,7 +248,7 @@ function mism_create_new_site($atts)
                                         updateConsumed();
                                     });
                                 </script>
-                                <?php
+                            MismCreateNewSiteNotify    <?php
                                 */
                                 MismCreateNewSiteNotify::$additionalContent = '<script type="text/javascript">'
                                     .'    jQuery(function () {'

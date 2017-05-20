@@ -8,34 +8,6 @@ add_action( 'wp_ajax_delete_site', 'delete_site_callback' );
 add_action( 'wp_ajax_extend_site', 'extend_site_callback' );
 add_action( 'wp_ajax_restore_site', 'restore_site_callback' );
 add_action( 'wp_ajax_check_sites_for_removing', 'check_sites_for_removing');
-add_action( 'wp_ajax_restore_with_purchase', 'restore_with_purchase');
-add_action( 'wp_ajax_nopriv_restore_with_purchase', 'restore_with_purchase');
-
-
-function restore_with_purchase(){
-	$status = array('result' => 'error', 'message' => '');
-	while (true){
-		if (!isset($_POST['extend_blog_id'])) {
-			$status['message'] = 'Invalid request';
-			break;
-		}
-		$blog_id = $_POST['extend_blog_id'];
-		$user_id = $_POST['user_id'];
-		if ( add_user_meta($user_id, 'site_expired', $_POST['site_expired'], 1 )) {
-			// $_SESSION['site_expired'] = "updated database with value: " . $_POST['site_expired'];
-			// $status['message'] .= "site_expired added to DB.<br>";
-		}
-		if ( add_user_meta($user_id, 'extend_blog_id', $_POST['extend_blog_id'], 1 )) {
-			// $_SESSION['extend_blog_id'] = "updated database with value: " . $_POST['extend_blog_id'];
-			// $status['message'] .= "extend_blog_id added to DB.<br>";
-		}
-		$status['result'] = 'success';
-		$status['message'] .= 'Site info saved. Let\'s go!';
-		break;
-	}
-	echo json_encode($status);
-	wp_die(); // this is required to terminate immediately and return a proper response
-}
 
 function delete_site_callback() {
 	$status = array('result' => 'error', 'message' => '');
@@ -127,11 +99,6 @@ function restore_site_callback() {
 function check_sites_for_removing() {
 	$blogs = OrderMap::getAllBlogsDetails();
 	foreach($blogs as $blog) {
-		//step 1 - look for all expired blogs and de-activate them and run this function with cron job
-		if ($blog->days_left == 0) {
-			echo "<pre>";print_r($blog);"</pre>";
-			// update_blog_status( $blog->userblog_id, 'archived', 1);
-			wpmu_delete_blog( $blog->userblog_id, false );
-		}
+		//step 1 -
 	}
 }

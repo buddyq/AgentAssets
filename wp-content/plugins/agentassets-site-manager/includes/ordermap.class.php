@@ -26,16 +26,10 @@ class OrderMap {
                 $blog_map = self::getBlogInfo($blog_id);
 
                 if (!$blog_map) break;
-                
-                // if ($expiry_timestamp < time()) {
-                //     $expiry_timestamp = time();
-                // }
-                
-                
-                if ($blog_map->days_left > 0) {
-                  $expiry_timestamp = DateTime::createFromFormat('Y-m-d H:i:s', $blog_map->expiry_date)->getTimestamp();
-                }else{
-                  $expiry_timestamp = time();
+
+                $expiry_timestamp = DateTime::createFromFormat('Y-m-d H:i:s', $blog_map->expiry_date)->getTimestamp();
+                if ($expiry_timestamp < time()) {
+                    $expiry_timestamp = time();
                 }
                 $new_expiry = date('Y-m-d H:i:s', strtotime("+$duration month", $expiry_timestamp));
                 if (1 !== $wpdb->update(
@@ -45,11 +39,6 @@ class OrderMap {
                     array('%s'),
                     array('%d')
                 )) break;
-
-                error_log(print_r('deleted: '.get_blog_status($blog_id, 'deleted'),true));
-                if (0 != get_blog_status($blog_id, 'deleted')) {
-                    update_blog_status($blog_id, 'deleted', 0);
-                }
 
                 $status = true;
                 break;

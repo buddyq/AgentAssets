@@ -62,8 +62,6 @@ add_action('wp_head','add_style_to_head');
  */
 function add_scripts_to_footer()
 {
-  $sites_remaining = PackageCounter::getRemainingSites();
-  $user_id = get_current_user_id();
     ?>
     <script type="text/javascript">
         jQuery(document).ready(function($) {
@@ -92,8 +90,8 @@ function add_scripts_to_footer()
             });
 
             jQuery('.listblog_extend').click(function(){
-                var msg = '<strong>%s</strong> will be renewed using one of your remaining site credits.';
-                msg = msg.replace('%s', jQuery(this).attr('data-site-name'));
+                var msg = '<strong>%s</strong> will be renewed for <strong>%d</strong> using one of your remaining site credits.';
+                msg = msg.replace('%s', jQuery(this).attr('data-site-name')).replace('%d', jQuery(this).attr('data-duration'));
                 var el = this;
                 alertify.confirm(msg, function() {
                     var data = {
@@ -121,35 +119,6 @@ function add_scripts_to_footer()
                 alertify.alert(msg).set('title', 'Information');
             });
 
-            // Restore expired site using a site credit (payment)
-            jQuery('.restore_with_purchase').click(function(){
-              var msg = 'You\'re out of sites! We\'ll restore <strong>%s</strong> site as soon as you buy a new package. Clicking OK will take you to the packages.';
-              msg = msg.replace('%s', jQuery(this).attr('data-site-name'));
-              var el = this;
-              alertify.confirm(msg, function() {
-                var data = {
-                    'action' : 'restore_with_purchase', 
-                    'extend_blog_id': jQuery(el).attr('data-id'),
-                    'site_expired' : true,
-                    'user_id' : <?php echo $user_id; ?>,
-                    'buy_package' : 'buy'
-                };
-                alertify.message('Saving some info...');
-                jQuery.post('<?php echo admin_url('admin-ajax.php')?>', data, function( response ) {
-                    if (typeof(response.result) === 'undefined') {
-                        alertify.error('Bad response!');
-                    } else if ('error' == response.result) {
-                        alertify.error(response.message);
-                    } else {
-                        alertify.success(response.message);
-                        // location.reload();
-                        location.replace("/pricing");
-                    }
-                }, 'json');
-              }).set('title', 'Purchase needed to restore this site');
-            });
-
-            // Restore a site the user deactivated but is not expired
             jQuery('.listblog_restore').click(function(){
                 var data = {
                     'action' : 'restore_site',
@@ -189,6 +158,8 @@ function add_blogOwner()
 }
 
 add_action( 'wpmu_new_blog', 'add_blogOwner' );
+
+
 add_action('network_admin_menu', 'add_custom_menu_to_admin');
 
 function add_custom_menu_to_admin() {

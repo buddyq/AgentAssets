@@ -35,6 +35,22 @@ class PackageCounter {
         return $wpdb->get_row('SELECT * FROM `'.self::tableName().'` WHERE `id` = '.(int)$id);
     }
 
+    public static function getRemainingSites() {
+      global $wpdb;
+      $user_id= get_current_user_id();
+      $active_package = $wpdb->get_row("SELECT * FROM " . $wpdb->base_prefix . "orders WHERE user_id = " . $user_id . " AND status = 1");
+      if($active_package){
+        $order_id = $active_package->id;
+        $package_details = $wpdb->get_row("SELECT * FROM " . self::tableName() . " WHERE order_id = " . $order_id);
+        $sites_allowed = $package_details->site_allowed;
+        $sites_consumed = $package_details->site_consumed;
+        $sites_remaining = $sites_allowed - $sites_consumed;
+      }else{
+        $sites_remaining = 0;
+      }
+      return $sites_remaining;
+    }
+
     public static function getCounterDetailsByOrderId($order_id) {
         global $wpdb;
         return $wpdb->get_row('SELECT * FROM `'.self::tableName().'` WHERE `order_id` = '.(int)$order_id);

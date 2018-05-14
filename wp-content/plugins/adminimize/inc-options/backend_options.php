@@ -12,7 +12,7 @@ if ( ! function_exists( 'add_action' ) ) {
 
 <div id="poststuff" class="ui-sortable meta-box-sortables">
 	<div class="postbox">
-		<div class="handlediv" title="<?php esc_attr_e( 'Click to toggle' ); ?>"><br /></div>
+		<div class="handlediv" title="<?php esc_attr_e( 'Click to toggle', 'adminimize' ); ?>"><br /></div>
 		<h3 class="hndle" id="backend_options"><?php esc_attr_e( 'Backend Options', 'adminimize' ); ?></h3>
 		<div class="inside">
 
@@ -73,20 +73,21 @@ if ( ! function_exists( 'add_action' ) ) {
 					$disabled_item = ' disabled="disabled"';
 				} ?>
 				<tr valign="top">
-					<td><?php esc_attr_e( 'Change User-Info, redirect to', 'adminimize' ); ?></td>
+					<td><label for="_mw_adminimize_ui_redirect"><?php esc_attr_e( 'Change User-Info, redirect to', 'adminimize' ); ?></td>
 					<td>
 						<?php $_mw_adminimize_ui_redirect = (int) _mw_adminimize_get_option_value(
 							'_mw_adminimize_ui_redirect'
 						); ?>
-						<select name="_mw_adminimize_ui_redirect" <?php if ( isset( $disabled_item ) ) {
-							echo $disabled_item;
-						} ?>>
+						<select name="_mw_adminimize_ui_redirect" id="_mw_adminimize_ui_redirect"
+							<?php if ( isset( $disabled_item ) ) { echo $disabled_item; } ?>>
 							<option value="0"<?php if ( $_mw_adminimize_ui_redirect === 0 ) {
-								echo ' selected="selected"';
-							} ?>><?php esc_attr_e( 'Default', 'adminimize' ); ?></option>
+								echo ' selected="selected"';} ?>>
+								<?php esc_attr_e( 'Default', 'adminimize' ); ?>
+							</option>
 							<option value="1"<?php if ( $_mw_adminimize_ui_redirect === 1 ) {
-								echo ' selected="selected"';
-							} ?>><?php esc_attr_e( 'Frontpage of the Blog', 'adminimize' ); ?>
+								echo ' selected="selected"';} ?>>
+								<?php esc_attr_e( 'Frontpage of the Blog', 'adminimize' ); ?>
+							</option>
 						</select> <?php esc_attr_e(
 							'When the &quot;User-Info-area&quot; change it, then it is possible to change the redirect.',
 							'adminimize'
@@ -94,16 +95,18 @@ if ( ! function_exists( 'add_action' ) ) {
 					</td>
 				</tr>
 				<tr valign="top">
-					<td><?php esc_attr_e( 'Footer', 'adminimize' ); ?></td>
+					<td><label for="_mw_adminimize_footer"><?php esc_attr_e( 'Footer', 'adminimize' ); ?></label></td>
 					<td>
 						<?php $_mw_adminimize_footer = (int) _mw_adminimize_get_option_value( '_mw_adminimize_footer' ); ?>
-						<select name="_mw_adminimize_footer">
-							<option value="0"<?php if ( $_mw_adminimize_footer === 0 ) {
-								echo ' selected="selected"';
-							} ?>><?php esc_attr_e( 'Default', 'adminimize' ); ?></option>
-							<option value="1"<?php if ( $_mw_adminimize_footer === 1 ) {
-								echo ' selected="selected"';
-							} ?>><?php esc_attr_e( 'Hide', 'adminimize' ); ?></option>
+						<select name="_mw_adminimize_footer" id="_mw_adminimize_footer">
+							<option value="0"<?php if ( 0 === $_mw_adminimize_footer ) {
+								echo ' selected="selected"'; } ?>>
+								<?php esc_attr_e( 'Default', 'adminimize' ); ?>
+							</option>
+							<option value="1"<?php if ( 1 === $_mw_adminimize_footer ) {
+								echo ' selected="selected"';} ?>>
+								<?php esc_attr_e( 'Hide', 'adminimize' ); ?>
+							</option>
 						</select> <?php esc_attr_e(
 							'The Footer-area can hide, include all links and details.', 'adminimize'
 						); ?>
@@ -159,12 +162,13 @@ if ( ! function_exists( 'add_action' ) ) {
 								echo ' selected="selected"';
 							} ?>><?php esc_attr_e( 'Activate', 'adminimize' ); ?></option>
 						</select>
-						<textarea style="width: 85%;" class="code" rows="1" cols="60" name="_mw_adminimize_advice_txt" id="_mw_adminimize_advice_txt"><?php echo htmlspecialchars(
-								stripslashes( _mw_adminimize_get_option_value( '_mw_adminimize_advice_txt' ) )
-							); ?></textarea><br /><?php esc_attr_e(
-							'In the Footer you can display an  advice for changing the Default-design, (x)HTML is possible.',
+						<br>
+						<textarea style="width: 85%;" class="code" rows="1" cols="60" name="_mw_adminimize_advice_txt" id="_mw_adminimize_advice_txt"><?php echo  _mw_adminimize_get_option_value( '_mw_adminimize_advice_txt' ); ?></textarea>
+						<br /><?php esc_attr_e(
+							'In the Footer you can display an advice for changing the Default-design, (x)HTML is possible.',
 							'adminimize'
 						); ?>
+						<code>a - (href, title), br, em, strong</code>
 					</td>
 				</tr>
 				<?php
@@ -224,8 +228,9 @@ if ( ! function_exists( 'add_action' ) ) {
 								</option>
 								<option value="6"<?php if ( $_mw_adminimize_db_redirect === 6 ) {
 									echo ' selected="selected"';
-								} ?>><?php esc_attr_e( 'other Page', 'adminimize' ); ?></option>
+								} ?>><?php esc_attr_e( 'Other Page', 'adminimize' ); ?></option>
 							</select>
+							<br>
 							<textarea style="width: 85%;" class="code" rows="1" cols="60" name="_mw_adminimize_db_redirect_txt" id="_mw_adminimize_db_redirect_txt"><?php
 								echo htmlspecialchars(
 									stripslashes( _mw_adminimize_get_option_value( '_mw_adminimize_db_redirect_txt' ) )
@@ -253,4 +258,3 @@ if ( ! function_exists( 'add_action' ) ) {
 		</div>
 	</div>
 </div>
-		

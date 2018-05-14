@@ -1,6 +1,6 @@
 <?php
 
-add_action('admin_menu', 'custom_theme_options_menu');
+// add_action('admin_menu', 'custom_theme_options_menu');
 //add_action( 'admin_menu', 'custom_admin_scripts' );
 
 

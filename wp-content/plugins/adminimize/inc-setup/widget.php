@@ -5,13 +5,19 @@
  * @author     Frank Bültge
  * @since      1.8.1  01/10/2013
  */
+
 if ( ! function_exists( 'add_action' ) ) {
 	echo "Hi there!  I'm just a part of plugin, not much I can do when called directly.";
 	exit;
 }
 
 if ( ! is_admin() ) {
-	return NULL;
+	return;
+}
+
+// If is AJAX Call.
+if ( defined('DOING_AJAX') && DOING_AJAX ) {
+	return;
 }
 
 function _mw_adminimize_get_all_widgets() {
@@ -40,7 +46,6 @@ function _mw_adminimize_get_sidebars_widgets() {
 }
 
 function _mw_adminimize_get_registered_sidebars() {
-
 	global $wp_registered_sidebars;
 
 	return $wp_registered_sidebars;

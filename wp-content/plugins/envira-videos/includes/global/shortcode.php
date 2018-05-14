@@ -347,6 +347,20 @@ class Envira_Videos_Shortcode {
         , video_aspect_ratio: '<?php echo ( isset( $image['video_aspect_ratio'] ) ? $image['video_aspect_ratio'] : '' ); ?>'
         <?php
 
+        // Check if this item's URL matches one in the videos array
+        if ( ! in_array( $image['link'], $this->videos ) ) {
+            // Nothing to do here
+            return;
+        }
+
+        // Check if link is a URL or HTML markup
+        if ( filter_var( 'http:' . $image['link'], FILTER_VALIDATE_URL ) || filter_var( 'https:' . $image['link'], FILTER_VALIDATE_URL ) ) {
+            ?>
+            , type: 'iframe',
+            href: '<?php echo html_entity_decode( $image["link"] ); ?>'
+            <?php
+        }
+
     }
 
     /**
@@ -361,7 +375,12 @@ class Envira_Videos_Shortcode {
         ?>
         var video_aspect_ratio;
         if ( typeof this.element === 'undefined' ) {
-            video_aspect_ratio = '';
+            if ( this.group[ this.index ].video_aspect_ratio !== 'undefined' ) {
+                video_aspect_ratio = this.group[ this.index ].video_aspect_ratio;
+            }
+            else {
+                video_aspect_ratio = '';
+            }
         } else {
             video_aspect_ratio = this.element.data( 'video-aspect-ratio' );
         }

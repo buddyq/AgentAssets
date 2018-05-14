@@ -12,6 +12,63 @@ if ( !class_exists( 'AviaHelper' ) ) {
 	{
 		static $cache = array(); 		//holds database requests or results of complex functions
 		static $templates = array(); 	//an array that holds all the templates that should be created when the print_media_templates hook is called
+		static $mobile_styles = array(); 		//an array that holds mobile styling rules that are appened to the end of the page
+		
+		/**
+		 * Returns the result of a multi input field that works with 2-4 values eg: margin, padding, border-radius etc
+		 * 
+		 * @since 4.3
+		 * @added_by Kriesi
+		 * @return array
+		 */
+		static public function multi_value_result( $value_array , $attr_name , $directions = array('top' , 'right' , 'bottom' , 'left') )
+		{
+			$explode = explode( ',', $value_array );
+			
+    		$minifed = "";
+			$writen  = "";
+			$comp_count = 0;
+			//make sure that the explode array has the correct amount of entries. if only one is set apply it to all direction sets
+			if(count($explode) == 1)
+			{
+				$new_explode = array();
+				foreach($directions as $key => $value)
+				{
+					$new_explode[] = $explode[0];
+				}
+				
+				$explode = $new_explode;
+			}
+			
+			foreach($explode as $key => $value)
+			{
+				if(!isset($value) && is_numeric($value))
+				{
+					$value = $value ."px";
+				}
+				
+				if(empty($value) && ( isset($value) && $value !== "0") )
+				{
+					$value = "0";
+				}
+				else
+				{
+					$writen .= $attr_name ."-". $directions[$key] . ":".$value."; ";
+					$comp_count ++;
+				}
+				
+				$minifed .= $value ." ";
+			}
+			
+			$minifed = $attr_name.":".trim($minifed)."; ";
+			if($comp_count == 4) $writen = $minifed;
+			
+			//overwrite sets all values, those not set by the user are set to 0. complement only creates rules for set elements and skips unset rules
+			$result = array( 'overwrite' => $minifed , 'complement' => $writen ); 			
+			
+			return $result;
+		}
+		
 		
 		/**
     	 * get_url - Returns a url based on a string that holds either post type and id or taxonomy and id
@@ -48,11 +105,82 @@ if ( !class_exists( 'AviaHelper' ) ) {
             	if(is_object($return)) $return = ""; //if an object is returned it is a WP_Error object and something was not found
             	return $return;
             } 
-            
-            
     	}
-    	
-    	/**
+		
+		/**
+		 * Returns a user friendly text that can be rendered to a screen reader output
+		 * Based on same input as to AviaHelper::get_url
+		 * 
+		 * @since 4.2.7
+		 * @added_by Günter
+		 * @param string $link
+		 * @param int|null $post_id
+		 * @return string
+		 */
+		static public function get_screen_reader_url_text( $link, $post_id = false )
+		{
+			$link = explode( ',', $link, 2 );
+			
+			if( $link[0] == 'lightbox' )        
+    		{
+				$post = get_post( $post_id );
+				if( ! $post instanceof WP_Post )
+				{
+					return __( 'No attachment image available', 'avia_framework' );
+				}
+				
+    			$link = wp_get_attachment_image_src( $post_id, apply_filters( 'avf_avia_builder_helper_lightbox_size', 'large' ) );
+				
+				if( false === $link )
+				{
+					return __( 'No attachment image available for: ', 'avia_framework' ) . esc_html( $post->post_title );
+				}
+				
+    			return __( 'Attachment image for: ', 'avia_framework' ) . esc_html( $post->post_title );
+    		}
+			
+			if( empty( $link[1] ) )
+    		{
+    			return __( 'Follow a manual added link', 'avia_framework' );
+    		}
+			
+			if( $link[0] == 'manually' )
+    		{
+    			if( strpos( $link[1], "@" ) !== false && strpos( $link[1], "://" ) === false )
+				{
+					return __( 'Send an E-Mail to: ', 'avia_framework' ) . $link[1];
+				}		
+
+    			return __( 'Follow a manual added link', 'avia_framework' );
+    		}
+			
+			if( post_type_exists( $link[0] ) )
+            {
+				$post = get_post( $link[1] );
+				if( ! $post instanceof WP_Post )
+				{
+					return __( 'Wrong link - page does not exist', 'avia_framework' );
+				}
+				
+				return __( 'Link to: ', 'avia_framework' ) . esc_html( $post->post_title );
+            }
+			
+			if( taxonomy_exists( $link[0] ) )  
+            {
+				$term = get_term( $link[1], $link[0] );
+							
+				if( ! $term instanceof WP_Term)
+				{
+					return __( 'Wrong link - page does not exist', 'avia_framework' );
+				}
+					
+            	return sprintf( __( 'Link to %s in %s', 'avia_framework' ), $term->name, $term->taxonomy );
+            } 
+			
+			return '';
+		}
+				
+		/**
     	 * get_entry - fetches an entry based on a post type and id
     	 */
     	static function get_entry($entry) 
@@ -348,7 +476,7 @@ if ( !class_exists( 'AviaHelper' ) ) {
     					'Ü'						=> 'Ue',
     					'ß'						=> 'ss',
     					'[^a-z0-9\-\._]'		=> '',
-    					$replace.'+'			=> $replace,
+    					//$replace.'+'			=> $replace, //allow doubles like -- or __
     					$replace.'$'			=> $replace,
     					'^'.$replace			=> $replace,
     					'\.+$'					=> ''
@@ -365,14 +493,61 @@ if ( !class_exists( 'AviaHelper' ) ) {
     		
     		return stripslashes($string);
     	}
+		
+		/**
+		 * Create a lower case version of a string without spaces and special characters so we can use that string for a href anchor link.
+		 * Returns the default if the remaining string is empty or invalid (not at least one a-z, 0-9).
+		 * 
+		 * @param string $link
+		 * @param string $replace
+		 * @param string $default
+		 * @return string
+		 */
+		static public function valid_href( $link, $replace = '_', $default = '' )
+		{
+			/**
+			 * Create a unique default value for the link if none provided
+			 */
+			if( '' == trim( $default ) )
+			{
+				$default = uniqid( '', true );
+				$default = strtolower( str_replace( '.', '-', $default ) );
+			}
+			
+			$new_link = AviaHelper::save_string( $link, $replace );
+			
+			if( '' == trim( $new_link ) )
+			{
+				$new_link = $default;
+			}
+			else
+			{
+				/**
+				 * non latin letters in $link might return an invalid link from AviaHelper::save_string (e.g. ---)
+				 * Also make sure link starts with [a-z0-9]
+				 */
+				$sc_found = array();
+				preg_match_all( "/[a-z0-9]/s", $new_link, $sc_found, PREG_OFFSET_CAPTURE );
+
+				if( empty( $sc_found ) || ! is_array( $sc_found ) || empty( $sc_found[0]) || ( $sc_found[0][0][1] != 0 ) )
+				{
+					$new_link = $default;
+				}
+			}
+			
+			return $new_link;
+		}
+		
     	
     	/**
 		 * Helper function that fetches the active value of the builder. also adds a filter
 		 *
+		 * @deprecated since version 4.2.1
 		 */
-		 
 		static function builder_status($post_ID)
 		{
+			_deprecated_function( 'builder_status', '4.2.1', 'AviaBuilder::get_alb_builder_status()');
+			
 			$status = get_post_meta($post_ID, '_aviaLayoutBuilder_active', true);
 			$status = apply_filters('avf_builder_active', $status, $post_ID);
 			
@@ -444,8 +619,102 @@ if ( !class_exists( 'AviaHelper' ) ) {
 		
 		return $posttype;	
 	}
+	
+	
+	
+	static function av_mobile_sizes($atts = array())
+	{
+		$result		= array('av_font_classes'=>'', 'av_title_font_classes'=>'', 'av_display_classes' => '', 'av_column_classes' => '');
+		$fonts 		= array('av-medium-font-size', 'av-small-font-size', 'av-mini-font-size'); 
+		$title_fonts= array('av-medium-font-size-title', 'av-small-font-size-title', 'av-mini-font-size-title'); 
+		$displays	= array('av-desktop-hide', 'av-medium-hide', 'av-small-hide', 'av-mini-hide');
+		$columns	= array('av-medium-columns', 'av-small-columns', 'av-mini-columns');
 		
 		
+		if(empty($atts)) $atts = array();
+		
+		foreach($atts as $key => $attribute)
+		{
+			if(in_array($key, $fonts) && $attribute != "")
+			{
+				$result['av_font_classes'] .= " ".$key."-overwrite";
+				$result['av_font_classes'] .= " ".$key."-".$attribute;
+				
+				if($attribute != "hidden") self::$mobile_styles['av_font_classes'][$key][$attribute] = $attribute;
+			}
+			
+			if(in_array($key, $title_fonts) && $attribute != "")
+			{
+				$newkey = str_ireplace('-title', "", $key);
+				
+				$result['av_title_font_classes'] .= " ".$newkey."-overwrite";
+				$result['av_title_font_classes'] .= " ".$newkey."-".$attribute;
+				
+				
+				if($attribute != "hidden") 
+				{ 
+					self::$mobile_styles['av_font_classes'][$newkey][$attribute] = $attribute;
+				}
+			}
+			
+			if(in_array($key, $displays) && $attribute != "")
+			{
+				$result['av_display_classes'] .= " ".$key;
+			}
+			
+			if(in_array($key, $columns) && $attribute != "")
+			{
+				$result['av_column_classes'] .= " ".$key."-overwrite";
+				$result['av_column_classes'] .= " ".$key."-".$attribute;
+			}
+		}
+
+		return $result;
+	}
+	
+	
+	
+	static function av_print_mobile_sizes()
+	{
+		$print 			= "";
+		
+		//rules are created dynamically, otherwise we would need to predefine more than 500 csss rules of which probably only 2-3 would be used per page
+		$media_queries 	= apply_filters('avf_mobile_font_size_queries' , array(
+			
+			"av-medium-font-size" 	=> "only screen and (min-width: 768px) and (max-width: 989px)",
+			"av-small-font-size" 	=> "only screen and (min-width: 480px) and (max-width: 767px)",
+			"av-mini-font-size" 	=> "only screen and (max-width: 479px)",  
+
+ 		));
+		
+
+		if(isset(self::$mobile_styles['av_font_classes']) && is_array(self::$mobile_styles['av_font_classes']))
+		{
+			$print .="<style type='text/css'>\n";
+			
+			foreach($media_queries as $key => $query)
+			{
+				if( isset(self::$mobile_styles['av_font_classes'][$key]) )
+				{
+					$print .="@media {$query} { \n";
+					
+					if( isset(self::$mobile_styles['av_font_classes'][$key]))
+					{
+						foreach(self::$mobile_styles['av_font_classes'][$key] as $size)
+						{
+							$print .= ".responsive #top #wrap_all .{$key}-{$size}{font-size:{$size}px !important;} \n";
+						}
+					}
+					
+					$print .= "} \n";
+				}
+			}
+			
+			$print .="</style>";
+		}
+		
+		return $print; 
+	}
 		
 		
 		

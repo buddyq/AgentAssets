@@ -50,7 +50,7 @@ class MismCreateNewSiteNotify {
             self::$secondContent = null;
         }
         if (self::$hasSuccessNotify) {
-            $html = MedmaHelper::getAviaMessageBox(self::$content, self::$secondContent, self::$notifyOptions);
+            // $html = MedmaHelper::getAviaMessageBox(self::$content, self::$secondContent, self::$notifyOptions);
             if (!empty(self::$additionalContent)) {
                 $html .= self::$additionalContent;
             }
@@ -89,7 +89,7 @@ class MismCreateNewSiteNotify {
             self::$secondContent = null;
         }
         if (self::$hasErrorNotify) {
-            $html = MedmaHelper::getAviaMessageBox(self::$content, self::$secondContent, self::$notifyOptions);
+            // $html = MedmaHelper::getAviaMessageBox(self::$content, self::$secondContent, self::$notifyOptions);
             if (!empty(self::$additionalContent)) {
                 $html .= self::$additionalContent;
             }
@@ -104,6 +104,7 @@ add_shortcode('create_new_site_link', array('MismCreateNewSiteNotify', 'successL
 add_shortcode('create_new_site_subdomain_link', array('MismCreateNewSiteNotify', 'successSubdomainLinkShortcode'));
 add_shortcode('create_new_site_admin_link', array('MismCreateNewSiteNotify', 'successAdminLinkShortcode'));
 
+
 function mism_create_new_site($atts)
 {
     global $wpdb;
@@ -112,18 +113,6 @@ function mism_create_new_site($atts)
         array(
             'title' => '',
         ), $atts, 'create_new_site');
-
-
-//    $plugin = Domainmap_Plugin::instance();
-//    /** @var Domainmap_Module_Mapping $module */
-//    $module = $plugin->get_module('Domainmap_Module_Mapping');
-//    //$dRes = $plugin->get_reseller()->check_domain('net', 'onlib');
-//
-//    var_dump($module);
-//
-//    return '';
-
-
 
     #   User Package Authentication Check
     $order = OrderModel::findOne('`user_id` = %d AND `status` = %d AND `expiry_date` >= %s',
@@ -230,7 +219,7 @@ function mism_create_new_site($atts)
                                 OrderMap::addNewRelation($userID, $blog_id, $order->id, $package_duration);
                                 $domain_map_status = true;
 
-                                /*
+                                
                                 ?>
                                 <div
                                     class="avia_message_box avia-color-green avia-size-large avia-icon_select-yes avia-border-  avia-builder-el-0  el_before_av_notification  avia-builder-el-first ">
@@ -248,8 +237,8 @@ function mism_create_new_site($atts)
                                         updateConsumed();
                                     });
                                 </script>
-                            MismCreateNewSiteNotify    <?php
-                                */
+                                <?php
+                                
                                 MismCreateNewSiteNotify::$additionalContent = '<script type="text/javascript">'
                                     .'    jQuery(function () {'
                                     .'        updateConsumed();'
@@ -261,7 +250,7 @@ function mism_create_new_site($atts)
                                 MismCreateNewSiteNotify::$adminLink = 'http://'.$domain.'/wp-admin';
                                 MismCreateNewSiteNotify::successNotify();
                             } else {
-                                /*
+                          
                                 $html .= '<div class="avia_message_box avia-color-red avia-size-large avia-icon_select-yes avia-border-  avia-builder-el-2  el_after_av_notification  el_before_av_notification ">';
                                 $html .= '<span class="avia_message_box_title">Note</span>';
                                 $html .= '<div class="avia_message_box_content">';
@@ -270,14 +259,14 @@ function mism_create_new_site($atts)
                                 $html .= '</div>';
                                 $html .= '<p>Please contact our support for more information or read our documentation.</p>';
                                 $html .= '</div>';
-                                */
+                                
                                 MismCreateNewSiteNotify::$content = 'Unable to map your domain with your microsite.';
                                 MismCreateNewSiteNotify::$secondContent = 'Please contact our support for more information or read our documentation.';
                                 MismCreateNewSiteNotify::errorNotify();
                             }
                         } else {
                             OrderMap::addNewRelation($userID, $blog_id, $order->id, $package_duration);
-                            /*
+                            
                             $html .= '<div class="avia_message_box avia-color-red avia-size-large avia-icon_select-yes avia-border-  avia-builder-el-2  el_after_av_notification  el_before_av_notification ">';
                             $html .= '<span class="avia_message_box_title">Note</span>';
                             $html .= '<div class="avia_message_box_content">';
@@ -286,14 +275,14 @@ function mism_create_new_site($atts)
                             $html .= '</div>';
                             $html .= '<p>Please contact our support for more information or read our documentation.</p>';
                             $html .= '</div>';
-                            */
+                            
                             MismCreateNewSiteNotify::$content = 'Unable to map your domain with your microsite.';
                             MismCreateNewSiteNotify::$secondContent = 'Please contact our support for more information or read our documentation.';
                             MismCreateNewSiteNotify::errorNotify();
                         }
                     } else {
                         if ($blog_exists == TRUE || $improper_domain == TRUE) {
-                            /*
+                            
                             $html .= '<div class="avia_message_box avia-color-red avia-size-large avia-icon_select-yes avia-border-  avia-builder-el-2  el_after_av_notification  el_before_av_notification ">';
                             $html .= '<span class="avia_message_box_title">Note</span>';
                             $html .= '<div class="avia_message_box_content">';
@@ -302,14 +291,14 @@ function mism_create_new_site($atts)
                             $html .= '</div>';
                             $html .= '<p>Please try again.</p>';
                             $html .= '</div>';
-                            */
+                            
                             MismCreateNewSiteNotify::$content = 'Please enter proper domain name or your domain already exists in our directory.';
                             MismCreateNewSiteNotify::$secondContent = 'Please try again.';
                             MismCreateNewSiteNotify::errorNotify();
                         }
                     }
                 } else {
-                    /*
+                    
                     $html .= '<div class="avia_message_box avia-color-red avia-size-large avia-icon_select-yes avia-border-  avia-builder-el-2  el_after_av_notification  el_before_av_notification ">';
                     $html .= '<span class="avia_message_box_title">Error</span>';
                     $html .= '<div class="avia_message_box_content">';
@@ -317,12 +306,12 @@ function mism_create_new_site($atts)
                     $html .= '<p>Please Enter Unique Domain Name</p>';
                     $html .= '</div>';
                     $html .= '</div>';
-                    */
+                    
                     MismCreateNewSiteNotify::$content = 'Please Enter Unique Domain Name';
                     MismCreateNewSiteNotify::errorNotify(array('title' => 'Error'));
                 }
             } else {
-                /*
+                
                 $html .= '<div class="avia_message_box avia-color-red avia-size-large avia-icon_select-yes avia-border-  avia-builder-el-2  el_after_av_notification  el_before_av_notification ">';
                 $html .= '<span class="avia_message_box_title">Error</span>';
                 $html .= '<div class="avia_message_box_content">';
@@ -330,7 +319,7 @@ function mism_create_new_site($atts)
                 $html .= '<p>Please upgrade your package. You have consumed the total site allowed.</p>';
                 $html .= '</div>';
                 $html .= '</div>';
-                */
+                
                 MismCreateNewSiteNotify::$content = 'Please upgrade your package. You have consumed the total site allowed.';
                 MismCreateNewSiteNotify::errorNotify(array('title' => 'Error'));
             }
@@ -358,12 +347,12 @@ function mism_create_new_site_form($atts) {
         $html = '';
 
         $counter_details = PackageCounter::getCounterDetailsByOrderId($order->id);
+        echo "<pre>";print_r($counter_details);"</pre>";
+        // This is where we need to control themes. This gets all admin themes, however not all themes should be available to all users.
+        $themes = get_blogs_of_user('2');    # Admin
 
-        // This is where we need to control themes. This gets all admin themese, however not all themes should be available to all users.
-        $themes = get_blogs_of_user('1');    # Admin
-
-        $html .= MedmaHelper::getConsumedSitesMessageBox($counter_details);
-        /*if ($counter_details->site_allowed > $counter_details->site_consumed) {
+        // $html .= MedmaHelper::getConsumedSitesMessageBox($counter_details);
+        if ($counter_details->site_allowed > $counter_details->site_consumed) {
             $html .= '<div class="avia_message_box avia-color-blue avia-size-large avia-icon_select-yes avia-border-  avia-builder-el-1  el_after_av_notification  el_before_av_notification ">';
             $html .= '<span class="avia_message_box_title">Note</span>';
             $html .= '<div class="avia_message_box_content">';
@@ -389,7 +378,7 @@ function mism_create_new_site_form($atts) {
             $html .= '<p>You have consumed all the sites allowed by your current package. Please <a href="/pricing/" title="View Pricing">upgrade</a> your package.</p>';
             $html .= '</div>';
             $html .= '</div>';
-        }*/
+        }
 
         $html .= '<form id="create-site-form" method="POST">';
 
@@ -427,7 +416,7 @@ function mism_create_new_site_form($atts) {
         $html .= '<input id="site_title" type="text" placeholder="Eg. Your Business name" name="site_title" value="">';
 
         $html .= '<input type="hidden" name="user_id" value="' . get_current_user_id() . '">';
-        $html .= '<input type="submit" name="submit" value="Create Site">';
+        $html .= '<input type="submit" name="submit" value="Create Site!">';
 
         $html .= '</div>';
 
@@ -518,7 +507,7 @@ function mism_clone_blog($clone_from_blog_id, $clone_to_blog_id, $domain)
     $excluded_options = esc_sql($excluded_options);
 
     //we are going to use II Clause to fetch everything in single query. For this to work, we will need to quote the string
-    //
+
     //not the best way to do it, will improve in future
     //I could not find an elegant way to quote string using sql, so here it is
     $excluded_option_list = "('" . join("','", $excluded_options) . "')";

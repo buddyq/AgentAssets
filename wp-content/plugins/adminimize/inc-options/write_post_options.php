@@ -12,8 +12,8 @@ if ( ! function_exists( 'add_action' ) ) {
 
 <div id="poststuff" class="ui-sortable meta-box-sortables">
 	<div class="postbox">
-		<div class="handlediv" title="<?php esc_attr_e( 'Click to toggle' ); ?>"><br /></div>
-		<h3 class="hndle" id="config_edit_post" title="<?php esc_attr_e( 'Click to toggle' ); ?>"><?php
+		<div class="handlediv" title="<?php esc_attr_e( 'Click to toggle', 'adminimize' ); ?>"><br /></div>
+		<h3 class="hndle" id="config_edit_post" title="<?php esc_attr_e( 'Click to toggle', 'adminimize' ); ?>"><?php
 			esc_attr_e( 'Write options - Post', 'adminimize' ); ?></h3>
 
 		<div class="inside">
@@ -23,7 +23,7 @@ if ( ! function_exists( 'add_action' ) ) {
 				<colgroup>
 					<?php
 					$col = 0;
-					foreach ( $user_roles_names as $role_name ) {
+					foreach ( (array) $user_roles_names as $role_name ) {
 						echo '<col class="col' . $col . '">' . "\n";
 						$col ++;
 					}
@@ -33,7 +33,7 @@ if ( ! function_exists( 'add_action' ) ) {
 				<tr>
 					<th><?php esc_attr_e( 'Write options - Post', 'adminimize' ); ?></th>
 					<?php
-					foreach ( $user_roles_names as $role_name ) { ?>
+					foreach ( (array) $user_roles_names as $role_name ) { ?>
 						<th><?php esc_attr_e( 'Deactivate for', 'adminimize' );
 							echo '<br/>' . $role_name; ?></th>
 					<?php } ?>
@@ -41,11 +41,9 @@ if ( ! function_exists( 'add_action' ) ) {
 				<tr>
 					<td><?php esc_attr_e( 'Select all', 'adminimize' ); ?></td>
 					<?php
-					foreach ( $user_roles as $role_slug ) {
-						echo '<td class="num">';
-						echo '<input id="select_all" class="write_post_options_' . $role_slug
-							. '" type="checkbox" name="" value="" />';
-						echo '</td>' . "\n";
+					foreach ( (array) $user_roles as $role_slug ) {
+						echo '<td class="num"><input id="select_all" class="write_post_options_'
+						     . esc_attr( $role_slug ) . '" type="checkbox" name="" value="" /></td>' . "\n";
 					} ?>
 				</tr>
 				</thead>
@@ -55,6 +53,7 @@ if ( ! function_exists( 'add_action' ) ) {
 				$metaboxes = array(
 					'#contextual-help-link-wrap',
 					'#screen-options-link-wrap',
+					'.page-title-action',
 					'#title, #titlediv, th.column-title, td.title',
 					'#pageslugdiv',
 					'#tags, #tagsdiv,#tagsdivsb,#tagsdiv-post_tag, th.column-tags, td.tags',
@@ -70,7 +69,7 @@ if ( ! function_exists( 'add_action' ) ) {
 					'#slugdiv,#edit-slug-box',
 					'#misc-publishing-actions',
 					'#commentstatusdiv',
-					'#editor-toolbar #edButtonHTML, #quicktags, #content-html, .wp-switch-editor.switch-html'
+					'#editor-toolbar #edButtonHTML, #quicktags, #content-html, .wp-switch-editor.switch-html',
 				);
 
 				$post_type = 'post';
@@ -127,6 +126,7 @@ if ( ! function_exists( 'add_action' ) ) {
 				$metaboxes_names = array(
 					esc_attr__( 'Help' ),
 					esc_attr__( 'Screen Options' ),
+					esc_attr__( 'Add New' ),
 					esc_attr__( 'Title', 'adminimize' ),
 					esc_attr__( 'Permalink', 'adminimize' ),
 					esc_attr__( 'Tags', 'adminimize' ),
@@ -163,15 +163,15 @@ if ( ! function_exists( 'add_action' ) ) {
 				$quickedit_names = array(
 					'<strong>' . esc_attr__( 'Quick Edit Link', 'adminimize' ) . '</strong>',
 					esc_attr__( 'QE', 'adminimize' ) . ' ' . esc_attr__( 'Inline Edit Left', 'adminimize' ),
-					'&emsp;QE &rArr;' . ' ' . esc_attr__( 'All Labels', 'adminimize' ),
-					'&emsp;QE &rArr;' . ' ' . esc_attr__( 'Author' ),
-					'&emsp;QE &rArr;' . ' ' . esc_attr__( 'Password and Private', 'adminimize' ),
+					'&emsp;' . esc_attr__( 'QE', 'adminimize' ) . ' &rArr;' . ' ' . esc_attr__( 'All Labels', 'adminimize' ),
+					'&emsp;' . esc_attr__( 'QE', 'adminimize' ) . ' &rArr;' . ' ' . esc_attr__( 'Author' ),
+					'&emsp;' . esc_attr__( 'QE', 'adminimize' ) . ' &rArr;' . ' ' . esc_attr__( 'Password and Private', 'adminimize' ),
 					esc_attr__( 'QE', 'adminimize' ) . ' ' . esc_attr__( 'Inline Edit Center', 'adminimize' ),
-					'&emsp;QE &rArr;' . ' ' . esc_attr__( 'Categories Title', 'adminimize' ),
-					'&emsp;QE &rArr;' . ' ' . esc_attr__( 'Categories List', 'adminimize' ),
+					'&emsp;' . esc_attr__( 'QE', 'adminimize' ) . ' &rArr;' . ' ' . esc_attr__( 'Categories Title', 'adminimize' ),
+					'&emsp;' . esc_attr__( 'QE', 'adminimize' ) . ' &rArr;' . ' ' . esc_attr__( 'Categories List', 'adminimize' ),
 					esc_attr__( 'QE', 'adminimize' ) . ' ' . esc_attr__( 'Inline Edit Right', 'adminimize' ),
-					'&emsp;QE &rArr;' . ' ' . esc_attr__( 'Tags' ),
-					'&emsp;QE &rArr;' . ' ' . esc_attr__( 'Status, Sticky', 'adminimize' ),
+					'&emsp;' . esc_attr__( 'QE', 'adminimize' ) . ' &rArr;' . ' ' . esc_attr__( 'Tags' ),
+					'&emsp;' . esc_attr__( 'QE', 'adminimize' ) . ' &rArr;' . ' ' . esc_attr__( 'Status, Sticky', 'adminimize' ),
 					esc_attr__( 'QE', 'adminimize' ) . ' ' . esc_attr__( 'Cancel/Save Button', 'adminimize' )
 				);
 				$metaboxes_names = array_merge( $metaboxes_names, $quickedit_names );

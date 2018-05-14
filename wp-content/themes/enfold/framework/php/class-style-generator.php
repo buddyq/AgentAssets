@@ -172,7 +172,8 @@ if( !class_exists( 'avia_style_generator' ) )
 					//first of all we need to build the selector string
 					$selectorArray 	= $this->stylewizard[$style['id']]['selector'];
 					$sectionCheck	= $this->stylewizard[$style['id']]['sections'];
-	
+					
+					
 					foreach($selectorArray as $selector => $ruleset)
 					{
 						$temp_selector  = "";
@@ -187,6 +188,16 @@ if( !class_exists( 'avia_style_generator' ) )
 						else
 						{
 							$selector = str_replace("[hover]", "", $selector);
+						}
+			
+						//active check
+						if(isset($style['item_active']) && $style['item_active'] != 'disabled' && isset(  $this->stylewizard[$style['id']]['active'] ))
+						{
+							$selector = str_replace("[active]", $this->stylewizard[$style['id']]['active'] , $selector);
+						}
+						else
+						{
+							$selector = str_replace("[active]", "", $selector);
 						}
 						
 						//if sections are enabled make sure that the selector string gets generated for each section
@@ -310,7 +321,8 @@ if( !class_exists( 'avia_style_generator' ) )
         {
         	if($this->print_extra_output) 
         	{
-        		$this->link_google_font();
+	        	$fonts = avia_get_option('gfonts_in_footer');
+        		if(empty($fonts) || $fonts == "disabled") $this->extra_output .= $this->link_google_font();
         		
         		echo $this->extra_output;
         	}
@@ -318,6 +330,9 @@ if( !class_exists( 'avia_style_generator' ) )
         
         function print_footer()
         {
+	        $fonts = avia_get_option('gfonts_in_footer');
+        	if(!empty($fonts) && $fonts == "gfonts_in_footer") $this->footer = $this->link_google_font();
+	        
         	if(!empty($this->footer)) 
         	{
         		echo $this->footer;
@@ -404,9 +419,27 @@ if( !class_exists( 'avia_style_generator' ) )
 		function link_google_font()
 		{
 			if(empty($this->google_fontlist)) return;
-		
-			$this->extra_output .= "\n<!-- google webfont font replacement -->\n";
-			$this->extra_output .= "<link rel='stylesheet' id='avia-google-webfont' href='//fonts.googleapis.com/css?family=".apply_filters('avf_google_fontlist', $this->google_fontlist)."' type='text/css' media='all'/> \n";
+			
+			
+			$output  = "";
+			$output .= "\n<!-- google webfont font replacement -->\n";
+			$output .= "
+			<script type='text/javascript'>
+			(function() {
+				var f = document.createElement('link');
+				
+				f.type 	= 'text/css';
+				f.rel 	= 'stylesheet';
+				f.href 	= '//fonts.googleapis.com/css?family=".apply_filters('avf_google_fontlist', $this->google_fontlist)."';
+				f.id 	= 'avia-google-webfont';
+				
+				document.getElementsByTagName('head')[0].appendChild(f);
+			})();
+			
+			</script>
+			";
+			
+			return $output;
 		}
 		
 		

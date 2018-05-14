@@ -25,7 +25,7 @@ function cu_register_form()
             $googleplus = $_POST['micu_googleplus'];
 
             $return_url = $_POST['micu_return_url'];
-              remove_action('wpmu_new_user', 'newuser_notify_siteadmin', 999);
+              // remove_action('wpmu_new_user', 'newuser_notify_siteadmin', 999);
             # User Created
             $user_id = wpmu_create_user($username, $password, $email);
             if (isset($user_id) && $user_id > 0) {

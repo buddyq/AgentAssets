@@ -4,6 +4,7 @@
   $themeSettings = ThemeSettingsModel::model();
   $always_show_footer = $themeSettings->always_show_footer == "no" ? 0 : 1;
   ?>
+  <h1><?php echo $themeSettings->always_show_footer; ?></h1>
     <?php $agentInformation = AgentInformationModel::model(); ?>
     <footer id="footer" class="footer-wrapper <?php echo (isset($_COOKIE['toggle-footer-button-state']) && $_COOKIE['toggle-footer-button-state'] == '1') ? 'hide-footer' : 'show-footer' ?>">
         <div class="container">

@@ -1,6 +1,6 @@
 <?php
 /*
-Enfold functions overrides
+Enfold functions overrides - SG
 */
 
 add_theme_support('deactivate_layerslider');
@@ -9,6 +9,31 @@ $avia_config['imgSize']['slider_post_img'] = array('width'=>500,  'height'=>375)
 
 add_action( 'admin_enqueue_scripts', 'load_admin_style' );
 add_filter('show_admin_bar', '__return_false');
+
+// add_action( 'ava_inside_main_menu', 'enfold_customization_header_widget_area' );
+function enfold_customization_header_widget_area() {
+	if(is_user_logged_in()){
+		$object = new myCRED_Balance();
+		echo '<li class="menu-item menu-item-top-level menu-credit-counter"><span class="credit-counter">'.$object->current.'</span><span class="credits">Sites remaining</span></li>';
+	}
+}
+
+function my_login_redirect( $redirect_to, $request, $user ) {
+	//is there a user to check?
+	if ( isset( $user->roles ) && is_array( $user->roles ) ) {
+		//check for admins
+		if ( in_array( 'administrator', $user->roles ) ) {
+			// redirect them to the default place
+			return $redirect_to;
+		} else {
+			return home_url();
+		}
+	} else {
+		return $redirect_to;
+	}
+}
+
+add_filter( 'login_redirect', 'my_login_redirect', 10, 3 );
 
 function load_admin_style() {
   // wp_register_style( 'admin_css', get_template_directory_uri() . '/admin-style.css', false, '1.0.0' );
@@ -24,27 +49,6 @@ function show_packages(){
   $has_package = $total_package;
   return $has_package;
 }
-
-function rebranding_wordpress_logo(){
-  global $wp_admin_bar;
-  //the following codes is to remove sub menu
-  $wp_admin_bar->remove_menu('about');
-  $wp_admin_bar->remove_menu('documentation');
-  $wp_admin_bar->remove_menu('support-forums');
-  $wp_admin_bar->remove_menu('feedback');
-  $wp_admin_bar->remove_menu('wporg');
-
-  //and this is to change wordpress logo
-  $wp_admin_bar->add_menu( array(
-      'id'    => 'wp-logo',
-      'title' => '<img src="http://agentassets.com/wp-content/uploads/2016/05/AA_circle-20px.png" />',
-      'href'  => __('http://www.agentassets.com/'),
-      'meta'  => array(
-          'title' => __('Back to AgentAssets.com'),
-      ),
-  ) );
-}
-add_action('wp_before_admin_bar_render', 'rebranding_wordpress_logo' );
 
 function notify_admin_newsite($msg){
   // Extract pertinent information from the message.
@@ -302,12 +306,60 @@ function tgm_envira_whitelabel( $translated_text, $source_text, $domain ) {
     return $translated_text;
 
 }
+// Code
+class bpgmq_feature_group {
+    public function __construct() {
+        $this->setup_hooks();
+    }
+    private function setup_hooks() {
+        // in Group Administration screen, you add a new metabox to display a checkbox to featured the displayed group
+        add_action('bp_groups_admin_meta_boxes', array($this, 'admin_ui_edit_featured'));
+        // Once the group is saved you store a groupmeta in db, the one you will search for in your group meta query
+        add_action('bp_group_admin_edit_after', array($this, 'admin_ui_save_featured'), 10, 1);
+    }
+    /**
+     * registers a new metabox in Edit Group Administration screen, edit group panel
+     */
+    public function admin_ui_edit_featured() {
+        add_meta_box(
+                'bpgmq_feature_group_mb', __('Template Categories'), array(&$this, 'admin_ui_metabox_featured'), get_current_screen()->id, 'side', 'core'
+        );
+    }
+    /**
+     * Displays the meta box
+     */
+    public function admin_ui_metabox_featured($item = false) {
+        if (empty($item))
+            return;
+        $templatects = new blog_templates_model();
+        $cats = $templatects->get_templates_categories();
+        // Using groups_get_groupmeta to check if the group is featured
+        $cats_data = groups_get_groupmeta($item->id, '_bd_temp_cat');
+        $socialSel = unserialize($cats_data);
+        if (empty($socialSel))
+            $socialSel = array();
+        foreach ($cats as $k => $v) {
+            ?>
+                <p><input type="checkbox" name="bd_temp_cat[<?php echo $v['ID']; ?>]" <?php if($v['is_default']) echo 'checked="checked" readonly'; ?> value="1" <?php echo array_key_exists($v['ID'], $socialSel) ? 'checked="checked"' : ''; ?>> <?php echo $v['name']; ?></p>
+        <?php } ?>
+        <?php
+        wp_nonce_field('bpgmq_featured_save_' . $item->id, 'bpgmq_featured_admin');
+    }
+    function admin_ui_save_featured($group_id = 0) {
+        if ('POST' !== strtoupper($_SERVER['REQUEST_METHOD']) || empty($group_id))
+            return false;
+        check_admin_referer('bpgmq_featured_save_' . $group_id, 'bpgmq_featured_admin');
+        groups_update_groupmeta($group_id, '_bd_temp_cat', serialize($_POST['bd_temp_cat']));
+    }
+}
 
-// add_action( 'admin_init', 'tgm_envira_remove_header' );
-// function tgm_envira_remove_header() {
-//
-//     // Remove the Envira banner
-//     remove_action( 'in_admin_header', array( Envira_Gallery_Posttype_Admin::get_instance(), 'admin_header' ), 100 );
-//
-// }
+function bpgmq_feature_group() {
+    if (bp_is_active('groups'))
+        return new BPGMQ_Feature_Group();
+}
+
+add_action('bp_init', 'bpgmq_feature_group');
+
+// End of Code
+
 ?>

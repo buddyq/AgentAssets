@@ -1,9 +1,14 @@
 <?php
 
 add_shortcode('my_purchases','aa_my_packages');
-wp_enqueue_script('jquery');
-wp_enqueue_script('tablesorter', plugins_url('agentassets-site-manager').'/js/tablesorter/jquery.tablesorter.min.js','','1.7.1');
-wp_enqueue_script('purchases_script', plugins_url('agentassets-site-manager').'/js/general.js','','1.7.1');
+
+function add_tablesort_scripts()
+{
+  wp_enqueue_script('jquery');
+  wp_enqueue_script('tablesorter', plugins_url('agentassets-site-manager').'/js/tablesorter/jquery.tablesorter.min.js','','1.7.1');
+  wp_enqueue_script('purchases_script', plugins_url('agentassets-site-manager').'/js/general.js','','1.7.1');
+}
+add_action('wp_enqueue_scripts','add_tablesort_scripts');
 
 function aa_my_packages($atts)
 {

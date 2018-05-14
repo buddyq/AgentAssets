@@ -31,7 +31,6 @@
 
             // Files Added for Uploading
             uploader.bind( 'FilesAdded', function ( up, files ) {
-
                 // Hide any existing errors
                 $( envira_error ).html( '' );
 
@@ -44,16 +43,28 @@
                 $( '.uploading', $( envira_status ) ).show();
                 $( '.done', $( envira_status ) ).hide();
 
+                if ( files[0].name.includes('.zip') ) {
+                    $( '.uploading').hide();
+                }
+
                 // Fade in the upload progress bar
-                $( envira_bar ).fadeIn();
+                $( envira_bar ).fadeIn( "fast", function() {
+                    $( 'p.max-upload-size' ).css('padding-top', '10px');
+                });
 
             } );
 
             // File Uploading - show progress bar
             uploader.bind( 'UploadProgress', function( up, file ) {
-
                 // Update the status text
-                $( '.uploading .current', $( envira_status ) ).text( ( envira_file_count - up.total.queued ) + 1 );
+                if ( file.name.includes('.zip') ) {
+                    // If this is a zip file, display a different message...
+                    $( '.uploading').hide();
+                    $( '.opening_zip', $( envira_status ) ).show();
+                } else {
+                    // ...otherwise display how far along we are in uploading the files
+                    $( '.uploading .current', $( envira_status ) ).text( ( envira_file_count - up.total.queued ) + 1 );
+                }
 
                 // Update the progress bar
                 $( envira_progress ).css({
@@ -64,6 +75,20 @@
 
             // File Uploaded - AJAX call to process image and add to screen.
             uploader.bind( 'FileUploaded', function( up, file, info ) {
+                // Update the status text
+                if ( file.name.includes('.zip') ) {
+                    // If this is a zip file, display a different message...
+                    $( '.uploading').hide();
+                    $( '.done').hide();
+                    $( '.uploading_zip' ).hide();
+
+                    $( '.envira_bar').show();
+                    $( '.envira_status').show();
+                    $( '.opening_zip').show();
+                } else {
+                    // ...otherwise display how far along we are in uploading the files
+                    $( '.uploading .current', $( envira_status ) ).text( ( envira_file_count - up.total.queued ) + 1 );
+                }
 
                 // AJAX call to Envira to store the newly uploaded image in the meta against this Gallery
                 $.post(
@@ -86,17 +111,40 @@
                                 $(envira_output).append(res);
                                 break;
                         }
-
+						
+						$( document ).trigger( 'enviraInsert' );
+						
                         // Repopulate the Envira Gallery Image Collection
                         EnviraGalleryImagesUpdate( false );
 
+                        if ( file.name.includes('.zip') ) {
+
+                            $( '.opening_zip').hide();
+                            $( '.uploading_zip').hide();
+                            $( '.done_zip', $( envira_status ) ).show();
+
+                            setTimeout( function() {
+                                $( envira_bar ).fadeOut();
+                                $( '.done_zip', $( envira_status ) ).hide();
+                                $( 'p.max-upload-size' ).css('padding-top', '0');
+                            }, 8000 );
+
+                        }
+						
                     },
                     'json'
                 );
             });
 
             // Files Uploaded
-            uploader.bind( 'UploadComplete', function() {
+            uploader.bind( 'UploadComplete', function( up, files ) {
+
+                if ( files[files.length - 1].name.includes('.zip') ) {
+                    // if this a zip file, return back and let fileuploaded handle it
+                    $( '.done' ).hide();
+                    $( '.uploading_zip', $( envira_status ) ).hide();
+                    return;
+                }
 
                 // Update status
                 $( '.uploading', $( envira_status ) ).hide();
@@ -104,7 +152,9 @@
 
                 // Hide Progress Bar
                 setTimeout( function() {
-                    $( envira_bar ).fadeOut();
+                    $( envira_bar ).fadeOut( "fast", function() {
+                        $( 'p.max-upload-size' ).css('padding-top', '0');
+                    });
                 }, 1000 );
 
             });

@@ -1,8 +1,8 @@
 <?php
 /**
- * Plugin Name: Agentassets Multisite Site Manager
+ * Plugin Name: Agentassets Master Plugin
  * Plugin URI: http://URI_Of_Page_Describing_Plugin_and_Updates
- * Description: A plugin designed to handle numbers of sites of a user
+ * Description: This plugin allows for most major functions needed for AgentAssets.com
  * Version: 1.0.0
  * Author: Agentassets
  * Author URI: http://agentassets.com
@@ -11,38 +11,99 @@
  * License: GPL2
  */
 
+ function __construct() 
+{
+  
+  add_filter( 'wp_new_user_notification_email', 'new_user_notification_email', 10, 3 );
+ 
+}
+
+add_image_size( 'contact-picture', 600, 450, array( 'center', 'top' ) );
+add_filter( 'image_size_names_choose', 'my_custom_sizes' );
+ 
+function my_custom_sizes( $sizes ) {
+    return array_merge( $sizes, array(
+        'contact-picture' => __( 'Contact Picture' ),
+    ) );
+}
+/* Add Error Logging */
+if ( ! function_exists('write_log')) {
+   function write_log ( $log )  {
+      if ( is_array( $log ) || is_object( $log ) ) {
+         error_log( print_r( $log, true ) );
+      } else {
+         error_log( $log );
+      }
+   }
+}
+
+$user_id = get_current_user_id();
+
+
 # Files Added
 include 'XML-API/xmlapi.php';
 
-require_once 'includes/medmahelper.class.php';
-require_once 'includes/ordermap.class.php';
-require_once 'includes/ordermodel.class.php';
+// require_once 'includes/medmahelper.class.php';
+// require_once 'includes/ordermap.class.php';
+// require_once 'includes/ordermodel.class.php';
 require_once 'includes/packagecounter.class.php';
 require_once 'includes/medmagroupmodel.class.php';
 require_once 'includes/medmathememanager.class.php';
 
-require_once 'includes/post-types.php';
+// require_once 'includes/post-types.php';
 
-require_once 'includes/metaboxes.php';
+// require_once 'includes/metaboxes.php';
 
-require_once 'includes/medmaclonefactory.php';
+// require_once 'includes/medmaclonefactory.php';
 
-require_once 'includes/shortcodes/create_new_site.php';
-require_once 'includes/shortcodes/my_purchases.php';
-require_once 'includes/shortcodes/list_sites.php';
-require_once 'includes/shortcodes/list_packages.php';
-require_once 'includes/shortcodes/package_status.php';
-require_once 'includes/shortcodes/medma_groups_info.php';
-require_once 'includes/shortcodes/medma_groups_admin.php';
-require_once 'includes/shortcodes/medma_group_assign_code.php';
+// require_once 'includes/shortcodes/create_new_site.php';
+// require_once 'includes/shortcodes/my_purchases.php';
+// require_once 'includes/shortcodes/list_sites.php';
+// require_once 'includes/shortcodes/list_packages.php';
+// require_once 'includes/shortcodes/package_status.php';
+// require_once 'includes/shortcodes/medma_groups_info.php';
+// require_once 'includes/shortcodes/medma_groups_admin.php';
+// require_once 'includes/shortcodes/medma_group_assign_code.php';
 
-require_once 'includes/settings/package-settings.php';
+// require_once 'includes/settings/package-settings.php';
 require_once 'includes/settings/medma-manager-admin.php';
 
 require_once 'includes/ajax_action_callbacks.php';
 
 require_once 'includes/actions.php';
 require_once 'includes/filters.php';
+
+// Added by Buddy Quaid
+require_once 'includes/aa-add_parked_domain.php';
+require_once 'includes/aa-admin-screen-cleanup.php';
+require_once 'includes/aa-agentassets-class.php';
+require_once 'includes/aa-buddypress-slug-changes.php';
+require_once 'includes/aa-customizer-options.php';
+require_once 'includes/aa-delete-site-actions.php';
+require_once 'includes/aa-do_after_site_created.php';
+require_once 'includes/aa-do_after_user_signup.php';
+require_once 'includes/aa-envira_whitelabel.php';
+// require_once 'includes/aa-new_site_add_expiration_date.php';
+require_once 'includes/aa-save_pmprolevel_expiry_to_levelmeta.php';
+require_once 'includes/aa-redirect-non-existing-subdomains.php';
+require_once 'includes/aa-show-groupcodes-admin.php';
+require_once 'includes/aa-add-sites_owner_column_toadmin.php';
+require_once 'includes/aa-login-logout-redirects.php';
+// require_once 'includes/aa-force-http-on-subdomains.php';
+require_once 'includes/aa-customized-emails.php';
+require_once ABSPATH . 'wp-content/plugins/blogtemplates/blogtemplatesfiles/tables/templates_table.php';
+
+function doctype_opengraph($output) {
+    return $output . '
+    xmlns:og="http://opengraphprotocol.org/schema/"
+    xmlns:fb="http://www.facebook.com/2008/fbml"';
+}
+add_filter('language_attributes', 'doctype_opengraph');
+
+// add_filter('wp_loaded','send_mail_now');
+add_action('groups_created_group', 'AgentAssets::add_code_to_new_group');
+add_action('wp_ajax_toggle_livesite', 'AgentAssets::ajax_toggle_livesite');
+
 
 /*
  * Load Stylesheet to Header
@@ -57,246 +118,7 @@ function add_style_to_head()
 
 add_action('wp_head','add_style_to_head');
 
-/*
- * Load Scripts at Footer
- */
-function add_scripts_to_footer()
-{
-    ?>
-    <script type="text/javascript">
-        jQuery(document).ready(function($) {
-            jQuery('.listblog_delete').click(function(){
-                var msg = 'You are going to remove the <strong>%s</strong> site. You can restore it during 24 hours after deletion. Otherwise it will be deleted completely.';
-                msg = msg.replace('%s', jQuery(this).attr('data-site-name'));
-                var el = this;
-                alertify.confirm(msg, function() {
-                    var data = {
-                        'action': 'delete_site',
-                        'blog_id': jQuery(el).attr('data-id')
-                    };
-                    alertify.message('Processing request');
-                    // We can also pass the url value separately from ajaxurl for front end AJAX implementations
-                    jQuery.post('<?php echo admin_url( 'admin-ajax.php' )?>', data, function (response) {
-                        if (typeof(response.result) === 'undefined') {
-                            alertify.error('Bad response!');
-                        } else if ('error' == response.result) {
-                            alertify.error(response.message);
-                        } else {
-                            alertify.success('Site deleted successfully!');
-                            location.reload();
-                        }
-                    }, 'json');
-                }).set('title', 'Deleting site');
-            });
 
-            jQuery('.listblog_extend').click(function(){
-                var msg = '<strong>%s</strong> will be renewed for <strong>%d</strong> using one of your remaining site credits.';
-                msg = msg.replace('%s', jQuery(this).attr('data-site-name')).replace('%d', jQuery(this).attr('data-duration'));
-                var el = this;
-                alertify.confirm(msg, function() {
-                    var data = {
-                        'action' : 'extend_site',
-                        'blog_id': jQuery(el).attr('data-id')
-                    };
-                    alertify.message('Processing request');
-                    jQuery.post('<?php echo admin_url('admin-ajax.php')?>', data, function( response) {
-                        if (typeof(response.result) === 'undefined') {
-                            alertify.error('Bad response!');
-                        } else if ('error' == response.result) {
-                            alertify.error(response.message);
-                        } else {
-                            alertify.success('Site extended successfully!');
-                            location.reload();
-                        }
-                    }, 'json');
-                }).set('title', 'Extending site');
-            });
-
-            jQuery('.listblog_pricing').click(function(){
-                var msg = 'Sorry, you have no spare sites left. Please <a href="/pricing">obtain a new site package</a> to extend your site\'s <strong>%s</strong> validity.';
-                msg = msg.replace('%s', jQuery(this).attr('data-site-name')).replace('%d', jQuery(this).attr('data-duration'));
-
-                alertify.alert(msg).set('title', 'Information');
-            });
-
-            jQuery('.listblog_restore').click(function(){
-                var data = {
-                    'action' : 'restore_site',
-                    'blog_id': jQuery(this).attr('data-id')
-                };
-                alertify.message('Processing request');
-                jQuery.post('<?php echo admin_url('admin-ajax.php')?>', data, function( response) {
-                    if (typeof(response.result) === 'undefined') {
-                        alertify.error('Bad response!');
-                    } else if ('error' == response.result) {
-                        alertify.error(response.message);
-                    } else {
-                        alertify.success('Site restored successfully!');
-                        location.reload();
-                    }
-                }, 'json');
-            });
-
-            jQuery('.listblog_pricing').click(function() {
-                //todo normal message
-                var msg = 'SOME PRICE MSG <strong>%s</strong> ___';
-                msg = msg.replace('%s', jQuery(this).attr('data-site-name'));
-                alertify.alert(msg);
-            });
-
-        });
-    </script>
-    <?php
-}
-add_action('wp_footer','add_scripts_to_footer');
-
-
-function add_blogOwner()
-{
-  $user_id = get_current_user_id();
-  add_site_option( 'blog_owner', $user_id );
-}
-
-add_action( 'wpmu_new_blog', 'add_blogOwner' );
-
-
-add_action('network_admin_menu', 'add_custom_menu_to_admin');
-
-function add_custom_menu_to_admin() {
-	add_submenu_page( 'settings.php', 'AA Site Manager', 'AA Site Manager', 'manage_options', 'medma-site-manager-options-page', 'aa_site_manager_options_callback' );
-}
-
-function aa_site_manager_options_callback() {
-
-    // Check that the user is allowed to update options
-    if (!current_user_can('manage_options')) {
-        wp_die('You do not have sufficient permissions to access this page.');
-    }
-
-
-
-    if(isset($_POST['save_settings']) && $_POST['save_settings']!="")
-    {
-        update_option('msm_edit_return_url',$_POST['edit_return_url']);
-        update_option('msm_main_site_domain',$_POST['main_site_domain']);
-        update_option('msm_main_site_ip',$_POST['main_site_ip']);
-        update_option('msm_main_site_output_type',$_POST['main_site_output_type']);
-        update_option('msm_main_site_port',$_POST['main_site_port']);
-        update_option('msm_main_site_account',$_POST['main_site_account']);
-        update_option('msm_main_site_cpanel_username',$_POST['main_site_cpanel_username']);
-        update_option('msm_main_site_cpanel_password',$_POST['main_site_cpanel_password']);
-
-    }
-
-    $edit_return_url = get_option('msm_edit_return_url');
-    if(empty($edit_return_url))
-    {
-        $edit_return_url = "";
-    }
-
-    $main_site_domain = get_option('msm_main_site_domain');
-    if(empty($main_site_domain))
-    {
-        $main_site_domain = "";
-    }
-
-    $main_site_ip = get_option('msm_main_site_ip');
-    if(empty($main_site_ip))
-    {
-        $main_site_ip = "";
-    }
-
-    $main_site_port = get_option('msm_main_site_port');
-    if(empty($main_site_port))
-    {
-        $main_site_port = "";
-    }
-
-    $main_site_output_type = get_option('msm_main_site_output_type');
-    if(empty($main_site_output_type))
-    {
-        $main_site_output_type = "";
-    }
-
-    $main_site_account = get_option('msm_main_site_account');
-    if(empty($main_site_account))
-    {
-        $main_site_account = "";
-    }
-
-    $main_site_cpanel_username = get_option('msm_main_site_cpanel_username');
-    if(empty($main_site_cpanel_username))
-    {
-        $main_site_cpanel_username = "";
-    }
-
-    $main_site_cpanel_password = get_option('msm_main_site_cpanel_password');
-    if(empty($main_site_cpanel_password))
-    {
-        $main_site_cpanel_password = "";
-    }
-
-    //add_settings_field( 'return-url-id', 'Return URL', 'return_url_callback_function', '', '' , array( 'label_for' => 'myprefix_setting-id' ) );
-    //settings_fields( 'my-plugin-settings-group' );
-
-    $html = '';
-    $html .= '<div class="wrap">';
-    $html .= '<div id="icon-tools" class="icon32"></div>';
-    $html .= '<h1>AgentAssets Manager Settings</h1>';
-
-    $html .= '<table class="form-table"><tbody>';
-    $html .= '<form method="POST" action="settings.php?page=medma-site-manager-options-page">';
-
-    $html .= '<tr>';
-    $html .= '<th scope="row>"<label for="edit_return_url">Edit Return URL</label></th>';
-    $html .= '<td><input class="regular-text" type="text" name="edit_return_url" value="'.$edit_return_url.'"/></td>';
-    $html .= '</tr>';
-
-    $html .= '<tr>';
-    $html .= '<th scope="row"><label>Main Site Domain</label></th>';
-    $html .= '<td><input class="regular-text" type="text" name="main_site_domain" value="'.$main_site_domain.'"/></td>';
-    $html .= '</tr>';
-
-    $html .= '<tr>';
-    $html .= '<th scope="row"><label>Site IP Address</label></th>';
-    $html .= '<td><input class="regular-text" type="text" name="main_site_ip" value="'.$main_site_ip.'"/></td>';
-    $html .= '</tr>';
-
-    $html .= '<tr>';
-    $html .= '<th scope="row"><label>Port</label></th>';
-    $html .= '<td><input class="regular-text" type="text" name="main_site_port" value="'.$main_site_port.'"/></td>';
-    $html .= '</tr>';
-
-    $html .= '<tr>';
-    $html .= '<th scope="row"><label>Output Method Type</label></th>';
-    $html .= '<td><input class="regular-text" type="text" name="main_site_output_type" value="'.$main_site_output_type.'"/></td>';
-    $html .= '</tr>';
-
-    $html .= '<tr>';
-    $html .= '<th scope="row"><label>Account</label></th>';
-    $html .= '<td><input class="regular-text" type="text" name="main_site_account" value="'.$main_site_account.'"/></td>';
-    $html .= '</tr>';
-
-    $html .= '<tr>';
-    $html .= '<th scope="row"><label>cPanel Username</label></th>';
-    $html .= '<td><input class="regular-text" type="text" name="main_site_cpanel_username" value="'.$main_site_cpanel_username.'"/></td>';
-    $html .= '</tr>';
-
-    $html .= '<tr>';
-    $html .= '<th scope="row"><label>cPanel Password</label></th>';
-    $html .= '<td><input class="regular-text" type="password" name="main_site_cpanel_password" value="'.$main_site_cpanel_password.'"/></td>';
-    $html .= '</tr>';
-
-    // $html .= '<tr>';
-    // $html .= '</tr>';
-
-    $html .= '</form>';
-    $html .= '</tbody></table>';
-    $html .= '<p><input type="submit" name="save_settings" class="button button-primary" value="Save Settings"/></p>';
-    $html .= '</div>';
-
-    echo $html;
-}
 
 function unique_identifyer_admin_notices() {
      settings_errors( 'unique_identifyer' );

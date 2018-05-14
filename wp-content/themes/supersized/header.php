@@ -16,7 +16,7 @@
 	<link href="https://fonts.googleapis.com/css?family=<?php echo $alloptions['evl_title_font']['face']; ?>" rel='stylesheet' type='text/css'>
 
 	<?php wp_head(); ?>
-	<?php $model = ThemeSettingsModel::model(); ?>
+	<?php // $model = ThemeSettingsModel::model(); ?>
 	<style media="screen">
 		h1{ font-size: <?php echo $alloptions['evl_title_font']['size'] ?>}
 		.site-title a{
@@ -41,11 +41,11 @@
 		}
 		.button.medium.white.download a,
 		#aa_google_map_focus{
-			border: 1px solid <?php echo $alloptions['evl_accent_text_color_font']['color'] ?>
+			border: 1px solid <?php // echo $alloptions['evl_accent_text_color_font']['color'] ?>
 		}
 		<?php
 		// echo ".itemAttachments li, ul.details, .btn-primary{ background-color: lighten(".$model->highlighted_accent_color .", 80%)};";
-		echo ".btn-primary{ border-color: ".$model->highlighted_accent_color . "};";
+		//echo ".btn-primary{ border-color: ".$model->highlighted_accent_color . "};";
 		?>
 	</style>
 </head>

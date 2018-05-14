@@ -10,6 +10,9 @@
  * @package 	AviaFramework
  */
 
+var avia_callback = avia_callback || {};
+
+
 jQuery(function($) {
 
 	$('body').avia_event_listener();
@@ -24,7 +27,7 @@ jQuery(function($) {
     
 
     //unify select dropdowns
-    $('.avia_select_unify select').live('change', function()
+    $('body').on('change', '.avia_select_unify select', function()
     {
     	var el = $(this);
     	el.next('.avia_select_fake_val').text(el.find('option:selected').text());
@@ -50,6 +53,85 @@ jQuery(function($) {
 
 
 /************************************************************************
+Callback functions called by php strings
+*************************************************************************/
+
+var av_backend_maps_loaded, gm_authFailure;
+
+(function($)
+{
+	avia_callback.gmaps_values = {callback: false, value: false};
+	
+	avia_callback.av_maps_js_api_check = function(value, callback)
+	{
+								//	this is only a fallback setting 
+		var src			= 'https://maps.googleapis.com/maps/api/js?v=3.30&callback=av_backend_maps_loaded&key=' + value;
+		
+		if( 'undefined' != typeof avia_framework_globals.gmap_backend_maps_loaded && avia_framework_globals.gmap_backend_maps_loaded != '' )
+		{
+			src = avia_framework_globals.gmap_backend_maps_loaded + '&key=' + value;
+		}		
+
+		var	script 		= document.createElement('script');
+			script.type = 'text/javascript';	
+			script.src 	= src;
+			
+			avia_callback.gmaps_values = {
+				
+				callback: callback,
+				value: value
+			};
+			
+			//find the current google maps link and remove it, then append the new one
+			$('script[src*="maps.google"]').remove();
+			google.maps = false;
+			
+			document.body.appendChild(script);
+	};
+	
+	
+	av_backend_maps_loaded = function()
+	{
+		var valid_key 	= 0;
+		var addressGeo 	= 'Stephansplatz 1 Vienna 1010 Austria';
+		var geocoder 	= new google.maps.Geocoder();
+		
+	   	geocoder.geocode( { 'address': addressGeo}, function(results, status)
+        {
+			if (status === google.maps.GeocoderStatus.OK)
+			{
+				valid_key = true;
+            }
+			else if (status === google.maps.GeocoderStatus.REQUEST_DENIED)
+			{
+				//alert( 'ERROR: Access denied' );
+			}
+			else
+			{
+				//alert( 'ERROR: Error occured accessing the API.' );
+			}
+			
+			avia_callback.gmaps_values.callback.call(this, valid_key);
+		});
+	};
+	
+	gm_authFailure = function()
+	{	
+		if(avia_callback.gmaps_values.callback)
+		{
+			avia_callback.gmaps_values.callback.call(this, false);
+		}
+	};
+	
+})(jQuery);	
+
+
+
+
+
+
+
+/************************************************************************
 avia_target
 
 verifies an input field by calling a user defined ajax function
@@ -58,68 +140,92 @@ verifies an input field by calling a user defined ajax function
 {
 	$.fn.avia_verify_input = function(variables) 
 	{
-		var button 		= $(this),
-			container 	= button.parents('.avia_verification_field'),
-			input		= container.find('.avia_verify_input input'),
-			answer		= container.find('.av-verification-result'),
-			value		= "",
-			action		= button.data('av-verification-callback'),
-			nonce		= $('#avia_hidden_data input[name=avia-nonce]').val(),
-			ref 		= $('#avia_hidden_data input[name=_wp_http_referer]').val(),
-			loader		= $('.avia_header .avia_loading, .avia_footer .avia_loading'),
-			testing     = false;
-			
+		var button = $(this), testing = false;
 		
 		button.on('click', function()
 		{
+			var clicked   		= $(this),
+			container 			= clicked.parents('.avia_verification_field'),
+			input				= container.find('.avia_verify_input input'),
+			answer				= container.find('.av-verification-result'),
+			value				= "",
+			action				= clicked.data('av-verification-callback'),
+			js_callback_action	= clicked.data('av-verification-callback-javascript'),
+			nonce				= $('#avia_hidden_data input[name=avia-nonce]').val(),
+			ref 				= $('#avia_hidden_data input[name=_wp_http_referer]').val(),
+			loader				= $('.avia_header .avia_loading, .avia_footer .avia_loading'),
+			js_callback_value 	= false;
+			
 			if(testing) return false;
 			
+			var server_callback = function(js_value_passed)
+			{
+				
+						//send ajax request to the ajax-admin.php script	
+						$.ajax({
+								type: "POST",
+								url: window.ajaxurl,
+								data: 
+								{
+									action: 'avia_ajax_verify_input',
+									key: input.attr('id'),
+									avia_ajax: true,
+									value: value,
+									js_value: js_value_passed,
+									callback: action,
+									_wpnonce: nonce,
+									_wp_http_referer: ref
+									
+								},
+								beforeSend: function()
+								{
+									//show loader
+									 loader.css({opacity:0, display:"block", visibility:'visible'}).animate({opacity:1});
+									 clicked.addClass('avia_button_inactive');
+									 testing = true;
+								},
+								error: function()
+								{
+									answer.html('Could not connect to the internet. Please reload the page and try again');
+								},
+								success: function(response)
+								{
+									if(response.indexOf('avia_trigger_save') !== -1)
+									{
+										$('.avia_submit:eq(0)').trigger('click');
+										response = response.replace('avia_trigger_save', "");
+									}
+									
+									answer.html(response);
+									
+								},
+								complete: function(response)
+								{	
+									loader.fadeOut();
+									clicked.removeClass('avia_button_inactive');
+									testing = false;
+								}
+							});	
+			}
+			
+			//start the validation
 			value = input.val();
 			
-			//send ajax request to the ajax-admin.php script	
-			$.ajax({
-					type: "POST",
-					url: window.ajaxurl,
-					data: 
-					{
-						action: 'avia_ajax_verify_input',
-						key: input.attr('id'),
-						avia_ajax: true,
-						value: value,
-						callback: action,
-						_wpnonce: nonce,
-						_wp_http_referer: ref
-						
-					},
-					beforeSend: function()
-					{
-						//show loader
-						 loader.css({opacity:0, display:"block", visibility:'visible'}).animate({opacity:1});
-						 button.addClass('avia_button_inactive');
-						 testing = true;
-					},
-					error: function()
-					{
-						answer.html('Could not connect to the internet. Please reload the page and try again');
-					},
-					success: function(response)
-					{
-						if(response.indexOf('avia_trigger_save') !== -1)
-						{
-							$('.avia_submit:eq(0)').trigger('click');
-							response = response.replace('avia_trigger_save', "");
-						}
-						
-						answer.html(response);
-						
-					},
-					complete: function(response)
-					{	
-						loader.fadeOut();
-						button.removeClass('avia_button_inactive');
-						testing = false;
-					}
-				});	
+			if(window.avia_callback[js_callback_action])
+			{
+				loader.css({opacity:0, display:"block", visibility:'visible'}).animate({opacity:1});
+				clicked.addClass('avia_button_inactive');
+				
+				window.avia_callback[js_callback_action].call(this, value, server_callback);
+			}
+			else
+			{
+				server_callback();
+			}
+			
+			
+			
+			
 
 			return false;
 		});
@@ -402,8 +508,11 @@ injects data into a target field, based on type of data providing element
 				monitorItem = "",
 				execute = "",
 				values = item.val().split('::'),
-				targetContainer = $('#avia_'+values[0]),
-				target = $(values[1], targetContainer),
+				targetContainer = $('#avia_'+values[0]);
+				
+			if(!targetContainer.length)	targetContainer = $(values[0]);
+				
+			var target = $(values[1], targetContainer),
 				changeProperty = values[2];	
 				
 				if(prefix.length) baseurl = prefix.data('baseurl');
@@ -412,7 +521,7 @@ injects data into a target field, based on type of data providing element
 				
 					apply: function()
 					{
-						var the_value = monitorItem.val(), hiddenItem = false, property = [];
+						var the_value = monitorItem.val(), hiddenItem = false, property = [], name = monitorItem.attr('id');
 						
 						if(container.is('.avia_checkbox') && !monitorItem.is(':checked'))
 						{
@@ -440,6 +549,7 @@ injects data into a target field, based on type of data providing element
 								case 'border-color': target.css({'border-color':the_value}); break;
 								case 'color': target.css({'color':the_value}); break;
 								case 'set_class': target.attr({'class':the_value}); break;
+								case 'set_data' : target.attr('data-' + name, the_value); break;
 								case 'set_id': target.attr({'id':the_value.replace(/\./,'-')}); break;
 								case 'set_id_single': target.attr({ 'id':the_value.split(" ")[0] }); break;
 								case 'set_active': if(the_value != "") { target.addClass('av-active'); } else { target.removeClass('av-active'); } break;
@@ -569,11 +679,24 @@ divs with elements get hidden or shown depending on the value of other elements
 				}
 				else
 				{
+					var array_check = false;
+					if( basicData.required[1].indexOf( '{contains_array}' ) !== -1 )
+					{
+						var to_check = basicData.required[1].replace('{contains_array}','').split(';');
+						$.each( to_check, function( i, val ) {
+									if( elementToWatch.val().indexOf( val ) !== -1 )
+									{
+										array_check = true;
+										return false;
+									}
+								});
+					}
+					
 					if(elementToWatch.val() == basicData.required[1] || 
 					  (elementToWatch.val() != "" && basicData.required[1] == "{true}") || (elementToWatch.val() == "" && basicData.required[1] == "{false}") ||
 					  (basicData.required[1].indexOf('{contains}') !== -1 && elementToWatch.val().indexOf(basicData.required[1].replace('{contains}','')) !== -1) ||
-					  (basicData.required[1].indexOf('{higher_than}') !== -1 && parseInt(elementToWatch.val()) >= parseInt((basicData.required[1].replace('{higher_than}',''))))
-					
+					  (basicData.required[1].indexOf('{higher_than}') !== -1 && parseInt(elementToWatch.val()) >= parseInt((basicData.required[1].replace('{higher_than}','')))) ||
+					  array_check
 					) 
 					{ 
 						if(container.is('.inactive_visible'))
@@ -605,15 +728,29 @@ divs with elements get hidden or shown depending on the value of other elements
 			
 			var data 		= passed.data.set,
 				elToCheck 	= $(this),
-				elVal		= elToCheck.val();
+				elVal		= elToCheck.val(),
+				array_check = false;
 			
 			if(elToCheck.is(':checkbox')) elVal = "";
+			
+			if( data.required[1].indexOf( '{contains_array}' ) !== -1 )
+			{
+				var to_check = data.required[1].replace('{contains_array}','').split(';');
+				$.each( to_check, function( i, val ) {
+						if( elVal.indexOf( val ) !== -1 )
+						{
+							array_check = true;
+							return false;
+						}
+					});
+			}
 					
 			if(elVal == data.required[1] ||
-			(elVal != "" && data.required[1] == "{true}") || (elVal == "" && data.required[1] == "{false}") ||
-			(elToCheck.is(':checkbox') && (elToCheck.attr('checked') && data.required[1] || !elToCheck.attr('checked') && !data.required[1])) ||
-			(data.required[1].indexOf('{contains}') !== -1 && elVal.indexOf(data.required[1].replace('{contains}','')) !== -1) ||
-			(data.required[1].indexOf('{higher_than}') !== -1 && parseInt(elVal) >= parseInt((data.required[1].replace('{higher_than}',''))))
+				(elVal != "" && data.required[1] == "{true}") || (elVal == "" && data.required[1] == "{false}") ||
+				(elToCheck.is(':checkbox') && (elToCheck.attr('checked') && data.required[1] || !elToCheck.attr('checked') && !data.required[1])) ||
+				(data.required[1].indexOf('{contains}') !== -1 && elVal.indexOf(data.required[1].replace('{contains}','')) !== -1) ||
+				(data.required[1].indexOf('{higher_than}') !== -1 && parseInt(elVal) >= parseInt((data.required[1].replace('{higher_than}','')))) ||
+				array_check
 			)
 			{
 				if(data.el.is('.inactive_visible'))
@@ -1205,7 +1342,6 @@ avia_clone_sets: function to modify sets: add them, remove them and recalculate 
 		});
 	};
 })(jQuery);	
-
 
 
 

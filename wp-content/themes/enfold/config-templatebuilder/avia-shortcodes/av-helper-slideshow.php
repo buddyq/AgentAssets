@@ -1,5 +1,11 @@
 <?php
-	
+/**
+ * Helper for slideshows
+ * 
+ */	
+if ( ! defined( 'ABSPATH' ) ) {  exit;  }    // Exit if accessed directly
+
+
 if ( !class_exists( 'avia_slideshow' ) )
 {
 	class avia_slideshow
@@ -31,7 +37,8 @@ if ( !class_exists( 'avia_slideshow' ) )
 				'custom_markup' => '',
 				'perma_caption'	=> '',
 				'autoplay_stopper'=>'',
-				'image_attachment'=>''
+				'image_attachment'=>'',
+				'min_height'	  =>'0px'
 				), $config);
 
 			$this->config = apply_filters('avf_slideshow_config', $this->config);
@@ -208,11 +215,12 @@ if ( !class_exists( 'avia_slideshow' ) )
                     $imgtitle = trim($slide->post_title) ? esc_attr($slide->post_title) : "";
                   	if($imgtitle == "-") $imgtitle = "";
                     $imgdescription = trim($slide->post_content) ? esc_attr($slide->post_content) : "";
+					
 
 					$tags = apply_filters('avf_slideshow_link_tags', array("a href='".$link[0]."' title='".$imgdescription."'",'a')); // can be filtered and for example be replaced by array('div','div')
 					
 					$html .= "<li class='slide-{$counter} slide-id-".$slide->ID."'>";
-					$html .= "<".$tags[0]." >{$caption}<img src='".$img[0]."' width='".$img[1]."' height='".$img[2]."' title='".$imgtitle."' alt='".$imgalt."' $markup_url /></ ".$tags[1]." >";
+					$html .= "<".$tags[0]." >{$caption}<img src='".$img[0]."' width='".$img[1]."' height='".$img[2]."' title='".$imgtitle."' alt='".$imgalt."' $markup_url  /></ ".$tags[1]." >";
 					$html .= "</li>";
 				}
 				else
@@ -262,6 +270,7 @@ if ( !class_exists( 'avia_slideshow' ) )
 											'video_mobile_disabled'=>'',
 											'video_mobile'	=>'mobile-fallback-image',
 											'mobile_image'	=> '',
+											'fallback_link' => '',
 											'slide_type'	=>'',
 											'custom_markup' => '',
 											'custom_title_size' => '',
@@ -278,6 +287,8 @@ if ( !class_exists( 'avia_slideshow' ) )
 
 										), $this->subslides[$key]['attr']);
 				
+				//return $av_font_classes, $av_title_font_classes and $av_display_classes 
+				extract(AviaHelper::av_mobile_sizes($this->subslides[$key]['attr'])); 
 				extract($meta);
 				
 				if(isset($this->slides[$id]) || $slide_type == 'video')
@@ -312,6 +323,10 @@ if ( !class_exists( 'avia_slideshow' ) )
 						if($mobile_image){
 							$fallback_img = wp_get_attachment_image_src($mobile_image, $this->config['size']);
 							$slider_data .= " data-mobile-img='".$fallback_img[0]."'";
+							
+							if($fallback_link){
+								$slider_data .= " data-fallback-link='".$fallback_link."'";
+							}
 						}
 						
 						//if we dont use a fullscreen slider pass the video ratio to the slider
@@ -420,10 +435,10 @@ if ( !class_exists( 'avia_slideshow' ) )
 					//check if we got a caption
                     $markup_description = avia_markup_helper(array('context' => 'description','echo'=>false, 'id'=>$attachment_id, 'custom_markup'=>$custom_markup));
                     $markup_name = avia_markup_helper(array('context' => 'name','echo'=>false, 'id'=>$attachment_id, 'custom_markup'=>$custom_markup));
-					if(trim($title) != "")   $title 	= "<h2 {$title_styling} class='avia-caption-title' $markup_name>".trim(apply_filters('avf_slideshow_title', $title))."</h2>";
+					if(trim($title) != "")   $title 	= "<h2 {$title_styling} class='avia-caption-title {$av_title_font_classes}' $markup_name>".trim(apply_filters('avf_slideshow_title', $title))."</h2>";
 					
 					if(is_array($content)) $content = implode(' ',$content); //temp fix for trim() expects string warning until I can actually reproduce the problem
-					if(trim($content) != "") $content 	= "<div class='avia-caption-content {$content_class}' {$markup_description} {$content_styling}>".ShortcodeHelper::avia_apply_autop(ShortcodeHelper::avia_remove_autop(trim($content)))."</div>";
+					if(trim($content) != "") $content 	= "<div class='avia-caption-content {$av_font_classes} {$content_class}' {$markup_description} {$content_styling}>".ShortcodeHelper::avia_apply_autop(ShortcodeHelper::avia_remove_autop(trim($content)))."</div>";
 
 					if(trim($title.$content.$button_html) != "")
 					{
@@ -480,14 +495,26 @@ if ( !class_exists( 'avia_slideshow' ) )
 					
 					
 					
-					// $img[0] = 'http://www.kriesi.at/themes/enfold-photography/files/2014/08/darkened_girl.jpg';
+					// $img[0] = 'https://kriesi.at/themes/enfold-photography/files/2014/08/darkened_girl.jpg';
 
 
 					$html .= "<li {$slider_data} class='{$extra_class} slide-{$counter} ' >";
 					$html .= "<".$tags[0]." data-rel='slideshow-".avia_slideshow::$slider."' class='avia-slide-wrap' {$linkdescription} >{$caption}";
 					if($this->config['bg_slider'] != "true" && empty($video))
 					{
-						$html .= "<img src='".$img[0]."' width='".$img[1]."' height='".$img[2]."' title='".$linktitle."' alt='".$linkalt."' $markup_url />";
+						$img_style = "";
+						if(!empty($this->config['min_height']) && $this->config['min_height'] != "0px")
+						{
+							$percent = 100 / (100/$img[2] * (int) $this->config['min_height'] );
+							$this->config['min_width'] = ceil(($img[1] / $percent)) . "px";
+							
+							$img_style .= AviaHelper::style_string($this->config, 'min_height', 'min-height');
+							$img_style .= AviaHelper::style_string($this->config, 'min_width', 'min-width');
+							$img_style  = AviaHelper::style_string($img_style);
+						}
+				
+						
+						$html .= "<img src='".$img[0]."' width='".$img[1]."' height='".$img[2]."' title='".$linktitle."' alt='".$linkalt."' $markup_url $img_style />";
 					}
 					$html .= $video;
 					$html .= $this->create_overlay($meta);

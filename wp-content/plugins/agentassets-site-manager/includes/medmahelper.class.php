@@ -26,7 +26,7 @@ class MedmaHelper {
     public static function getConsumedSitesMessageBox($counter_details) {
         $html = '';
         if ($counter_details->site_allowed > $counter_details->site_consumed) {
-            $html .= self::getAviaMessageBox('<p>You have consumed <span class="sites-consumed">' . $counter_details->site_consumed . '</span> site(s) out of ' . $counter_details->site_allowed . ' allowed.</p>');
+            $html .= self::getAviaMessageBox('<p>You have MEDMA HELPER consumed <span class="sites-consumed">' . $counter_details->site_consumed . '</span> site(s) out of ' . $counter_details->site_allowed . ' allowed.</p>');
         } elseif ($counter_details->site_allowed == $counter_details->site_consumed) {
             global $wpdb;
             $user_ID = get_current_user_id();

@@ -55,7 +55,7 @@ function list_packages_callback($atts) {
             }
             ?>
             <script type="text/javascript">
-                /*    jQuery(document).ready(function($) {
+               jQuery(document).ready(function($) {
                     jQuery('.buy_button').click(function(e){
                         var package_id = jQuery(this).parent('form').children('#package_id').val();
                         var paypal_url = jQuery(this).parent('form').children('#paypal_url').val();
@@ -82,7 +82,7 @@ function list_packages_callback($atts) {
                             jQuery('#form_buy_package'+package_id).submit();
                         });
                     });
-                });*/
+                });
             </script>
             <div class="packages avia-table main_color avia-pricing-table-container avia-table-2  avia-builder-el-5  el_after_av_section  el_before_av_table  avia-builder-el-first ">
                 <div class="pricing-table-wrap">

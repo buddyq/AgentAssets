@@ -309,7 +309,7 @@ EXTRA FUNCTIONS, NOT NECESSARY FOR THE DEFAULT UPLOAD
             {
                 if(response.match(/avia_config_file_imported/))
                 {
-					$('body').avia_alert({text: 'Alright sparky!<br/>Import worked out, no problems whatsoever. <br/>The page will now be reloaded to reflect the changes'}, function()
+					$('body').avia_alert({text: 'Alright!<br/>Import worked out, no problems whatsoever. <br/>The page will now be reloaded to reflect the changes'}, function()
 								{
 									// window.location.hash = "#goto_importexport";
 									window.location.hash = "";

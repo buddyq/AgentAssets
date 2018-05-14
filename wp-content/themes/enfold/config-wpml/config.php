@@ -1,5 +1,8 @@
 <?php
 
+if ( ! defined( 'ABSPATH' ) ) {  exit;  }    // Exit if accessed directly
+
+
 /* - WPML compatibility - */
 if(defined('ICL_SITEPRESS_VERSION') && defined('ICL_LANGUAGE_CODE'))
 {
@@ -235,7 +238,11 @@ if(defined('ICL_SITEPRESS_VERSION') && defined('ICL_LANGUAGE_CODE'))
 	{
 		function avia_wpml_register_assets()
 		{
-			wp_enqueue_style( 'avia-wpml', AVIA_BASE_URL.'config-wpml/wpml-mod.css');
+			$theme = wp_get_theme(); 
+			$version = ( false === $theme->parent() ) ? $theme->get( 'Version' ) : $theme->parent()->get( 'Version' );
+			
+			wp_enqueue_style( 'avia-wpml', AVIA_BASE_URL.'config-wpml/wpml-mod.css', array(), $version );
+			wp_enqueue_script( 'avia-wpml-script', AVIA_BASE_URL.'config-wpml/wpml-mod.js', array( 'jquery' ), $version );
 		}
 	}
 
@@ -485,7 +492,7 @@ if(defined('ICL_SITEPRESS_VERSION') && defined('ICL_LANGUAGE_CODE'))
 		function avia_change_wpml_home_link($url, $lang)
 		{
 		    global $sitepress;
-		    if(is_home() || is_front_page()) $url = $sitepress->language_url($lang['language_code']);
+		    if(is_front_page()) $url = $sitepress->language_url($lang['language_code']);
 		    return $url;
 		}
 	}
@@ -569,7 +576,7 @@ if(defined('ICL_SITEPRESS_VERSION') && defined('ICL_LANGUAGE_CODE'))
 		            {
 		                $currentlang = (ICL_LANGUAGE_CODE == $lang['language_code']) ? 'avia_current_lang' : '';
 		
-		                if(is_home() || is_front_page()) $lang['url'] = $sitepress->language_url($lang['language_code']);
+		                if(is_front_page()) $lang['url'] = $sitepress->language_url($lang['language_code']);
 		
 		                $items .= "<li class='av-language-switch-item language_".$lang['language_code']." $currentlang'><a href='".$lang['url']."'>";
 		                $items .= "	<span class='language_flag'><img title='".$lang['native_name']."' src='".$lang['country_flag_url']."' /></span>";
@@ -685,30 +692,85 @@ if(defined('ICL_SITEPRESS_VERSION') && defined('ICL_LANGUAGE_CODE'))
 	    add_filter('avf_ratio_check_by_tag_values', 'avia_translate_check_by_tag_values', 10, 1);
 	}
 
-
-
-
 }
 
 /*fix for: https://wpml.org/errata/translation-editor-support-avia-layout-builder-enfold/*/
-if(!function_exists('avia_wpml_sync_avia_layout_builder'))
+/**
+ * Removed with 4.2.6 by Günter
+ * Replaced by function below
+ * 
+ * The datastructire of $fields must have changed. On testing if was always false because $fields['body']['data'] does not exist any more
+ */
+if( ! function_exists( 'avia_wpml_sync_avia_layout_builder' ) )
 {
-	add_action( 'wpml_translation_job_saved', 'avia_wpml_sync_avia_layout_builder', 10, 3 );
-	
-	function avia_wpml_sync_avia_layout_builder( $new_post_id, $fields, $job ) {
-	    if ( isset( $fields['body']['data'] ) ) {
-	        if ( 'active' === get_post_meta( $new_post_id, '_aviaLayoutBuilder_active', true ) ) {
-	            update_post_meta(
-	                $new_post_id,
-	                '_aviaLayoutBuilderCleanData',
-	                $fields['body']['data']
-	            );
-	        }
-	    }
+	/**
+	 * Ensure backwards comp - structure was checked with this version - might already have been changed earlier
+	 */
+	if ( defined( 'WPML_TM_VERSION' ) && version_compare( WPML_TM_VERSION, '2.5.2', '<' ) )
+	{
+		add_action( 'wpml_translation_job_saved', 'avia_wpml_sync_avia_layout_builder', 10, 3 );
+
+		function avia_wpml_sync_avia_layout_builder( $new_post_id, $fields, $job ) 
+		{
+			if( isset( $fields['body']['data'] ) ) 
+			{
+				if ( 'active' === get_post_meta( $new_post_id, '_aviaLayoutBuilder_active', true ) ) 
+				{
+					update_post_meta(
+						$new_post_id,
+						'_aviaLayoutBuilderCleanData',
+						$fields['body']['data']
+					);
+				}
+			}
+		}
 	}
-	
 }
 
+if( ! function_exists( 'avia_wpml_sync_avia_layout_builder_meta' ) )
+{
+	add_action( 'wpml_pro_translation_completed', 'avia_wpml_sync_avia_layout_builder_meta', 10, 3 );
+
+	/**
+	 * This filter is called when translation management is active and a post is translated with the WPML translation screen (not directly).
+	 * In this case the save_post filter is not called and we have to update our meta fields here (esp. the shortcode tree)
+	 * Post has been updated in DB already.
+	 * 
+	 * @since 4.2.6
+	 * @added_by Günter
+	 * @param int $new_post_id
+	 * @param array $fields
+	 * @param stdClass $job
+	 */
+	function avia_wpml_sync_avia_layout_builder_meta( $new_post_id, $fields, $job )
+	{
+		$post = get_post( $new_post_id );
+
+		if( ! $post instanceof WP_Post )
+		{
+			return;
+		}
+
+		$builder_status = Avia_Builder()->get_alb_builder_status( $new_post_id );
+
+		if( 'active' != $builder_status )
+		{
+			$content =  $post->post_content;
+			$loc = 'content';
+		}
+		else
+		{
+			$content = get_post_meta( $new_post_id, '_aviaLayoutBuilderCleanData', true );
+			$loc = 'clean_data';
+		}
+
+		Avia_Builder()->get_shortcode_parser()->set_builder_save_location( $loc );
+		$content = ShortcodeHelper::clean_up_shortcode( $content, 'balance_only' );
+
+		$tree = ShortcodeHelper::build_shortcode_tree( $content );
+		update_post_meta( $new_post_id, '_avia_builder_shortcode_tree', $tree );
+	}
+}
 
 
 /*compatibility function for the portfolio problems*/
@@ -729,3 +791,43 @@ if(!function_exists('avia_portfolio_compat') && defined('ICL_SITEPRESS_VERSION')
 }
 
 
+
+/**
+ * Error 404 - Custom Page
+ * Hooks into 'the_posts' filter and display the defined 404 page - compatible with WPML
+ * @author tinabillinger
+ * @since 4.3
+ */
+if( ! function_exists( 'av_error404_wpml' ) )
+{
+    function av_error404_wpml($posts)
+    {
+        if( defined('ICL_SITEPRESS_VERSION') && defined('ICL_LANGUAGE_CODE')) {
+            if (avia_get_option('error404_custom') == "error404_custom") {
+                // prevent endless loop
+                remove_filter( 'the_posts', 'av_error404_wpml', 999 );
+                if ( empty( $posts ) &&
+                    is_main_query() &&
+                    !is_robots() &&
+                    !is_home() &&
+                    !is_feed() &&
+                    !is_search() &&
+                    !is_archive() &&
+                    ( !defined('DOING_AJAX') || !DOING_AJAX ) ) {
+                    global $wp_query;
+                    $error404_page = avia_get_option('error404_page');
+                    $wp_query = null;
+                    $wp_query = new WP_Query();
+                    $wp_query->query( 'page_id=' . $error404_page );
+                    $wp_query->the_post();
+                    $template = get_page_template();
+                    $posts = $wp_query->posts;
+                    $wp_query->rewind_posts();
+                    return $posts;
+                }
+            }
+        }
+        return $posts;
+    }
+    add_filter( 'the_posts', 'av_error404_wpml', 999 );
+}

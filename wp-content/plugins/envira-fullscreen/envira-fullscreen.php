@@ -5,7 +5,7 @@
  * Description: Enables fullscreen capabilities (for browsers that support it) for Envira galleries.
  * Author:      Envira Gallery Team
  * Author URI:  http://enviragallery.com
- * Version:     1.0.6
+ * Version:     1.0.6.1
  * Text Domain: envira-fullscreen
  * Domain Path: languages
  *
@@ -54,7 +54,7 @@ class Envira_Fullscreen {
      *
      * @var string
      */
-    public $version = '1.0.6';
+    public $version = '1.0.6.1';
 
     /**
      * The name of the plugin.

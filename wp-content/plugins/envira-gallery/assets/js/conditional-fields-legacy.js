@@ -90,9 +90,6 @@ jQuery( document ).ready( function( $ ) {
                         break;
                     
                     default:
-                        //console.log( $( this ).attr( 'type' ) );
-                        //console.log( displayOnEnabled );
-                        //console.log( 'toggle: ' + toggle );
                         if ( displayOnEnabled ) {
                             if ( value !== '' ) {
                                 displayElements = ( ( String( $( this ).val() ) !== String( value ) ) ? false : true );

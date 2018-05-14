@@ -53,12 +53,25 @@
 	
 	$.AviaElementBehavior.gmaps_fetcher =  function()
 	{	
-		var map_api 		= 'https://maps.googleapis.com/maps/api/js?v=3.24&callback=av_builder_maps_loaded', 
+		var map_api 		= '', 
 			loading 		= false,
 			clicked			= {},
 			timeout_check 	= false,
 			timout_timer	= 1500;
-			
+	
+			if( 'undefined' == typeof avia_framework_globals.gmap_builder_maps_loaded || avia_framework_globals.gmap_builder_maps_loaded == '' )
+			{
+						//	this is only for fallback
+				map_api = 'https://maps.googleapis.com/maps/api/js?v=3.30&callback=av_builder_maps_loaded';
+				if( avia_framework_globals.gmap_api != 'undefined' && avia_framework_globals.gmap_api != "" )
+				{
+					map_api += "&key=" + avia_framework_globals.gmap_api;
+				}
+			}
+			else
+			{
+				map_api = avia_framework_globals.gmap_builder_maps_loaded;
+			}
 		
 		$("body").on('click', '.avia-js-google-coordinates', function()
 		{
@@ -72,13 +85,7 @@
 				script.type = 'text/javascript';	
 				script.src 	= map_api;
 				
-				if(avia_framework_globals.gmap_api != 'undefined' && avia_framework_globals.gmap_api != "")
-				{
-					script.src 	+= "&key=" + avia_framework_globals.gmap_api;
-				}
-				
       			document.body.appendChild(script);
-      			
 			}
 			else if(typeof window.google != 'undefined' && typeof window.google.maps != 'undefined')
 			{
@@ -164,8 +171,8 @@
 		            }
 	            }, timout_timer);
             }
-		}
-	}
+		};
+	};
 	
 	
 	
@@ -232,8 +239,6 @@
 	{
 		$("body").on('click', '.avia-attach-element-select', function()
 		{
-			
-		
 			var clicked = $(this),
 				parent  = clicked.parents('.avia-attach-element-container:eq(0)'),
 				old 	= parent.find('.avia-active-element').removeClass('avia-active-element'),
@@ -250,6 +255,8 @@
 				//window.prompt ("Copy to clipboard: Ctrl+C, Enter", clicked.data('element-nr'));
 				//clicked.css({display:'none'});
 				
+				
+				input.trigger('change');
 				return false;
 		});
 	}
@@ -344,7 +351,7 @@
 	{
 		var the_body = $("body"), container = "";
 	
-		the_body.on('change', '.avia-style select, .avia-style textarea, .avia-style radio, .avia-style input[type=checkbox], .avia-style input[type=hidden], .avia-style input[type=text]', function()
+		the_body.on('change', '.avia-style select, .avia-style textarea, .avia-style radio, .avia-style input[type=checkbox], .avia-style input[type=hidden], .avia-style input[type=text], .avia-style input[type=radio]', function()
 		{
 			var current 	= $(this), 
 				scope	= current.parents('.avia-modal:eq(0)');
@@ -354,9 +361,34 @@
 			var id			= this.id.replace(/aviaTB/g,""),
 				dependent	= scope.find('.avia-form-element-container[data-check-element="'+id+'"]'), 
 				value1		= this.value,
-				is_hidden	= current.parents('.avia-form-element-container:eq(0)').is('.avia-hidden');
+				is_hidden	= current.parents('.avia-form-element-container:eq(0)').is('.avia-hidden'),
+				parent_val  = '';
 				
 				if(current.is('input[type=checkbox]') && !current.prop('checked')) value1 = "";
+				if(current.is('input[type=radio]'))
+				{
+					var name = this.name.replace(/aviaTB/g,"");
+					dependent = scope.find('.avia-form-element-container[data-check-element="'+name+'"]'); 
+				}
+				
+				//	Get value of parent element when depending subelements are changed
+				var parent_element = current.closest('.avia-form-element-container').find('#'+ this.id+':eq(0)');
+				if( parent_element.is('input[type=checkbox]') )
+				{
+					parent_val = parent_element.prop('checked') ? parent_element.val() : '';
+				}
+				else if( parent_element.is('input[type=radio]' ) )
+				{
+					if( '' === parent_val )
+					{
+						parent_val = parent_element.prop('checked');
+					}
+				}
+				else
+				{
+					parent_val = parent_element.val();
+				}
+								
 				if(!dependent.length) return;
 				
 				dependent.each(function()
@@ -374,19 +406,31 @@
 								case 'not': 			if(value1 != value2) show = true; break;
 								case 'is_larger': 		if(value1 >  value2) show = true; break;
 								case 'is_smaller': 		if(value1 <  value2) show = true; break;
-								case 'contains': 		if(value1.indexOf(value2) != -1) show = true; break;
-								case 'doesnt_contain':  if(value1.indexOf(value2) == -1) show = true; break;
-								case 'is_empty_or':  	if(value1 == "" || value1 == value2) show = true; break;
-								case 'not_empty_and':  	if(value1 != "" && value1 != value2) show = true; break;
+								case 'contains': 		if(value1.indexOf(value2) !== -1) show = true; break;
+								case 'doesnt_contain':  if(value1.indexOf(value2) === -1) show = true; break;
+								case 'is_empty_or':  	if(value1 === "" || value1 === value2) show = true; break;
+								case 'not_empty_and':  	if(value1 !== "" && value1 !== value2) show = true; break;
+								case 'parent_in_array': 
+														if( '' !== parent_val )
+														{
+															show = ( -1 !== $.inArray( parent_val, value2.split( ' ' ) ) ); 
+														}
+														break;
+								case 'parent_not_in_array': 
+														if( '' !== parent_val )
+														{
+															show = ( -1 === $.inArray( parent_val, value2.split( ' ' ) ) ); 
+														}
+														break;
 							}
 						}
 						
-						if(show == true && current.is('.avia-hidden'))
+						if(show === true && current.is('.avia-hidden'))
 						{
 							current.css({display:'none'}).removeClass('avia-hidden').find('select, radio, input[type=checkbox]').trigger('change');
 							current.slideDown(300);
 						}
-						else if(show == false  && !current.is('.avia-hidden'))
+						else if(show === false  && !current.is('.avia-hidden'))
 						{
 							current.css({display:'block'}).addClass('avia-hidden').find('select, radio, input[type=checkbox]').trigger('change');
 							current.slideUp(300);

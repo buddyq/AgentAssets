@@ -1,32 +1,61 @@
-#SetEnv PHPRC /home/austin43/public_html/php.ini
-
-
+SetEnv PHPRC /home/austin43/public_html/php.ini
+<IfModule mod_substitute.c>
+SubstituteMaxLineLength 10M
+</IfModule>
+RewriteEngine On
+# redirect to https
+#RewriteCond %{HTTPS} off
+#RewriteCond %{HTTP_HOST} ^(?:www\.)(agentassets\.com)$ [NC]
+#RewriteRule ^ https://%1%{REQUEST_URI} [R=301,L]
+# redirect to http subdomain
+#RewriteCond %{HTTPS} on
+#RewriteCond %{HTTP_HOST} ^((?!www).+\.agentassets\.com)$ [NC]
+#RewriteRule ^ http://%1%{REQUEST_URI} [R=301,L]
+# just these two lines will work - adding slash and hide login file
+RewriteRule ^login$  login/  [R=301,L]
+RewriteRule ^login/$ wp-login.php [NC,L]
+# just these two lines will work - adding slash and hide login file
+RewriteRule ^admin$  admin/  [R=301,L]
+RewriteRule ^admin/$ wp-admin [NC,L]
+# this is for when logout , so not redirect to wp-login
+RewriteCond %{QUERY_STRING} ^(.*)?loggedout=true$
+RewriteRule ^(.*)$ https://%{HTTP_HOST}/? [L,R=301]
+RewriteEngine On
+RewriteCond ^agentassets.com [NC]
+RewriteRule ^(.*)$ https://agentassets.com/$1 [L,R=301]
+#RewriteEngine On
+#RewriteCond %{HTTPS} off
+#RewriteRule ^(.*)$ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
+# BEGIN WordPress
+<IfModule mod_rewrite.c>
 RewriteEngine On
 RewriteBase /
 RewriteRule ^index\.php$ - [L]
-
 # add a trailing slash to /wp-admin
 RewriteRule ^wp-admin$ wp-admin/ [R=301,L]
-
 RewriteCond %{REQUEST_FILENAME} -f [OR]
 RewriteCond %{REQUEST_FILENAME} -d
 RewriteRule ^ - [L]
 RewriteRule ^(wp-(content|admin|includes).*) $1 [L]
 RewriteRule ^(.*\.php)$ $1 [L]
 RewriteRule . index.php [L]
-
-# AddHandler application/x-httpd-php56 .php .php5 .php4 .php3
-
-
-
-# Protect backup file
-<Files backup-2016-05-20.zip>
-order allow,deny
-deny from all
+</IfModule>
+# END WordPress
+# Wordfence WAF
+<Files ".user.ini">
+<IfModule mod_authz_core.c>
+	Require all denied
+</IfModule>
+<IfModule !mod_authz_core.c>
+	Order deny,allow
+	Deny from all
+</IfModule>
 </Files>
-
-# Protect dump file
-<Files dump-2016-05-20.sql>
-order allow,deny
-deny from all
-</Files>
+# END Wordfence WAF
+# Google Maps Multisite
+# http://www.wpgmaps.com/documentation/using-the-plugin-on-multisite-installation-with-domain-mapping-enabled/
+<filesMatch "\.(xml)$">
+  <ifModule mod_headers.c>
+    Header set Access-Control-Allow-Origin "*"
+  </ifModule>
+</filesMatch>

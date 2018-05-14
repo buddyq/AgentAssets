@@ -1,6 +1,10 @@
 <?php
+/**
+ * a very small and basic toolset for the for mailchimp 3.0 API, inspired by the mailchimp-for-wp-plugins 2.0 API
+ * 
+ */
+if ( ! defined( 'ABSPATH' ) ) {  exit;  }    // Exit if accessed directly
 
-/*a very small and basic toolset for the for mailchimp 3.0 API, inspired by the mailchimp-for-wp-plugins 2.0 API */
 
 if ( !class_exists( 'av_mailchimp_api' ) )
 {
@@ -80,11 +84,11 @@ if ( !class_exists( 'av_mailchimp_api' ) )
 			$url = $this->api_url . $url ;
 		
 			$response = wp_remote_get( $url, array(
-					'body' 		=> json_encode($data),
+					'body' 		=> $data,
 					'timeout' 	=> 20,
 					'headers' 	=> $this->get_headers(),
 					'sslverify'	=> false 
-					// disable ssl verify: http://www.kriesi.at/support/topic/mailchimp-api-not-connecting/page/2/#post-596342
+					// disable ssl verify: https://kriesi.at/support/topic/mailchimp-api-not-connecting/page/2/#post-596342
 				)
 			);
 			
@@ -443,9 +447,11 @@ if ( !class_exists( 'av_mailchimp_api' ) )
 
 if (!function_exists('av_mailchimp_check_ajax'))
 {
-	function av_mailchimp_check_ajax($value, $ajax = true)
+	function av_mailchimp_check_ajax($value, $ajax = true, $js_callback = false)
 	{
-		return av_mailchimp_api::backend_html($value, $ajax);
+		
+		return av_mailchimp_api::backend_html($value, $ajax);	
+		
 	}
 }
 

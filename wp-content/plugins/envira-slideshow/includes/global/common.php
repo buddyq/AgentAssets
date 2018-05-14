@@ -48,7 +48,7 @@ class Envira_Slideshow_Common {
      * @param int $post_id     The current post ID.
      * @return array $defaults Amended array of default config values.
      */
-    function defaults( $defaults, $post_id ) {
+    public function defaults( $defaults, $post_id ) {
     
         $defaults['slideshow'] = 0;
     	$defaults['autoplay']  = 0;
@@ -63,12 +63,12 @@ class Envira_Slideshow_Common {
      *
      * @since 1.0.8
      *
-     * @return object The Envira_Slideshow object.
+     * @return object The Envira_Slideshow_Common object.
      */
     public static function get_instance() {
 
-        if ( ! isset( self::$instance ) && ! ( self::$instance instanceof Envira_Slideshow ) ) {
-            self::$instance = new Envira_Slideshow();
+        if ( ! isset( self::$instance ) && ! ( self::$instance instanceof Envira_Slideshow_Common ) ) {
+            self::$instance = new Envira_Slideshow_Common();
         }
 
         return self::$instance;
@@ -78,4 +78,4 @@ class Envira_Slideshow_Common {
 }
 
 // Load the common class.
-$envira_slideshow_common = Envira_Slideshow::get_instance();
+$envira_slideshow_common = Envira_Slideshow_Common::get_instance();

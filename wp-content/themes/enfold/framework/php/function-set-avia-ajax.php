@@ -715,7 +715,7 @@ if(!function_exists('avia_ajax_verify_input'))
 		
 		$result = "";
 		$callback = "";
-				
+		
 		global $avia;
 		foreach($avia->option_page_data as $option)
 		{
@@ -727,7 +727,8 @@ if(!function_exists('avia_ajax_verify_input'))
 		
 		if(function_exists($callback))
 		{
-			$result = $callback( $_POST['value'] );
+			$js_callback_value = isset($_POST['js_value']) ? $_POST['js_value'] : NULL;
+			$result = $callback( $_POST['value'] , true, $js_callback_value );
 		}
 		
 		die($result);
@@ -769,6 +770,8 @@ if(!function_exists('avia_import_config_file'))
 
         if($options)
         {
+	        @ini_set('max_execution_time', 1500);
+	        
             if(!class_exists('WP_Import'))
             {
                 if(!defined('WP_LOAD_IMPORTERS')) define('WP_LOAD_IMPORTERS', true);

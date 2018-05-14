@@ -49,8 +49,11 @@ class Envira_Fullscreen_Shortcode_Gallery {
         // Actions and Filters
         add_action( 'envira_gallery_before_output', array( $this, 'scripts' ) );
         add_action( 'envira_gallery_api_lightbox', array( $this, 'init' ) );
+        add_action( 'envira_gallery_api_before_show', array( $this, 'remove_fullscreen' ) );
         add_action( 'envira_gallery_api_after_close', array( $this, 'close' ) );
         add_filter( 'envira_gallery_toolbar_after_next', array( $this, 'toolbar_button' ), 10, 2 );
+        add_filter( 'envirabox_actions', array( $this, 'envirabox_actions' ), 100, 2 );
+        add_filter( 'envira_always_show_title', array( $this, 'envira_always_show_title' ), 10, 2 );
     
     }
 
@@ -62,7 +65,7 @@ class Envira_Fullscreen_Shortcode_Gallery {
      * @param array $data Data for the Envira gallery.
      * @return null       Return early if fullscreen is not enabled.
      */
-    function scripts( $data ) {
+    public function scripts( $data ) {
 
         if ( ! Envira_Gallery_Shortcode::get_instance()->get_config( 'fullscreen', $data ) ) {
             return;
@@ -81,7 +84,7 @@ class Envira_Fullscreen_Shortcode_Gallery {
      * @param array $data Data for the Envira gallery.
      * @return null       Return early if fullscreen is not enabled.
      */
-    function init( $data ) {
+    public function init( $data ) {
 
         if ( ! Envira_Gallery_Shortcode::get_instance()->get_config( 'fullscreen', $data ) ) {
             return;
@@ -108,6 +111,18 @@ class Envira_Fullscreen_Shortcode_Gallery {
 
     }
 
+    public function remove_fullscreen( $data ) {
+        if ( ! Envira_Gallery_Shortcode::get_instance()->get_config( 'fullscreen', $data ) ) {
+            return;
+        }
+
+        ?>
+        if ( null === $(document).fullScreen() ) { 
+            $(".btnFullscreen").parent().remove(); 
+        }
+        <?php
+    }
+
     /**
      * Closes fullscreen mode.
      *
@@ -116,7 +131,7 @@ class Envira_Fullscreen_Shortcode_Gallery {
      * @param array $data Data for the Envira gallery.
      * @return null       Return early if fullscreen is not enabled.
      */
-    function close( $data ) {
+    public function close( $data ) {
 
         if ( ! Envira_Gallery_Shortcode::get_instance()->get_config( 'fullscreen', $data ) ) {
             return;
@@ -136,7 +151,7 @@ class Envira_Fullscreen_Shortcode_Gallery {
      * @param array $data       Data for the Envira gallery.
      * @return string $template Amended template HTML for the gallery toolbar.
      */
-    function toolbar_button( $template, $data ) {
+    public function toolbar_button( $template, $data ) {
 
         if ( ! Envira_Gallery_Shortcode::get_instance()->get_config( 'fullscreen', $data ) ) {
             return $template;
@@ -144,6 +159,48 @@ class Envira_Fullscreen_Shortcode_Gallery {
 
         // Create the fullscreen button.
         $button = '<li><a class="btnFullscreen" title="' . __( 'Toggle Fullscreen', 'envira-fullscreen' ) . '" href="javascript:;"></a></li>';
+
+        // Return with the button appended to the template.
+        return $template . $button;
+
+    }
+
+    public function envirabox_actions( $template, $data ) {
+
+        // Check if Download Button output is enabled
+        if ( ! Envira_Gallery_Shortcode::get_instance()->get_config( 'fullscreen', $data ) || ( ! in_array( Envira_Gallery_Shortcode::get_instance()->get_config( 'lightbox_theme', $data ), array( 'base_dark', 'base_light', 'space_dark', 'space_light', 'box_dark', 'box_light', 'burnt_dark', 'burnt_light' ) ) ) ) {
+            return $template;
+        }
+
+        return $this->base_template_button( $template, $data );
+    }
+
+    public function envira_always_show_title( $show, $data ) {
+
+        if ( ! Envira_Gallery_Shortcode::get_instance()->get_config( 'fullscreen', $data ) || ( ! in_array( Envira_Gallery_Shortcode::get_instance()->get_config( 'lightbox_theme', $data ), array( 'base_dark', 'base_light' ) ) ) ) {
+            return $show;
+        }
+
+        return true;
+    }
+
+    /**
+     * Outputs the fullscreen button in the gallery toolbar.
+     *
+     * @since 1.0.0
+     *
+     * @param string $template  The template HTML for the gallery toolbar.
+     * @param array $data       Data for the Envira gallery.
+     * @return string $template Amended template HTML for the gallery toolbar.
+     */
+    public function base_template_button( $template, $data ) {
+
+        if ( ! Envira_Gallery_Shortcode::get_instance()->get_config( 'fullscreen', $data ) ) {
+            return $template;
+        }
+
+        // Create the fullscreen button.
+        $button = '<div class="envira-fullscreen-button"><a class="btnFullscreen" title="' . __( 'Toggle Fullscreen', 'envira-fullscreen' ) . '" href="javascript:;"></a></div>';
 
         // Return with the button appended to the template.
         return $template . $button;

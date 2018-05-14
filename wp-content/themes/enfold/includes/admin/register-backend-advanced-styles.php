@@ -18,7 +18,7 @@ $advanced['body'] = array(
 	"sections"		=> false,
 	"hover"			=> false,
 	"edit"			=> array(	
-							'font_size' 		=> array('type' => 'size', 'range' => '10-80', 'name'=> __("Font Size",'avia_framework')),
+							'font_size' 		=> array('type' => 'size', 'range' => '8-80', 'name'=> __("Font Size",'avia_framework')),
 							'line_height'		=> array('type' => 'size', 'range' => '0.7-2', 'increment' => 0.1, 'unit' => 'em',  'name'=> __("Line Height",'avia_framework')),
 							'font_weight' 		=> array('type' => 'select', 'name'=> __("Font Weight",'avia_framework'), 'options' => $weight),
 							'font_family' 		=> array('type' => 'font', 'name'=> __("Font Family",'avia_framework'), 'options' => $google_fonts),
@@ -39,7 +39,7 @@ $advanced['paragraph'] = array(
 	"sections"		=> true,
 	"hover"			=> false,
 	"edit"			=> array(	
-							'font_size' 		=> array('type' => 'size', 'range' => '10-80', 'name'=> __("Font Size",'avia_framework')),
+							'font_size' 		=> array('type' => 'size', 'range' => '8-80', 'name'=> __("Font Size",'avia_framework')),
 							'line_height'=> array('type' => 'size', 'range' => '0.7-2', 'increment' => 0.1, 'unit' => 'em',  'name'=> __("Line Height",'avia_framework')),
 							'font_weight' 		=> array('type' => 'select', 'name'=> __("Font Weight",'avia_framework'), 'options' => $weight),
 							'margin' 			=> array('type' => 'size', 'range' => '0.5-3', 'increment' => 0.1, 'unit' => 'em',  'name'=> __("Top &amp; Bottom margin",'avia_framework')),
@@ -70,7 +70,7 @@ $advanced['blockquote'] = array(
 	"hover"			=> false,
 	"edit"			=> array(	'color' 			=> array('type' => 'colorpicker', 'name'=> __("Font Color",'avia_framework')), 
 								'border_color' 		=> array('type' => 'colorpicker', 'name'=> __("Border Color",'avia_framework')),
-								'font_size' 		=> array('type' => 'size', 'range' => '10-80', 'name'=> __("Font Size",'avia_framework')),
+								'font_size' 		=> array('type' => 'size', 'range' => '8-80', 'name'=> __("Font Size",'avia_framework')),
 								'line_height' 		=> array('type' => 'size', 'range' => '0.7-2', 'increment' => 0.1, 'unit' => 'em',  'name'=> __("Line Height",'avia_framework')),
 							)
 );
@@ -80,12 +80,12 @@ $advanced['underline'] = array(
 	"name"			=> "&lt;u&gt;",
 	"group" 		=> __("HTML Tags",'avia_framework'),
 	"description"	=> __("Change the styling for all &lt;u&gt; (underline) tags",'avia_framework'),
-	"selector"		=> array("#top [sections] u, #top [sections] span[style*='text-decoration: underline;'], #top [sections] span[style*='text-decoration:underline;']"=> ""),
+	"selector"		=> array("#top [sections] u, #top [sections] span[style*='underline;']"=> ""),
 	"sections"		=> true,
 	"hover"			=> false,
 	"edit"			=> array(	'color' 			=> array('type' => 'colorpicker', 'name'=> __("Font Color",'avia_framework')), 
 								'background_color' 	=> array('type' => 'colorpicker', 'name'=> __("Background Color",'avia_framework')),
-								'font_size' 		=> array('type' => 'size', 'range' => '10-80', 'name'=> __("Font Size",'avia_framework')),
+								'font_size' 		=> array('type' => 'size', 'range' => '8-80', 'name'=> __("Font Size",'avia_framework')),
 								'font_weight' 		=> array('type' => 'select', 'name'=> __("Font Weight",'avia_framework'), 'options' => $weight),
 								'line_height' 		=> array('type' => 'size', 'range' => '0.7-2', 'increment' => 0.1, 'unit' => 'em',  'name'=> __("Line Height",'avia_framework')),
 								'font_family' 		=> array('type' => 'font', 'name'=> __("Font Family",'avia_framework'), 'options' => $google_fonts),
@@ -105,7 +105,7 @@ $advanced['mark'] = array(
 	"hover"			=> false,
 	"edit"			=> array(	'color' 			=> array('type' => 'colorpicker', 'name'=> __("Font Color",'avia_framework')), 
 								'background_color' 	=> array('type' => 'colorpicker', 'name'=> __("Background Color",'avia_framework')),
-								'font_size' 		=> array('type' => 'size', 'range' => '10-80', 'name'=> __("Font Size",'avia_framework')),
+								'font_size' 		=> array('type' => 'size', 'range' => '8-80', 'name'=> __("Font Size",'avia_framework')),
 								'font_weight' 		=> array('type' => 'select', 'name'=> __("Font Weight",'avia_framework'), 'options' => $weight),
 								'line_height' 		=> array('type' => 'size', 'range' => '0.7-2', 'increment' => 0.1, 'unit' => 'em',  'name'=> __("Line Height",'avia_framework')),
 								'font_family' 		=> array('type' => 'font', 'name'=> __("Font Family",'avia_framework'), 'options' => $google_fonts),
@@ -145,7 +145,7 @@ $advanced['h1'] = array(
 	"hover"			=> false,
 	"edit"			=> array(	'color' 			=> array('type' => 'colorpicker', 'name'=> __("Font Color",'avia_framework')), 
 								'background_color' 	=> array('type' => 'colorpicker', 'name'=> __("Background Color",'avia_framework')),
-								'font_size' 		=> array('type' => 'size', 'range' => '10-80', 'name'=> __("Font Size",'avia_framework')),
+								'font_size' 		=> array('type' => 'size', 'range' => '8-80', 'name'=> __("Font Size",'avia_framework')),
 								'line_height' 		=> array('type' => 'size', 'range' => '0.7-2', 'increment' => 0.1, 'unit' => 'em',  'name'=> __("Line Height",'avia_framework')),
 								'font_family' 		=> array('type' => 'font', 'name'=> __("Font Family",'avia_framework'), 'options' => $google_fonts),
 								'font_weight' 		=> array('type' => 'select', 'name'=> __("Font Weight",'avia_framework'), 'options' => $weight),
@@ -168,7 +168,7 @@ $advanced['h2'] = array(
 	"hover"			=> false,
 	"edit"			=> array(	'color' 			=> array('type' => 'colorpicker', 'name'=> __("Font Color",'avia_framework')), 
 								'background_color' 	=> array('type' => 'colorpicker', 'name'=> __("Background Color",'avia_framework')),
-								'font_size' 		=> array('type' => 'size', 'range' => '10-80', 'name'=> __("Font Size",'avia_framework')),
+								'font_size' 		=> array('type' => 'size', 'range' => '8-80', 'name'=> __("Font Size",'avia_framework')),
 								'line_height' 		=> array('type' => 'size', 'range' => '0.7-2', 'increment' => 0.1, 'unit' => 'em',  'name'=> __("Line Height",'avia_framework')),
 								'font_family' 		=> array('type' => 'font', 'name'=> __("Font Family",'avia_framework'), 'options' => $google_fonts),
 								'font_weight' 		=> array('type' => 'select', 'name'=> __("Font Weight",'avia_framework'), 'options' => $weight),
@@ -186,7 +186,7 @@ $advanced['h3'] = array(
 	"hover"			=> false,
 	"edit"			=> array(	'color' 			=> array('type' => 'colorpicker', 'name'=> __("Font Color",'avia_framework')), 
 								'background_color' 	=> array('type' => 'colorpicker', 'name'=> __("Background Color",'avia_framework')),
-								'font_size' 		=> array('type' => 'size', 'range' => '10-80', 'name'=> __("Font Size",'avia_framework')),
+								'font_size' 		=> array('type' => 'size', 'range' => '8-80', 'name'=> __("Font Size",'avia_framework')),
 								'line_height' 		=> array('type' => 'size', 'range' => '0.7-2', 'increment' => 0.1, 'unit' => 'em',  'name'=> __("Line Height",'avia_framework')),
 								'font_family' 		=> array('type' => 'font', 'name'=> __("Font Family",'avia_framework'), 'options' => $google_fonts),
 								'font_weight' 		=> array('type' => 'select', 'name'=> __("Font Weight",'avia_framework'), 'options' => $weight),
@@ -204,7 +204,7 @@ $advanced['h4'] = array(
 	"hover"			=> false,
 	"edit"			=> array(	'color' 			=> array('type' => 'colorpicker', 'name'=> __("Font Color",'avia_framework')), 
 								'background_color' 	=> array('type' => 'colorpicker', 'name'=> __("Background Color",'avia_framework')),
-								'font_size' 		=> array('type' => 'size', 'range' => '10-80', 'name'=> __("Font Size",'avia_framework')),
+								'font_size' 		=> array('type' => 'size', 'range' => '8-80', 'name'=> __("Font Size",'avia_framework')),
 								'line_height' 		=> array('type' => 'size', 'range' => '0.7-2', 'increment' => 0.1, 'unit' => 'em',  'name'=> __("Line Height",'avia_framework')),
 								'font_family' 		=> array('type' => 'font', 'name'=> __("Font Family",'avia_framework'), 'options' => $google_fonts),
 								'font_weight' 		=> array('type' => 'select', 'name'=> __("Font Weight",'avia_framework'), 'options' => $weight),
@@ -222,7 +222,7 @@ $advanced['h5'] = array(
 	"hover"			=> false,
 	"edit"			=> array(	'color' 			=> array('type' => 'colorpicker', 'name'=> __("Font Color",'avia_framework')), 
 								'background_color' 	=> array('type' => 'colorpicker', 'name'=> __("Background Color",'avia_framework')),
-								'font_size' 		=> array('type' => 'size', 'range' => '10-80', 'name'=> __("Font Size",'avia_framework')),
+								'font_size' 		=> array('type' => 'size', 'range' => '8-80', 'name'=> __("Font Size",'avia_framework')),
 								'line_height' 		=> array('type' => 'size', 'range' => '0.7-2', 'increment' => 0.1, 'unit' => 'em',  'name'=> __("Line Height",'avia_framework')),
 								'font_family' 		=> array('type' => 'font', 'name'=> __("Font Family",'avia_framework'), 'options' => $google_fonts),
 								'font_weight' 		=> array('type' => 'select', 'name'=> __("Font Weight",'avia_framework'), 'options' => $weight),
@@ -240,7 +240,7 @@ $advanced['h6'] = array(
 	"hover"			=> false,
 	"edit"			=> array(	'color' 			=> array('type' => 'colorpicker', 'name'=> __("Font Color",'avia_framework')), 
 								'background_color' 	=> array('type' => 'colorpicker', 'name'=> __("Background Color",'avia_framework')),
-								'font_size' 		=> array('type' => 'size', 'range' => '10-80', 'name'=> __("Font Size",'avia_framework')),
+								'font_size' 		=> array('type' => 'size', 'range' => '8-80', 'name'=> __("Font Size",'avia_framework')),
 								'line_height' 		=> array('type' => 'size', 'range' => '0.7-2', 'increment' => 0.1, 'unit' => 'em',  'name'=> __("Line Height",'avia_framework')),
 								'font_family' 		=> array('type' => 'font', 'name'=> __("Font Family",'avia_framework'), 'options' => $google_fonts),
 								'font_weight' 		=> array('type' => 'select', 'name'=> __("Font Weight",'avia_framework'), 'options' => $weight),
@@ -257,21 +257,22 @@ $advanced['main_menu'] = array(
 	"description"	=> __("Change the styling for your main menu links",'avia_framework'),
 	"selector"		=> array(
 		/*trick: hover is used inside the selector to prevent it from beeing applied when :hover is checked*/
-		"#top #header[hover]_main_alternate" => array(  "background_color" => "background-color: %background_color%;" ),
-		"#top #header .av-main-nav > li[hover] " => array(  "font_family" => "font-family: %font_family%;" ),
-		"#top #header .av-main-nav > li[hover] > a" => "",
-		".av_seperator_small_border .av-main-nav > li[hover] > a > .avia-menu-text,
-		#top #wrap_all #header #menu-item-search[hover]>a
+		"#top #header[hover]_main_alternate [active]" => array(  "background_color" => "background-color: %background_color%;" ),
+		"#top #header .av-main-nav > li[active][hover] " => array(  "font_family" => "font-family: %font_family%;" ),
+		"#top #header .av-main-nav > li[active][hover] > a" => "",
+		".av_seperator_small_border .av-main-nav > li[active][hover] > a > .avia-menu-text,
+		#top #wrap_all #header #menu-item-search[active][hover]>a
 		
 		"=> array(  "border_color" => "border-color: %border_color%;" ),
-		"#top #header .av-main-nav > li[hover] > a .avia-menu-text, #top #header .av-main-nav > li[hover] > a .avia-menu-subtext"=> array(  "color" => "color: %color%;" )
+		"#top #header .av-main-nav > li[active][hover] > a .avia-menu-text, #top #header .av-main-nav > li[active][hover] > a .avia-menu-subtext"=> array(  "color" => "color: %color%;" )
 	),
 	"sections"		=> false,
 	"hover"			=> true,
+	"active"		=> ".current-menu-item",
 	"edit"			=> array(	'color' 			=> array('type' => 'colorpicker', 'name'=> __("Font Color",'avia_framework')), 
 								'background_color' 	=> array('type' => 'colorpicker', 'name'=> __("Background Color",'avia_framework')),
 								'border_color' 		=> array('type' => 'colorpicker', 'name'=> __("Border Color",'avia_framework')),
-								'font_size' 		=> array('type' => 'size', 'range' => '10-30', 'name'=> __("Font Size",'avia_framework')),
+								'font_size' 		=> array('type' => 'size', 'range' => '8-30', 'name'=> __("Font Size",'avia_framework')),
 								'font_family' 		=> array('type' => 'font', 'name'=> __("Font Family",'avia_framework'), 'options' => $google_fonts),
 							)						
 );
@@ -288,7 +289,7 @@ $advanced['main_menu_dropdown'] = array(
 	"edit"			=> array(	'color' 			=> array('type' => 'colorpicker', 'name'=> __("Font Color",'avia_framework')), 
 								'background_color' 	=> array('type' => 'colorpicker', 'name'=> __("Background Color",'avia_framework')),
 								'border_color' 		=> array('type' => 'colorpicker', 'name'=> __("Border Color",'avia_framework')),
-								'font_size' 		=> array('type' => 'size', 'range' => '10-30', 'name'=> __("Font Size",'avia_framework')),
+								'font_size' 		=> array('type' => 'size', 'range' => '8-30', 'name'=> __("Font Size",'avia_framework')),
 								'line_height' 		=> array('type' => 'size', 'range' => '0.7-3', 'increment' => 0.1, 'unit' => 'em',  'name'=> __("Line Height",'avia_framework')),
 							)						
 );
@@ -315,46 +316,89 @@ $advanced['top_bar'] = array(
 
 
 
+/*
+$scale 	= array(__('Default','avia_framework') => '' , __('Small','avia_framework') =>'0.6');
+
+$advanced['main_menu_icon_style'] = array(
+	"id"			=> "main_menu_icon_style", //needs to match array key
+	"name"			=> __("Main Menu Icon",'avia_framework'),
+	"group" 		=> __("Main Menu (Icon)",'avia_framework'),
+	"description"	=> __("Change the styling for your main menu links once they are displayed in the page overlay",'avia_framework'),
+	"selector"		=> array( 
+		"#top .av-burger-menu-main>a" => array("size"=>"padding:0;"),
+		"#header .av-hamburger" => array("size"=>"-ms-transform: scale(%size%); transform: scale(%size%); transform-origin: right;"),
+		".header_color .av-hamburger-inner, .header_color .av-hamburger-inner::before, .header_color .av-hamburger-inner::after" => array("color"=>"background-color: %color%")
+	
+	),
+	"sections"		=> false,
+	"hover"			=> false,
+	"edit"			=> array(	
+		'color' 	=> array('type' => 'colorpicker', 'name'=> __("Icon Color",'avia_framework')), 
+		'size' 		=> array('type' => 'select', 'name'=> __("Icon Size",'avia_framework'), 'options' => $scale),
+							)
+);
+*/
+
+
 
 $advanced['main_menu_icon'] = array(
 	"id"			=> "main_menu_icon", //needs to match array key
-	"name"			=> __("Menu Links in overlay",'avia_framework'),
+	"name"			=> __("Menu Links in overlay/slide out",'avia_framework'),
 	"group" 		=> __("Main Menu (Icon)",'avia_framework'),
-	"description"	=> __("Change the styling for your main menu links once they are displayed in the page overlay",'avia_framework'),
+	"description"	=> __("Change the styling for your main menu links once they are displayed in the page overlay/slide out",'avia_framework'),
 	"selector"		=> array(
-		"#top #wrap_all #av-burger-menu-ul li a" => array(
+		"#top #wrap_all .av-burger-overlay .av-burger-overlay-scroll #av-burger-menu-ul li a" => array(
 								'color' 		=> "color:%color%;",
 								"font_family" 	=> "font-family: %font_family% ,'Helvetica Neue', Helvetica, Arial, sans-serif;", 
 								"font_weight" 	=> "font-weight: %font_weight%;",
 								"letter_spacing" => "letter-spacing: %letter_spacing%;",
 								"text_transform" => "text-transform: %text_transform%;",
+								"line_height" 	=> "line-height: %line_height%;",
 								),
 		"#top #wrap_all #av-burger-menu-ul li" => array(
 								'font_size' 	=> "font-size:%font_size%;",
 								"line_height" 	=> "line-height: %line_height% !important;",
 								),
-		".av-burger-overlay-active #top .av-hamburger-inner, .av-burger-overlay-active #top .av-hamburger-inner::before, .av-burger-overlay-active #top .av-hamburger-inner::after" => array(
+		".av-burger-overlay-active #top #wrap_all .av-hamburger-inner, .av-burger-overlay-active #top #wrap_all .av-hamburger-inner::before, .av-burger-overlay-active #top #wrap_all .av-hamburger-inner::after, .html_av-overlay-side-classic #top div .av-burger-overlay li li .avia-bullet" => array(
 			'color'=> "background-color:%color%;",
 		),
 		"div.av-burger-overlay-bg" => array(
 			'background_color' => "background-color:%background_color%;",
 		),
-		".av-burger-overlay-active #top #wrap_all #menu-item-search a, .av-burger-overlay-active #top #wrap_all #menu-item-search a:hover" => array(
+		".av-burger-overlay-active #top #wrap_all #header #menu-item-search a, .av-burger-overlay-active #top #wrap_all #main #menu-item-search a, .av-burger-overlay-active #top #wrap_all #menu-item-search a:hover" => array(
 			'color' => "color:%color%;",
+		),
+		"#top #wrap_all .av-burger-overlay-scroll" => array(
+			'menu_bg' => "background-color:%menu_bg%;",
+		),
+		".html_av-overlay-side #top #wrap_all div .av-burger-overlay-scroll #av-burger-menu-ul a:hover" => array(
+			'menu_bg_hover' => "background-color:%menu_bg_hover%;",
+		),
+		".html_av-overlay-side-classic #top #wrap_all .av-burger-overlay #av-burger-menu-ul li a" => array(
+			'border_color' => "border-color:%border_color%;",
 		),
 		
 	
 	),
 	"sections"		=> false,
 	"hover"			=> false,
-	"edit"			=> array(	'color' 			=> array('type' => 'colorpicker', 'name'=> __("Font Color",'avia_framework')), 
-								'font_size' 		=> array('type' => 'size', 'range' => '10-120', 'name'=> __("Font Size",'avia_framework')),
+	"edit"			=> array(	
+								'color' 			=> array('type' => 'colorpicker', 'name'=> __("Font Color",'avia_framework')), 
+								'background_color' 	=> array('type' => 'colorpicker', 'name'=> __("Overlay Color",'avia_framework')), 
+								'menu_bg' 			=> array('type' => 'colorpicker', 'name'=> __("Menu Background",'avia_framework')), 
+								'menu_bg_hover' 	=> array('type' => 'colorpicker', 'name'=> __("Menu Hover BG",'avia_framework')), 
+								'border_color' 		=> array('type' => 'colorpicker', 'name'=> __("Border Color",'avia_framework')), 
+								
+								'hr1' 				=> array('type' => 'hr'), 
+		
+								'font_size' 		=> array('type' => 'size', 'range' => '8-120', 'name'=> __("Font Size",'avia_framework')),
 								'line_height' 		=> array('type' => 'size', 'range' => '0.7-3', 'increment' => 0.1, 'unit' => 'em',  'name'=> __("Line Height",'avia_framework')),
 								'font_family' 		=> array('type' => 'font', 'name'=> __("Font Family",'avia_framework'), 'options' => $google_fonts),
 								'font_weight' 		=> array('type' => 'select', 'name'=> __("Font Weight",'avia_framework'), 'options' => $weight),
 								'letter_spacing' 	=> array('type' => 'size', 'range' => array(-10,20), 'increment' => 1, 'unit' => 'px',  'name'=> __("Letter Spacing",'avia_framework')),
 								'text_transform' 	=> array('type' => 'select', 'name'=> __("Text Transform",'avia_framework'), 'options' => $transform ),
-								'background_color' 	=> array('type' => 'colorpicker', 'name'=> __("Overlay Color",'avia_framework')), 
+								
+								
 							)
 													
 );
@@ -380,13 +424,14 @@ $advanced['hover_overlay'] = array(
 	"selector"		=> array(  
 								"#top [sections] .image-overlay-inside" => array("overlay_style" => array( "none" , "display: none;") ),
 								"#top [sections] .image-overlay" 		=> array("background_color" => "background-color: %background_color%;", "overlay_style" => array( "hide" , "visibility: hidden;")),   
+								"#top [sections] div .image-overlay" 		=> array("overlay_style" => array( "icon" , "background: none;")),   
 								"#top [sections] .image-overlay .image-overlay-inside:before" => array( "icon_color" => "background-color: %icon_color%;", "color" => "color: %color%;" )
 							),
 							
 							
 	"sections"		=> true,
 	"hover"			=> false,
-	"edit"			=> array(	'overlay_style' 	=> array('type' => 'select', 'name'=> __("Overlay Style",'avia_framework'), 'options' => array(__('Default','avia_framework') => '' , __('Minimal Overlay (No Icon)','avia_framework') =>'none' , __('Disable Overlay','avia_framework') =>'hide' )) ,		
+	"edit"			=> array(	'overlay_style' 	=> array('type' => 'select', 'name'=> __("Overlay Style",'avia_framework'), 'options' => array(__('Default','avia_framework') => '' , __('Minimal Overlay (No Icon)','avia_framework') =>'none' , __('Icon only','avia_framework') =>'icon' , __('Disable Overlay','avia_framework') =>'hide' )) ,		
 								'color' 			=> array('type' => 'colorpicker', 'name'=> __("Icon Color",'avia_framework')), 
 								'icon_color' 		=> array('type' => 'colorpicker', 'name'=> __("Icon background",'avia_framework')),
 								'background_color' 	=> array('type' => 'colorpicker', 'name'=> __("Overlay Color",'avia_framework')),
@@ -504,7 +549,7 @@ $advanced['slideshow_button'] = array(
 	"sections"		=> false,
 	"hover"			=> false,
 	"edit"			=> array(	
-								'font_size' 		=> array('type' => 'size', 'range' => '10-80', 'name'=> __("Font Size",'avia_framework')),
+								'font_size' 		=> array('type' => 'size', 'range' => '8-80', 'name'=> __("Font Size",'avia_framework')),
 								'font_weight' 		=> array('type' => 'select', 'name'=> __("Font Weight",'avia_framework'), 'options' => $weight),
 								'line_height' 		=> array('type' => 'size', 'range' => '0.7-2', 'increment' => 0.1, 'unit' => 'em',  'name'=> __("Line Height",'avia_framework')),
 								'letter_spacing' 	=> array('type' => 'size', 'range' => array(-10,20), 'increment' => 1, 'unit' => 'px',  'name'=> __("Letter Spacing",'avia_framework')),
@@ -512,6 +557,41 @@ $advanced['slideshow_button'] = array(
 							)
 );
 
+$advanced['cookie_consent'] = array(
+    "id"			=> "cookie_consent", //needs to match array key
+    "name"			=> "Cookie Consent Message Bar",
+    "group" 		=> __("Misc",'avia_framework'),
+    "description"	=> __("Change the styling for your cookie consent message bar",'avia_framework'),
+    "selector"		=> array(".avia-cookie-consent"=> ""),
+    "sections"		=> false,
+    "hover"			=> false,
+    "edit"			=> array(
+        'background_color' 	=> array('type' => 'colorpicker', 'name'=> __("Background Color",'avia_framework')),
+        'color' 			=> array('type' => 'colorpicker', 'name'=> __("Font Color",'avia_framework')),
+        'font_size' 		=> array('type' => 'size', 'range' => '8-80', 'name'=> __("Font Size",'avia_framework')),
+        'font_weight' 		=> array('type' => 'select', 'name'=> __("Font Weight",'avia_framework'), 'options' => $weight),
+        'line_height' 		=> array('type' => 'size', 'range' => '0.7-2', 'increment' => 0.1, 'unit' => 'em',  'name'=> __("Line Height",'avia_framework')),
+        'letter_spacing' 	=> array('type' => 'size', 'range' => array(-10,20), 'increment' => 1, 'unit' => 'px',  'name'=> __("Letter Spacing",'avia_framework')),
+        'text_transform' 	=> array('type' => 'select', 'name'=> __("Text Transform",'avia_framework'), 'options' => $transform )
+    )
+);
+
+$advanced['cookie_consent_button'] = array(
+    "id"			=> "cookie_consent_button", //needs to match array key
+    "name"			=> "Cookie Consent Button",
+    "group" 		=> __("Misc",'avia_framework'),
+    "description"	=> __("Change the styling for your cookie consent button",'avia_framework'),
+    "selector"		=> array(".avia-cookie-consent #avia_cookie_consent"=> ""),
+    "sections"		=> false,
+    "hover"			=> false,
+    "edit"			=> array(
+        'background_color' 	=> array('type' => 'colorpicker', 'name'=> __("Button Background Color",'avia_framework')),
+        'color' 			=> array('type' => 'colorpicker', 'name'=> __("Button Font Color",'avia_framework')),
+        'font_size' 		=> array('type' => 'size', 'range' => '8-80', 'name'=> __("Font Size",'avia_framework')),
+        'font_weight' 		=> array('type' => 'select', 'name'=> __("Font Weight",'avia_framework'), 'options' => $weight),
+        'text_transform' 	=> array('type' => 'select', 'name'=> __("Text Transform",'avia_framework'), 'options' => $transform )
+    )
+);
 
 //body font size
 //dropdown menu

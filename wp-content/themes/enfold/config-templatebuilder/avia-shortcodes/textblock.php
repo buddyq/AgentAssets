@@ -1,8 +1,11 @@
 <?php
 /**
  * Textblock
+ * 
  * Shortcode which creates a text element wrapped in a div
  */
+if ( ! defined( 'ABSPATH' ) ) {  exit;  }    // Exit if accessed directly
+
 
 if ( !class_exists( 'avia_sc_text' ) )
 {
@@ -13,6 +16,8 @@ if ( !class_exists( 'avia_sc_text' ) )
 			 */
 			function shortcode_insert_button()
 			{
+				$this->config['self_closing']	=	'no';
+				
 				$this->config['name']			= __('Text Block', 'avia_framework' );
 				$this->config['tab']			= __('Content Elements', 'avia_framework' );
 				$this->config['icon']			= AviaBuilder::$path['imagesURL']."sc-text_block.png";
@@ -21,7 +26,7 @@ if ( !class_exists( 'avia_sc_text' ) )
 				$this->config['shortcode'] 		= 'av_textblock';
 				$this->config['tinyMCE'] 	    = array('disable' => true);
 				$this->config['tooltip'] 	    = __('Creates a simple text block', 'avia_framework' );
-
+				$this->config['preview'] 		= "large";
 			}
 
 			/**
@@ -58,7 +63,7 @@ if ( !class_exists( 'avia_sc_text' ) )
 							"desc" 	=> __("Size of the text in px", 'avia_framework' ),
 				            "id" 	=> "size",
 				            "type" 	=> "select",
-				            "subtype" => AviaHtmlHelper::number_array(10,40,1, array( __("Default Size", 'avia_framework' )=>'')),
+				            "subtype" => AviaHtmlHelper::number_array(8,40,1, array( __("Default Size", 'avia_framework' )=>'')),
 				            "std" => ""),
 							
 					array(
@@ -97,6 +102,87 @@ if ( !class_exists( 'avia_sc_text' ) )
 							'nodescription' => true
 						),
 						
+					
+					array(
+							"type" 	=> "tab",
+							"name"	=> __("Screen Options",'avia_framework' ),
+							'nodescription' => true
+						),
+					
+							array(
+								"name" 	=> __("Element Visibility",'avia_framework' ),
+								"desc" 	=> __("Set the visibility for this element, based on the device screensize.", 'avia_framework' ),
+								"type" 	=> "heading",
+								"description_class" => "av-builder-note av-neutral",
+								),
+							
+							array(	
+									"desc" 	=> __("Hide on large screens (wider than 990px - eg: Desktop)", 'avia_framework'),
+									"id" 	=> "av-desktop-hide",
+									"std" 	=> "",
+									"container_class" => 'av-multi-checkbox',
+									"type" 	=> "checkbox"),
+							
+							array(	
+								
+									"desc" 	=> __("Hide on medium sized screens (between 768px and 989px - eg: Tablet Landscape)", 'avia_framework'),
+									"id" 	=> "av-medium-hide",
+									"std" 	=> "",
+									"container_class" => 'av-multi-checkbox',
+									"type" 	=> "checkbox"),
+									
+							array(	
+								
+									"desc" 	=> __("Hide on small screens (between 480px and 767px - eg: Tablet Portrait)", 'avia_framework'),
+									"id" 	=> "av-small-hide",
+									"std" 	=> "",
+									"container_class" => 'av-multi-checkbox',
+									"type" 	=> "checkbox"),
+									
+							array(	
+								
+									"desc" 	=> __("Hide on very small screens (smaller than 479px - eg: Smartphone Portrait)", 'avia_framework'),
+									"id" 	=> "av-mini-hide",
+									"std" 	=> "",
+									"container_class" => 'av-multi-checkbox',
+									"type" 	=> "checkbox"),
+							
+							
+							array(
+								"name" 	=> __("Font Size",'avia_framework' ),
+								"desc" 	=> __("Set the font size for the element content, based on the device screensize.", 'avia_framework' ),
+								"type" 	=> "heading",
+								"description_class" => "av-builder-note av-neutral",
+								),
+								
+							
+							
+								
+							array(	"name" 	=> __("Font Size for medium sized screens (between 768px and 989px - eg: Tablet Landscape)", 'avia_framework' ),
+				            "id" 	=> "av-medium-font-size",
+				            "type" 	=> "select",
+				            "subtype" => AviaHtmlHelper::number_array(10,60,1, array( __("Default", 'avia_framework' )=>''), "px"),
+				            "std" => ""),
+				            
+				            array(	"name" 	=> __("Font Size for small screens (between 480px and 767px - eg: Tablet Portrait)", 'avia_framework' ),
+				            "id" 	=> "av-small-font-size",
+				            "type" 	=> "select",
+				            "subtype" => AviaHtmlHelper::number_array(10,60,1, array( __("Default", 'avia_framework' )=>''), "px"),
+				            "std" => ""),
+				            
+							array(	"name" 	=> __("Font Size for very small screens (smaller than 479px - eg: Smartphone Portrait)", 'avia_framework' ),
+				            "id" 	=> "av-mini-font-size",
+				            "type" 	=> "select",
+				            "subtype" => AviaHtmlHelper::number_array(10,60,1, array( __("Default", 'avia_framework' )=>''), "px"),
+				            "std" => ""),
+					
+						
+					array(
+							"type" 	=> "close_div",
+							'nodescription' => true
+						),	
+					
+						
 					array(
 							"type" 	=> "close_div",
 							'nodescription' => true
@@ -131,6 +217,8 @@ if ( !class_exists( 'avia_sc_text' ) )
 			 */
 			function shortcode_handler($atts, $content = "", $shortcodename = "", $meta = "")
 			{
+				extract(AviaHelper::av_mobile_sizes($atts)); //return $av_font_classes, $av_title_font_classes and $av_display_classes 
+
 				extract(shortcode_atts(array( 
 				
 				'font_color' => "",
@@ -138,8 +226,6 @@ if ( !class_exists( 'avia_sc_text' ) )
 				'size' => '',
 				
 				), $atts, $this->config['shortcode']));
-				
-				
 				
 				
 				$custom_class = !empty($meta['custom_class']) ? $meta['custom_class'] : "";
@@ -163,8 +249,8 @@ if ( !class_exists( 'avia_sc_text' ) )
 				if($extra_styling) $extra_styling = " style='{$extra_styling}'" ;
 				
 				
-                $output .= '<section class="av_textblock_section" '.$markup.'>';
-                $output .= "<div class='avia_textblock {$custom_class}' {$extra_styling} {$markup_text}>".ShortcodeHelper::avia_apply_autop(ShortcodeHelper::avia_remove_autop($content) )."</div>";
+                $output .= '<section class="av_textblock_section '.$av_display_classes.'" '.$markup.'>';
+                $output .= "<div class='avia_textblock {$custom_class} {$av_font_classes}' {$extra_styling} {$markup_text}>".ShortcodeHelper::avia_apply_autop(ShortcodeHelper::avia_remove_autop($content) )."</div>";
                 $output .= '</section>';
 
                 return $output;
@@ -172,3 +258,13 @@ if ( !class_exists( 'avia_sc_text' ) )
 
 	}
 }
+
+
+
+
+
+
+
+
+
+

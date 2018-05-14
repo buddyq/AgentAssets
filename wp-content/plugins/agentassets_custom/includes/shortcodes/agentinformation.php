@@ -4,10 +4,10 @@ add_shortcode('agentinformation_first_name', 'agentinformation_first_name_shortc
 add_shortcode('agentinformation_designation', 'agentinformation_designation_shortcode');
 add_shortcode('agentinformation_business_phone', 'agentinformation_business_phone_shortcode');
 add_shortcode('agentinformation_mobile_phone', 'agentinformation_mobile_phone_shortcode');
-add_shortcode('agentinformation_profile_picture_url', 'agentinformation_profile_picture_url_shortcode');
+add_shortcode('agentinformation_profile_picture', 'agentinformation_profile_picture_shortcode');
 add_shortcode('agentinformation_broker_name', 'agentinformation_broker_name_shortcode');
 add_shortcode('agentinformation_broker_website', 'agentinformation_broker_website_shortcode');
-add_shortcode('agentinformation_broker_logo_url', 'agentinformation_broker_logo_url_shortcode');
+add_shortcode('agentinformation_broker_logo', 'agentinformation_broker_logo_shortcode');
 add_shortcode('agentinformation_facebook', 'agentinformation_facebook_shortcode');
 add_shortcode('agentinformation_twitter', 'agentinformation_twitter_shortcode');
 add_shortcode('agentinformation_googleplus', 'agentinformation_googleplus_shortcode');
@@ -25,14 +25,11 @@ function agentinformation_shortcode($atts)
         $user_info = get_userdata($user_id);
 
         $defaults = array(
-            'profile_picture' => plugins_url('agentassets-site-manager') . '/images/dummy_agent_pic.png',
-            'broker_logo' => plugins_url('agentassets-site-manager') . '/images/placeholder_wide.jpg',
+            'profile_picture' => plugins_url('aa-site-customizer') . '/inc/images/dummy_agent_pic.png',
+            'broker_logo' => plugins_url('aa-site-customizer') . '/inc/images/placeholder_wide.jpg',
             'contact_page_image' => 'error',
             'email' => 'buddy'.$user_info->user_email,
         );
-
-        $blog_id = get_current_blog_id();
-        $user_id = OrderMap::getBlogOwner($blog_id);
 
         $value = get_user_meta($user_id, $atts['key'], true);
         if (empty($value)) {
@@ -57,9 +54,9 @@ function agentinformation_shortcode($atts)
                 }
                 if (is_numeric($value) && $value > 0) {
 
-                    if ($attachment_blog_id != $blog_id) {
-                        switch_to_blog($attachment_blog_id);
-                    }
+                    // if ($attachment_blog_id != $blog_id) {
+                    //     switch_to_blog($attachment_blog_id);
+                    // }
                     $alt = (empty($atts['alt'])) ? '' : $atts['alt'];
                     $title = (empty($atts['title'])) ? '' : $atts['title'];
                     $align = (empty($atts['align'])) ? '' : $atts['align'];
@@ -138,7 +135,7 @@ function agentinformation_mobile_phone_shortcode($attr = array())
     return agentinformation_shortcode($attr);
 }
 
-function agentinformation_profile_picture_url_shortcode($attr = array())
+function agentinformation_profile_picture_shortcode($attr = array())
 {
     $attr['key'] = 'profile_picture';
     return agentinformation_shortcode($attr);
@@ -156,7 +153,7 @@ function agentinformation_broker_website_shortcode($attr = array())
     return agentinformation_shortcode($attr);
 }
 
-function agentinformation_broker_logo_url_shortcode($attr = array())
+function agentinformation_broker_logo_shortcode($attr = array())
 {
     $attr['key'] = 'broker_logo';
     return agentinformation_shortcode($attr);

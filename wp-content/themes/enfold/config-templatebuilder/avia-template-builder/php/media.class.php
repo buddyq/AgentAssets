@@ -123,10 +123,21 @@ function admin_attachment_field_media_author_credit_save( $post, $attachment ) {
 function admin_attachment_field_media_author_credit_ajax_save() {
 
     $post_id = $_POST['id'];
-
+	
+	check_ajax_referer( 'update-post_' . $post_id, 'nonce' );
+	if(!current_user_can('edit_posts')) die();
+	
     if( isset( $_POST['attachments'][$post_id]['av-custom-link'] ) )
+    {
         update_post_meta( $post_id, 'av-custom-link', $_POST['attachments'][$post_id]['av-custom-link'] );
+	}
+	
+	clean_post_cache($post_id);
 
-    clean_post_cache($post_id);
+} 
 
-} add_action('wp_ajax_save-attachment-compat', 'admin_attachment_field_media_author_credit_ajax_save', 0, 1); 
+add_action('wp_ajax_save-attachment-compat', 'admin_attachment_field_media_author_credit_ajax_save', 0, 1); 
+
+
+
+

@@ -772,7 +772,7 @@ return utils;
   /* jshint strict: false */ /* globals define, module, require */
   if ( typeof define == 'function' && define.amd ) {
     // AMD - RequireJS
-    define( 'outlayer/item',[
+    define( 'outlayer/enviratope-item',[
         'ev-emitter/ev-emitter',
         'get-size/get-size'
       ],
@@ -1333,7 +1333,7 @@ return Item;
         'ev-emitter/ev-emitter',
         'get-size/get-size',
         'fizzy-ui-utils/utils',
-        './item'
+        './enviratope-item'
       ],
       function( EvEmitter, getSize, utils, Item ) {
         return factory( window, EvEmitter, getSize, utils, Item);
@@ -1346,7 +1346,7 @@ return Item;
       require('ev-emitter'),
       require('get-size'),
       require('fizzy-ui-utils'),
-      require('./item')
+      require('./enviratope-item.js')
     );
   } else {
     // browser global
@@ -2918,7 +2918,7 @@ return Vertical;
         'get-size/get-size',
         'desandro-matches-selector/matches-selector',
         'fizzy-ui-utils/utils',
-        './item',
+        './enviratope-item',
         './layout-mode',
         // include default layout modes
         './layout-modes/masonry',
@@ -2936,7 +2936,7 @@ return Vertical;
       require('get-size'),
       require('desandro-matches-selector'),
       require('fizzy-ui-utils'),
-      require('./item'),
+      require('./enviratope-item'),
       require('./layout-mode'),
       // include default layout modes
       require('./layout-modes/masonry'),

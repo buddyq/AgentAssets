@@ -12,7 +12,7 @@ if ( ! function_exists( 'add_action' ) ) {
 
 <div id="poststuff" class="ui-sortable meta-box-sortables">
 	<div class="postbox">
-		<div class="handlediv" title="<?php esc_attr_e( 'Click to toggle' ); ?>"><br /></div>
+		<div class="handlediv" title="<?php esc_attr_e( 'Click to toggle', 'adminimize' ); ?>"><br /></div>
 		<h3 class="hndle" id="config_menu"><?php esc_attr_e( 'Menu Options', 'adminimize' ); ?></h3>
 
 		<div class="inside">
@@ -107,28 +107,18 @@ if ( ! function_exists( 'add_action' ) ) {
 
 					$i = 0;
 					$x = 0;
-
-					$users = array(
-						0 => 'Profile',
-						1 => 'edit_users',
-						2 => 'profile.php',
-						3 => '',
-						4 => 'menu-top',
-						5 => 'menu-users',
-						6 => 'div',
-					);
-
 					foreach ( $wp_menu as $key => $item ) {
 
 						$menu_slug = $item[ 2 ];
 
 						// non checked items
+						$disabled_item_adm      = '';
 						if ( $menu_slug === 'options-general.php' ) {
 							$disabled_item_adm_hint = '<abbr title="' . esc_attr__(
-									'After activate the check box it heavy attitudes will change.', 'adminimize'
+									'After activation of this checkbox you will loose the easy access to the settings area inside the menu.', 'adminimize'
 								) . '" style="cursor:pointer;"> ! </acronym>';
 						} else {
-							$disabled_item_adm      = '';
+							
 							$disabled_item_adm_hint = '';
 						}
 
@@ -190,22 +180,6 @@ if ( ! function_exists( 'add_action' ) ) {
 							}
 							echo '</tr>';
 
-							// Only for user smaller administrator, change user-Profile-File.
-							if ( 'users.php' === $menu_slug ) {
-								$x ++;
-								echo '<tr>' . "\n";
-								echo "\t" . '<th>' . esc_attr__( 'Profile' ) . ' <span>(profile.php)</span> </th>';
-								foreach ( $user_roles as $role ) {
-									echo "\t" . '<td class="num"><input disabled="disabled" id="check_menu'
-									     . $role . $x . '" class="menu_options_'
-									     . preg_replace( '/[^a-z0-9_-]+/', '', $role )
-									     . '" type="checkbox"' . $checked_user_role_[ $role ]
-									     . ' name="mw_adminimize_disabled_menu_' . $role
-									     . '_items[]" value="profile.php" /></td>' . "\n";
-								}
-								echo '</tr>';
-							}
-
 							$x ++;
 
 							if ( ! isset( $wp_submenu[ $menu_slug ] ) ) {
@@ -221,7 +195,7 @@ if ( ! function_exists( 'add_action' ) ) {
 									//$disabled_subitem_adm = ' disabled="disabled"';
 									$disabled_subitem_adm_hint = '<abbr title="'
 									                             . esc_attr__(
-										                             'After activate the check box it heavy attitudes will change.',
+										                             'After activate the checkbox you will loose its easy access in the menu.',
 										                             'adminimize'
 									                             )
 									                             . '" style="cursor:pointer;"> ! </acronym>';

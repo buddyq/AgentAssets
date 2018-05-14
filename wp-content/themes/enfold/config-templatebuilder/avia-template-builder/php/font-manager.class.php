@@ -36,11 +36,8 @@ class avia_font_manager{
 	
 	function add_zipped_font()
 	{
-		
-		
-		
 		//check if referer is ok
-		if(function_exists('check_ajax_referer')) { check_ajax_referer('avia_nonce_save_backend'); }
+		check_ajax_referer('avia_nonce_save_backend');
 		
 		//check if capability is ok
 		$cap = apply_filters('avf_file_upload_capability', 'update_plugins');
@@ -76,7 +73,7 @@ class avia_font_manager{
 	function remove_zipped_font()
 	{
 		//check if referer is ok
-		if(function_exists('check_ajax_referer')) { check_ajax_referer('avia_nonce_save_backend'); }
+		check_ajax_referer('avia_nonce_save_backend');
 		
 		//check if capability is ok
 		$cap = apply_filters('avf_file_upload_capability', 'update_plugins');
@@ -126,10 +123,8 @@ class avia_font_manager{
 			    $this->font_name = str_replace('iconset.', "", $zip_paths['filename']);
 		    }
 		    
-		    
 	        for ( $i=0; $i < $zip->numFiles; $i++ ) 
 	        { 
-	        	
 	        	$entry = $zip->getNameIndex($i); 
 	        
 	        	if(!empty($filter))
@@ -139,11 +134,15 @@ class avia_font_manager{
 	     			
 	     			foreach($filter as $regex)
 	     			{
-	     				preg_match("!".$regex."!", $entry , $matches);
+	     				preg_match("!".$regex."$!", $entry , $matches);
+	     				
 	     				if(!empty($matches))
 	     				{
-	     					$delete = false;
-	     					break;
+		     				if(strpos($entry, ".php") === false)
+		     				{
+	     						$delete = false;
+		 						break;
+		 					}
 	     				}
 	     			}
 				}
@@ -209,6 +208,9 @@ class avia_font_manager{
 				$this->font_name = (string) $font_attr['id'];
 			}
 			
+			//allow only basic characters within the font name
+			$this->font_name = AviaHelper::save_string($this->font_name,'-');
+			
 			$glyphs = $xml->defs->font->children();
 			foreach($glyphs as $item => $glyph)
 			{
@@ -221,6 +223,7 @@ class avia_font_manager{
 					if($class != 'hidden')
 					{
 						$unicode_key = trim(json_encode($unicode),'\\\"');
+ 						$unicode_key = AviaHelper::save_string($unicode_key,'-');
 						
 						if($item == 'glyph' && !empty($unicode_key) && trim($unicode_key) != "")
 						{	
@@ -233,7 +236,6 @@ class avia_font_manager{
 			if(!empty($this->svg_config) && $this->font_name != 'unknown')
 			{
 				$this->write_config();
-				
 
 				if(!$config_only){
 				

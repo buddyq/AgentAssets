@@ -126,7 +126,7 @@ class MedmaThemeManager {
             $theme_ids_in = 'IN('.implode(',',$delete_ids).')';
             $wpdb->delete(self::tableName(), 'id '.$theme_ids_in);
 
-            $wpdb->query('DELETE FROM `'.$wpdb->base_prefix.'medma_group_theme` WHERE `theme_id` IN '.$theme_ids_in);
+            $wpdb->query('DELETE FROM `'.$wpdb->base_prefix.'medma_group_theme` WHERE `theme_id` '.$theme_ids_in);
         }
 
         return $medma_themes;

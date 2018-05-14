@@ -4,14 +4,16 @@ add_action('admin_menu', 'aag_theme_manager_menu');
 
 function aag_theme_manager_menu() {
     if (is_super_admin() && get_current_blog_id() == 1) {
-        add_menu_page('Agentassets Group Manager', 'Agentassets Group Manager', 'aag_manager', 'aag-manager-group-handle', 'aag_manager_group_admin');
+        add_menu_page('AgentAssets Settings', 'Assign Templates', 'aag_manager', 'aa-assign-templates', 'aag_manager_template_admin');
 
-        add_submenu_page('aag-manager-group-handle', 'Groups', 'Groups', 'aag_manager', 'aag-manager-group-handle', 'aag_manager_group_admin');
-        add_submenu_page('aag-manager-group-handle', 'Themes', 'Themes', 'aag_manager', 'aag-manager-theme-handle', 'aag_manager_theme_admin');
+        // add_submenu_page('aag-manager-group-handle', 'Groups', 'Groups', 'aag_manager', 'aag-manager-group-handle', 'aag_manager_group_admin');
+        // add_submenu_page('aag-manager-group-handle', 'Themes', 'Themes', 'aag_manager', 'aag-manager-theme-handle', 'aag_manager_theme_admin');
+        add_submenu_page('aag-manager-group-handle', 'Assign Templates', 'Assign Templates', 'aag_manager', 'aag-manager-template-handle', 'aag_manager_template_admin');
 
     }
 }
 
+/*
 function aag_manager_theme_admin() {
     $notices = array();
     if (isset($_POST['changeit'])) {
@@ -102,6 +104,7 @@ function aag_manager_theme_admin() {
     </div>
     <?php
 }
+*/
 
 
 function aag_manager_group_admin() {
@@ -112,18 +115,20 @@ function aag_manager_group_admin() {
     $view = 'list_view';
     $viewData = array();
     $currentAction = empty($_GET['medma_group_action']) ? 'list' : $_GET['medma_group_action'];
-
+    write_log("Group Admin: ".$_GET['row_id']);
     // controller
     switch ($currentAction) {
         case 'editor' :
             $errors = array();
             $group = null;
+            
             if (isset($_GET['group_id'])) {
                 $group = MedmaGroupModel::findOne('id = %d', array($_GET['group_id']));
                 if (false === $group) {
                     $group = null;
                 }
             }
+            
             if (isset($_POST['MedmaGroup'])) {
                 $group = MedmaGroupModel::validate($_POST['MedmaGroup'], $errors);
                 if (!count($errors)) {
@@ -161,11 +166,14 @@ function aag_manager_group_admin() {
                 'errors' => $errors,
             );
             break;
+            
         case 'view' :
             $group = null;
-            if (isset($_GET['group_id'])) {
+            if (isset($_GET['row_id'])) {
+              write_log($_GET['row_id']);
                 $view = 'view';
-                $group = MedmaGroupModel::findOne('id = %d', array($_GET['group_id']));
+                $group = MedmaGroupModel::removeRelationship($_GET['row_id']);
+                // $group = MedmaGroupModel::findOne('id = %d', array($_GET['row_id']));
                 if (false === $group) {
                     $group = null;
                 } else {
@@ -218,7 +226,10 @@ function aag_manager_group_admin() {
                         } else if (isset($_POST['bulk_action'])) {
                             if ('delete' == $_POST['bulk_action']) {
                                 $ids = $_POST['group_themes'];
-                                $result = MedmaGroupModel::removeRelatedThemes($group->id, $ids);
+                                write_log($ids);
+                                // echo "<pre>";print_r($ids);"</pre>";
+                                break;
+                                $result = MedmaGroupModel::removeRelationship($id);
                                 if ($result) {
                                     $notices[] = array('class' => 'success', 'message' => 'The themes has been successfully deleted.');
                                 } else {
@@ -269,6 +280,7 @@ function aag_manager_group_admin() {
                 }
             }
             $viewData['groups'] = MedmaGroupModel::findAll();
+            
             break;
         case 'remove':
             if (isset($_GET['group_id'])) {
@@ -283,8 +295,9 @@ function aag_manager_group_admin() {
             $viewData['groups'] = MedmaGroupModel::findAll();
     }
 
-    // view
-    ?>
+// view
+
+?>
     <div class="wrap">
         <h1>
             Agentassets Groups Manager
@@ -301,6 +314,158 @@ function aag_manager_group_admin() {
         ?>
     </div>
     <?php
+}
+
+function aag_manager_template_admin() { // Added by Buddy Quaid
+  global $pagenow, $plugin_page;
+  $this_page_url = add_query_arg( 'page', $plugin_page, admin_url( $pagenow ) );
+
+  $notices = array();
+  $view = 'list_view';
+  $viewData = array();
+  $currentAction = empty($_GET['medma_group_action']) ? 'list' : $_GET['medma_group_action'];
+
+  // controller
+  switch ($currentAction) {
+      case 'editor' :
+          $errors = array();
+          $group = null;
+          
+          if (isset($_GET['template_id'])) {
+              $group = MedmaGroupModel::findOne('id = %d', array($_GET['template_id']));
+              if (false === $group) {
+                  $group = null;
+              }
+          }
+          
+          if (isset($_POST['addRelationship'])) {
+            write_log(__LINE__);
+              $relationship = MedmaGroupModel::validateRelationship($_POST, $errors);
+              if (!count($errors)) {
+                  if (empty($relationship->result)) {
+                      $result = MedmaGroupModel::insertRelationship(get_object_vars($relationship));
+                      if ($result) {
+                          $relationship->result = $result;
+                          $notices[] = array('class' => 'success', 'message' => 'Relationship has been successfully saved.');
+                      } else {
+                          $notices[] = array('class' => 'error', 'message' => 'Error! Can\'t save relationship.');
+                      }
+                  } else {
+                      $data = get_object_vars($relationship);
+                      unset($data['id']);
+                      $result = MedmaGroupModel::update($data, 'id = '.$relationship->id);
+                      if (false === $result) {
+                          $notices[] = array('class' => 'error', 'message' => 'Error! Can\'t save relationship.');
+                      } else {
+                          $notices[] = array('class' => 'success', 'message' => 'Relationship has been successfully saved.');
+                      }
+                  }
+              } else {
+                  foreach($errors as $error) {
+                      $notices[] = array('class' => 'error', 'message' => $error);
+                  }
+              }
+          } else if (is_null($relationship)) {
+              $relationship = MedmaGroupModel::touchRelationship();
+          }
+
+          $view = 'form_view';
+          $viewData = array(
+              'relationship' => $relationship, // used to be 'group'
+              'errors' => $errors,
+          );
+          break;
+          
+      case 'view' :
+          $template = null;
+          if (isset($_GET['template_id'])) {
+              $view = 'view';
+              $query = "SELECT * FROM ". $wpdb->prefix."aag_group_templates_relationships_table WHERE bp_group_id = ". $template_cat_id;
+              $group = MedmaGroupModel::findOne('id = %d', array($_GET['template_id']));
+              if (false === $group) {
+                  $group = null;
+              } else {
+                  $list = array();
+
+                  $view = 'view';
+                  $viewData = array(
+                      'group' => $group,
+                      'list' => $list,
+                  );
+              }
+          }
+          if (empty($group)) {
+              $group = MedmaGroupModel::touch();
+              $group->code = MedmaGroupModel::generateCode();
+              $notices[] = array('class' => 'error', 'message' => 'Error! Unknown group.');
+              $viewData['groups'] = MedmaGroupModel::findAll();
+          }
+          break;
+      case 'list': 
+          if (isset($_GET['row_id'])) {
+            $result = MedmaGroupModel::removeRelationship($_GET['row_id']);
+            if($result)
+            {
+              $notices[] = array('class' => 'success', 'message' => 'The relationship has been successfully removed.');
+            }else{
+              $notices[] = array('class' => 'error', 'message' => 'Error! Unalbe to delete the relationship.');
+            }
+          }
+          if (isset($_POST['bulk_action'])) {
+              switch ($_POST['bulk_action']) {
+                  case 'delete':
+                      if (isset($_POST['groups']) && is_array($_POST['$groups'])) {
+                          if (MedmaGroupModel::deleteAll($_POST['$groups'])) {
+                              $notices[] = array('class' => 'success', 'message' => 'The groups has been successfully removed.');
+                          }
+                      }
+                      break;
+                  case 'update_code':
+                      if (isset($_POST['groups']) && is_array($_POST['groups'])) {
+                          foreach($_POST['groups'] as $seed => $group_id) {
+                              MedmaGroupModel::update(array(
+                                  'code' => MedmaGroupModel::generateCode($seed),
+                              ), ' id = '.(int)$group_id);
+                          }
+                          $notices[] = array('class' => 'success', 'message' => 'The group codes has been successfully updated.');
+                      }
+                      break;
+                  default:
+                      $notices[] = array('class' => 'error', 'message' => 'Error! Unknown action.');
+              }
+          }
+          // echo "<pre>";print_r(get_class_methods(AgentAssets));"</pre>";
+          $viewData['relationships'] = MedmaGroupModel::get_group_template_relationship();
+          break;
+      case 'remove':
+          if (isset($_GET['template_id'])) {
+              if (MedmaGroupModel::deleteAll(array((int)$_GET['template_id']))) {
+                  $notices[] = array('class' => 'success', 'message' => 'The relationship has been successfully removed.');
+              }
+          }
+          $viewData['groups'] = MedmaGroupModel::findAll();
+          break;
+      default:
+          $notices[] = array('class' => 'error', 'message' => 'Error! Unknown action.');
+          $viewData['groups'] = MedmaGroupModel::findAll();
+    }  
+  ?>
+  <div class="wrap">
+      <h1>
+          Assign - Group/Templates Relationship
+          <?php if ('list_view' === $view) { ?>
+          <a class="page-title-action" href="<?php echo add_query_arg('medma_group_action', 'editor', $this_page_url);?>">Assign New Relationship</a>
+          <?php } ?>
+      </h1>
+      <?php if (count($notices)) foreach ($notices as $notice) { ?>
+          <div class="notice notice-<?php echo $notice['class'];?> is-dismissible">
+              <p><?php echo $notice['message']; ?></p>
+          </div>
+      <?php }
+      call_user_func('aag_manager_template_'.$view, $viewData);
+      ?>
+  </div>
+  <?php
 }
 
 function aag_manager_group_list_view($data) {
@@ -462,6 +627,15 @@ function aag_manager_group_view($data) {
         <a href="<?php echo add_query_arg('group_id', $group->id, $edit_action_url);?>">Edit This Group</a>
     </p>
     <br/>
+    
+    <?php // Added by Buddy Quaid - Gets BlogTemplates table
+    echo "<h2>Added by Buddy Quaid - Get Plugin/BlogTemplates table</h2>";
+    // Get all groups user belongs to.
+
+    $templates_table = new NBT_Templates_Table();
+    $templates_table->prepare_items();
+    $templates_table->display();
+    ?>
     <h2>Group Relations</h2>
     <h2 class="nav-tab-wrapper wp-clearfix">
         <a class="nav-tab <?php echo ('users' == $subview) ? 'nav-tab-active' : '';?>" <?php
@@ -587,7 +761,7 @@ function aag_manager_group_view_themes($data) {
                     <input id="cb-select-all-1" type="checkbox">
                 </td>
                 <th class="manage-column column-login">Name</th>
-                <th class="manage-column column-email">System ID</th>
+                <th class="manage-column column-email">System IDaa</th>
             </tr>
             </thead>
             <tbody>
@@ -611,10 +785,132 @@ function aag_manager_group_view_themes($data) {
                     <input id="cb-select-all-2" type="checkbox">
                 </td>
                 <th class="manage-column column-login">Name</th>
-                <th class="manage-column column-email">System ID</th>
+                <th class="manage-column column-email">System IDbb</th>
             </tr>
             </tfoot>
         </table>
+    </form>
+    <?php
+}
+
+function aag_manager_template_list_view($data) {
+  // Added by Buddy Quaid
+  // echo "<pre>";print_r($data);"</pre>";
+  $relationship_id = $_GET['row_id'];
+    ?>
+    <form method="post">
+
+        <div class="tablenav top">
+            <div class="alignleft actions">
+                <select id="new-group-theme" name="bulk_action">
+                    <option value="">Bulk Action…</option>
+                    <option value="delete">Delete</option>
+                </select>
+                <input id="bulkaction" class="button" type="submit" value="Apply" name="bulkaction">
+            </div>
+            <div class="alignleft actions">
+                <label class="screen-reader-text" for="new-group-theme">Add New User</label>
+            </div>
+            <br class="clear"/>
+        </div>
+        <table class="wp-list-table widefat fixed striped group-users">
+            <thead>
+            <tr class="aa-admin-header">
+                <td id="cb" class="manage-column column-cb check-column">
+                    <label class="screen-reader-text" for="cb-select-all-1">Select All</label>
+                    <input id="cb-select-all-1" type="checkbox">
+                </td>
+                <th class="manage-column column-email">BuddyPress Group</th>
+                <th class="manage-column column-email">Template Category</th>
+            </tr>
+            </thead>
+            <tbody>
+            <?php if (count($data['relationships'])) foreach ($data['relationships'] as $relation) { ?>
+                <tr id="group-theme-<?php echo $relation->rowID;?>">
+                    <th class="check-column" scope="row">
+                        <label class="screen-reader-text" for="theme_user_<?php echo $relation->rowID;?>">Select Relation</label>
+                        <input id="group_theme_<?php echo $relation->rowID;?>" class="" type="checkbox" value="<?php echo $relation->rowID;?>" name="group_themes[]">
+                    </th>
+                    <td>
+                      <?php echo $relation->groupName;?><br>
+                      <a href="<?php echo $_SERVER['REQUEST_URI'] . '&row_id='.$relation->rowID;?>" title="Delete this relationship" id="delete_<?php echo $relation->rowID?>">Delete</a>
+                    </td>
+                    <td><?php echo $relation->templateName;?></td>
+                </tr>
+            <?php } else { ?>
+                <tr><td colspan="3">No Results.</td></tr>
+            <?php } ?>
+            </tbody>
+            <tfoot>
+            <tr>
+                <td class="manage-column column-cb check-column">
+                    <label class="screen-reader-text" for="cb-select-all-2">Select All</label>
+                    <input id="cb-select-all-2" type="checkbox">
+                </td>
+                <th class="manage-column column-email">BuddyPress Group</th>
+                <th class="manage-column column-email">Template Category</th>
+            </tr>
+            </tfoot>
+        </table>
+    </form>
+    <?php
+}
+
+function aag_manager_template_form_view($data) { // Added by Buddy Quaid
+    
+  $user_id = get_current_user_id();
+  global $wpdb;
+  // Get all Groups the current user is a member of - Buddy Quaid
+  $group_query = "SELECT * FROM " . $wpdb->base_prefix . "bp_groups";
+  $template_cats_query = "SELECT * FROM " . $wpdb->base_prefix . "nbt_templates_categories";
+  
+  $groups = $wpdb->get_results($group_query, ARRAY_A);
+  $template_categories = $wpdb->get_results($template_cats_query, ARRAY_A); 
+  // echo "<pre>";print_r($template_categories);"</pre>";
+
+    if (empty($group->id)) {
+    ?>
+    <h2>Create New Group/Template Relationship</h2>
+    <?php } else { ?>
+    <h2>Edit Group/Template Relationship - <?php echo $group->name; ?></h2>
+    <?php } ?>
+    <form id="edit-template" method="post">
+        <input type="hidden" name="addRelationship" value="<?php echo $group->id;?>">
+        <table class="form-table">
+            <tbody>
+                <?php $error = isset($data['errors']['bp_group_id_input']) ? $data['errors']['bp_group_id_input'] : null; ?>
+                <tr class="form-field form-required <?php echo empty($error) ? '': 'form-invalid';?>">
+                    <th scope="row">
+                        <label for="medma-group-name">Group Name</label>
+                    </th>
+                    <td>
+                        <select id="group-name" class="" type="select" name="bp_group_id_input" autocomplete="off" style="width:50%;">
+                          <option value="">Select Group</option>
+                          <?php foreach ($groups as $key => $group) {
+                            echo '<option value="'.$groups[$key]['id'].'">'.$groups[$key]['name'].'</option>';
+                          } ?>
+                        </select>
+                    </td>
+                </tr>
+                <?php $error = isset($data['errors']['template_cat_input']) ? $data['errors']['template_cat_input'] : null; ?>
+                <tr class="form-field form-required <?php echo empty($error) ? '': 'form-invalid';?>">
+                    <th scope="row">
+                        <label for="medma-group-primaryadmin-id">Template Categories</label>
+                    </th>
+                    <td>
+                      <select id="templates-categories" class="" type="select" name="template_cat_input" autocomplete="off" style="width:50%;">
+                        <option value="">Select Template Categories</option>
+                        <?php foreach ($template_categories as $key => $value) {
+                          echo '<option value="'.$template_categories[$key]['ID'].'">'.$template_categories[$key]['name'].'</option>';
+                        } ?>
+                      </select>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+        <p class="submit">
+            <input id="groupsub" class="button button-primary" type="submit" value="Add Relationship">
+        </p>
     </form>
     <?php
 }

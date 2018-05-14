@@ -107,7 +107,6 @@ var EnviraGalleryEditView = wp.Backbone.View.extend( {
                 this.attachment_index = count;
                 return false;
             }
-
             // Increment the index count
             count++;
         }, this );
@@ -122,7 +121,6 @@ var EnviraGalleryEditView = wp.Backbone.View.extend( {
 
         // Get HTML
         this.$el.html( this.template( this.model.attributes ) );
-
         // If any child views exist, render them now
         if ( this.child_views.length > 0 ) {
             this.child_views.forEach( function( view ) {
@@ -132,7 +130,7 @@ var EnviraGalleryEditView = wp.Backbone.View.extend( {
                 } );
 
                 // Render view within our main view
-                this.$el.find( 'div.addons' ).append( child_view.render().el );
+                this.$el.find( 'div.envira-addons' ).append( child_view.render().el );
             }, this );
         }
 
@@ -161,6 +159,8 @@ var EnviraGalleryEditView = wp.Backbone.View.extend( {
             // Disable right button
             this.$el.find( 'button.right' ).addClass( 'disabled' );
         }
+
+        jQuery( document ).trigger( 'enviraRenderMeta' );
 
         // Return
         return this;
@@ -221,7 +221,11 @@ var EnviraGalleryEditView = wp.Backbone.View.extend( {
     /**
     * Load the previous model in the collection
     */
-    loadPreviousItem: function() {
+    loadPreviousItem: function( event ) {
+
+        // Save and Update So User Doesn't Have To Press Update Button?
+        this.saveItem( event );
+        this.updateItem( event );       
 
         // Decrement the index
         this.attachment_index--;
@@ -240,7 +244,11 @@ var EnviraGalleryEditView = wp.Backbone.View.extend( {
     /**
     * Load the next model in the collection
     */
-    loadNextItem: function() {
+    loadNextItem: function( event ) {
+
+        // Save and Update So User Doesn't Have To Press Update Button?
+        this.saveItem( event );
+        this.updateItem( event );       
 
         // Increment the index
         this.attachment_index++;
@@ -445,39 +453,6 @@ var EnviraGalleryEditView = wp.Backbone.View.extend( {
 var EnviraGalleryChildViews = [];
 
 /**
-* DOM
-*/
-jQuery( document ).ready( function( $ ) {
-
-    // Edit Image
-    $( document ).on( 'click', '#envira-gallery-main a.envira-gallery-modify-image', function( e ) {
-
-        // Prevent default action
-        e.preventDefault();
-
-        // (Re)populate the collection
-        // The collection can change based on whether the user previously selected specific images
-        EnviraGalleryImagesUpdate( false );
-
-        // Get the selected attachment
-        var attachment_id = $( this ).parent().data( 'envira-gallery-image' );
-
-        // Pass the collection of images for this gallery to the modal view, as well
-        // as the selected attachment
-        EnviraGalleryModalWindow.content( new EnviraGalleryEditView( {
-            collection:     EnviraGalleryImages,
-            child_views:    EnviraGalleryChildViews,
-            attachment_id:  attachment_id,
-        } ) );
-
-        // Open the modal window
-        EnviraGalleryModalWindow.open();
-
-    } );
-
-} );
-
-/**
 * Populates the EnviraGalleryImages Backbone collection, which comprises of a set of Envira Gallery Images
 *
 * Called when images are added, deleted, reordered or selected
@@ -505,7 +480,7 @@ function EnviraGalleryImagesUpdate( selected_only ) {
     } );
 
     // Update the count in the UI
-    jQuery( '#envira-gallery-main span.count' ).text( jQuery( 'ul#envira-gallery-output li.envira-gallery-image' ).length );
+   // jQuery( '#envira-gallery-main span.count' ).text( jQuery( 'ul#envira-gallery-output li.envira-gallery-image' ).length );
 
 }
 

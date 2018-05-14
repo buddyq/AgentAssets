@@ -20,6 +20,23 @@
 
 body.post-type-envira,
 body.post-type-envira_album {
+	/**
+	* Quick Edit - Show Slug Option
+	*/
+	td.colspanchange {
+		/**
+		* Left Col
+		*/
+		fieldset.inline-edit-col-left {
+			div.inline-edit-col {
+				/* Slug */
+				label:nth-child(3) {
+					display: block;
+				}
+			}
+		}
+	}
+
 	// Remove left padding on the main content area, so items can be full width e.g. the header
 	#wpcontent {
 		padding-left: 0;
@@ -58,27 +75,50 @@ body.post-type-envira_album {
 		margin: 0;
 
 		/**
+		* Page Title Action (i.e. Add New)
+		*/
+		a.page-title-action {
+			position: relative;
+			top: -35px;
+			left: 185px;
+			&:hover {
+				background: $primary_button_color_hover;
+				border-color: $primary_button_color_hover;
+				color: $white;
+			}
+			/* display: none; */ /* Trying To Prevent The "Shift" Upload Page Load Before JS can move the button */
+			/* margin-left: 10px; */ /* Change WordPress 4.7 */
+		}
+		
+		/**
 		* Screen Title
 		* - h1 used from WordPress 4.3+
 		* - h2 used in WordPress 4.2-
+		* Updated To Account For WordPress 4.7+
 		*/
 		> h1,
 		> h2 {
-			margin: 0 0 20px 0;
-			padding: 15px 20px 10px 20px;
+			margin: 0 0 0px 0;
+			padding: 15px 0 10px;
 			background: $white;
 			font-weight: 600;
 			font-size: 20px;
+			width: 100%;
+			text-indent: 20px;
 
 			/**
 			* Page Title Action (i.e. Add New)
 			*/
 			a.page-title-action {
+				top: -3px;
+				left: auto;
 				&:hover {
 					background: $primary_button_color_hover;
 					border-color: $primary_button_color_hover;
 					color: $white;
 				}
+				/* display: none; */ /* Trying To Prevent The "Shift" Upload Page Load Before JS can move the button */
+				/* margin-left: 10px; */ /* Change WordPress 4.7 */
 			}
 
 			/**
@@ -88,6 +128,7 @@ body.post-type-envira_album {
 				float: right;
 			}
 		}
+
 
 		/**
         * Tab Panels
@@ -237,6 +278,24 @@ body.post-type-envira_album {
 }
 
 /* ==========================================================================
+   Language Specific
+   ========================================================================== */
+body.post-type-envira.locale-fr-fr,
+body.post-type-envira_album.locale-fr-fr {
+	/**
+	* Wrapper
+	*/
+	div.wrap {
+		/**
+		* Page Title Action (i.e. Add New)
+		*/
+		a.page-title-action {
+			left: 220px;
+		}
+	}
+}
+
+/* ==========================================================================
    Header
    ========================================================================== */
 #envira-header-temp {
@@ -277,86 +336,58 @@ body.post-type-envira_album {
 		padding-top: 0;
 	}
 }
-
-/* ==========================================================================
-   Inline Notices
-   - These are Envira-specific notices with custom styling for e.g. Instagram oAuth,
-   upgrade / upsells.
-   ========================================================================== */
-.envira-notice {
-	position: relative;
-	margin: 0 0 20px 0;
-    padding: 20px;
-    @include borderRadius(2px);
-
-    /**
-    * Heading
-    */
-    p.envira-intro {
-        border: none !important;
-        margin: 0 0 20px 0 !important;
-        padding: 0 !important;
-    }
-
-    /**
-    * Close Button
-    */
-    .notice-dismiss {
-        top: 10px;
-        right: 10px;
-        color: $white;
-
-        &:before {
-            color: $white;
-            width: 26px;
-            height: 26px;
-            font-size: 22px;
-        }
-    }
-
-    /**
-    * Success
-    */
-    &.success {
-        background: $green;
-        color: $white;
-        border: none;
-
-        /**
-        * Button background color needs to be adjusted so it displays over the green background
-        * of the success message
-        */
-        .button.button-primary {
-        	background-color: $green_alt;
-        	border-color: $green_alt;
-        }
-    }
-
-    /**
-    * Warning
-    */
-    &.warning {
-        background: #fcf8e3;
-        border: 1px solid #faebcc;
-
-        .notice-dismiss {
-        	color: $black;
-
-        	&:before {
-        		color: $black;
-        	}	
-        }
-    }
-
-    /**
-    * Error
-    */
-    &.error {
-        border-top: 1px solid #dc3232;
-        border-right: 1px solid #dc3232;
-        border-bottom: 1px solid #dc3232;
-    }
+body.post-type-envira_album {
+	div.wrap {
+		/**
+		* Page Title Action (i.e. Add New)
+		*/
+		a.page-title-action {
+			left: 180px !important;
+		}
+		> h1,
+		> h2 {
+			a.page-title-action {
+				top: -3px !important;
+				left: auto !important;
+			}
+		}
+	}
 }
+body.post-php.post-type-envira_album {
+	div.wrap {
+		/**
+		* Page Title Action (i.e. Add New)
+		*/
+		a.page-title-action {
+			left: 200px !important;
+		}
+		> h1,
+		> h2 {
+			a.page-title-action {
+				top: -3px !important;
+				left: auto !important;
+			}
+		}
+	}
+}
+body.post-php.post-type-envira {
+	div.wrap {
+		/**
+		* Page Title Action (i.e. Add New)
+		*/
+		a.page-title-action {
+			left: 215px !important;
+		}
+		> h1,
+		> h2 {
+			a.page-title-action {
+				top: -3px !important;
+				left: auto !important;
+			}
+		}
+	}
+}
+
 
 /* ==========================================================================
    Table, Add, Edit Screens
@@ -494,4 +525,88 @@ body.post-type-envira {
 			}
 		}
 	}
+}
+
+/* ==========================================================================
+   Gallery List
+   ========================================================================== */
+
+@media screen and (max-width: 782px) {
+	body.post-type-envira .wp-list-table tr:not(.inline-edit-row):not(.no-items) td:not(.check-column) {
+	    display: table-cell;
+	}
+}
+
+
+/* ==========================================================================
+   Whitelabeled
+   ========================================================================== */
+
+
+body.envira-whitelabel {
+	#envira-header {
+		height: 40px;
+	}
+}
+
+/* ==========================================================================
+   RTL
+   ========================================================================== */
+
+body.rtl.post-type-envira div.wrap a.page-title-action {
+    left: -235px;
+}
+body.rtl ul#envira-tabs-nav {
+	float: right;
+}
+
+body.rtl form#post.envira-gallery #poststuff #envira-gallery-settings #envira-tabs, 
+body.rtl form#post.envira-gallery #poststuff #envira-albums-settings #envira-tabs {
+	margin: 0 160px 0 0;
+}
+
+body.rtl form#post.envira-gallery #poststuff #envira-gallery-settings #envira-tabs #envira-tab-images nav ul.envira-right-options, 
+body.rtl form#post.envira-gallery #poststuff #envira-albums-settings #envira-tabs #envira-tab-images nav ul.envira-right-options {
+	left: 20px;
+	right: inherit;
+	li.envira-select {
+		text-align: left;
+	}
+}
+
+/* ==========================================================================
+   Default Addon Adjustment
+   ========================================================================== */
+
+body.post-type-envira.envira-default-success,
+body.post-type-envira_album.envira-default-success {
+	/**
+	* Wrapper
+	*/
+	div.wrap {
+		a.page-title-action {
+			top: -108px;
+		}
+	}
+	#wpbody-content {
+		#message {
+			margin-top: 20px;
+		}
+	}
+}
+
+/* ==========================================================================
+   Debug Screen
+   ========================================================================== */
+
+#envira-settings-debug #debug-textarea {
+	height: 500px;
+	width: 80%;
+}
+
+/* ==========================================================================
+   Modal General
+   ========================================================================== */
+.envira-addons .hidden {
+  display: none; 
 }

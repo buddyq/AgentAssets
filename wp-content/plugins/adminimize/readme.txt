@@ -3,8 +3,8 @@ Contributors: Bueltge, inpsyde
 Donate link: https://www.paypal.me/FrankBueltge
 Tags: color, scheme, theme, admin, dashboard, color scheme, plugin, interface, ui, metabox, hide, editor, minimal, menu, customization, interface, administration, lite, light, usability, lightweight, layout, zen
 Requires at least: 4.0
-Tested up to: 4.6.0
-Stable tag: 1.10.6
+Tested up to: 4.9
+Stable tag: 1.11.4
 
 Adminimize that lets you hide 'unnecessary' items from the WordPress backend
 
@@ -14,7 +14,7 @@ If you manage a multi-author WordPress blog or WordPress sites for clients, then
 Adminimize makes it easy to remove items from view based on a user’s role.
 
 = What does this plugin do? =
-The plugin changes the administration backend and gives you the power to assign rights on certain parts. Admins can activate/deactivate every part of the menu and even parts of the sub-menu. Meta fields can be administered separately for posts and pages. Certain parts of the write menu can be deactivated separately for admins or non-admins. The header of the backend is minimized and optimized to give you more space and the structure of the menu gets changed to make it more logical - this can all be done per user so each user can have his own settings.
+The plugin changes the administration backend and gives you the power to assign rights on certain parts. Admins can activate/deactivate every part of the menu and even parts of the sub-menu. Meta fields can be administered separately for posts and pages. Certain parts of the write menu can be deactivated separately for admins or non-admins. The header of the backend is minimized and optimized to give you more space and the structure of the menu gets changed to make it more logical - this can all be done per user so each role and their resulting users can have his own settings.
 
 = Support Custom Post Type =
 The plugin support all functions also for custom post types, automatically in the settings page.
@@ -39,10 +39,43 @@ Use the installer via back-end of your install or ...
 3. Activate the plugin through the Plugins menu in WordPress and click Activate.
 4. Administrator can go to `Settings` > `Adminimize` menu and configure the plugin (Menu, Sub-menu, Meta boxes, ...)
 
-== Screenshots ==
-1. Settings area in WP 4.5-alpha
-
 == Changelog ==
+1.11.4 (2017-12-14)
+* Fixed hide of menu items, if you use custom menu, see [wiki page](https://github.com/bueltge/Adminimize/wiki/Custom-Menu-Order)
+* Fixed Import/Export for different server environments.
+* Remove languge file on github, we use always the translation community from wordpress.org
+* Fixed check for settings page of Adminimize, so that we see all options, areas of the install.
+
+1.11.3 (2017-11-16)
+* Added custom dashbaord options to admin head to hide it via css.
+* Added support of multiple roles for dashboard options.
+* Added new option to hide 'Add New' Button on each post type.
+* Fixed ID of Menu to use each link in the full width.
+* Fixed error for check dashboard setup on multiple roles.
+* Removed dependency from users.php to profile.php. #61
+* Allow attribute selector for custom options, remove slashes in options. #65
+* Change hook for change menu items ot solve order problem with third plugins. #68
+* Remove Set Theme for users option - noit relevant for the plugin, old dependencies.
+* Change selector to remove footer area.
+* Remove Screenshots on readme page, to big, not helpful.
+* Added filter hook `adminimize_nopage_access_message` to change the message for no access to a page. see the [wiki](https://github.com/bueltge/Adminimize/wiki/Filter-Hooks)
+
+= 1.11.2 (2016-12-04) =
+* Fixed backticks for `shell_exec` error.
+* Fixed prevent access function for pages.
+
+= 1.11.1 (2016-11-24) =
+* Fix fatal error for WP smaller than 4.7 - Sorry again!
+
+= 1.11.0 (2016-11-24) =
+* Fix open Translations. props pedro-mendonca
+* Fix Typos.
+* Fix php warning on Admin Bar items for PHP 5.2.
+* Fix CPT feature support, if it false.
+* Add check in different functions for AJAX request.
+* Add to prevent access to pages of the back end, there are active for hiding in the settings.
+* Add plugin option to remove the default behavior to prevent access to pages.
+
 = 1.10.6 (2016-08-09) =
 * Fix to see Logout link also on mobile view.
 * Fix type definition.

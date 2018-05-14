@@ -1,7 +1,13 @@
 <?php
 /*
- * Plugin Name: Agentassets Custom
- *
+ Plugin Name: Agentassets Custom
+ Plugin URI: http://agentassets.com
+ Description: AgentAssets Custom plugin
+ Version: 2.6
+ Author: Medma, Paul Barthmaier, Buddy Quaid
+ Author URI: http://thequaidgroup.com/
+ Network: true
+ Text Domain: agentassets-custom
  */
 
 # Required Files
@@ -25,6 +31,7 @@ include 'includes/meta-boxes.php';
 include 'includes/filters.php';
 include 'includes/actions.php';
 include 'includes/widgets.php';
+include 'includes/ordermap.class.php'; // Added by Buddy Quaid December 2, 2017
 
 const USE_EXPERIMENTAL = true;
 if (USE_EXPERIMENTAL) {

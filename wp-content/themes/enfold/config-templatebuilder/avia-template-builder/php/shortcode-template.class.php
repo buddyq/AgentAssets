@@ -10,14 +10,82 @@ if ( !class_exists( 'aviaShortcodeTemplate' ) ) {
 
 	abstract class aviaShortcodeTemplate
 	{
-		var $builder;
-		var $config  = array();
+		/**
+		 *
+		 * @var AviaBuilder 
+		 */
+		public $builder;
+		
+		/**
+		 *
+		 * @var array 
+		 */
+		public $config;
+		
+		/**
+		 *
+		 * @var array 
+		 */
+		public $elements;
 
-		function __construct($builder)
+		/**
+		 * 
+		 * @param AviaBuilder $builder
+		 */
+		public function __construct( $builder ) 
 		{
 			$this->builder = $builder;
+			$this->elements = array();
+			
+			/**
+			 * Needed to check and repair shortcode structure
+			 * We define all defaults for content elements here, which are the most common elements.
+			 * 
+			 * first_in_row:		set a string that is added/removed from the element attributes if the element is the first/not the first in a line, e.g. first or foo='bar'
+			 * layout_children:		shortcodes that must be included to have a valid element when we need to repair the content of a page. 
+			 *						Nested shortcodes must be added, if they are part of the empty element. 
+			 *						E.g. tab_section need tab_sub_sections but these are not nested !
+			 * forced_load_objects	array of string: e.g. layerslider must be loaded right after init hook, but when we cannot know if we need it because an element is loaded dynamically
+			 *						(e.g. postcontent) we can add a unique string to tell layerslider to load, when this shortcode is found in content
+			 */
+			$this->config = array(
+							'type'					=>	'content',		//		'layout' | 'content'   needed in syntax error correction
+							'self_closing'			=>	'',				//		'yes' | 'no'	if empty base class scans for id="content" in first level of $elements (a fallback for third party elements)
+							'contains_text'			=>	'yes',			//		'yes' | 'no'	is plain text allowed in content area of shortcode
+							'contains_layout'		=>	'no',			//		'yes' | 'no'	are layout elements allowed in content area of shortcode
+							'contains_content'		=>	'no',			//		'yes' | 'no'	are content elements allowed in content area of shortcode
+							'first_in_row'			=>	'',				//		'' | attribute to add/remove if first element in a layout line
+							'auto_repair'			=>	'yes',			//		'yes' | 'no'	disable for nested parent element if structure of element complex (more than 1 subelement and nested again like av_table)
+							'layout_children'		=>	array(),		
+							'shortcode_nested'		=>	array(),
+							'forced_load_objects'	=>	array()			//		"name" of external objects that must be included when we find this shortcode in content
+						);
+			
+			
 			$this->shortcode_insert_button();
 			$this->extra_config();
+			
+			/**
+			 * Add the unique ID field
+			 */
+			$this->elements[] = array(	
+							"name" 	=> __("Unique ID for ALB element",'avia_framework' ),
+							"desc" 	=> __("stores the unique ID for the element",'avia_framework' ),
+							"id" 	=> aviaElementManager::ELEMENT_UID,
+							"type" 	=> "hidden",
+							"std" 	=> ""
+						);
+		
+		}
+		
+		/**
+		 * @since 4.2
+		 */
+		public function __destruct()
+		{
+			unset( $this->builder );
+			unset( $this->config );
+			unset( $this->elements );
 		}
 
 		//init function is executed in AviaBuilder::createShortcode if the shortcode is allowed
@@ -25,8 +93,16 @@ if ( !class_exists( 'aviaShortcodeTemplate' ) ) {
 		{
 			$this->create_asset_array();
 			$this->actions_and_filters();
-			$this->extra_assets();
-			$this->register_shortcodes();
+			
+			if(is_admin() || AviaHelper::is_ajax())
+			{
+				$this->admin_assets();
+			}
+			
+			$this->register_shortcodes(); 
+			
+			//set up loading of assets. wait until post id is known
+			add_action('wp', array(&$this, 'extra_asset_check') , 10 );
 		}
 
 
@@ -86,7 +162,28 @@ if ( !class_exists( 'aviaShortcodeTemplate' ) ) {
 
 
 
+		/**
+		* function that gets executed if the shortcode is allowed. allows shortcode to load extra assets like css or javascript files in the admin area
+		*/
 
+		public function admin_assets(){}
+		
+		
+		/**
+		* function that checks if an asset is disabled and if not loads all extra assets
+		*/
+
+		public function extra_asset_check()
+		{
+			//generic check if the assets for this element should be loaded
+			if(!is_admin() && ( empty( $this->builder->disabled_assets[ $this->config['shortcode'] ]) || empty( $this->config['disabling_allowed'] ) ) )
+			{
+				$this->extra_assets();
+			}
+		}
+		
+		
+		
 		/**
 		* function that gets executed if the shortcode is allowed. allows shortcode to load extra assets like css or javascript files
 		*/
@@ -94,8 +191,40 @@ if ( !class_exists( 'aviaShortcodeTemplate' ) ) {
 		public function extra_assets(){}
 
 
-
-
+		/**
+		 * Scans the $this->elements array recursivly and returns the first element where key = "$element_id"
+		 * 
+		 * @param string $element_id
+		 * @param array $source
+		 * @return array|false
+		 * @since 4.1.3
+		 */
+		public function get_popup_element_by_id( $element_id, array &$source = null )
+		{
+			if( empty( $source ) )
+			{
+				$source = &$this->elements;
+			}
+			
+			foreach( $source as &$element )
+			{
+				if( isset( $element['id'] ) && ( $element_id == $element['id'] ) )
+				{
+					return $element;
+				}
+				
+				if( isset( $element['subelements'] ) && ! empty( $element['subelements'] ) )
+				{
+					$found = $this->get_option_by_id( $element_id, $element['subelements'] );
+					if( false !== $found )
+					{
+						return $found;
+					}
+				}
+			}
+			
+			return false;
+		}
 
 
 		/**
@@ -133,11 +262,21 @@ if ( !class_exists( 'aviaShortcodeTemplate' ) ) {
 		public function popup_editor($var)
 		{
 
-			if(empty($this->elements)) die();
+			if( empty( $this->elements ) )	{ die(); }
+			
+			if( ( 1 == count( $this->elements ) ) && isset( $this->elements[0]['id'] ) && ( aviaElementManager::ELEMENT_UID == $this->elements[0]['id'] ) )
+			{
+				die();
+			}
 			
 			if(current_theme_supports('avia_template_builder_custom_css'))
 			{
 				$this->elements = $this->avia_custom_class_for_element($this->elements);
+			}
+			
+			if( !empty($this->config['preview']) )
+			{
+				$this->elements = $this->avia_custom_preview_bg($this->elements);
 			}
 			
 			$elements = apply_filters('avf_template_builder_shortcode_elements', $this->elements);
@@ -158,7 +297,8 @@ if ( !class_exists( 'aviaShortcodeTemplate' ) ) {
 
 			$elements = $this->set_default_values($elements);
 			echo AviaHtmlHelper::render_multiple_elements($elements, $this);
-
+			
+			
 			die();
 		}
 
@@ -226,8 +366,14 @@ if ( !class_exists( 'aviaShortcodeTemplate' ) ) {
 				}
 
 				//if the shortcode was added without beeing a builder element (eg button within layerslider) reset all styles for that shortcode and make sure it is marked as a fake element
-				if(empty($meta['this']['tag']) || $shortcodename != $meta['this']['tag'])
+				if( empty($meta['this']['tag'] ) || $shortcodename != $meta['this']['tag'] || ShortcodeHelper::$is_direct_call || $fake )
 				{
+						//	increment theme shortcodes only, because these are in the shorcode tree
+					if( in_array( $shortcodename, ShortcodeHelper::$allowed_shortcodes ) )
+					{
+						ShortcodeHelper::$direct_calls++;
+					}
+					
 					$fake = true;
 					$meta = array('el_class'=>'');
 				}
@@ -246,9 +392,29 @@ if ( !class_exists( 'aviaShortcodeTemplate' ) ) {
 			
 			
 			$meta = apply_filters('avf_template_builder_shortcode_meta', $meta, $atts, $content, $shortcodename);
-
-            $content = $this->shortcode_handler($atts, $content, $shortcodename, $meta);
-
+			
+			
+			//if the element is disabled do load a notice for admins but do not show the info for other visitors)
+			
+			if(empty( $this->builder->disabled_assets[ $this->config['shortcode'] ]) || empty( $this->config['disabling_allowed'] ) )
+			{
+				$content = $this->shortcode_handler($atts, $content, $shortcodename, $meta);
+			}
+			else if (current_user_can('edit_posts'))
+			{
+				$content = "";
+				$default_msg = 	'<strong>'.__('Admin notice for:' )."</strong><br>".
+								$this->config['name']."<br><br>".
+								__('This element was disabled in your theme settings. You can activate it here:' )."<br>".
+							   '<a target="_blank" href="'.admin_url('admin.php?page=avia#goto_performance').'">'.__("Performance Settings",'avia_framework' )."</a>";
+				
+				$msg 		= isset($this->config['shortcode_disabled_msg']) ? $this->config['shortcode_disabled_msg'] : $default_msg;
+				$content 	= "<span class='av-shortcode-disabled-notice'>{$msg}</span>";
+			}
+			else
+			{
+				$content 	= "";
+			}
 
             return $content;
 		}
@@ -293,7 +459,10 @@ if ( !class_exists( 'aviaShortcodeTemplate' ) ) {
 		*/
 		protected function register_shortcodes()
 		{
-			if(!is_admin())
+			if(isset($_REQUEST['params']['_ajax_nonce'])) $_REQUEST['_ajax_nonce'] = $_REQUEST['params']['_ajax_nonce'];
+			
+			//the check is only necessary when $_REQUEST['text'] is set which means we want to show a preview that could be manipulated from outside
+			if(!is_admin() || empty($_REQUEST['text']) || ( !empty($_POST['avia_request']) && check_ajax_referer('avia_nonce_loader', '_ajax_nonce' ) ) )
 			{
 				add_shortcode( $this->config['shortcode'], array(&$this, 'shortcode_handler_prepare'));
 				
@@ -425,11 +594,23 @@ if ( !class_exists( 'aviaShortcodeTemplate' ) ) {
 
 			$params['content']   = $content;
 			$params['args']      = $args;
-			$params['data']      = isset($this->config['modal_data']) ? $this->config['modal_data'] : "";
-
-
-			//fetch the parameter array from the child classes editor_element function which should descripe the html code
+			$params['data']      = isset($this->config['modal_data']) ? $this->config['modal_data'] : array();
+			
+		
+			/**
+			 * Fetch the parameter array from the child classes editor_element function which should describe the html code.
+			 * Some elements can return a string value
+			 */
 			$params =  $this->editor_element($params);
+
+			/**
+			 * Since 4.2.1 we have $this->config['self_closing'] = 'yes'|'no'
+			 * Now we can use this to remove any content here and do not need to do this in each element seperatly in $this->editor_element 
+			 */
+			if( is_array( $params ) && $this->is_self_closing() )
+			{
+				$params['content'] = null;
+			}
 
 			// pass the parameters to the create_sortable_editor_element unless a different function for execution was set.
 			// if the function is set to "false" we asume that the output is final
@@ -464,6 +645,23 @@ if ( !class_exists( 'aviaShortcodeTemplate' ) ) {
 		
 			return $elements;
 		}
+		
+		/**
+		* add a custom field for the background of the preview
+		*/
+		public function avia_custom_preview_bg($elements)
+		{
+			$elements[] = array(	
+				"id" 	=> "admin_preview_bg",
+				"type" 	=> "hidden",
+				"std" 	=> "");
+		
+			return $elements;
+		}
+
+
+			
+
 
 
 		/**
@@ -476,13 +674,17 @@ if ( !class_exists( 'aviaShortcodeTemplate' ) ) {
 			$defaults = array('class'=>'avia_default_container', 'innerHtml'=>'');
 			$params = array_merge($defaults, $params);
 			extract($params);
-
+			
+			if(empty($data)) $data = array();
+			
 			$data['shortcodehandler'] 	= $this->config['shortcode'];
 			$data['modal_title'] 		= $this->config['name'];
 			$data['modal_ajax_hook'] 	= $this->config['shortcode'];
 			$data['dragdrop-level']		= $this->config['drag-level'];
 			$data['allowed-shortcodes'] = $this->config['shortcode'];
-
+			$data['preview'] 			= ! empty( $this->config['preview'] ) ? $this->config['preview'] : 0;
+			$data['closing_tag']		= $this->is_self_closing() ? 'no' : 'yes';
+			
 			if(isset($this->config['shortcode_nested']))
 			{
 				$data['allowed-shortcodes']	= $this->config['shortcode_nested'];
@@ -495,6 +697,7 @@ if ( !class_exists( 'aviaShortcodeTemplate' ) ) {
 				$data['modal_on_load'] 	= $this->config['modal_on_load'];
 			}
 
+			$data		 = apply_filters('avb_backend_editor_element_data_filter', $data);
 			$dataString  = AviaHelper::create_data_string($data);
 
 			$output  = "<div class='avia_sortable_element avia_pop_class ".$class." ".$this->config['shortcode']." av_drag' ".$dataString.">";
@@ -512,6 +715,9 @@ if ( !class_exists( 'aviaShortcodeTemplate' ) ) {
 
 			$output .= "<div class='avia_inner_shortcode $extraClass'>";
 			$output .= $innerHtml;
+			
+			
+			
 			$output .= "<textarea data-name='text-shortcode' cols='20' rows='4'>".ShortcodeHelper::create_shortcode_by_array($this->config['shortcode'], $content, $args)."</textarea>";
 			$output .= "</div></div>";
 
@@ -530,7 +736,6 @@ if ( !class_exists( 'aviaShortcodeTemplate' ) ) {
 		{
 			$shortcode = !empty($_POST['params']['shortcode']) ? $_POST['params']['shortcode'] : "";
 			
-			
 
 			if($shortcode)
 			{
@@ -546,7 +751,7 @@ if ( !class_exists( 'aviaShortcodeTemplate' ) ) {
 				//proceed if the main shortcode has either arguments or content
 				if(!empty($extracted_shortcode['attr']) || !empty($extracted_shortcode['content']))
 				{
-					if(empty($extracted_shortcode['attr'])) $extracted_shortcode['attr'] = "";
+					if(empty($extracted_shortcode['attr'])) $extracted_shortcode['attr'] = array();
 					if(isset($extracted_shortcode['content'])) $extracted_shortcode['attr']['content'] = $extracted_shortcode['content'];
 
 					//iterate over each array item and check if we already got a value
@@ -591,11 +796,20 @@ if ( !class_exists( 'aviaShortcodeTemplate' ) ) {
 		/**
 		 * helper function executed that extracts the std values from the options array and creates a shortcode argument array
 		 *
-		 * @param array $elements
+		 * @param array $args
 		 * @return array $args
 		 */
 		public function get_default_args($args = array())
 		{
+			/**
+			 * PHP 7.0 fix: ensure we have an array, otherwise we recieve notices
+			 * if shortcode is used without params (e.g. for a fallback situation) we get an empty string and not an array
+			 */
+			if( ! is_array( $args) )
+			{
+				$args = array();
+			}
+			
 			if(!empty($this->elements))
 			{
 				foreach($this->elements as $element)
@@ -614,7 +828,7 @@ if ( !class_exists( 'aviaShortcodeTemplate' ) ) {
 		/**
 		 * helper function that gets the default value of the content element
 		 *
-		 * @param array $elements
+		 * @param array $content
 		 * @return array $args
 		 */
 		public function get_default_content($content = "")
@@ -651,7 +865,8 @@ if ( !class_exists( 'aviaShortcodeTemplate' ) ) {
 
 				foreach($content as $c)
 				{
-					$string_content .= trim(ShortcodeHelper::create_shortcode_by_array($this->config['shortcode_nested'][0], NULL, $c))."\n";
+					$content = $this->is_nested_self_closing( $this->config['shortcode_nested'][0] ) ? null : '';
+					$string_content .= trim( ShortcodeHelper::create_shortcode_by_array( $this->config['shortcode_nested'][0], $content, $c ) )."\n";
 				}
 
 				$content =  $string_content;
@@ -660,7 +875,59 @@ if ( !class_exists( 'aviaShortcodeTemplate' ) ) {
 
 			return $content;
 		}
-
+		
+		/**
+		 * Returns the width of the element.
+		 * Override in derived class if the element does not have fullwidth (currently only supported for layout elements avia_sc_columns and avia_sc_cell.
+		 * All other elements are full screen.
+		 * 
+		 * @since 4.2.1
+		 * @return float
+		 */
+		public function get_element_width()
+		{
+			return 1.0;
+		}
+		
+		
+		/**
+		 * Returns if an element needs a closing tag or is self closing.
+		 * The implementation is for backwards compatibility and also for third party elements.
+		 *  
+		 * @since 4.2.1
+		 * @return boolean
+		 */
+		public function is_self_closing()
+		{
+			/**
+			 * If property is set return this value
+			 */
+			if( ! empty( $this->config['self_closing'] ) && in_array( $this->config['self_closing'], array( 'yes', 'no' ) ) )
+			{
+				return $this->config['self_closing'] == 'yes';
+			}
+			
+			/**
+			 * Elements should return NULL for content when self closing
+			 */
+			$params = $this->editor_element( array() );
+			$this->config['self_closing'] =  array_key_exists( 'content',  $params ) && is_null( $params['content'] )  ? 'yes' : 'no';
+			
+			return $this->config['self_closing'] == 'yes';
+		}
+		
+		/**
+		 * Returns false by default.
+		 * Override in a child class if you need to change this behaviour.
+		 * 
+		 * @since 4.2.1
+		 * @param string $shortcode
+		 * @return boolean
+		 */
+		public function is_nested_self_closing( $shortcode )
+		{
+			return false;
+		}
 
 		/**
 		 * helper function for the editor_element function that creates the correct classnames
@@ -670,7 +937,7 @@ if ( !class_exists( 'aviaShortcodeTemplate' ) ) {
 		 * @param array $args
 		 * @return string
 		 */
-		function class_by_arguments($classNames, $args, $classNamesOnly = false)
+		public function class_by_arguments($classNames, $args, $classNamesOnly = false)
 		{
 			$classNames = str_replace(" ","",$classNames);
 			$dataString = "data-update_class_with='$classNames' ";

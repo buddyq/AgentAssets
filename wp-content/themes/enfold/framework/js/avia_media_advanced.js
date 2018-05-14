@@ -20,8 +20,7 @@
 		//bind click event to the upload button, which sets all variables and opens thickbox
 		bind_click: function()
 		{
-			
-			$('.avia_gallery_delete_all').live('click', function()
+			$('body').on('click', '.avia_gallery_delete_all', function()
 			{
 				var element 		= $(this),
 					container		= element.parents('.avia_gallery_upload_container:eq(0)'),
@@ -33,8 +32,7 @@
 
 			
 			
-			
-			$('.avia_gallery_uploader').live('click', function()
+			$('body').on('click', '.avia_gallery_uploader', function()
 			{
 				//collect current link properties
 				var element 		= $(this),
@@ -105,8 +103,7 @@
 		insert_click: function()
 		{
 			
-		
-			$('.avia_send_to_gallery').live('click', function()
+			$('body').on('click', '.avia_send_to_gallery', function()
 			{
 				var link 			= $(this),
 					attachment_id 	= link.data('attachment-id'),
@@ -153,7 +150,7 @@
 		
 		open_close_click: function()
 		{
-			$('.open_set').live('click', function()
+			$('body').on('click', '.open_set', function()
 			{
 				var el = $(this),
 					parent = el.parents('.avia_set:eq(0)');
@@ -319,7 +316,10 @@
 					prepend_modified = false;
 					
 				if(!sets.length)  { sets = current_container.filter('.avia_set');  }
-				if(container.parents('#avia_options_page').length > 0) {prepend_modified = true;}
+				if(container.parents('#avia_options_page').length > 0)
+				{
+					prepend_modified = true;
+				}
 				
 				sets.each(function()
 				{
@@ -348,14 +348,29 @@
 							if(i != 0) { current_tab.css({display:'none'}); active = "";}
 							
 							
-							$('<a href="#" class="tab-title '+active+'">'+title+'</a>').appendTo(title_group)
-							.click(function(){
-							
+							$('<a href="#" class="tab-title '+active+'">'+title+'</a>').appendTo(title_group).click(function(){
+								
+								var _self = $(this);
+								
 								tabs.css({display:'none'}).removeClass('avia_active_tab');
 								current_tab.css({display:'block'}).addClass('avia_active_tab');
 								
 								title_group.find('a').removeClass('avia_active_tab_title');
-								$(this).addClass('avia_active_tab_title');
+								_self.addClass('avia_active_tab_title');
+								
+								var option_page = current_tab.parents('.avia_subpage_container').eq(0);
+								
+								if(option_page.length)
+								{
+									if(current_tab.data('av_set_global_tab_active'))
+									{
+										option_page.attr('data-av_set_global_tab_active', current_tab.data('av_set_global_tab_active'));
+									}
+									else
+									{
+										option_page.attr('data-av_set_global_tab_active', "");
+									}
+								}
 								
 								return false;
 							});
@@ -538,8 +553,9 @@
 		
 		//clone the insert button
 		avia_media_advanced.clone_insert_button();
-		$(".media-item").live('mouseenter',avia_media_advanced.clone_insert_button);
-		
+		$('body').on('mouseenter', '.media-item',avia_media_advanced.clone_insert_button);
+
+
 		//adds an insert all button 
 		avia_media_advanced.add_insert_all_button();
 	

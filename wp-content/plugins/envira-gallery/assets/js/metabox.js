@@ -6,12 +6,13 @@
 // @codekit-append "gallery-types.js";
 // @codekit-append "gallery-help.js";
 // @codekit-append "media-bulk-edit.js";
-// @codekit-append "media-delete.js";
 // @codekit-append "media-edit.js";
 // @codekit-append "media-insert.js";
 // @codekit-append "media-manage.js";
 // @codekit-append "media-move.js";
 // @codekit-append "media-upload.js";
+
+// "media-delete.js";
 
 jQuery( document ).ready( function( $ ) {
 
@@ -20,7 +21,7 @@ jQuery( document ).ready( function( $ ) {
 	// the Random Image Sizes option depending on the Image Size value
 	$( 'select[name="_envira_gallery[image_size]"]' ).on( 'change', function() {
 
-		if ( $( this ).val() == 'envira_gallery_random' ) {
+		if ( $( this ).val() === 'envira_gallery_random' ) {
 			$( 'tr#envira-config-image-sizes-random-box' ).show();
 		} else {
 			$( 'tr#envira-config-image-sizes-random-box' ).hide();
@@ -30,5 +31,9 @@ jQuery( document ).ready( function( $ ) {
 
 	// Run the above conditions on load.
 	$( 'select[name="_envira_gallery[image_size]"]' ).trigger( 'change' );
-
+	
+	$('#envira-gallery.postbox').on("dragstart", function(e) {
+		return false;
+	});
+	
 } );

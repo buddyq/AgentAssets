@@ -9,14 +9,13 @@
  * @package 	AviaFramework
  */
  
-
-
 jQuery(function($) {
     
     $('#avia_options_page').avia_framework_option_pages();
     $('#avia_options_page').avia_create_option_navigation();
     $('#avia_options_page .avia_tab_container').avia_media_advanced_plugin();
     $('body').avia_popups();
+	$('body').trigger('avia_options_page_loaded');
   });
 
 
@@ -133,6 +132,7 @@ jQuery(function($) {
 			resetButtons.bind('click', {set: saveData}, methods.reset); 	//resets the option page
 			importButton.bind('click', {set: saveData}, methods.do_import); //imports dummy daa
 			importParentSettingsButton.bind('click', {set: saveData}, methods.do_parent_import); //imports parent theme data
+			//
 			//add "form listener"
 			methods.activateSaveButton(container);
 			
@@ -368,7 +368,7 @@ jQuery(function($) {
 							{
 								var resultcontainer = $('.avia_import_result_parent', me.container);
 								//resultcontainer.css('display','none').html(response).slideDown();
-								$('body').avia_alert({text: 'Alright sparky!<br/>Import worked out, no problems whatsoever. <br/>The page will now be reloaded to reflect the changes'}, function()
+								$('body').avia_alert({text: 'Alright!<br/>Import worked out, no problems whatsoever. <br/>The page will now be reloaded to reflect the changes'}, function()
 								{
 									window.location.hash = "#wpwrap";
 						 			window.location.reload(true);
@@ -452,7 +452,7 @@ jQuery(function($) {
 								
 								var resultcontainer = $('.avia_import_result', me.container);
 								//resultcontainer.css('display','none').html(response).slideDown();
-								$('body').avia_alert({text: 'Alright sparky!<br/>Import worked out, no problems whatsoever. <br/>The page will now be reloaded to reflect the changes'}, function()
+								$('body').avia_alert({text: 'Alright!<br/>Import worked out, no problems whatsoever. <br/>The page will now be reloaded to reflect the changes'}, function()
 								{
 									window.location.hash = "#wpwrap";
 						 			window.location.reload(true);
@@ -571,7 +571,7 @@ jQuery(function($) {
 		var defaults = 
 		{
 			the_class: 'success',		//success, alert
-			text:  'Alright sparky!<br/>All Options saved, no problems whatsoever.',
+			text:  'Alright!<br/>All Options saved, no problems whatsoever.',
 			show:	2200
 		};
 		
@@ -667,7 +667,4 @@ jQuery(function($) {
 	
 	
 })(jQuery);	
-
-
-
 

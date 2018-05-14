@@ -42,6 +42,9 @@ class Envira_Slideshow_Shortcode {
         add_action( 'envira_albums_api_config', array( $this, 'album_output' ) );
         add_filter( 'envira_albums_toolbar_after_prev', array( $this, 'album_toolbar_button' ), 10, 2 );
 
+        add_filter( 'envirabox_actions', array( $this, 'envirabox_actions' ), 90, 2 );
+        add_filter( 'envira_always_show_title', array( $this, 'envira_always_show_title' ), 10, 2 );
+
     }
 
     /**
@@ -107,6 +110,28 @@ class Envira_Slideshow_Shortcode {
         // Return with the button appended to the template.
         return $template . $button;
 
+    }
+
+    public function envirabox_actions( $template, $data ) {
+
+        // Check if Download Button output is enabled
+        if ( ! Envira_Gallery_Shortcode::get_instance()->get_config( 'slideshow', $data ) || ( ! in_array( Envira_Gallery_Shortcode::get_instance()->get_config( 'lightbox_theme', $data ), array( 'base_light', 'base_dark', 'space_dark', 'space_light', 'box_dark', 'box_light', 'burnt_dark', 'burnt_light', 'modern-dark', 'modern-light' ) ) ) ) {
+            return $template;
+        }
+
+        // Build Button
+        $button = '<div class="envirabox-slideshow-button"><a href="javascript:;" class="btnPlay" title="' . __( 'Start Slideshow', 'envira-slideshow' ) . '"></a></div>';
+
+        return $template . $button;
+    }
+
+    public function envira_always_show_title( $show, $data ) {
+
+        if ( ! Envira_Gallery_Shortcode::get_instance()->get_config( 'slideshow', $data ) || ( ! in_array( Envira_Gallery_Shortcode::get_instance()->get_config( 'lightbox_theme', $data ), array( 'base_dark', 'base_light' ) ) ) ) {
+            return $show;
+        }
+
+        return true;
     }
 
     /**

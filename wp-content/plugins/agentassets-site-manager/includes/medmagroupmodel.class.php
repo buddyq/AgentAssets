@@ -37,6 +37,22 @@ class MedmaGroupModel {
         }
         return $result;
     }
+    
+    public static function insertRelationship($attributes) { // Added by Buddy Quaid
+        $result = false;
+        global $wpdb;
+        if ($wpdb->insert($wpdb->prefix."aag_group_templates_relationships_table", array(
+            'bp_group_id'              => $attributes['bp_group_id_input'], //was 'name'
+            'template_cat_id'   => $attributes['template_cat_input'], // was 'primaryadmin_id'
+        ), array(
+                '%d',
+                '%d',
+            )
+        )) {
+            $result = true;
+        }
+        return $result;
+    }
 
     public static function update($attributes, $where) {
         global $wpdb;
@@ -57,6 +73,13 @@ class MedmaGroupModel {
             'name' => null,
             'primaryadmin_id' => null,
             'code' => null,
+        );
+    }
+    
+    public static function touchRelationship() {
+        return (object)array(
+            'bp_group_id_input' => null,
+            'template_cat_input' => null,
         );
     }
 
@@ -83,6 +106,20 @@ class MedmaGroupModel {
         $group->id = isset($attributes['id']) ? $attributes['id'] : null;
 
         return $group;
+    }
+    
+    public static function validateRelationship($attributes, &$errors) {
+        $relationship = self::touchRelationship();
+        if (empty($attributes['bp_group_id_input'])) {
+            $errors['bp_group_id_input'] = 'You must select a group!';
+        }
+        if (empty($attributes['template_cat_input'])) {
+            $errors['template_cat_input'] = 'You must select a category template!';
+        }
+        $relationship->bp_group_id_input = $attributes['bp_group_id_input'];
+        $relationship->template_cat_input = $attributes['template_cat_input'];
+
+        return $relationship;
     }
 
     public static function deleteAll($group_ids) {
@@ -165,10 +202,9 @@ class MedmaGroupModel {
         ));
     }
 
-    public static function removeRelatedThemes($group_id, $theme_ids) {
+    public static function removeRelationship($id) {
         global $wpdb;
-        return $wpdb->query('DELETE FROM `'.$wpdb->base_prefix. 'medma_group_theme`'
-            .'WHERE group_id = '.(int)$group_id.' AND theme_id IN ('.implode(', ', $theme_ids). ')');
+        return $wpdb->query('DELETE FROM '.$wpdb->base_prefix. 'aag_group_templates_relationships_table WHERE id = '.$id);
     }
 
     public static function getAdminGroups($user_id) {
@@ -241,5 +277,20 @@ class MedmaGroupModel {
         }
 
         return $status;
+    }
+    
+    public static function get_group_template_relationship() {
+      global $wpdb;
+      $groupsTbl       = $wpdb->prefix . 'bp_groups';
+      $templatesTbl    = $wpdb->prefix . 'nbt_templates_categories';
+      $relationshipTbl = $wpdb->prefix . 'aag_group_templates_relationships_table';
+      
+      $query  = 'SELECT '.$groupsTbl.'.name as groupName, '.$templatesTbl.'.name as templateName, '.$relationshipTbl.'.id as rowID FROM ' . $relationshipTbl;
+      $query .= ' INNER JOIN '.$groupsTbl.' ON '.$relationshipTbl.'.bp_group_id = ' . $groupsTbl.'.id';
+      $query .= ' INNER JOIN '.$templatesTbl.' ON '.$relationshipTbl.'.template_cat_id = ' . $templatesTbl . '.ID';
+      // write_log($query);
+      $results = $wpdb->get_results($query);
+
+      return $results;
     }
 }

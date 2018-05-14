@@ -2,7 +2,7 @@
 
 class Add_From_Server {
 
-	var $version = '3.3.2';
+	var $version = '3.3.3';
 	var $basename = '';
 
 	function __construct( $plugin ) {
@@ -523,17 +523,19 @@ class Add_From_Server {
 			$parts = array_merge( (array)'', $parts );
 		}
 
-		array_walk( $parts, function( &$item, $index ) use( $url, $parts ) {
-			$path = implode( '/', array_slice( $parts, 0, $index + 1 ) );
-			$path = ltrim( $path, '/' ) ?: '/';
-			$item_url = add_query_arg( array( 'adirectory' => $path ), $url );
+		// array_walk() + eAccelerator + anonymous function = bad news
+		foreach ( $parts as $index => &$item ) {
+			$this_path = implode( '/', array_slice( $parts, 0, $index + 1 ) );
+			$this_path = ltrim( $this_path, '/' ) ?: '/';
+			$item_url = add_query_arg( array( 'adirectory' => $this_path ), $url );
 
 			if ( $index == count( $parts ) - 1 ) {
 				$item = esc_html( $item ) . '/';
 			} else {
 				$item = sprintf( '<a href="%s">%s/</a>', esc_url( $item_url ), esc_html( $item ) );
 			}
-		} );
+		}
+
 		$dirparts = implode( '', $parts );
 
 		?>
@@ -736,8 +738,13 @@ I notice you use WordPress in a Language other than English (US), Did you know y
 If you\'d like to help out with translating this plugin into %1$s you can head over to <a href="%2$s">translate.WordPress.org</a> and suggest translations for any languages which you know.
 Thanks! Dion.', 'add-from-server' );
 
-		// Don't display the message for English (US) or what we'll assume to be fully translated localised builds.
-		if ( 'en_US' === get_locale() || ( $message == $message_english && ! $force  ) ) {
+		$locale = get_locale();
+		if ( function_exists( 'get_user_locale' ) ) {
+			$locale = get_user_locale();
+		}
+
+		// Don't display the message for English (Any) or what we'll assume to be fully translated localised builds.
+		if ( 'en_' === substr( $locale, 0, 3 ) || ( $message != $message_english && ! $force  ) ) {
 			return false;
 		}
 

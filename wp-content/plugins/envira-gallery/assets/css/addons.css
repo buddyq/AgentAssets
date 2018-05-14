@@ -27,6 +27,7 @@
   src: url("../fonts/envira.eot?#iefix") format("embedded-opentype"), url("../fonts/envira.woff") format("woff"), url("../fonts/envira.ttf") format("truetype"), url("../fonts/envira.svg#envira") format("svg");
   font-weight: normal;
   font-style: normal; }
+
 [class*='envira-']:before {
   display: inline-block;
   font-family: 'envira';
@@ -107,11 +108,11 @@
    ========================================================================== */
 #addon-heading {
   /**
-  * Clearfix
-  */
+    * Clearfix
+    */
   /**
-  * Search Addons and Filter
-  */ }
+	* Search Addons and Filter
+	*/ }
   #addon-heading:after {
     content: "";
     display: table;
@@ -160,19 +161,19 @@
 
 #envira-addons {
   /**
-  * Buttons
-  * - Make buttons beige
-  */
+	* Buttons
+	* - Make buttons beige
+	*/
   /**
-  * Action Buttons
-  * - Activate / Deactivate Addon
-  * - Install Addon
-  */
+	* Action Buttons
+	* - Activate / Deactivate Addon
+	* - Install Addon
+	*/
   /**
-  * Addons Area:
-  * - Licensed
-  * - Unlicensed
-  */ }
+	* Addons Area:
+	* - Licensed
+	* - Unlicensed
+	*/ }
   #envira-addons .button,
   #envira-addons .button-primary {
     text-shadow: none;
@@ -226,12 +227,12 @@
   #envira-addons .envira-addon-title {
     margin-top: 30px; }
   #envira-addons .envira-addons-area {
-    		/**
-            * Clearfix
-            */
     /**
-    * Addon Card
-    */ }
+        * Clearfix
+        */
+    /**
+	    * Addon Card
+	    */ }
     #envira-addons .envira-addons-area:after {
       content: "";
       display: table;
@@ -255,23 +256,23 @@
       -webkit-box-sizing: border-box;
       -moz-box-sizing: border-box;
       /**
-      * Thumbnail Image
-      */
+			* Thumbnail Image
+			*/
       /**
-      * Paragraph Tag
-      */
+			* Paragraph Tag
+			*/
       /**
-      * Success and Error Messages
-      */
+			* Success and Error Messages
+			*/
       /**
-      * Action
-      */
+			* Action
+			*/
       /**
-      * Error
-      */
+			* Error
+			*/
       /**
-      * Description
-      */ }
+			* Description
+			*/ }
       #envira-addons .envira-addons-area .envira-addon:nth-child(3n) {
         margin-right: 0; }
       #envira-addons .envira-addons-area .envira-addon:nth-child(3n+1) {
@@ -325,23 +326,23 @@
         padding: 0;
         text-align: left;
         /**
-        * Interior
-        */
+				* Interior
+				*/
         /**
-        * Active Addon
-        */
+				* Active Addon
+				*/
         /**
-        * Inactive Addon
-        */
+				* Inactive Addon
+				*/
         /**
-        * Not Installed Addon
-        */ }
+				* Not Installed Addon
+				*/ }
         #envira-addons .envira-addons-area .envira-addon .envira-addon-message .interior,
         #envira-addons .envira-addons-area .envira-addon .envira-addon-error .interior {
           padding: 20px;
           /**
-          * Clearfix
-          */ }
+				    * Clearfix
+				    */ }
           #envira-addons .envira-addons-area .envira-addon .envira-addon-message .interior:after,
           #envira-addons .envira-addons-area .envira-addon .envira-addon-error .interior:after {
             content: "";
@@ -510,9 +511,9 @@
    ========================================================================== */
 @media only screen and (max-width: 1050px) {
   #envira-addons-area {
-    	/**
-        * Addons - 2 Column
-        */ }
+    /**
+	    * Addons - 2 Column
+	    */ }
     #envira-addons-area .envira-addon {
       width: 49%;
       /*min-height: 300px;*/ }
@@ -526,20 +527,22 @@
         clear: none; }
       #envira-addons-area .envira-addon .envira-addon-excerpt {
         margin-bottom: 90px; } }
+
 @media only screen and (max-width: 782px) {
   #envira-addons-area .envira-addon {
     min-height: auto;
     /**
-    * Action
-    */ }
+			* Action
+			*/ }
     #envira-addons-area .envira-addon .envira-addon-action .button-primary {
       margin: -7px 0 0 0; } }
+
 @media only screen and (max-width: 600px) {
   #envira-addons-area .envira-addon {
     width: 99%;
     /**
-    * Messages
-    */ }
+			* Messages
+			*/ }
     #envira-addons-area .envira-addon .envira-addon-message {
       float: left;
       width: 100%;

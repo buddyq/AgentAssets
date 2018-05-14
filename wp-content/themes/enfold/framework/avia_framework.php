@@ -16,7 +16,7 @@
  * @version 	4.6
 
 */ 
-define( 'AV_FRAMEWORK_VERSION', "4.6" ); 
+define( 'AV_FRAMEWORK_VERSION', "4.7" ); 
 
 
 

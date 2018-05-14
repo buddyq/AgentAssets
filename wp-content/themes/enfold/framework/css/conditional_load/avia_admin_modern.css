@@ -20,7 +20,7 @@
 
 #avia_options_page *{
 -webkit-box-sizing: border-box; -moz-box-sizing: border-box; box-sizing: border-box;
-font-size:13px;
+font-size:14px;
 line-height: 1.5em;
 }
 
@@ -171,6 +171,11 @@ font-size: 14px;
 	font-size:14px;
 	line-height: 1.65em;
 	color:#999;
+}
+
+#avia_options_page .avia_sidebar_active .av_full_description .avia_description{
+    padding: 0;
+    width: 100%;	
 }
 
 .avia_section .avia_style_wrap{
@@ -517,6 +522,10 @@ right:28px;
 	    border:none;
 }
 
+.av-prev-el-notice{
+	margin-top: -25px;
+}
+
 .av-verification-cell{
 	padding:13px 20px;
 }
@@ -658,8 +667,50 @@ div .avia_upload_loading{
 }
 
 
+div .avia_wpml_language_switch ul{
+	left:0;
+	width:100%;
+	border-left:none;
+	border-right:none;
+	padding:0;
+	top:100%;
+}
 
+div .avia_wpml_language_switch{
+	width:100%;
+	padding:0;
+	top:0;
+}
 
+div .avia_wpml_language_switch li{
+	padding:0;
+	margin:0;
+}
+
+div .avia_wpml_language_switch li a{
+	display: block;
+	padding:16px;
+}
+
+div .avia_wpml_language_switch > li{
+padding:22px 20px;
+}
+
+div .avia_wpml_language_switch li:hover{
+	background: #f8f8f8;
+}
+
+div .avia_wpml_language_switch li:hover li{
+	background: #f8f8f8;
+}
+
+div .avia_wpml_language_switch li:hover li:hover{
+	background: #fcfcfc;
+}
+
+div .avia_cur_lang{
+	color:#0085ba;
+}
 
 /*  #smaller screens (Portrait)
 ================================================== */

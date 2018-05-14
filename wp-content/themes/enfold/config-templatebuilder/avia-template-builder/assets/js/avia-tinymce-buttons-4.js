@@ -119,6 +119,12 @@
         	var shortcode = this.settings.av_shortcode,
         		modalData = $.extend({}, {modal_class:'', before_save:'' }, shortcode.modal_data);
         		
+		if(typeof shortcode.modal_on_load == "object") {
+			shortcode.modal_on_load = $.map(shortcode.modal_on_load, function(modal){
+				return modal;
+			});
+		}
+		
         	if(typeof shortcode.modal_on_load != "undefined" && typeof shortcode.modal_on_load != "string") shortcode.modal_on_load = shortcode.modal_on_load.join(', ');
         	
             tinyMCE.activeEditor.execCommand("openAviaModal", false, 
@@ -129,7 +135,7 @@
 				modal_title: 		shortcode.name, 
 				modal_ajax_hook: 	shortcode.shortcode ,
                 scope: 				tinyMCE.activeEditor,
-				ajax_param: 		{extract: true, shortcode: ""},
+				ajax_param: 		{extract: true, shortcode: "", _ajax_nonce: $('#avia-loader-nonce').val()},
                 on_load: 			shortcode.modal_on_load,
 				on_save: 			function(values)
 				{	

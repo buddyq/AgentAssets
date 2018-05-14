@@ -61,7 +61,7 @@ wp.media.view.EnviraVideosItem = wp.Backbone.View.extend( {
     events: {
     	// Update Model on input change
     	'keyup input': 'updateItem',
-
+    	'change input': 'updateItem',
     	// Delete Model on view deletion
 		'click .envira-videos-delete': 'deleteItem',
   	},
@@ -119,6 +119,13 @@ wp.media.view.EnviraVideosItem = wp.Backbone.View.extend( {
 				} );
   			}
   		}
+
+  		// Refresh view
+		if ( this.model.get( 'hosted_video' ) ) {
+			this.model.view.$el.find( 'div.image' ).show();
+		} else {
+			this.model.view.$el.find( 'div.image' ).hide();
+		}
  
   	},
 
@@ -231,7 +238,7 @@ wp.media.view.EnviraVideos = wp.media.View.extend({
 		'click .envira-videos-add': 'addItem',
 
 		// Change Video URL
-		'change': 'refreshView',
+		'keyup input': 'refreshView',
 	},
 
 	/**

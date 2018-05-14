@@ -14,13 +14,6 @@ if(isset($headerS['disabled'])) return;
 
 <?php
 
-if($responsive)
-{
-	echo '<a id="advanced_menu_toggle" href="#" '.av_icon_string('mobile_menu').'></a>';
-	echo '<a id="advanced_menu_hide" href="#" 	'.av_icon_string('close').'></a>';
-}
-
-
 //subheader, only display when the user chooses a social header
 if($headerS['header_topbar'] == true)
 {
@@ -119,8 +112,20 @@ if($headerS['header_topbar'] == true)
 							$addition = "<img src='".$headerS['header_replacement_logo']."' class='alternate' alt='' title='' />";
 						}
 						
-						$output .= avia_logo(AVIA_BASE_URL.'images/layout/logo.png', $addition, 'strong', true);
+					//$output .= avia_logo(AVIA_BASE_URL.'images/layout/logo.png', $addition, 'span', true);
 						
+						//------------custom logo----------------//
+						?>
+						<?php if ( get_theme_mod( 'image' ) ) : ?>
+					   <span class="logo">
+							<a href='<?php echo esc_url( home_url( '/' ) ); ?>' title='<?php echo esc_attr( get_bloginfo( 'name', 'display' ) ); ?>' rel='home'><img  src='<?php echo esc_url( get_theme_mod( 'image' ) ); ?>'  width='300' height='100' alt='AgentAssets'></a>
+						</span>
+					<?php else : 
+					$output .= avia_logo(AVIA_BASE_URL.'images/layout/logo.png', $addition, 'span', true); ?>
+					<?php endif; ?>
+					
+						<?php
+						//------------end custom logo----------------//					
 							if(!empty($headerS['bottom_menu']))
 							{
 								ob_start();
@@ -155,7 +160,7 @@ if($headerS['header_topbar'] == true)
 							}
 						
 						
-						    $output .= "<nav class='main_menu' data-selectname='".__('Select a page','avia_framework')."' ".avia_markup_helper(array('context' => 'nav', 'echo' => false)).">";
+						    $main_nav = "<nav class='main_menu' data-selectname='".__('Select a page','avia_framework')."' ".avia_markup_helper(array('context' => 'nav', 'echo' => false)).">";
 						        $avia_theme_location = 'avia';
 						        $avia_menu_class = $avia_theme_location . '-menu';
 						        $args = array(
@@ -168,8 +173,8 @@ if($headerS['header_topbar'] == true)
 						            'walker' 			=> new avia_responsive_mega_menu()
 						        );
 						
-						        $main_nav = wp_nav_menu($args);
-						        $output .= $main_nav;
+						        $wp_main_nav = wp_nav_menu($args);
+						        $main_nav .= $wp_main_nav;
 						        
 						      
 						    /*
@@ -177,14 +182,21 @@ if($headerS['header_topbar'] == true)
 						    */
 						    ob_start();
 						    do_action('ava_inside_main_menu'); // todo: replace action with filter, might break user customizations
-						    $output .= ob_get_clean();
+						    $main_nav .= ob_get_clean();
 						    
 						    if($icon_beside)
 						    {
-							    $output .= $icons; 
+							    $main_nav .= $icons; 
 						    }
 						        
-						    $output .= '</nav>';
+						    $main_nav .= '</nav>';
+							
+							/**
+							 * Allow to modify or remove main menu for special pages
+							 * 
+							 * @since 4.1.3
+							 */
+							$output .= apply_filters( 'avf_main_menu_nav', $main_nav );
 						
 						    /*
 						    * Hook that can be used for plugins and theme extensions

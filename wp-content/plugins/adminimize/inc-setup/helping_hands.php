@@ -81,6 +81,11 @@ function _mw_adminimize_current_user_has_role( $role ) {
  */
 function _mw_adminimize_debug( $data, $description = '' ) {
 
+	// Don't run on export data of Adminimize settings.
+	if ( isset( $_POST[ '_mw_adminimize_export' ] ) ) {
+		return;
+	}
+
 	if ( ! _mw_adminimize_get_option_value( 'mw_adminimize_debug' ) ) {
 		return;
 	}
@@ -124,4 +129,79 @@ function _mw_adminimize_get_duplicate( $array ) {
 function _mw_adminimize_get_intersection( $array ) {
 
 	return (array) call_user_func_array( 'array_intersect', $array );
+}
+
+/**
+ * Flatten a multi-dimensional array in a simple array.
+ *
+ * @since  2016-11-19
+ *
+ * @param  array $array
+ *
+ * @return array $flat
+ */
+function _mw_adminimize_array_flatten( $array ) {
+
+	$flat = array();
+	foreach ( $array as $key => $value ) {
+		if ( is_array( $value ) ) {
+			$flat = array_merge( $flat, _mw_adminimize_array_flatten( $value ) );
+		} else {
+			$flat[ $key ] = $value;
+		}
+	}
+
+	return $flat;
+}
+
+/**
+ * Break the access to a page.
+ *
+ * @param string $slug Slug of each menu item.
+ *
+ * @return bool If the check is true, return also true as bool.
+ */
+function _mw_adminimize_check_page_access( $slug ) {
+
+	// If this default behavior is deactivated.
+	if ( _mw_adminimize_get_option_value( 'mw_adminimize_prevent_page_access' ) ) {
+		return FALSE;
+	}
+
+	$url = basename( esc_url_raw( $_SERVER[ 'REQUEST_URI' ] ) );
+	$url = htmlspecialchars( $url );
+
+	if ( ! isset( $url ) ) {
+		return FALSE;
+	}
+
+	$uri = parse_url( $url );
+
+	if ( ! isset( $uri[ 'path' ] ) ) {
+		return FALSE;
+	}
+
+	// URI without query parameter, like WP core edit.php.
+	if ( ! isset( $uri[ 'query' ] ) && strpos( $uri[ 'path' ], $slug ) !== FALSE ) {
+		add_action( 'load-' . $slug, '_mw_adminimize_block_page_access' );
+		return TRUE;
+	}
+
+	// URL is equal the slug of WP menu.
+	if ( $slug === $url ) {
+		add_action( 'load-' . basename( $uri[ 'path' ] ), '_mw_adminimize_block_page_access' );
+		return TRUE;
+	}
+}
+
+/**
+ * Break the access to a page.
+ *
+ * @wp-hook load-$page_slug
+ */
+function _mw_adminimize_block_page_access() {
+
+	$message = esc_attr__( 'Cheatin&#8217; uh? Sorry, you are not allowed to access this site.', 'adminimize' );
+	$message = apply_filters( 'adminimize_nopage_access_message', $message );
+	wp_die( $message );
 }

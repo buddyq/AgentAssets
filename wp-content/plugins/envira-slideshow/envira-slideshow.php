@@ -5,7 +5,7 @@
  * Description: Enables slideshows for Envira galleries.
  * Author:      Envira Gallery Team
  * Author       http://enviragallery.com
- * Version:     1.1.1
+ * Version:     1.1.1.1
  * Text Domain: envira-slideshow
  * Domain Path: languages
  *
@@ -54,7 +54,7 @@ class Envira_Slideshow {
      *
      * @var string
      */
-    public $version = '1.1.1';
+    public $version = '1.1.1.1';
 
     /**
      * The name of the plugin.

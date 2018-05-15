@@ -1,0 +1,4 @@
+/* Hide Theme Options with CSS */
+div.avia_section_header.goto_menu {
+  display: none !important;
+}

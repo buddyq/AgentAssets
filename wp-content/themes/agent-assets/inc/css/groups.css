@@ -1,0 +1,9 @@
+.groups-sidebar-wrapper{
+  margin: 20px 0;
+  background: #f4f4f4;
+  border-radius: 5px;
+}
+
+.groups-sidebar-inner{
+  padding: 20px;
+}

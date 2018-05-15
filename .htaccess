@@ -1,7 +1,7 @@
-SetEnv PHPRC /home/austin43/public_html/php.ini
-<IfModule mod_substitute.c>
-SubstituteMaxLineLength 10M
-</IfModule>
+#SetEnv PHPRC /home/austin43/public_html/php.ini
+#<IfModule mod_substitute.c>
+#SubstituteMaxLineLength 10M
+#</IfModule>
 RewriteEngine On
 # redirect to https
 #RewriteCond %{HTTPS} off

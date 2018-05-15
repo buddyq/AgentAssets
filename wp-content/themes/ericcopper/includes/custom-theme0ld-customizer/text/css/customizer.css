@@ -1,0 +1,22 @@
+#details > div > div > div > div > div > section > div > h2 > strong,
+#details > div > div > div > div > 
+div.flex_column.av_one_half.flex_column_div.first.avia-builder-el-3.el_after_av_heading.el_before_av_one_half > 
+section > div > h2 > strong,
+#details > div > div > div > div > div.flex_column.av_one_half.flex_column_div.first.avia-builder-el-3.el_after_av_heading.el_before_av_one_half > section:nth-child(1) > div,
+#avia_textblock h2,
+.av-special-heading-tag {
+	color: #b40000;
+}
+#details > div > div > div > div > div.flex_column.av_one_half.flex_column_div.first.avia-builder-el-3.el_after_av_heading.el_before_av_one_half > section:nth-child(1) > div
+/* .flex_column.av_one_half.flex_column_div.first.avia-builder-el-3.el_after_av_heading.el_before_av_one_half
+*/
+
+.av-special-heading h2.av-special-heading-tag,
+.av_textblock_section .av_textblock h2 {
+	color: #b40000;
+}
+
+ h2.aa_property_name {
+    text-align: center;
+    color: #b40000;
+}

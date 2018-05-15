@@ -1,0 +1,6 @@
+[04-May-2018 10:50:41 CST6CDT] PHP Fatal error:  require_once(): Failed opening required 'ABSPATHwp-admin/includes/import.php' (include_path='.:/usr/local/php56/pear') in /home/austin43/public_html/wp-content/themes/enfold/framework/php/inc-avia-importer.php on line 9
+[05-May-2018 14:02:01 CST6CDT] PHP Fatal error:  Call to undefined function __() in /home/austin43/public_html/wp-content/themes/enfold/framework/php/class-tgm-plugin-activation.php on line 161
+[05-May-2018 14:03:05 CST6CDT] PHP Fatal error:  Call to undefined function get_template_directory() in /home/austin43/public_html/wp-content/themes/enfold/framework/php/inc-autoconfig.php on line 23
+[11-May-2018 12:04:32 CST6CDT] PHP Fatal error:  require_once(): Failed opening required 'ABSPATHwp-admin/includes/import.php' (include_path='.:/usr/local/php56/pear') in /home/austin43/public_html/wp-content/themes/enfold/framework/php/inc-avia-importer.php on line 9
+[11-May-2018 13:20:19 CST6CDT] PHP Fatal error:  Call to undefined function __() in /home/austin43/public_html/wp-content/themes/enfold/framework/php/class-tgm-plugin-activation.php on line 161
+[11-May-2018 13:48:06 CST6CDT] PHP Fatal error:  Call to undefined function get_template_directory() in /home/austin43/public_html/wp-content/themes/enfold/framework/php/inc-autoconfig.php on line 23

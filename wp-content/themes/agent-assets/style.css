@@ -1,0 +1,216 @@
+/*
+Theme Name: AgentAssets Theme
+Theme URI: www.agentassets.com
+Description: <strong>Custom theme for AgentAssets.com</strong>
+Author: Buddy Quaid
+Author URI: http://www.agentassets.com
+Template: enfold
+Version: 1.0
+*/
+
+.wp-admin-bar-wp-logo a{
+  margin-top: 5px;
+}
+
+#header_meta a:hover{
+  color: #538774;
+}
+
+.avia_message_box_content p {
+    display: block;
+}
+
+#log_forms{
+  width: 30%;
+  margin: 0 auto;
+  padding: 8px;
+  border: 1px solid;
+}
+
+#log_forms{
+  width: 30%;
+  margin: 0 auto;
+  padding: 8px;
+  border: 1px solid;
+}
+
+.coupon-applied.success{
+  background: #E0F1B5;
+  padding: 5px;
+  color: #333;
+  font-style: italic;
+}
+
+.coupon-applied.invalid{
+  background: #FFF8F4;
+  color: #AF2C20;
+  padding: 5px;
+  font-style:italic;
+}
+
+.listblog_extend{
+  background-color: #f9f18c !important;
+  color: #666 !important;
+  border: 1px solid #ffdd4d !important;
+}
+
+.pmpro_checkout-fields input[type="select"],
+.pmpro_checkout-fields input[type="text"]{
+  display: inline-block !important;
+}
+
+/* Style Credit Counter in Menu */
+.header-scrolled .menu-credit-counter{
+  margin-top: 10px;
+}
+.menu-credit-counter{
+  list-style: none;
+  width: auto;
+  display: inline-block;
+  border-radius: 50px;
+  overflow: hidden;
+  border: 1px solid green;
+  font-size: 11px;
+  font-weight: bold;
+  padding: 0;
+  line-height: normal;
+  margin-top: 31px;
+  background: #d4f3d0;
+  margin-left: 25px;
+  -webkit-transition: all 0.3s ease-in-out;
+  -moz-transition: all 0.3s ease-in-out;
+  -o-transition: all 0.3s ease-in-out;
+  transition: all 0.3s ease-in-out;
+}
+.credit-counter{
+  /*border-radius: 0; */
+  padding: 0.3em 0.7em;
+  background-color: #ff5c38;
+  color: #fff;
+  display: inline-block;
+}
+.credits{
+  padding: 0.3em 0.5em;
+}
+
+/* Styles for CC Info - Buddy Quaid */
+#credit-card-info .row.compact .col:first-child {
+    padding-left: 0;
+}
+#credit-card-info .row.compact .col{
+    padding: 0 5px;
+}
+#credit-card-info .input {
+    transition: all .25s ease;
+    display: block;
+    height: auto;
+    position: relative;
+    text-align: left;
+    border: 1px solid;
+}
+.input .label {
+    color: transparent;
+    display: block;
+    margin: 0rem 13.3% 0.6rem 2rem;
+    opacity: 1;
+    position: relative;
+    font-size: 13px;
+    line-height: 1.4;
+    pointer-events: none;
+    white-space: nowrap;
+}
+.input .label:before {
+    font-family: "AvenirNext-Regular",Avenir,"Helvetica Neue",Helvetica,Arial,sans;
+    font-weight: 200;
+    transition: all .25s ease;
+    position: absolute;
+    top: 5px;
+    left: -1rem;
+    content: attr(data-text);
+    display: block;
+    opacity: 0.85;
+    transform: scale(1.16) translateY(0.6rem);
+    transform-origin: top left;
+    transition: all 250ms cubic-bezier(0.22, 0.61, 0.36, 1);
+    width: 100%;
+    white-space: nowrap;
+}
+.input.focus .label:before, 
+.input.has-value .label:before {
+    opacity: 0.7;
+    transform: scale(1) translateY(0rem);
+    top: 0;
+    outline: 0;
+}
+#credit-card-info .input{
+  border-radius: 5px;
+  text-align: left !important;
+  max-width: 40% !important;
+  display: block !important;
+  float: none !important;
+}
+#credit-card-info *:focus{
+  outline: none !important;
+  -webkit-box-shadow: none !important;
+  box-shadow: none !important;
+}
+label.input.error{ border-color: #C73636 !important;}
+.input.error .text-field,
+.input.error .label:before
+{
+  color: #C73636;
+}
+.input .text-field {
+    transition: all .25s ease;
+    appearance: inherit;
+    background-color: transparent;
+    border: none !important;
+    cursor: pointer;
+    display: block !important;
+    float: none !important;
+    height: auto;
+    line-height: 1.8 !important;
+    margin: 0 !important;
+    padding: 0.4rem 1rem !important;
+    width: 100% !important;
+    outline: 0 !important;
+    font-size: 16px !important;
+}
+.input .text-field:focus{
+  outline: none !important;
+}
+#credit-card-info .cards img {
+    transition: all .25s ease;
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    right: 20px;
+    opacity: 0;
+    pointer-events: none;
+}
+#credit-card-info .cards img.visible{
+  opacity: 1;
+}
+
+/* CC Expiration Styles */
+.pmpro_payment-expiration .col{
+  width: 55%;
+}
+
+
+#buddypress input[type=submit]{
+  border-color: #337765;
+  color: #fff;
+}
+#buddypress input[type=submit]{
+  background-color: #559987;
+}
+#buddypress input[type=submit] .avia-size-large{
+  padding: 15px 30px 13px;
+  font-size: 13px;
+  min-width: 139px;
+}
+#buddypress #current-page-selector{
+    width: 30px !important;
+    display: inherit;
+}

@@ -1,0 +1,45 @@
+<style>
+	table{margin:1em;}
+	td,th{border:1px solid #cecece;padding: 15px;}
+	th{background-color: #d0e2dc;text-align: right;width: 30%}
+	th.title{background-color:#559987;text-align: left;}
+</style>
+
+<p>Thank you for your membership to !!sitename!!. Your membership account is now active.</p>
+<p>Below are details about your membership account and a receipt for your initial membership invoice.</p>
+
+<table id="pmpro_confirmation_table" class="pmpro_invoice" width="100%" cellpadding="0" cellspacing="0" border="0">
+		<tr>
+			<th>Account:</th>
+			<td>!!display_name!! (!!user_email!!)</td>
+		</tr>
+		<tr>
+			<th>Membership Level:</th>
+			<td>!!membership_level_name!!</td>
+		</tr>
+		<tr>
+			<th>Membership Fee:</th>
+			<td>!!membership_cost!!</td>
+		</tr>
+		<tr>
+			<th>Invoice details:</th>
+			<td>Invoice #!!invoice_id!! on !!invoice_date!!</td>
+		</tr>
+		<tr>
+			<th>Total Billed:</th>
+			<td>!!invoice_total!!</td>
+		</tr>
+</table>
+	<h2>Billing Information</h2>
+<table>
+		<tr>
+			<th>Card Type:</th>
+			<td>!!accountnumber!!</td>
+		</tr>
+		<tr>
+			<th>Expires:</th>
+			<td>!!expirationmonth!!/!!expirationyear!!</td>
+		</tr>
+</table>
+
+<p>Log in to your membership account here: !!login_link!!</p>

@@ -1,0 +1,110 @@
+
+body.content-sidebar .sidebar, .site-intro .avatar {
+	display: none;
+}
+
+.header {
+	margin-bottom: 2rem;
+}
+.site-intro .avatar, 
+#top > div > header > a > img {
+	display: none;
+}
+.home .site-intro {
+	padding: 11rem 0;
+}
+.home .site-intro .site-title {
+	font-size: 5rem;
+}
+
+.site-intro .site-title {
+	font-size: 3rem;
+	padding-top: 3rem;
+}
+.site-intro .site-title,
+.site-intro .site-description {
+	text-align: center;
+	text-shadow: -.1px .1px .4px rgba( 22, 22, 220, 0.48 ), .1px .1px .4px rgba( 22, 22, 220, 0.48 );
+}
+#home-splash {
+	height: 100vh;
+	padding-left: 999em;
+	padding-right: 999em;
+	margin-left: -999em;
+	margin-right: -999em;
+	background-repeat: no-repeat;
+	background-attachment: fixed;
+	background-position: 20% 50%;
+	background-size: cover;
+	filter: hue-rotate(240deg);
+}
+.main-nav ul.menu a {
+	/*filter: hue-rotate(120deg);*/
+}
+
+.home article.page {
+	padding: 2.61em 0;
+}
+article.post,
+article.page {
+	padding: 1rem 0;
+	margin: 0;
+}
+h4.archive-title {
+	color: rgba( 102, 106, 118, .7 );
+}
+
+.footer.content-wrapper {
+	padding: 3em 992em;
+}
+
+.footer .footer-content p {
+	text-align: center;
+}
+.main-nav .highwind-navigation ul {
+	font-size: .844em;
+}
+.site-title {
+	font-weight: 300;
+	font-size: 5rem;
+}
+.page-title,
+.post-title {
+	font-size: 2.5rem;
+}
+
+@media only screen and (min-width: 1500px) {
+	body {
+		font-size: 1.5rem;
+	}
+}
+
+@media screen and (max-width: 1400px) {
+	.highwind-navigation {
+		width: 55%;
+	}
+}
+
+@media screen and (max-width: 1099px) {
+	.highwind-navigation {
+		width: 60%;
+	}
+}
+
+@media screen and (max-width: 986px) {
+	.highwind-navigation {
+		width: 70%;
+	}
+}
+
+@media screen and (max-width: 848px) {
+	.highwind-navigation {
+		width: 80%;
+	}
+}
+
+@media only screen and (max-width: 769px) {
+	.site-description {
+		padding: 0 6rem;
+	}
+}

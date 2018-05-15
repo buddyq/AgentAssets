@@ -1,0 +1,63 @@
+/*
+Theme Name: Tarrytown
+Theme URI: www.agentassets.com
+Description: <strong>Tarrytown theme for AgentAssets.com</strong>
+Author: Buddy Quaid
+Author URI: http://www.agentassets.com
+Template: enfold
+Version: 1.0
+* /
+
+.wp-admin-bar-wp-logo a{
+  margin-top: 5px;
+}
+
+#header_meta a:hover{
+  color: #538774;
+}
+
+.avia_message_box_content p {
+    /*display: block;* /
+}
+
+#log_forms{
+  width: 30%;
+  margin: 0 auto;
+  padding: 8px;
+  border: 1px solid;
+}
+
+#log_forms{
+  width: 30%;
+  margin: 0 auto;
+  padding: 8px;
+  border: 1px solid;
+}
+
+.coupon-applied.success{
+  background: #E0F1B5;
+  padding: 5px;
+  color: #333;
+  font-style: italic;
+}
+
+.coupon-applied.invalid{
+  background: #FFF8F4;
+  color: #AF2C20;
+  padding: 5px;
+  font-style:italic;
+}
+
+.listblog_extend{
+  background-color: #f9f18c !important;
+  color: #666 !important;
+  border: 1px solid #ffdd4d !important;
+}
+
+.listblog_restore,
+.restore_with_purchase{
+  background-color: #ff7474 !important;
+  color: #fff !important;
+  border: 1px solid #940000 !important;
+}
+*/

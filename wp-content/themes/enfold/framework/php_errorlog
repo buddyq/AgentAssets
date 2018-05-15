@@ -1,0 +1,3 @@
+[04-May-2018 10:50:06 CST6CDT] PHP Fatal error:  Call to undefined function do_action() in /home/austin43/public_html/wp-content/themes/enfold/framework/avia_framework.php on line 28
+[09-May-2018 20:01:47 CST6CDT] PHP Fatal error:  Call to undefined function do_action() in /home/austin43/public_html/wp-content/themes/enfold/framework/avia_framework.php on line 28
+[10-May-2018 04:36:32 CST6CDT] PHP Fatal error:  Call to undefined function do_action() in /home/austin43/public_html/wp-content/themes/enfold/framework/avia_framework.php on line 28

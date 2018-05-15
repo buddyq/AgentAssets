@@ -1,0 +1,45 @@
+/*
+http://patorjk.com/software/taag/#p=display&f=Varsity&t=Agent%20Assets
+      _                              _          _                           _          
+     / \                            / |_       / \                         / |_        
+    / _ \     .--./) .---.  _ .--. `| |-'     / _ \     .--.   .--.  .---.`| |-'.--.   
+   / ___ \   / /'`\;/ /__\\[ `.-. | | |      / ___ \   ( (`\] ( (`\]/ /__\\| | ( (`\]  
+ _/ /   \ \_ \ \._//| \__., | | | | | |,   _/ /   \ \_  `'.'.  `'.'.| \__.,| |, `'.'.  
+|____| |____|.',__`  '.__.'[___||__]\__/  |____| |____|[\__) )[\__) )'.__.'\__/[\__) ) 
+            ( ( __))                                                                   
+
+Theme Name: Supersized17
+template: twentyseventeen
+Theme URI: https://wordpress.org/themes/twentyseventeen/
+Author: the WordPress team
+Author URI: https://wordpress.org/
+Description: for any abilities, and on any device.
+Version: 1.1
+License: GNU General Public License v2 or later
+License URI: http://www.gnu.org/licenses/gpl-2.0.html
+Text Domain: twentyseventeen
+Tags: one-column, two-columns, right-sidebar, flexible-header, accessibility-ready, custom-colors, custom-header, custom-menu, custom-logo, editor-style, featured-images, footer-widgets, post-formats, rtl-language-support, sticky-post, theme-options, threaded-comments, translation-ready
+
+This theme, like WordPress, is licensed under the GPL.
+Use it to make something cool, have fun, and share what you've learned with others.
+*/
+
+.gform_wrapper  input,
+#input_1_1 {
+    border: 1px solid green;
+	background: yellow;
+}
+
+#top-menu {
+text-align:center;
+}
+
+.site-branding-text {
+    background: rgba(22,22,22,.3);
+    padding: 2rem;
+}
+
+.site-description {
+	font-size: 2rem;
+}
+
